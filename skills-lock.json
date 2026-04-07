@@ -21,6 +21,11 @@
       "sourceType": "github",
       "computedHash": "3090e0681b1a23fd8074c86e8f47120c6c940b756f1fcfa68a80bcecde838d10"
     },
+    "brand-analyzer": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "85eb5e8a69a6d99cbf24d3097eb100977654108ba6b7022209682e744cc74954"
+    },
     "brand-storytelling": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
@@ -46,15 +51,35 @@
       "sourceType": "github",
       "computedHash": "d77898b4af29428fb89777b83e994776cd3a44e4216c84e03251a1e7f2b0fc2b"
     },
+    "business-analytics-reporter": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "920208f5135432b1069a294c2cb294271077564911bdb864316fcc5c95a34b5e"
+    },
+    "business-document-generator": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "53791ca830baaba4df75f551f86402dd078c56d2d07862a6a11e1880199c3487"
+    },
     "career-transitions": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "2fb20c1e673ca79e3370ec2ae9dcdf4c3bc201d4dc128c716781974665b55ea7"
     },
+    "cicd-pipeline-generator": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "74cffe0e57e9f4855c738a2fb11bbd5acbed5c4c89ff18f4fcd8410d62f33196"
+    },
     "coaching-pms": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "d4d8eaa69df70d3b3451ea27b5f056920fa8cc77b2a65308e37396d249727bde"
+    },
+    "codebase-documenter": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "42f8267717c269dd643a1e3c179ffdab09783bd10469deea83852dda8a1b22cd"
     },
     "community-building": {
       "source": "refoundai/lenny-skills",
@@ -86,6 +111,16 @@
       "sourceType": "github",
       "computedHash": "e1696f5fee7e4208e34e10169f7aa6a841ed322cffda764151b674cc33719bfa"
     },
+    "csv-data-visualizer": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "ab28c0f78997f1ced464d183df83559109f865d88050e299dc1ca6096bb13dbd"
+    },
+    "data-analyst": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "7c438d04536efefdf05d75287835b8b8649bce678ee01e12317065bd9e98752e"
+    },
     "defining-product-vision": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
@@ -115,6 +150,16 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "6d988f04fc48420fe734a2d7172a69f9e32bbba12483d855ffffc4abdeab6f05"
+    },
+    "docker-containerization": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "6ce7d7d9c41cf4904a588c2960e0934a94bfe6771b73c8245e14353dc4577002"
+    },
+    "docx": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "e0b998d770e20cfe3514d37feeec4089f408f29c276ab30f2ecae93618fe7e95"
     },
     "dogfooding": {
       "source": "refoundai/lenny-skills",
@@ -151,6 +196,11 @@
       "sourceType": "github",
       "computedHash": "dcee53cdcbe8c81b9263bef0f84d59fcbffb41d67ab9cfe8bf0519563a37188f"
     },
+    "finance-manager": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "08e3f046b49145fd11fe2d2347400c26e41bbd040cd6d2b1450805b3b2e17aee"
+    },
     "finding-mentors-sponsors": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
@@ -160,6 +210,11 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "896220542e1db3e30638569a7d92d589d6c823b93a8d4e01f498ff090a852289"
+    },
+    "frontend-enhancer": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "ce3f050632febc5a0b58e78ef23589ea513af16150f6dfe053a2b26dd20c0ed8"
     },
     "fundraising": {
       "source": "refoundai/lenny-skills",
@@ -221,6 +276,11 @@
       "sourceType": "github",
       "computedHash": "bb2c125b546be2d3a87b4ca7ebb8ddaced3233d4b8175f39c37d602ce2ba4cca"
     },
+    "nutritional-specialist": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "968b2d5319c2f13e27ae26dfd9e3484f74ed274779be2e3ef6b403a01e8ef3bb"
+    },
     "onboarding-new-hires": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
@@ -241,6 +301,11 @@
       "sourceType": "github",
       "computedHash": "eb0e177e696d27ea626d42d2928364bc0299aecd1890ba6b350959197b9a01cf"
     },
+    "pdf": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "5aeffa8a074c658da3955ed71120adebf572305b977178b3f45f33ed4465664f"
+    },
     "personal-assistant": {
       "source": "ailabs-393/ai-labs-claude-skills",
       "sourceType": "github",
@@ -250,6 +315,11 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "30ae910d4a554e6711cce6eca324064f9f55f35416eda5b9cf32afc95db75dd4"
+    },
+    "pitch-deck": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "b23b5c7542d53e3cada85052bd4165210a95447215afa4456256dc43a864eee4"
     },
     "planning-under-uncertainty": {
       "source": "refoundai/lenny-skills",
@@ -275,6 +345,11 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "a63a7624e0cb10df2b0c09d2fe683cf250b7c27e12c156ba1871a3e83dedf1e8"
+    },
+    "pptx": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "f661434df55b05a9117b4418eb0814f2310e45c70771f6bfe3cef1058bd958dd"
     },
     "pricing-strategy": {
       "source": "refoundai/lenny-skills",
@@ -305,6 +380,16 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "5208a01db6471a555a02c82dd5192edd47f74836662cd9f32b17ad68c16b3eb2"
+    },
+    "research-paper-writer": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "67be14e704ff0c2972e4fcfd164bffa4504898590ed43276d6ada1a376934748"
+    },
+    "resume-manager": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "5a09921ca955be6a23f63eba005e9b361a1e1dcd28ecdc519f44e15da4a59b70"
     },
     "retention-engagement": {
       "source": "refoundai/lenny-skills",
@@ -351,6 +436,16 @@
       "sourceType": "github",
       "computedHash": "e35949f53eb53e16202e414f4c12a45b85083f8d8f56f2da8d9eaef916dd2834"
     },
+    "script-writer": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "97f0cdcd52c188a879aabe0a4d2f00e3666cec270c499ad42f744ebe6f73ba3f"
+    },
+    "seo-optimizer": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "b5076608b80f436d87aafc273c94107146d9db1e86282239d3c38c8ce5487845"
+    },
     "setting-okrs-goals": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
@@ -360,6 +455,11 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "59d0ecb44053846c21f7be926ab4404e2b7ed50e16f8e71a8c8fc2c14163033d"
+    },
+    "social-media-generator": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "1a13abe6cbd7e3f9c7b854151775f2bad7feeaa68c414f34cbb99bc81864152b"
     },
     "stakeholder-alignment": {
       "source": "refoundai/lenny-skills",
@@ -376,6 +476,16 @@
       "sourceType": "github",
       "computedHash": "6b7760a4cf25670d40c8a242b7d69bfa3dc16bc96f0126abb75096f828aa21f8"
     },
+    "startup-validator": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "d5a6b39c886911c3d0e0cb3da6bed2a5af992cd01437a42f507d740cd7d92702"
+    },
+    "storyboard-manager": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "3f1c42e36460df75f30a036ab04f19ff2c9cc44aeb946e91d71e8dcbb371aa78"
+    },
     "systems-thinking": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
@@ -386,10 +496,25 @@
       "sourceType": "github",
       "computedHash": "4c6b403bd5d95c6a0cde13f49963a372ba83eceb73ce258dd207523f11412f4d"
     },
+    "tech-debt-analyzer": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "654eeb566e92a38a13a74f61b79ce9c48961424af926e69aa71e477e5f6dda2b"
+    },
     "technical-roadmaps": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "beda6704866862e5dd9fc5ec144d53b6b229ba8f98a4ad9bb1bf240006a837b5"
+    },
+    "test-specialist": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "895ab144061ef7050da048ff8429043fe32fab6c6400515a0d102b6fafcaf5b0"
+    },
+    "travel-planner": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "8320b1c4b544113788926eee4cb7a31ed1f354227d59cd9f880a51a0c02e101d"
     },
     "usability-testing": {
       "source": "refoundai/lenny-skills",
@@ -435,6 +560,11 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "55183c58d5afd3f8b4c1916bbca510a6624e7ef38bb14146f72a602c8ee2e26e"
+    },
+    "xlsx": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "91fee0d519975ca387c7af1f7a46b4912d74b207c6702e01fab81c059bf9b1b3"
     }
   }
 }
