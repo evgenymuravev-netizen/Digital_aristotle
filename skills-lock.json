@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "personal-productivity": {
+      "source": "refoundai/lenny-skills",
+      "sourceType": "github",
+      "computedHash": "30ae910d4a554e6711cce6eca324064f9f55f35416eda5b9cf32afc95db75dd4"
+    }
+  }
+}
