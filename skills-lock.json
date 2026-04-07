@@ -5,6 +5,11 @@
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
       "computedHash": "30ae910d4a554e6711cce6eca324064f9f55f35416eda5b9cf32afc95db75dd4"
+    },
+    "product-taste-intuition": {
+      "source": "refoundai/lenny-skills",
+      "sourceType": "github",
+      "computedHash": "5208a01db6471a555a02c82dd5192edd47f74836662cd9f32b17ad68c16b3eb2"
     }
   }
 }
