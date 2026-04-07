@@ -241,6 +241,11 @@
       "sourceType": "github",
       "computedHash": "eb0e177e696d27ea626d42d2928364bc0299aecd1890ba6b350959197b9a01cf"
     },
+    "personal-assistant": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "computedHash": "5531e9c0663cae7be8431b30970b645fee68f52e53e4997684732b41c771e07e"
+    },
     "personal-productivity": {
       "source": "refoundai/lenny-skills",
       "sourceType": "github",
