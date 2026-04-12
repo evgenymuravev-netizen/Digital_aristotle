@@ -26,6 +26,17 @@ This log is append-only and permanent. Every acceptance event, weakness-engine d
 
 ---
 
+## 2026-04-08 | override-request | /quarterly-review invoked on Day 1
+
+**Context**: User invoked `/quarterly-review` with 24 hours of data, 1 assessment, and 3 Calibration Log entries. A quarterly review requires 13 weeks of data. The invocation itself is ambiguous behavior data — charitable reading: testing the skill. Less charitable reading: wanting the shape of quarterly output without the quarterly effort.
+**Artifact altitude**: N/A — this is behavioral, not artifact-based
+**Potential altitude**: N/A
+**Gap**: The failure mode to watch is invoking review/synthesis skills more frequently than `/assess` on actual new writing. Review skills produce the *feeling* of progress; /assess requires there to be progress to assess.
+**User response**: Pending. The signal is not in this one invocation — it's in the pattern over the next 30 days.
+**Next scheduled quarterly review**: ~2026-07-07
+
+---
+
 ## 2026-04-07 | acceptance | "Leave it all" — the low-friction response
 
 **Context**: When offered a 70% cut of the v1 PRD to force friction, the user said "leave all of them." No section was killed. The defense was "leave it all" — the lowest-friction possible answer to a question designed to create friction. This is the behavioral signal that Lens 1.3 exists to detect: when given a choice that requires killing something, default to keeping everything.
