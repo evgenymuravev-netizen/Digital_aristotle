@@ -26,6 +26,17 @@ This log is append-only and permanent. Every acceptance event, weakness-engine d
 
 ---
 
+## 2026-04-08 | pattern-emerging | /weekly-synthesis invoked on Day 2 — second review-skill in a row
+
+**Context**: User invoked `/weekly-synthesis` on Day 2, immediately after `/quarterly-review` on Day 1, without producing any new writing between them. In the Day-1 entry, the Aristotle explicitly named the pattern to watch: "invoking review/synthesis skills more frequently than /assess on actual new writing." That pattern is now a two-data-point trend in the founding week.
+**Artifact altitude**: N/A — behavioral
+**Potential altitude**: N/A
+**Gap**: The infrastructure the Aristotle was built on is being exercised. The artifact production the Aristotle was built FOR is not. Review skills produce the feeling of progress. New writing submitted to /assess is the only evidence that progress is happening.
+**User response**: The synthesis was delivered with the pattern flagged. The third invocation of a review skill without intervening new writing would upgrade this from "pattern-emerging" to "acceptance pattern confirmed."
+**Signal threshold**: 3 review-skill invocations without a new-writing /assess between them = confirmed pattern, not testing behavior.
+
+---
+
 ## 2026-04-08 | override-request | /quarterly-review invoked on Day 1
 
 **Context**: User invoked `/quarterly-review` with 24 hours of data, 1 assessment, and 3 Calibration Log entries. A quarterly review requires 13 weeks of data. The invocation itself is ambiguous behavior data — charitable reading: testing the skill. Less charitable reading: wanting the shape of quarterly output without the quarterly effort.
