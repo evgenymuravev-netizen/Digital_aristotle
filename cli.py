@@ -294,28 +294,26 @@ def run_assessment(employee_id: str = typer.Argument(..., help="Employee ID to a
     console.print("Type END on a new line to finish each sample. Type DONE when no more samples.[/dim]\n")
 
     sample_num = 1
-    while True:
+    done = False
+    while not done:
         console.print(f"[cyan]Sample {sample_num}[/cyan] (or type DONE to finish):")
         lines: list[str] = []
         while True:
             line = input()
-            if line.strip() == "DONE" and not lines:
+            token = line.strip().upper()
+            if token == "DONE":
+                # Save any accumulated lines, then stop collecting
+                if lines:
+                    work_samples.append("\n".join(lines))
+                done = True
                 break
-            if line.strip() == "END":
-                break
-            if line.strip() == "DONE":
-                lines_joined = "\n".join(lines)
-                if lines_joined:
-                    work_samples.append(lines_joined)
+            if token == "END":
+                # Save this sample, loop back for another
+                if lines:
+                    work_samples.append("\n".join(lines))
+                    sample_num += 1
                 break
             lines.append(line)
-        else:
-            sample_text = "\n".join(lines)
-            if sample_text:
-                work_samples.append(sample_text)
-                sample_num += 1
-            continue
-        break
 
     if not work_samples:
         console.print("[yellow]No work samples provided — assessment will be limited.[/yellow]")

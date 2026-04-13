@@ -25,6 +25,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 
@@ -42,16 +44,19 @@ from models import (
 
 DB_PATH = Path(os.environ.get("DA_DB_PATH", "digital_aristotle.db"))
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    storage.init_db(DB_PATH)
+    yield
+
+
 app = FastAPI(
     title="Digital Aristotle",
     description="AI Literacy Assessment & Deployed AI Tools Registry",
     version="1.0.0",
+    lifespan=lifespan,
 )
-
-
-@app.on_event("startup")
-def startup():
-    storage.init_db(DB_PATH)
 
 
 # ---------------------------------------------------------------------------
