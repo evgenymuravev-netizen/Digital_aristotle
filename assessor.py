@@ -184,16 +184,23 @@ def assess(
     projects: list[AIProject],
     api_key: Optional[str] = None,
 ) -> AssessmentResult:
-    """Run the full AI literacy assessment using Claude."""
+    """Run the full AI literacy assessment using Claude with prompt caching."""
     client = anthropic.Anthropic(api_key=api_key or os.environ["ANTHROPIC_API_KEY"])
 
     rubric_text = format_rubric_for_prompt(employee.grade, employee.position)
     prompt = _build_assessment_prompt(employee, input_data, projects, rubric_text)
 
+    # System prompt is large and constant — cache it to reduce cost and latency
     message = client.messages.create(
         model=MODEL,
         max_tokens=4096,
-        system=SYSTEM_PROMPT,
+        system=[
+            {
+                "type": "text",
+                "text": SYSTEM_PROMPT,
+                "cache_control": {"type": "ephemeral"},
+            }
+        ],
         messages=[{"role": "user", "content": prompt}],
     )
 

@@ -20,6 +20,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import typer
 from rich import box
 from rich.columns import Columns
@@ -81,6 +85,41 @@ IMPACT_COLORS = {
 
 def _ensure_db():
     storage.init_db(DB_PATH)
+
+
+def _resolve_employee(id_or_name: str) -> "Employee":
+    """Find an employee by full ID or case-insensitive partial name match.
+
+    If multiple names match, shows a picker. Exits if none found.
+    """
+    employees = storage.list_employees(DB_PATH)
+
+    # Exact ID match first
+    for emp in employees:
+        if emp.id == id_or_name:
+            return emp
+
+    # Partial name match
+    needle = id_or_name.lower()
+    matches = [e for e in employees if needle in e.name.lower()]
+
+    if not matches:
+        console.print(f"[red]No employee found matching: {id_or_name}[/red]")
+        console.print("[dim]Run: python cli.py employee list[/dim]")
+        raise typer.Exit(1)
+
+    if len(matches) == 1:
+        return matches[0]
+
+    # Ambiguous — show a picker
+    console.print(f"[yellow]Multiple employees match '{id_or_name}':[/yellow]")
+    for i, emp in enumerate(matches, 1):
+        console.print(f"  [cyan]{i}[/cyan]. {emp.name} ({emp.position}, {emp.grade.value})")
+    while True:
+        choice = Prompt.ask(f"Choose (1-{len(matches)})").strip()
+        if choice.isdigit() and 1 <= int(choice) <= len(matches):
+            return matches[int(choice) - 1]
+        console.print("[red]Invalid choice.[/red]")
 
 
 def _score_bar(score: int, max_score: int = 5) -> str:
@@ -149,7 +188,7 @@ def employee_list():
     table.add_column("Grade", style="cyan")
     table.add_column("Department")
     table.add_column("Team")
-    table.add_column("ID", style="dim", no_wrap=True)
+    table.add_column("ID", style="cyan dim", no_wrap=True)
 
     for emp in employees:
         table.add_row(
@@ -158,10 +197,11 @@ def employee_list():
             emp.grade.value,
             emp.department.value,
             emp.team or "—",
-            emp.id[:8] + "...",
+            emp.id,
         )
 
     console.print(table)
+    console.print("[dim]Tip: use a name fragment instead of the full ID — e.g. python cli.py assess 'Alice'[/dim]")
 
 
 # ---------------------------------------------------------------------------
@@ -267,19 +307,82 @@ def project_list(
     console.print(table)
 
 
+@project_app.command("update")
+def project_update(project_id: str = typer.Argument(..., help="Project ID (or partial name)")):
+    """Update status, impact, or notes on an existing project."""
+    _ensure_db()
+
+    # Allow partial name match if not a UUID
+    projects = storage.list_projects(db_path=DB_PATH)
+    proj = None
+    for p in projects:
+        if p.id == project_id or project_id.lower() in p.name.lower():
+            proj = p
+            break
+
+    if not proj:
+        console.print(f"[red]Project not found: {project_id}[/red]")
+        raise typer.Exit(1)
+
+    console.print(Panel(
+        f"[bold]{proj.name}[/bold]  ·  {proj.status.value}  ·  {proj.impact_level.value}",
+        title="[bold]Update Project[/bold]",
+        style="blue",
+    ))
+    console.print("[dim]Press Enter to keep the current value.[/dim]\n")
+
+    new_status_raw = _pick_enum(
+        f"Status [current: {proj.status.value}]", ProjectStatus, default=proj.status.value
+    )
+    new_impact_raw = _pick_enum(
+        f"Impact level [current: {proj.impact_level.value}]", ImpactLevel, default=proj.impact_level.value
+    )
+    new_quantified = Prompt.ask(
+        f"[bold]Quantified impact[/bold] [current: {proj.quantified_impact or '—'}]",
+        default=proj.quantified_impact or "",
+    )
+    users_raw = Prompt.ask(
+        f"[bold]Users count[/bold] [current: {proj.users_count or '—'}]",
+        default=str(proj.users_count) if proj.users_count else "",
+    )
+    new_notes = Prompt.ask(
+        f"[bold]Notes[/bold] [current: {proj.notes or '—'}]",
+        default=proj.notes or "",
+    )
+
+    deployed_at = proj.deployed_at
+    if new_status_raw == ProjectStatus.DEPLOYED.value and not proj.deployed_at:
+        deployed_raw = Prompt.ask(
+            "[bold]Deployed date[/bold] (YYYY-MM-DD, optional)", default=""
+        )
+        if deployed_raw:
+            try:
+                deployed_at = datetime.strptime(deployed_raw, "%Y-%m-%d")
+            except ValueError:
+                console.print("[yellow]Invalid date, skipping.[/yellow]")
+
+    updated = proj.model_copy(update={
+        "status": ProjectStatus(new_status_raw),
+        "impact_level": ImpactLevel(new_impact_raw),
+        "quantified_impact": new_quantified or None,
+        "users_count": int(users_raw) if users_raw.isdigit() else proj.users_count,
+        "notes": new_notes or None,
+        "deployed_at": deployed_at,
+        "updated_at": datetime.utcnow(),
+    })
+    storage.upsert_project(updated, DB_PATH)
+    console.print(f"\n[green]Project updated.[/green]")
+
+
 # ---------------------------------------------------------------------------
 # Assessment command
 # ---------------------------------------------------------------------------
 
 @app.command("assess")
-def run_assessment(employee_id: str = typer.Argument(..., help="Employee ID to assess")):
+def run_assessment(employee_id: str = typer.Argument(..., help="Employee ID or partial name")):
     """Run an AI literacy assessment for an employee."""
     _ensure_db()
-
-    emp = storage.get_employee(employee_id, DB_PATH)
-    if not emp:
-        console.print(f"[red]Employee not found: {employee_id}[/red]")
-        raise typer.Exit(1)
+    emp = _resolve_employee(employee_id)
 
     console.print(Panel(
         f"[bold]AI Literacy Assessment[/bold]\n"
@@ -426,14 +529,10 @@ def _print_assessment_result(result, employee_name: str):
 # ---------------------------------------------------------------------------
 
 @app.command("report")
-def report_card(employee_id: str = typer.Argument(..., help="Employee ID")):
+def report_card(employee_id: str = typer.Argument(..., help="Employee ID or partial name")):
     """Print the full report card for an employee."""
     _ensure_db()
-
-    emp = storage.get_employee(employee_id, DB_PATH)
-    if not emp:
-        console.print(f"[red]Employee not found: {employee_id}[/red]")
-        raise typer.Exit(1)
+    emp = _resolve_employee(employee_id)
 
     projects = storage.list_projects(owner_id=employee_id, db_path=DB_PATH)
     assessments = storage.list_assessments(employee_id=employee_id, db_path=DB_PATH)
