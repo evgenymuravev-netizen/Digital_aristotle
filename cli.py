@@ -379,7 +379,10 @@ def project_update(project_id: str = typer.Argument(..., help="Project ID (or pa
 # ---------------------------------------------------------------------------
 
 @app.command("assess")
-def run_assessment(employee_id: str = typer.Argument(..., help="Employee ID or partial name")):
+def run_assessment(
+    employee_id: str = typer.Argument(..., help="Employee ID or partial name"),
+    mock: bool = typer.Option(False, "--mock", help="Use mock assessment (no API key required)"),
+):
     """Run an AI literacy assessment for an employee."""
     _ensure_db()
     emp = _resolve_employee(employee_id)
@@ -446,9 +449,9 @@ def run_assessment(employee_id: str = typer.Argument(..., help="Employee ID or p
     # Run assessment
     console.print("\n[bold yellow]Running assessment...[/bold yellow]")
 
-    projects = storage.list_projects(owner_id=employee_id, db_path=DB_PATH)
+    projects = storage.list_projects(owner_id=emp.id, db_path=DB_PATH)
     input_data = AssessmentInput(
-        employee_id=employee_id,
+        employee_id=emp.id,
         work_samples=work_samples,
         self_reported_tools=self_tools,
         self_reported_impact=self_impact,
@@ -456,7 +459,7 @@ def run_assessment(employee_id: str = typer.Argument(..., help="Employee ID or p
         manager_observations=manager_obs,
     )
 
-    result = assess(emp, input_data, projects)
+    result = assess(emp, input_data, projects, mock=mock)
     storage.save_assessment(result, DB_PATH)
 
     _print_assessment_result(result, emp.name)
@@ -534,8 +537,8 @@ def report_card(employee_id: str = typer.Argument(..., help="Employee ID or part
     _ensure_db()
     emp = _resolve_employee(employee_id)
 
-    projects = storage.list_projects(owner_id=employee_id, db_path=DB_PATH)
-    assessments = storage.list_assessments(employee_id=employee_id, db_path=DB_PATH)
+    projects = storage.list_projects(owner_id=emp.id, db_path=DB_PATH)
+    assessments = storage.list_assessments(employee_id=emp.id, db_path=DB_PATH)
 
     console.print(Panel(
         f"[bold]{emp.name}[/bold]\n"
