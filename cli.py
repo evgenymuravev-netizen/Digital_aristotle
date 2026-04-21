@@ -717,5 +717,205 @@ def dashboard():
             console.print(f"  [dim]•[/dim] {e.name} ({e.grade.value}) — python cli.py assess {e.id}")
 
 
+# ---------------------------------------------------------------------------
+# claude.ai workflow — export prompt / import result
+# ---------------------------------------------------------------------------
+
+@app.command("export-prompt")
+def export_prompt(
+    employee_id: str = typer.Argument(..., help="Employee ID or partial name"),
+    out: Optional[str] = typer.Option(None, "--out", "-o", help="Save to file instead of printing"),
+):
+    """
+    Generate the assessment prompt to paste into claude.ai.
+
+    Workflow:
+      1. python cli.py export-prompt alice
+      2. In claude.ai → New Project → paste the SYSTEM PROMPT into the project instructions
+      3. Start a conversation → paste the USER PROMPT
+      4. Copy Claude's JSON response
+      5. python cli.py import-result alice
+    """
+    _ensure_db()
+    emp = _resolve_employee(employee_id)
+    projects = storage.list_projects(owner_id=emp.id, db_path=DB_PATH)
+
+    console.print(Panel(
+        f"[bold]Export Assessment Prompt[/bold]\n"
+        f"[cyan]{emp.name}[/cyan] · {emp.position} · {emp.grade.value.upper()}",
+        style="blue",
+    ))
+
+    # Collect work samples (same UX as assess)
+    work_samples: list[str] = []
+    console.print("\n[bold]Work Samples[/bold]")
+    console.print("[dim]Paste examples of AI-assisted work. END to finish each sample, DONE when done.[/dim]\n")
+
+    sample_num = 1
+    done = False
+    while not done:
+        console.print(f"[cyan]Sample {sample_num}[/cyan] (or type DONE to finish):")
+        lines: list[str] = []
+        while True:
+            line = input()
+            token = line.strip().upper()
+            if token == "DONE":
+                if lines:
+                    work_samples.append("\n".join(lines))
+                done = True
+                break
+            if token == "END":
+                if lines:
+                    work_samples.append("\n".join(lines))
+                    sample_num += 1
+                break
+            lines.append(line)
+
+    tools_raw = Prompt.ask("\n[bold]Self-reported AI tools[/bold] (comma-separated, or Enter to skip)", default="")
+    self_tools = [t.strip() for t in tools_raw.split(",") if t.strip()]
+    self_impact = Prompt.ask("[bold]Self-reported impact[/bold] (optional)", default="") or None
+    peer_feedback = Prompt.ask("[bold]Peer feedback[/bold] (optional)", default="") or None
+    manager_obs = Prompt.ask("[bold]Manager observations[/bold] (optional)", default="") or None
+
+    from assessor import SYSTEM_PROMPT, _build_assessment_prompt
+    from rubric import format_rubric_for_prompt
+
+    rubric_text = format_rubric_for_prompt(emp.grade, emp.position)
+    input_data = AssessmentInput(
+        employee_id=emp.id,
+        work_samples=work_samples,
+        self_reported_tools=self_tools,
+        self_reported_impact=self_impact,
+        peer_feedback=peer_feedback,
+        manager_observations=manager_obs,
+    )
+    user_prompt = _build_assessment_prompt(emp, input_data, projects, rubric_text)
+
+    divider = "=" * 72
+
+    output = (
+        f"{divider}\n"
+        f"STEP 1 — SYSTEM PROMPT\n"
+        f"Paste this into your claude.ai Project instructions (once per project):\n"
+        f"{divider}\n\n"
+        f"{SYSTEM_PROMPT}\n\n"
+        f"{divider}\n"
+        f"STEP 2 — USER PROMPT\n"
+        f"Paste this into the conversation:\n"
+        f"{divider}\n\n"
+        f"{user_prompt}\n\n"
+        f"{divider}\n"
+        f"STEP 3 — After Claude responds, save the result:\n"
+        f"  python cli.py import-result {emp.name.split()[0].lower()}\n"
+        f"{divider}\n"
+    )
+
+    if out:
+        Path(out).write_text(output)
+        console.print(f"\n[green]Prompt saved to:[/green] {out}")
+    else:
+        console.print("\n")
+        # Print raw without Rich markup so it's clean to copy
+        print(output)
+
+
+@app.command("import-result")
+def import_result(
+    employee_id: str = typer.Argument(..., help="Employee ID or partial name"),
+    file: Optional[str] = typer.Option(None, "--file", "-f", help="Read JSON from file instead of stdin"),
+):
+    """
+    Parse Claude's JSON response from claude.ai and save the assessment.
+
+    Paste Claude's full response when prompted (or use --file path/to/response.json).
+    Type END on a new line when done pasting.
+    """
+    _ensure_db()
+    emp = _resolve_employee(employee_id)
+
+    if file:
+        raw = Path(file).read_text()
+    else:
+        console.print(Panel(
+            f"[bold]Import Assessment Result[/bold]\n"
+            f"Paste Claude's JSON response below.\n"
+            f"Type [cyan]END[/cyan] on a new line when done.",
+            style="blue",
+        ))
+        lines: list[str] = []
+        while True:
+            line = input()
+            if line.strip().upper() == "END":
+                break
+            lines.append(line)
+        raw = "\n".join(lines)
+
+    from assessor import (
+        _parse_response, _verdict_from_scores,
+        MODEL,
+    )
+    from models import (
+        AssessmentScores, DimensionScore, SlopIndicators,
+        AssessmentResult, AssessmentVerdict,
+    )
+
+    try:
+        parsed = _parse_response(raw)
+    except Exception as e:
+        console.print(f"[red]Failed to parse JSON: {e}[/red]")
+        console.print("[dim]Make sure you copied Claude's full response including the {{ }} braces.[/dim]")
+        raise typer.Exit(1)
+
+    def make_dim(key: str) -> DimensionScore:
+        d = parsed[key]
+        return DimensionScore(
+            score=int(d["score"]),
+            rationale=d["rationale"],
+            evidence=d.get("evidence", []),
+        )
+
+    try:
+        scores = AssessmentScores(
+            ai_proficiency=make_dim("ai_proficiency"),
+            output_quality=make_dim("output_quality"),
+            business_impact=make_dim("business_impact"),
+            team_effect=make_dim("team_effect"),
+            tool_breadth=make_dim("tool_breadth"),
+            innovation=make_dim("innovation"),
+        )
+        slop_raw = parsed["slop_indicators"]
+        slop = SlopIndicators(
+            detected=bool(slop_raw["detected"]),
+            signals=slop_raw.get("signals", []),
+            severity=slop_raw.get("severity", "none"),
+        )
+        from assessor import _verdict_from_scores
+        verdict = _verdict_from_scores(scores, slop)
+
+        result = AssessmentResult(
+            employee_id=emp.id,
+            employee_name=emp.name,
+            grade=emp.grade,
+            position=emp.position,
+            scores=scores,
+            overall_score=scores.overall,
+            verdict=verdict,
+            slop_indicators=slop,
+            grade_adjusted_expectation=parsed.get("grade_adjusted_expectation", ""),
+            strengths=parsed.get("strengths", []),
+            development_areas=parsed.get("development_areas", []),
+            recommendations=parsed.get("recommendations", []),
+            executive_summary=parsed.get("executive_summary", ""),
+            model_used="claude.ai",
+        )
+    except Exception as e:
+        console.print(f"[red]Error building assessment: {e}[/red]")
+        raise typer.Exit(1)
+
+    storage.save_assessment(result, DB_PATH)
+    console.print(f"\n[green]Assessment saved.[/green]")
+    _print_assessment_result(result, emp.name)
+
+
 if __name__ == "__main__":
     app()
