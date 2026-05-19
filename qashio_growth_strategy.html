@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qashio — VP Growth Meeting Strategy Brief</title>
+  <style>
+    :root {
+      --bg: #0a0d14;
+      --surface: #111827;
+      --surface2: #1a2235;
+      --border: #243048;
+      --accent: #3b82f6;
+      --accent2: #10b981;
+      --accent3: #f59e0b;
+      --accent4: #ef4444;
+      --accent5: #8b5cf6;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --strong: #f8fafc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10, 13, 20, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; gap: 0.25rem;
+      overflow-x: auto;
+    }
+    .nav-logo { font-weight: 800; color: var(--accent); padding: 1rem 1rem 1rem 0; font-size: 1.1rem; white-space: nowrap; }
+    .nav-link {
+      color: var(--muted); text-decoration: none; font-size: 0.8rem;
+      padding: 0.5rem 0.75rem; border-radius: 6px; white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface); }
+
+    /* LAYOUT */
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    section { padding: 4rem 0 2rem; }
+    section + section { border-top: 1px solid var(--border); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #0a0d14 0%, #0f1a2e 50%, #0a0d14 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% -20%, rgba(59,130,246,0.15) 0%, transparent 70%);
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(59,130,246,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(59,130,246,0.3);
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--strong);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: var(--muted); font-size: 1.1rem; max-width: 680px; margin: 0 auto 2rem; }
+    .hero-meta {
+      display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+    }
+    .hero-meta-item { text-align: center; }
+    .hero-meta-item .val { font-size: 1.8rem; font-weight: 800; color: var(--accent2); }
+    .hero-meta-item .lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* TYPOGRAPHY */
+    h2 {
+      font-size: 1.9rem; font-weight: 800; color: var(--strong);
+      margin-bottom: 0.5rem;
+    }
+    h2 .tag {
+      display: inline-block; font-size: 0.7rem; font-weight: 700;
+      padding: 0.2rem 0.6rem; border-radius: 4px;
+      vertical-align: middle; margin-right: 0.75rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .tag-blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .tag-green { background: rgba(16,185,129,0.2); color: #34d399; }
+    .tag-yellow { background: rgba(245,158,11,0.2); color: #fbbf24; }
+    .tag-red { background: rgba(239,68,68,0.2); color: #f87171; }
+    .tag-purple { background: rgba(139,92,246,0.2); color: #a78bfa; }
+    .tag-pink { background: rgba(236,72,153,0.2); color: #f472b6; }
+
+    .section-sub { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .card-grid { display: grid; gap: 1.25rem; }
+    .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+    .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .card-grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .card h3 { font-size: 1.1rem; font-weight: 700; color: var(--strong); margin-bottom: 0.75rem; }
+    .card p, .card li { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+    .card ul { padding-left: 1.2rem; }
+    .card li { margin-bottom: 0.3rem; }
+
+    /* COMPETITOR CARDS */
+    .comp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .comp-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    }
+    .comp-name { font-size: 1.2rem; font-weight: 800; color: var(--strong); }
+    .comp-tagline { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+    .comp-funding {
+      text-align: right; white-space: nowrap;
+    }
+    .comp-funding .amount { font-size: 1.4rem; font-weight: 800; }
+    .comp-funding .round { font-size: 0.75rem; color: var(--muted); }
+    .comp-body { padding: 1.25rem 1.5rem; }
+    .comp-row { margin-bottom: 1rem; }
+    .comp-row-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+    .comp-row-val { font-size: 0.88rem; color: var(--text); }
+
+    .threat-bar { height: 6px; background: var(--surface2); border-radius: 999px; margin-top: 0.5rem; overflow: hidden; }
+    .threat-fill { height: 100%; border-radius: 999px; }
+
+    /* STRATEGY CARDS */
+    .strategy-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .strategy-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .strategy-card.priority-1::before { background: linear-gradient(90deg, #ef4444, #f97316); }
+    .strategy-card.priority-2::before { background: linear-gradient(90deg, #f59e0b, #eab308); }
+    .strategy-card.priority-3::before { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+    .strategy-card.priority-4::before { background: linear-gradient(90deg, #10b981, #06b6d4); }
+    .strategy-card.priority-5::before { background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+
+    .strategy-num {
+      font-size: 3rem; font-weight: 900; line-height: 1;
+      margin-bottom: 0.5rem; opacity: 0.15;
+      position: absolute; top: 1rem; right: 1.25rem;
+    }
+    .strategy-card h3 { font-size: 1.1rem; font-weight: 800; color: var(--strong); margin-bottom: 0.5rem; }
+    .strategy-meta {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;
+    }
+    .badge {
+      font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem;
+      border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .badge-red { background: rgba(239,68,68,0.2); color: #f87171; }
+    .badge-green { background: rgba(16,185,129,0.2); color: #34d399; }
+    .badge-blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .badge-yellow { background: rgba(245,158,11,0.2); color: #fbbf24; }
+    .badge-purple { background: rgba(139,92,246,0.2); color: #a78bfa; }
+    .badge-pink { background: rgba(236,72,153,0.2); color: #f472b6; }
+
+    .strategy-card p { color: var(--muted); font-size: 0.88rem; margin-bottom: 1rem; }
+    .strategy-card ul { padding-left: 1.2rem; }
+    .strategy-card li { color: var(--muted); font-size: 0.88rem; margin-bottom: 0.3rem; }
+
+    .kpi-row {
+      display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem;
+      padding-top: 1rem; border-top: 1px solid var(--border);
+    }
+    .kpi { text-align: center; flex: 1; min-width: 80px; }
+    .kpi .kpi-val { font-size: 1.2rem; font-weight: 800; color: var(--strong); }
+    .kpi .kpi-lbl { font-size: 0.7rem; color: var(--muted); }
+
+    /* GEO TABLE */
+    .geo-table { width: 100%; border-collapse: collapse; }
+    .geo-table th {
+      text-align: left; padding: 0.75rem 1rem;
+      font-size: 0.75rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      border-bottom: 1px solid var(--border);
+    }
+    .geo-table td {
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem; color: var(--text);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .geo-table tr:last-child td { border-bottom: none; }
+    .geo-table tr:hover td { background: var(--surface2); }
+
+    /* STRENGTH PILL */
+    .strength-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .strength-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .strength-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .strength-item h4 { font-size: 0.9rem; font-weight: 700; color: var(--strong); margin-bottom: 0.4rem; }
+    .strength-item p { font-size: 0.82rem; color: var(--muted); }
+
+    /* TIMELINE */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 0.5rem; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .tl-item { position: relative; padding-bottom: 2rem; }
+    .tl-dot {
+      position: absolute; left: -2rem;
+      width: 1rem; height: 1rem; border-radius: 50%;
+      border: 2px solid var(--bg);
+      top: 0.2rem;
+    }
+    .tl-item h4 { font-size: 0.95rem; font-weight: 700; color: var(--strong); }
+    .tl-item p { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+    .tl-phase { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.5rem; }
+
+    /* TALKING POINTS */
+    .tp-card {
+      background: var(--surface2);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .tp-card.green { border-color: var(--accent2); }
+    .tp-card.yellow { border-color: var(--accent3); }
+    .tp-card.purple { border-color: var(--accent5); }
+    .tp-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--strong); margin-bottom: 0.3rem; }
+    .tp-card p { font-size: 0.85rem; color: var(--muted); }
+    .tp-card .quote {
+      font-style: italic; color: var(--accent);
+      font-size: 0.9rem; margin-top: 0.5rem;
+      border-top: 1px dashed var(--border);
+      padding-top: 0.5rem;
+    }
+
+    /* OSINT SECTION */
+    .person-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .person-card .person-name { font-size: 1rem; font-weight: 700; color: var(--strong); }
+    .person-card .person-role { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.75rem; }
+    .person-card p { font-size: 0.83rem; color: var(--muted); }
+
+    /* MATRIX */
+    .matrix-wrap { overflow-x: auto; }
+    .matrix {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .matrix th {
+      padding: 0.75rem 1rem;
+      background: var(--surface2);
+      color: var(--muted);
+      font-weight: 700;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .matrix th:first-child { text-align: left; }
+    .matrix td {
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--border);
+      text-align: center;
+      color: var(--text);
+    }
+    .matrix td:first-child { text-align: left; font-weight: 600; color: var(--strong); }
+    .matrix tr:hover td { background: rgba(59,130,246,0.05); }
+    .cell-yes { color: #34d399; font-weight: 700; }
+    .cell-no { color: #f87171; }
+    .cell-partial { color: #fbbf24; }
+
+    /* FUNDING NARRATIVE */
+    .fn-box {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.08));
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .fn-box h3 { color: var(--strong); font-size: 1.2rem; margin-bottom: 1rem; }
+    .fn-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .fn-box strong { color: var(--text); }
+
+    /* ALERT */
+    .alert {
+      border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem;
+      font-size: 0.88rem;
+    }
+    .alert-red { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5; }
+    .alert-yellow { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #fcd34d; }
+    .alert-green { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7; }
+    .alert-blue { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); color: #93c5fd; }
+    .alert strong { opacity: 1; font-weight: 700; }
+
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 640px) {
+      .hero-meta { gap: 1rem; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<nav>
+  <span class="nav-logo">⬡ Qashio Strategy</span>
+  <a class="nav-link" href="#exec">Overview</a>
+  <a class="nav-link" href="#strengths">Strengths</a>
+  <a class="nav-link" href="#competitors">Competitors</a>
+  <a class="nav-link" href="#geopolitics">Geopolitics</a>
+  <a class="nav-link" href="#matrix">Comparison</a>
+  <a class="nav-link" href="#strategy">Pivots</a>
+  <a class="nav-link" href="#roadmap">Roadmap</a>
+  <a class="nav-link" href="#funding">Funding</a>
+  <a class="nav-link" href="#osint">Team OSINT</a>
+  <a class="nav-link" href="#talking">Talking Points</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Confidential Strategy Brief · May 2026</div>
+  <h1>Qashio's Next Chapter:<br /><span>From MENA's Best-Kept Secret to a Global B2B Fintech Leader</span></h1>
+  <p>Prepared for a VP-level conversation with Qashio's Growth leadership.<br />
+  Research covers competitors, geopolitics, product strategy, and funding narrative.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <div class="val">$32.3M</div>
+      <div class="lbl">Total Raised</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="val">800%+</div>
+      <div class="lbl">YoY Revenue Growth (×3)</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="val">22</div>
+      <div class="lbl">Countries Active</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="val">140</div>
+      <div class="lbl">Team Size</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="val">✓</div>
+      <div class="lbl">Profitable Q1 2025</div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────── EXECUTIVE SUMMARY ───────── -->
+<div class="container">
+<section id="exec">
+  <h2><span class="tag tag-blue">Overview</span>Executive Summary</h2>
+  <p class="section-sub">Who Qashio is today — and why the next 18 months are critical.</p>
+
+  <div class="card-grid card-grid-2">
+    <div class="card">
+      <h3>What Qashio Is</h3>
+      <p>Qashio is a Dubai-born, globally licensed B2B spend management platform founded in 2021 by CEO <strong>Armin Moradi</strong> and co-founder <strong>Jonathan Lau</strong>. It provides corporate prepaid cards, expense management, and — crucially — the <em>largest B2B loyalty ecosystem in MENA</em>, with exclusive airline and hotel partnerships that no competitor has replicated.</p>
+      <br />
+      <p>With offices in Dubai, Abu Dhabi, Riyadh, Amman, and Dublin (opened Dec 2025), and a European e-money license enabling EU passporting to 27 countries, Qashio is uniquely positioned as a <strong>cross-continental fintech bridge between MENA and Europe</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>The Business Today</h3>
+      <ul>
+        <li><strong>Core product:</strong> Customised prepaid Visa corporate cards + spend controls</li>
+        <li><strong>Loyalty engine:</strong> Earn points → redeem for Emirates Skywards miles, KLM Flying Blue, British Airways Avios, Jumeirah, Accor, IHG</li>
+        <li><strong>Corporate travel:</strong> Second revenue line, emerging product</li>
+        <li><strong>European arm:</strong> E-money institution license (Ireland → EU passporting), targeting UK and EEA</li>
+        <li><strong>Recent raise:</strong> $19.8M led by Rocketship.vc (May 2025); additional $12.5M debt from Al-Enma Bank (Sep 2025)</li>
+        <li><strong>Target markets:</strong> UAE ✓ → Saudi Arabia (launching) → Jordan ✓ → Europe ✓</li>
+        <li><strong>Verticals:</strong> Legal, consulting, government, travel, hospitality, e-commerce</li>
+      </ul>
+    </div>
+  </div>
+
+  <br />
+  <div class="alert alert-green">
+    <strong>Bottom Line:</strong> Qashio is profitable, growing 800% YoY for three straight years, and sitting on a moat no competitor has — an airline-grade B2B loyalty engine. The question is not whether Qashio will grow. The question is <strong>how fast and in which direction</strong> to make it fundable at a Series B valuation.
+  </div>
+</section>
+
+<!-- ───────── STRENGTHS / OSINT ───────── -->
+<section id="strengths">
+  <h2><span class="tag tag-green">Strengths</span>What Makes Qashio Hard to Kill</h2>
+  <p class="section-sub">Competitive moats, product differentiation, and structural advantages — assembled from public sources and disclosed company data.</p>
+
+  <div class="strength-grid">
+    <div class="strength-item">
+      <div class="strength-icon">✈️</div>
+      <h4>Exclusive Airline Loyalty Network</h4>
+      <p>Emirates Skywards, KLM Flying Blue, British Airways Avios — <em>no MENA competitor has replicated this</em>. Businesses earn miles on operating expenses. This is a retention weapon disguised as a perk.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🏨</div>
+      <h4>Hotel & Lifestyle Partners</h4>
+      <p>Jumeirah (Dubai), Accor, IHG — employees get tangible premium rewards. This drives card activation and daily usage without paid marketing.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🇮🇪</div>
+      <h4>EU E-Money License (Ireland)</h4>
+      <p>Dublin HQ doubles as an EU passporting gateway to 27 countries. Critically, this lets Qashio serve European SMEs <em>legally and at scale</em> — a barrier most MENA fintechs cannot cross.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">📈</div>
+      <h4>800% YoY Revenue Growth × 3</h4>
+      <p>Three consecutive years of 800%+ growth with profitability achieved in Q1 2025. This is the fundraising narrative: disciplined hypergrowth.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🌍</div>
+      <h4>22-Country Footprint</h4>
+      <p>Operational across UAE, Europe, UK, and soon Saudi Arabia with clients already in 22 countries. The distribution network is ahead of the product.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🏦</div>
+      <h4>Banking-as-Infrastructure Ambitions</h4>
+      <p>Neobanking licenses in the pipeline. Combined with the Irish e-money license, this positions Qashio to become a full business account provider — not just a card.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🤝</div>
+      <h4>Institutional Investor Confidence</h4>
+      <p>ABN Ventures, MITAA, Oneway VC re-upped in the latest round. New backers include major regional MENA banks and Luxembourg fund MoreThan Capital — a rare Euro-MENA investor mix.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🔐</div>
+      <h4>High-Compliance Verticals</h4>
+      <p>Legal, consulting, government — sectors that need <em>auditability and policy controls</em>, not just convenience. These clients are sticky and high-ARPU.</p>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🛫</div>
+      <h4>Corporate Travel as a Second Revenue Leg</h4>
+      <p>The natural adjacent market for a company whose core loyalty hook is airlines and hotels. The travel management product transforms Qashio from an expense tool into a travel CFO.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── COMPETITORS ───────── -->
+<section id="competitors">
+  <h2><span class="tag tag-red">Intel</span>Competitive Landscape Deep Dive</h2>
+  <p class="section-sub">Who is competing for the same MENA corporate wallet — and how each stacks up in May 2026.</p>
+
+  <!-- ALAAN -->
+  <div class="card-grid" style="gap:1.5rem; margin-bottom:1.5rem;">
+    <div class="comp-card">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">⚡ Alaan</div>
+          <div class="comp-tagline">AI-Powered Corporate Card & Spend Management · Dubai, UAE</div>
+        </div>
+        <div class="comp-funding">
+          <div class="amount" style="color:#f87171;">$55M</div>
+          <div class="round">Total · Series A (2025)</div>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row">
+          <div class="comp-row-label">Latest Round</div>
+          <div class="comp-row-val"><strong>$48M Series A</strong> (Aug 2025) led by <strong>Peak XV Partners</strong> (formerly Sequoia India/SEA). Backed by Y Combinator, Pioneer Fund, 468 Capital, 885 Capital, plus founders of Tabby and Careem as angels.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Core Differentiator</div>
+          <div class="comp-row-val">Aggressive AI positioning — automated reconciliation, AI-driven expense policies, smart approvals. Positioning as the "Ramp for MENA." No proprietary loyalty program.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Target Market</div>
+          <div class="comp-row-val">UAE first, expanding across MENA. No European presence or license.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Weaknesses</div>
+          <div class="comp-row-val">No loyalty moat, no airline partners, no European license, no corporate travel product. Heavily VC-subsidised — not profitable. The AI narrative is replicable.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Threat Level to Qashio</div>
+          <div class="threat-bar"><div class="threat-fill" style="width:82%; background: linear-gradient(90deg, #f97316, #ef4444);"></div></div>
+          <div class="comp-row-val" style="margin-top:0.35rem; font-size:0.8rem; color:#f87171;"><strong>HIGH</strong> — best-funded direct competitor; same geography, same buyer persona, peak brand visibility after $48M raise.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLUTO -->
+    <div class="comp-card">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">💜 Pluto</div>
+          <div class="comp-tagline">Corporate Card & Spend Management · Dubai, UAE</div>
+        </div>
+        <div class="comp-funding">
+          <div class="amount" style="color:#fbbf24;">$10.1M</div>
+          <div class="round">Total · Pre-Series A (Jan 2025)</div>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row">
+          <div class="comp-row-label">Latest Round</div>
+          <div class="comp-row-val"><strong>$4.1M pre-Series A</strong> (Jan 2025) led by Rhino Ventures, Born Capital, Goanna Capital. Milestone: AED 1B+ in cumulative spend managed.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Core Differentiator</div>
+          <div class="comp-row-val"><strong>Pluto Connect</strong> — a B2B embedded finance API that lets banks and other fintechs white-label Pluto's card-issuing and spend management. Ranked #1 EMEA on G2 for Procure-to-Pay.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Target Market</div>
+          <div class="comp-row-val">UAE SMEs → KSA, Turkey, Bahrain, Kuwait, Qatar. B2B embedded via "Pluto Connect."</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Weaknesses</div>
+          <div class="comp-row-val">No airline/hotel loyalty. No European presence. Under-capitalised vs Alaan and Qashio. Series A will dilute founders heavily at current traction.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Threat Level to Qashio</div>
+          <div class="threat-bar"><div class="threat-fill" style="width:45%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div></div>
+          <div class="comp-row-val" style="margin-top:0.35rem; font-size:0.8rem; color:#fbbf24;"><strong>MEDIUM</strong> — Pluto Connect is a smart pivot Qashio should watch. If banks adopt it at scale it becomes infrastructure. Not a direct loyalty threat yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEMO -->
+    <div class="comp-card">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">🟠 Pemo</div>
+          <div class="comp-tagline">SME Spend Management · Dubai, UAE</div>
+        </div>
+        <div class="comp-funding">
+          <div class="amount" style="color:#fb923c;">$19M</div>
+          <div class="round">Total · Seed (Nov 2024)</div>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row">
+          <div class="comp-row-label">Latest Round</div>
+          <div class="comp-row-val"><strong>$7M Seed</strong> (Nov 2024) backed by Augmentum Fintech and Shorooq Partners. Founded 2022.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Core Differentiator</div>
+          <div class="comp-row-val">Targeting the underserved SME segment in MENAP where bank-agnostic spend management is scarce. Simple UX, petty cash management, multi-currency.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Weaknesses</div>
+          <div class="comp-row-val">No loyalty program, no airline partners, no European license. SME focus limits ARPU. Well behind Qashio in funding and geography.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Threat Level to Qashio</div>
+          <div class="threat-bar"><div class="threat-fill" style="width:30%; background: linear-gradient(90deg, #10b981, #34d399);"></div></div>
+          <div class="comp-row-val" style="margin-top:0.35rem; font-size:0.8rem; color:#34d399;"><strong>LOW-MEDIUM</strong> — competes for SME share, not Qashio's enterprise or loyalty-first customers.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WIO BANK -->
+    <div class="comp-card">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">🔵 Wio Bank</div>
+          <div class="comp-tagline">Digital Business Banking · Abu Dhabi, UAE</div>
+        </div>
+        <div class="comp-funding">
+          <div class="amount" style="color:#60a5fa;">Backed by ADQ</div>
+          <div class="round">State-linked · BaaS model</div>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row">
+          <div class="comp-row-label">Core Differentiator</div>
+          <div class="comp-row-val">Banking-as-a-Service platform backed by Abu Dhabi's sovereign wealth infrastructure (ADQ, Alpha Dhabi, First Abu Dhabi Bank, e&amp;). 200,000+ customers. Full banking not just cards.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Threat to Qashio</div>
+          <div class="comp-row-val">If Wio expands into expense management with a loyalty layer, it has sovereign capital and a banking license to crush pure-play fintechs. Currently more of a threat to incumbents than Qashio.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Threat Level to Qashio</div>
+          <div class="threat-bar"><div class="threat-fill" style="width:55%; background: linear-gradient(90deg, #3b82f6, #6366f1);"></div></div>
+          <div class="comp-row-val" style="margin-top:0.35rem; font-size:0.8rem; color:#a78bfa;"><strong>MEDIUM-HIGH (watch list)</strong> — sovereign-backed. If Wio builds loyalty partnerships, game changes. A partnership with Wio is actually an option for Qashio.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAMP / AIRBASE (Global) -->
+    <div class="comp-card">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">🌐 Ramp / Airbase / Payhawk</div>
+          <div class="comp-tagline">Global Players — Enterprise Spend Management</div>
+        </div>
+        <div class="comp-funding">
+          <div class="amount" style="color:#a78bfa;">$1B+</div>
+          <div class="round">Combined funding (global)</div>
+        </div>
+      </div>
+      <div class="comp-body">
+        <div class="comp-row">
+          <div class="comp-row-label">Ramp (US)</div>
+          <div class="comp-row-val">$1.6B raised, $7.65B valuation. AI expense automation, not focused on MENA. No airline loyalty. No MENA compliance layer.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Payhawk (EU/UK)</div>
+          <div class="comp-row-val">UK-based, $215M raised. European corporate cards. Potential future entrant into MENA. No MENA compliance or Arabic localisation. Direct competitive risk to Qashio's European book.</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-row-label">Strategic Note</div>
+          <div class="comp-row-val">None of these players have MENA regulatory coverage, Arabic language support, <em>or</em> the airline loyalty partnerships. Qashio's moat is widest exactly where global players are weakest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── GEOPOLITICS ───────── -->
+<section id="geopolitics">
+  <h2><span class="tag tag-yellow">Geopolitics</span>Regional Instability — Risks & Opportunities</h2>
+  <p class="section-sub">The Middle East in 2025-2026 is volatile, but volatility creates asymmetric opportunities for well-positioned fintechs.</p>
+
+  <div class="alert alert-red" style="margin-bottom:1.5rem;">
+    <strong>Active Conflicts (May 2026):</strong> Gaza–Israel war ongoing · Yemen/Houthi strikes on Red Sea shipping · Iran-US-Israel tensions · Sudan civil conflict. Iran's strikes hit AWS data centers in Bahrain and UAE, causing major tech firms (IBM, Microsoft, Palantir, Oracle, Google) to reassess MENA cloud exposure.
+  </div>
+
+  <div class="matrix-wrap">
+    <table class="geo-table">
+      <thead>
+        <tr>
+          <th>Geopolitical Factor</th>
+          <th>Risk to Qashio</th>
+          <th>Opportunity for Qashio</th>
+          <th>Recommended Response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>🚢 Red Sea / Houthi Disruption</strong><br/><span style="color:var(--muted);font-size:0.8rem;">Shipping delays, corporate supply chain strain</span></td>
+          <td>Clients in logistics/retail reduce spend. Card transaction volumes dip in affected verticals.</td>
+          <td>Companies pivot from sea freight to air freight → more airline purchases → more Qashio Skywards miles earned. Direct uplift to loyalty engagement.</td>
+          <td>Promote aviation-linked expense tracking. Add freight/logistics as a spend category with bonus loyalty multipliers.</td>
+        </tr>
+        <tr>
+          <td><strong>🏛️ Iran–Gulf Tensions</strong><br/><span style="color:var(--muted);font-size:0.8rem;">Cloud data center attacks in Bahrain & UAE</span></td>
+          <td>Infrastructure risk if Qashio is AWS-heavy in Bahrain/UAE. Regulatory scrutiny increases around SWIFT-adjacent payments.</td>
+          <td>European HQ (Dublin) as a geopolitical hedge. EU infrastructure = resilient, uncorrelated to Gulf instability. Investor narrative: "our European entity de-risks regional exposure."</td>
+          <td>Publicise multi-region architecture. Position Dublin as the disaster-recovery anchor. Use this in investor pitches.</td>
+        </tr>
+        <tr>
+          <td><strong>💰 VC Funding Freeze in MENA</strong><br/><span style="color:var(--muted);font-size:0.8rem;">Geopolitical discount on regional valuations</span></td>
+          <td>Compressed valuation at Series B. Investors may price in a 15-25% geopolitical discount.</td>
+          <td>With profitability achieved, Qashio can command a "quality premium" in a distressed market. European investor base (MoreThan Capital, Rocketship) partly insulates from MENA VC slowdown.</td>
+          <td>Lead Series B story with European traction and profitability. Frame MENA expansion as optionality, not dependency.</td>
+        </tr>
+        <tr>
+          <td><strong>🇸🇦 Saudi Arabia Vision 2030</strong><br/><span style="color:var(--muted);font-size:0.8rem;">$2.7B KSA fintech market, growing 14% CAGR</span></td>
+          <td>SAMA (Saudi Central Bank) compliance is complex. Slower go-to-market than UAE.</td>
+          <td>KSA target of 525 fintech companies by 2030. 79% cashless transactions already. <strong>Corporate spend management is massively underserved.</strong> No Alaan, Pluto, or Pemo with full-stack loyalty in KSA yet.</td>
+          <td>First-mover advantage window: 6–12 months before Alaan's $48M fuels a KSA push. Sprint the Saudi launch.</td>
+        </tr>
+        <tr>
+          <td><strong>🌍 UAE as Regional Safe Haven</strong><br/><span style="color:var(--muted);font-size:0.8rem;">UAE attracting capital flight from troubled markets</span></td>
+          <td>Talent costs rise as UAE attracts global workers. Competition for product talent intensifies.</td>
+          <td>Businesses relocating to UAE → new corporate card customers. Financial hub positioning means more international companies need UAE-compliant spend tools.</td>
+          <td>Run an active inbound campaign for newly Dubai-registered businesses. Partner with DIFC/ADGM for onboarding packages.</td>
+        </tr>
+        <tr>
+          <td><strong>✈️ Corporate Travel Resurgence</strong><br/><span style="color:var(--muted);font-size:0.8rem;">Intra-MENA air travel despite conflict</span></td>
+          <td>Travel volumes lower for Israel, Lebanon corridors. Business travel between GCC states remains strong.</td>
+          <td>Emirates is reporting record load factors. KLM European routes to GCC expanding. Every business-class flight booked through Qashio compounds loyalty earn → compounding retention.</td>
+          <td>Launch a "Corporate Travel + Card" bundle. Bundle the Qashio Travel product with the card — one contract, two revenue streams.</td>
+        </tr>
+        <tr>
+          <td><strong>📜 MENA Sanctions Compliance</strong><br/><span style="color:var(--muted);font-size:0.8rem;">Fintech compliance scrutiny intensifying in 2026</span></td>
+          <td>Banks are increasing AML/KYB requirements for fintech partners. Compliance overhead rising.</td>
+          <td>Qashio's high-compliance vertical focus (legal, government, consulting) means the client base is <em>already</em> compliance-grade. This becomes a selling point vs lighter competitors.</td>
+          <td>Build "compliance-grade spend management" as a brand pillar. Publish a compliance whitepaper for each regulated vertical.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ───────── FEATURE MATRIX ───────── -->
+<section id="matrix">
+  <h2><span class="tag tag-purple">Analysis</span>Competitive Feature Matrix</h2>
+  <p class="section-sub">Where Qashio leads, matches, and lags across key dimensions.</p>
+
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th style="text-align:left; width:22%;">Capability</th>
+          <th>Qashio</th>
+          <th>Alaan</th>
+          <th>Pluto</th>
+          <th>Pemo</th>
+          <th>Wio Bank</th>
+          <th>Ramp (Global)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Corporate Prepaid Cards</td>
+          <td class="cell-yes">✓ Full</td>
+          <td class="cell-yes">✓ Full</td>
+          <td class="cell-yes">✓ Full</td>
+          <td class="cell-yes">✓ Full</td>
+          <td class="cell-yes">✓ Full</td>
+          <td class="cell-yes">✓ Full</td>
+        </tr>
+        <tr>
+          <td>Expense Management</td>
+          <td class="cell-yes">✓</td>
+          <td class="cell-yes">✓ AI</td>
+          <td class="cell-yes">✓</td>
+          <td class="cell-yes">✓</td>
+          <td class="cell-partial">Partial</td>
+          <td class="cell-yes">✓ AI</td>
+        </tr>
+        <tr>
+          <td>Airline Loyalty (Skywards/KLM/Avios)</td>
+          <td class="cell-yes">✓ Exclusive</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+        </tr>
+        <tr>
+          <td>Hotel Loyalty (Accor/IHG/Jumeirah)</td>
+          <td class="cell-yes">✓</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+        </tr>
+        <tr>
+          <td>In-House Loyalty Engine</td>
+          <td class="cell-yes">✓ (only in MENA)</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+        </tr>
+        <tr>
+          <td>Corporate Travel Management</td>
+          <td class="cell-partial">Building</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+        </tr>
+        <tr>
+          <td>EU Banking License</td>
+          <td class="cell-yes">✓ Ireland (EMI)</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-partial">US only</td>
+        </tr>
+        <tr>
+          <td>UK Presence</td>
+          <td class="cell-yes">✓</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-yes">✓</td>
+        </tr>
+        <tr>
+          <td>Saudi Arabia Operations</td>
+          <td class="cell-partial">Launching 2025</td>
+          <td class="cell-partial">Planned</td>
+          <td class="cell-partial">Expanding</td>
+          <td class="cell-partial">Planned</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+        </tr>
+        <tr>
+          <td>AI-Powered Automation</td>
+          <td class="cell-partial">Partial</td>
+          <td class="cell-yes">✓ Core</td>
+          <td class="cell-partial">Partial</td>
+          <td class="cell-partial">Partial</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-yes">✓ Core</td>
+        </tr>
+        <tr>
+          <td>B2B Embedded Finance API</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-yes">✓ (Pluto Connect)</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-yes">✓ (BaaS)</td>
+          <td class="cell-no">✗</td>
+        </tr>
+        <tr>
+          <td>Profitability</td>
+          <td class="cell-yes">✓ Q1 2025</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+        </tr>
+        <tr>
+          <td>Multi-Region (22+ countries)</td>
+          <td class="cell-yes">✓</td>
+          <td class="cell-partial">MENA focus</td>
+          <td class="cell-partial">MENA focus</td>
+          <td class="cell-partial">MENA focus</td>
+          <td class="cell-partial">UAE only</td>
+          <td class="cell-yes">✓ Global</td>
+        </tr>
+        <tr>
+          <td>Neobanking License (Pipeline)</td>
+          <td class="cell-partial">In progress</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-no">✗</td>
+          <td class="cell-yes">✓ Full bank</td>
+          <td class="cell-no">✗</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <br />
+  <div class="alert alert-blue">
+    <strong>Key Insight:</strong> Qashio is the <em>only player</em> with airline loyalty + EU license + profitability + multi-region footprint simultaneously. This combination is the Series B story. The gap to close: AI automation (vs Alaan) and embedded finance API (vs Pluto Connect).
+  </div>
+</section>
+
+<!-- ───────── STRATEGIC PIVOTS ───────── -->
+<section id="strategy">
+  <h2><span class="tag tag-pink">Strategy</span>Strategic Growth Pivots — Ranked by Impact & Feasibility</h2>
+  <p class="section-sub">Eight concrete strategic bets Qashio should consider in the next 18 months to deepen its moat and command a Series B valuation.</p>
+
+  <div class="card-grid card-grid-2">
+
+    <!-- PIVOT 1 -->
+    <div class="strategy-card priority-1">
+      <div class="strategy-num">01</div>
+      <h3>Loyalty-as-a-Service (LaaS) — White-Label the Engine</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-red">Highest Priority</span>
+        <span class="badge badge-green">New Revenue Line</span>
+        <span class="badge badge-blue">12–18 Months</span>
+      </div>
+      <p>Qashio's in-house loyalty engine — the only one in MENA B2B — can be white-labelled and sold to <strong>banks, large corporates, and other fintechs</strong> who want to offer airline miles on spend but can't build the partnerships themselves. Think: a bank wants to offer Emirates miles on its SME debit cards — it pays Qashio a platform fee per point issued.</p>
+      <ul>
+        <li>Sell "Loyalty Infrastructure" to MENA banks (NBD, ADCB, Riyad Bank) as a managed service</li>
+        <li>Charge per-point issuance fee + annual platform license</li>
+        <li>Qashio retains the airline relationship; bank gets differentiated product</li>
+        <li>Creates a B2B SaaS revenue stream completely independent of card volume</li>
+        <li>Directly counters Pluto Connect's embedded finance strategy — but with loyalty, not just cards</li>
+      </ul>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val">$2–5M</div><div class="kpi-lbl">ARR per bank partner</div></div>
+        <div class="kpi"><div class="kpi-val">10+</div><div class="kpi-lbl">Addressable banks (MENA)</div></div>
+        <div class="kpi"><div class="kpi-val">High</div><div class="kpi-lbl">Moat depth</div></div>
+      </div>
+    </div>
+
+    <!-- PIVOT 2 -->
+    <div class="strategy-card priority-2">
+      <div class="strategy-num">02</div>
+      <h3>Saudi Arabia: Sprint the First-Mover Window</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-red">Urgent</span>
+        <span class="badge badge-yellow">6–9 Month Window</span>
+        <span class="badge badge-green">$2.7B Market</span>
+      </div>
+      <p>Saudi Arabia's $2.7B fintech market is growing at 14% CAGR with 79% cashless payment adoption already. Vision 2030 is actively creating demand for corporate spend tools. Crucially, <strong>no competitor yet has launched a full loyalty-enabled corporate card in KSA</strong>. Alaan's $48M gives them a 6–12 month KSA push runway. Qashio's head start must be used now.</p>
+      <ul>
+        <li>Fast-track SAMA regulatory approval — use existing regional bank investors to accelerate</li>
+        <li>Launch with the Emirates Skywards loyalty hook as the primary differentiator</li>
+        <li>Target NEOM suppliers, Aramco contractors, and Vision 2030 mega-project companies as anchor clients</li>
+        <li>Partner with a Saudi bank (Al-Enma is already a debt investor — explore a distribution deal)</li>
+        <li>Localise: Arabic interface, VAT compliance, ZATCA integration for expense reporting</li>
+      </ul>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val">$2.7B</div><div class="kpi-lbl">KSA Fintech Market</div></div>
+        <div class="kpi"><div class="kpi-val">525</div><div class="kpi-lbl">KSA Target Fintechs by 2030</div></div>
+        <div class="kpi"><div class="kpi-val">14%</div><div class="kpi-lbl">Market CAGR</div></div>
+      </div>
+    </div>
+
+    <!-- PIVOT 3 -->
+    <div class="strategy-card priority-3">
+      <div class="strategy-num">03</div>
+      <h3>Corporate Travel SuperApp — Converge Card + Travel</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-blue">High Impact</span>
+        <span class="badge badge-purple">Unique Position</span>
+        <span class="badge badge-yellow">12–24 Months</span>
+      </div>
+      <p>Qashio is the only spend management platform whose loyalty currency <em>is</em> travel (miles, hotel points). The natural product evolution is to merge corporate card + travel booking into a single "Corporate Travel Financial Platform." Think Concur + Ramp but built for MENA/Europe with Emirates miles at the core.</p>
+      <ul>
+        <li>Build or acquire a corporate travel booking engine (TMC layer) integrated directly into the card</li>
+        <li>Every flight or hotel booked through Qashio Travel earns Qashio Rewards — creating a closed loyalty loop</li>
+        <li>Offer travel expense pre-approval + real-time budget control + post-trip reconciliation in one flow</li>
+        <li>Target mid-market (50–500 employee) companies currently using fragmented tools</li>
+        <li>Negotiate corporate rates with Emirates and KLM based on aggregated booking volume — further deepening the partnership</li>
+        <li>European angle: London/Dublin-based companies traveling to GCC is a massive unserved corridor</li>
+      </ul>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val">3×</div><div class="kpi-lbl">ARPU uplift potential</div></div>
+        <div class="kpi"><div class="kpi-val">Zero</div><div class="kpi-lbl">Direct competitors for this combo</div></div>
+        <div class="kpi"><div class="kpi-val">High</div><div class="kpi-lbl">Retention impact</div></div>
+      </div>
+    </div>
+
+    <!-- PIVOT 4 -->
+    <div class="strategy-card priority-4">
+      <div class="strategy-num">04</div>
+      <h3>European Neobank for MENA-Connected Businesses</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-green">Differentiated</span>
+        <span class="badge badge-blue">EU Passporting</span>
+        <span class="badge badge-purple">18–30 Months</span>
+      </div>
+      <p>Qashio's Irish EMI license is a sleeping giant. With a full neobanking license (in pipeline), Qashio can become the first <strong>MENA-aware business neobank in Europe</strong> — serving the thousands of GCC businesses with European subsidiaries and the reverse. No European neobank (Revolut Business, Tide, Monzo Business) has Middle East expertise. No MENA fintech has EU passporting at this level.</p>
+      <ul>
+        <li>Target GCC companies with European operations (construction, investment, family offices)</li>
+        <li>Target European companies doing business in MENA (logistics, consulting, energy)</li>
+        <li>Offer multi-currency IBAN (EUR + AED + SAR) with unified spend dashboard</li>
+        <li>Bundle Emirates miles earn on European spend — this is completely unique globally</li>
+        <li>Use Dublin HQ to attract European tech and regulatory talent</li>
+        <li>Geopolitical narrative: "European-anchored financial infrastructure for MENA businesses" resonates with institutional LPs</li>
+      </ul>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val">27</div><div class="kpi-lbl">EU Countries via Passporting</div></div>
+        <div class="kpi"><div class="kpi-val">Zero</div><div class="kpi-lbl">EU competitors with MENA DNA</div></div>
+        <div class="kpi"><div class="kpi-val">$6.35B</div><div class="kpi-lbl">MENA Fintech Market 2026</div></div>
+      </div>
+    </div>
+
+    <!-- PIVOT 5 -->
+    <div class="strategy-card priority-5">
+      <div class="strategy-num">05</div>
+      <h3>AI-Powered Spend Intelligence — Counter Alaan's Narrative</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-red">Defensive</span>
+        <span class="badge badge-blue">AI/ML</span>
+        <span class="badge badge-yellow">6–12 Months</span>
+      </div>
+      <p>Alaan raised $48M on an "AI-first" positioning. Qashio must not let this narrative go uncontested. But Qashio has something Alaan doesn't: <strong>rich travel and loyalty spend data</strong> across 22 countries. This unique dataset enables AI capabilities Alaan literally cannot build.</p>
+      <ul>
+        <li>Build an AI "Spend Advisor" that predicts optimal card usage for miles/points maximisation</li>
+        <li>Predictive travel budget alerts (e.g., "Q3 travel budget will be exceeded in 6 weeks at current pace")</li>
+        <li>Automated loyalty redemption recommendations ("You have enough miles for a business class upgrade — redeem now or save for better route?")</li>
+        <li>AI-powered duplicate expense detection, receipt matching, and ERP auto-sync</li>
+        <li>Use travel pattern data to benchmark company spend vs industry peers (anonymised)</li>
+        <li>This positions Qashio as the "intelligent" option vs Alaan's commodity AI</li>
+      </ul>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-val">22-country</div><div class="kpi-lbl">Exclusive data moat</div></div>
+        <div class="kpi"><div class="kpi-val">↑ NPS</div><div class="kpi-lbl">Stickiness driver</div></div>
+        <div class="kpi"><div class="kpi-val">Alaan</div><div class="kpi-lbl">Narrative to neutralise</div></div>
+      </div>
+    </div>
+
+    <!-- PIVOT 6 -->
+    <div class="strategy-card priority-3">
+      <div class="strategy-num">06</div>
+      <h3>Working Capital for Corporate Travel — B2B BNPL</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-green">Revenue Expansion</span>
+        <span class="badge badge-yellow">Lending Product</span>
+        <span class="badge badge-blue">12–18 Months</span>
+      </div>
+      <p>Corporate travel is expensive and lumpy. A company's travel budget runs out before quarter-end, then spikes at conference season. Qashio's existing debt facility (Al-Enma Bank) is a foundation for building <strong>embedded working capital</strong> into the card — extend credit at the moment of booking, repaid from the company's expense settlement cycle.</p>
+      <ul>
+        <li>Offer "Qashio Credit" — a revolving credit line sized to historical corporate card spend</li>
+        <li>Charge 1–2% on outstanding balance (still cheaper than bank overdraft)</li>
+        <li>Particularly valuable for SMEs with uneven cash flow</li>
+        <li>Travel BNPL: book flights now, pay in 30/60 days — Qashio earns interchange + interest</li>
+        <li>The data advantage: Qashio knows each company's spend patterns better than any bank — making credit underwriting safer</li>
+      </ul>
+    </div>
+
+    <!-- PIVOT 7 -->
+    <div class="strategy-card priority-4">
+      <div class="strategy-num">07</div>
+      <h3>DIFC / ADGM / NEOM Partnership Channel</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-purple">BD Play</span>
+        <span class="badge badge-green">Low Cost</span>
+        <span class="badge badge-blue">3–6 Months</span>
+      </div>
+      <p>Dubai International Financial Centre and Abu Dhabi Global Market have 7,000+ registered companies between them. Companies newly registered in DIFC/ADGM need UAE banking, cards, and expense tools — and are often international businesses with cross-border needs. This is Qashio's perfect customer.</p>
+      <ul>
+        <li>Negotiate preferred provider status with DIFC/ADGM to be the default fintech recommended at company formation</li>
+        <li>Build an onboarding flow: "Register your DIFC company → get Qashio cards in 24 hours"</li>
+        <li>NEOM Project: target the thousands of contractor companies working on NEOM mega-projects in KSA — all have large corporate spend, travel expenses, and cross-border needs</li>
+        <li>Offer co-branded "DIFC Business Card" powered by Qashio</li>
+      </ul>
+    </div>
+
+    <!-- PIVOT 8 -->
+    <div class="strategy-card priority-5">
+      <div class="strategy-num">08</div>
+      <h3>Geopolitical Safe Haven Positioning — "Finance Without Borders"</h3>
+      <div class="strategy-meta">
+        <span class="badge badge-pink">Brand Play</span>
+        <span class="badge badge-purple">Long-Term Moat</span>
+        <span class="badge badge-yellow">Investor Narrative</span>
+      </div>
+      <p>With Iranian strikes on cloud infrastructure and regional volatility, businesses need financial infrastructure that is <strong>geopolitically resilient</strong>. Qashio's dual-hub model (Dubai + Dublin) is a natural hedge. European regulatory shelter + MENA operational depth = "finance without borders" for companies in uncertain regions.</p>
+      <ul>
+        <li>Brand campaign: "Your business operations shouldn't stop when borders close"</li>
+        <li>Multi-jurisdiction account capability (AED + EUR + GBP) from a single platform</li>
+        <li>Offer regulatory compliance-as-a-service for MENA companies expanding to Europe</li>
+        <li>Target Israeli tech companies relocating to UAE/Europe (post-conflict opportunity)</li>
+        <li>Target Lebanese and Egyptian businesses using UAE as their financial anchor</li>
+        <li>In investor materials: Dublin is the insurance policy; Dubai is the growth engine</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ───────── PRODUCT ROADMAP ───────── -->
+<section id="roadmap">
+  <h2><span class="tag tag-green">Roadmap</span>18-Month Product Roadmap Suggestion</h2>
+  <p class="section-sub">A phased approach to executing the strategic pivots above — structured for a VP of Product to own.</p>
+
+  <div class="card-grid card-grid-2">
+    <div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot" style="background: #ef4444;"></div>
+          <div class="tl-phase">Phase 1 · Q2–Q3 2026 (Now – 6 months)</div>
+          <h4>Defend & Sprint</h4>
+          <p>Saudi Arabia go-live (SAMA compliance sprint) · AI Spend Advisor v1 (counter Alaan narrative) · DIFC/ADGM preferred provider deal · Corporate Travel bundle launch (card + travel in one contract) · Arabic language full product localisation</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: #f59e0b;"></div>
+          <div class="tl-phase">Phase 2 · Q4 2026 – Q1 2027 (6–12 months)</div>
+          <h4>Build the Moat</h4>
+          <p>Loyalty-as-a-Service API launch (first bank partner signed) · Qashio Credit (working capital product, pilot 50 companies) · European product expansion (Germany, Netherlands using Irish passporting) · AI reconciliation and duplicate detection fully automated</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background: #3b82f6;"></div>
+          <div class="tl-phase">Phase 3 · Q2–Q3 2027 (12–18 months)</div>
+          <h4>Series B Story</h4>
+          <p>Neobanking license activated (full business accounts, not just e-money) · LaaS: 3+ bank partners live · Corporate Travel SuperApp: integrated booking + spend + loyalty · Enter Jordan/Egypt/Kuwait with proven KSA playbook · Series B fundraise: $60–80M targeting US/European lead investor</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:1.25rem;">
+        <h3>Product Team Structure (Current)</h3>
+        <ul>
+          <li>1× Head of Product (execution focus)</li>
+          <li>2× Senior Product Designers</li>
+          <li>2–3× Product Managers (hiring +1 more)</li>
+          <li>2–3× Analysts</li>
+          <li>4× QA Engineers</li>
+        </ul>
+        <br/>
+        <p><strong>Gap assessment:</strong> The team is execution-heavy but likely short on product strategy, platform architecture thinking (for LaaS/API products), and data product capabilities (for AI Spend Advisor). A VP of Product who bridges strategy ↔ execution, has fintech platform experience, and can lead roadmap prioritisation across 3–4 simultaneous market expansions would be high-value.</p>
+      </div>
+      <div class="card">
+        <h3>Suggested VP of Product Priorities (Day 1–90)</h3>
+        <ul>
+          <li><strong>Day 1–30:</strong> Map all products (card, loyalty, travel, European) to a single product strategy narrative. Identify the overlap and the gaps.</li>
+          <li><strong>Day 30–60:</strong> Audit the Saudi Arabia launch roadmap — what's blocking go-live? Set hard date.</li>
+          <li><strong>Day 60–90:</strong> Define the LaaS API product spec. This is the biggest strategic leverage point.</li>
+          <li>Establish a single prioritisation framework: impact on ARPU, retention, or new market entry.</li>
+          <li>Build a competitive intelligence process — know what Alaan ships before it hits their blog.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── FUNDING NARRATIVE ───────── -->
+<section id="funding">
+  <h2><span class="tag tag-blue">Funding</span>Series B Funding Narrative</h2>
+  <p class="section-sub">How Qashio should frame its next raise to command a premium valuation in a cautious market.</p>
+
+  <div class="fn-box" style="margin-bottom:1.5rem;">
+    <h3>"We built the only B2B loyalty network in MENA. Now we're becoming the financial operating system for companies that span MENA and Europe."</h3>
+    <p>This is the Series B thesis in one sentence. It does three things: (1) anchors the raise in a proven, defensible moat — the loyalty network — (2) signals the expansion vector without overpromising, and (3) positions Qashio against global category leaders (Ramp, Brex) rather than local competitors (Alaan, Pluto).</p>
+  </div>
+
+  <div class="card-grid card-grid-3">
+    <div class="card">
+      <h3>Why Now</h3>
+      <ul>
+        <li>Profitable — rare for a MENA fintech at this stage</li>
+        <li>800%+ YoY growth for 3 years — not a spike, a trend</li>
+        <li>Saudi Arabia launch imminent — largest single market opportunity</li>
+        <li>European license already active — EU revenue is real, not hypothetical</li>
+        <li>Alaan's $48M raise proves the category is validated and investor-ready</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Use of Funds</h3>
+      <ul>
+        <li>KSA go-to-market (compliance + team + marketing)</li>
+        <li>Loyalty-as-a-Service platform buildout</li>
+        <li>European neobanking license activation</li>
+        <li>AI product layer (Spend Advisor, reconciliation)</li>
+        <li>Corporate Travel product maturity</li>
+        <li>Working capital facility for Qashio Credit</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Target Investor Profile</h3>
+      <ul>
+        <li>US fintech VCs seeking non-US exposure (Rocketship already in)</li>
+        <li>European funds with MENA appetite (MoreThan Capital already in)</li>
+        <li>Gulf sovereign funds / family offices (partial validation via MENA bank investors)</li>
+        <li>Strategic: airline or hotel group investing in a loyalty-aligned fintech (Emirates as a strategic investor would be transformative)</li>
+        <li>Target raise: $60–80M Series B at $300–500M valuation</li>
+      </ul>
+    </div>
+  </div>
+
+  <br/>
+  <div class="alert alert-yellow">
+    <strong>Valuation anchor:</strong> Alaan raised at ~8–10× ARR multiple at Series A. If Qashio is profitable and growing faster, it should command 12–15× ARR at Series B. With $1.2M Q1 2025 profit implying $5–7M ARR run rate (at card interchange + SaaS blend), a $60–90M valuation is defensible today. Post-Saudi launch and LaaS revenue, a $200–300M pre-money is achievable within 12 months.
+  </div>
+</section>
+
+<!-- ───────── OSINT / TEAM ───────── -->
+<section id="osint">
+  <h2><span class="tag tag-purple">Team OSINT</span>Leadership Profiles — Public Intelligence</h2>
+  <p class="section-sub">Compiled from publicly available sources (LinkedIn public profiles, press releases, Crunchbase). LinkedIn OSINT cannot be fully automated — use these profiles as conversation primers and verify with direct LinkedIn research before the meeting.</p>
+
+  <div class="alert alert-yellow" style="margin-bottom:1.5rem;">
+    <strong>Note:</strong> Full individual employee-level OSINT requires manual LinkedIn review. The profiles below are based on public disclosures, press mentions, and Crunchbase. Before your meeting, search "<em>Qashio company: Qashio</em>" on LinkedIn to see the full team directory and identify any shared connections you can reference.
+  </div>
+
+  <div class="card-grid card-grid-3" style="margin-bottom:1.5rem;">
+    <div class="person-card">
+      <div class="person-name">Armin Moradi</div>
+      <div class="person-role">CEO & Co-Founder</div>
+      <p>Publicly visible at Dubai Fintech Summit 2024. Strong media presence — speaks on B2B fintech, loyalty ecosystems, and MENA expansion. He will be the strategic decision-maker on a VP of Product hire. Research his talks for the language he uses around product strategy — mirror it.</p>
+      <br/>
+      <p><strong>What to know:</strong> He founded Qashio from scratch in Dubai — this is his first venture at this scale. CEOs in this position value VPs who add strategic horsepower, not just execution. Come with ideas, not just experience.</p>
+    </div>
+    <div class="person-card">
+      <div class="person-name">Jonathan Lau</div>
+      <div class="person-role">Co-Founder</div>
+      <p>Less public profile than Armin. Likely responsible for technology and operations architecture given dual-founder dynamic. Research Jonathan's background before the meeting — his previous experience will indicate whether Qashio thinks of itself as a tech company or a fintech ops company.</p>
+    </div>
+    <div class="person-card">
+      <div class="person-name">Antoine Massad</div>
+      <div class="person-role">Chairman</div>
+      <p>Provides board-level oversight and likely has deep MENA finance or investment background. The chairman title suggests Qashio has a professional governance structure — important for the Series B story. Look him up on LinkedIn for his other board seats — it reveals the investor network Qashio can leverage.</p>
+    </div>
+    <div class="person-card">
+      <div class="person-name">Mohammed Noufal</div>
+      <div class="person-role">Europe Expansion Manager (Dublin)</div>
+      <p>Leading the Irish HQ launch. Key person for understanding the European product roadmap. If you're positioning for VP of Product, understanding Noufal's scope will clarify whether Europe is a product challenge or a BD/regulatory challenge — and where product leadership is needed.</p>
+    </div>
+    <div class="person-card">
+      <div class="person-name">Head of Product (Current)</div>
+      <div class="person-role">Execution-Focused Product Leader</div>
+      <p>Per internal context, the current Head of Product is execution-focused — not strategy-focused. This is likely the most important insight for your positioning: <strong>the strategic product leadership gap is real and acknowledged internally</strong>. You're being considered to fill it.</p>
+    </div>
+    <div class="person-card">
+      <div class="person-name">VP of Growth (Your Audience)</div>
+      <div class="person-role">Growth Leadership — Tomorrow's Meeting</div>
+      <p>Research this person specifically on LinkedIn before the meeting. Identify: where did they come from? What growth metrics do they care about (revenue? users? market share?)? What growth bets has Qashio made that they led? This will tell you which of the 8 strategic pivots above to lead with.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Pre-Meeting LinkedIn Research Checklist</h3>
+    <ul style="columns: 2; gap: 2rem;">
+      <li>Find the VP of Growth's profile — note mutual connections</li>
+      <li>Check if they've posted about KSA expansion or loyalty programs recently</li>
+      <li>Find the current Head of Product — understand their career trajectory</li>
+      <li>Count total employees on LinkedIn (vs stated 140 — tells you hiring pace)</li>
+      <li>Check for any senior product manager profiles — what's their background?</li>
+      <li>Look for any recent hires in engineering or product that signal roadmap focus</li>
+      <li>Find Armin Moradi's recent LinkedIn posts — he telegraphs strategy publicly</li>
+      <li>Check if Qashio has posted any job descriptions for Product roles — read the JD carefully</li>
+      <li>Look at the Dublin team — how many people, what roles?</li>
+      <li>Check Jonathan Lau's background for technical depth signals</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ───────── TALKING POINTS ───────── -->
+<section id="talking">
+  <h2><span class="tag tag-blue">Prep</span>Talking Points for Tomorrow's Meeting</h2>
+  <p class="section-sub">Conversation starters, smart questions, and how to position yourself for the VP of Product role. These are designed to show strategic thinking, not just product execution.</p>
+
+  <h3 style="color:var(--strong); margin-bottom:1rem; font-size:1rem;">🎯 Opening — Establish Strategic Credibility</h3>
+
+  <div class="tp-card">
+    <h4>On the Loyalty Moat</h4>
+    <p>Show you've done your homework on their core differentiator.</p>
+    <div class="quote">"What strikes me about Qashio is that you've built something no competitor has — a proprietary loyalty engine with airline and hotel partnerships. Alaan raised $48M without it. Pluto's pivoting to embedded finance without it. The question I keep coming back to is: are you fully monetising that moat, or is it still primarily a customer acquisition tool?"</div>
+  </div>
+
+  <div class="tp-card green">
+    <h4>On the European License</h4>
+    <p>Signal that you see the European strategy as a product problem, not just a legal one.</p>
+    <div class="quote" style="color: var(--accent2);">"The Irish EMI license is underappreciated. It's not just a regulatory checkbox — it's a distribution gateway to 27 countries and a geopolitical hedge against MENA instability. My instinct is there's a large product opportunity in serving GCC companies with European subsidiaries. Has that been explored as a segment?"</div>
+  </div>
+
+  <div class="tp-card yellow">
+    <h4>On Saudi Arabia</h4>
+    <p>Demonstrate market urgency awareness.</p>
+    <div class="quote" style="color: var(--accent3);">"I'd love to understand the Saudi go-to-market timeline. The window of first-mover advantage feels like 6–9 months before Alaan's $48M fuels a KSA push. Is the constraint regulatory, product readiness, or team capacity? Because that changes the product priority completely."</div>
+  </div>
+
+  <div class="tp-card" style="border-color: var(--accent5);">
+    <h4>On the Current Product Team</h4>
+    <p>Probe the execution vs strategy gap diplomatically.</p>
+    <div class="quote" style="color: var(--accent5);">"You mentioned the Head of Product is execution-focused — which makes sense given the growth pace. Where I'd see a VP of Product adding the most value is at the intersection of strategy and execution: deciding which markets to prioritise, which product bets to make, and then making sure the team can actually deliver them. Is that the gap you're trying to fill?"</div>
+  </div>
+
+  <br/>
+  <h3 style="color:var(--strong); margin-bottom:1rem; font-size:1rem;">💡 Pivot Ideas to Drop in Conversation</h3>
+
+  <div class="card-grid card-grid-2">
+    <div class="tp-card" style="border-color: var(--accent2);">
+      <h4>Plant: Loyalty-as-a-Service</h4>
+      <div class="quote" style="color: var(--accent2);">"Has anyone explored white-labelling the loyalty engine? If Qashio's biggest moat is the airline partnership network, selling that as infrastructure to banks — a 'Loyalty-as-a-Service' model — could create a recurring SaaS revenue stream completely separate from card volume. The data suggests several MENA banks would pay $2–5M ARR to offer Emirates miles on their own SME cards without building the partnerships themselves."</div>
+    </div>
+    <div class="tp-card" style="border-color: var(--accent3);">
+      <h4>Plant: Corporate Travel SuperApp</h4>
+      <div class="quote" style="color: var(--accent3);">"Your second product — corporate travel — feels like it could be the Trojan horse. Most companies buying a corporate travel tool are already buying expense management. If you bundle them with the loyalty hook as a closed loop — book with Qashio, spend with Qashio, earn Qashio points — the switching cost becomes massive. Has the team mapped out what 'Corporate Travel SuperApp' could look like?"</div>
+    </div>
+  </div>
+
+  <br/>
+  <h3 style="color:var(--strong); margin-bottom:1rem; font-size:1rem;">❓ Smart Questions to Ask</h3>
+
+  <div class="card-grid card-grid-2">
+    <div class="card">
+      <h3>Strategic Questions</h3>
+      <ul>
+        <li>"What's the single biggest product bet you're making in the next 12 months?"</li>
+        <li>"Between MENA expansion and European depth — which has higher priority for the next 18 months?"</li>
+        <li>"When you say 'neobanking licenses' — is that a 12-month plan or a 3-year plan?"</li>
+        <li>"What's the one thing Alaan does that worries you most?"</li>
+        <li>"Is the loyalty program a moat you're actively defending, or is it assumed?"</li>
+        <li>"What does the Series B story look like — which metrics matter to the investors you're targeting?"</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Role-Clarifying Questions</h3>
+      <ul>
+        <li>"Is this VP of Product role primarily a MENA role, European role, or genuinely global?"</li>
+        <li>"How does the VP of Product interface with the CEO and board on strategy?"</li>
+        <li>"What does success look like for this person in the first 6 months?"</li>
+        <li>"Are there plans to grow the product team, or is it about getting more from the current team?"</li>
+        <li>"What's the one thing that would make you say this hire was a mistake at month 12?"</li>
+        <li>"Who has the product roadmap decision authority today?"</li>
+      </ul>
+    </div>
+  </div>
+
+  <br/>
+  <div class="alert alert-green">
+    <strong>Your Positioning in One Sentence:</strong> "I'm a VP of Product who thinks in market strategy, not just feature roadmaps — and I want to help Qashio turn a loyalty moat and a European license into the category-defining fintech for the MENA-Europe corridor."
+  </div>
+
+  <br/>
+  <div class="alert alert-blue">
+    <strong>The Asymmetry in Your Favour:</strong> The VP of Growth wants to see if you're strategic enough to be a VP of Product who can work with the CEO and board. Most candidates will come with their portfolio and execution stories. You should come with a point of view on <em>where Qashio should go</em> — use this document as your preparation. Don't recite it; internalise it and make it your own.
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<footer>
+  <p>Compiled May 2026 · Research sources: Wamda, FinTech Global, TechCrunch, Zawya, Mubasher, DGN Gate, Arab Founders, Fast Company ME, Dealroom, Crunchbase, Tracxn, IMARC, Fintech Saudi, World Bank MENA Economic Monitor</p>
+  <p style="margin-top:0.5rem; opacity:0.5;">Confidential — prepared for personal meeting preparation only</p>
+</footer>
+
+</body>
+</html>
