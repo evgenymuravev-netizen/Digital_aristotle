@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stitch — Strategic Pivot Brief · May 2026</title>
+  <style>
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --surface2: #181c24;
+      --border: #1e2330;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --accent3: #06b6d4;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --subtle: #475569;
+      --tag-bg: #1e2a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,12,16,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 52px;
+      overflow-x: auto;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 0 14px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color .2s, border-color .2s;
+    }
+    nav a:hover { color: var(--text); border-color: var(--accent); }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text) !important;
+      border: none !important;
+      margin-right: 12px;
+      letter-spacing: 0;
+      text-transform: none !important;
+    }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0d1117 0%, #0f1623 50%, #0a0c10 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 72px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(6,182,212,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 620px;
+      margin-bottom: 36px;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--subtle); }
+    .hero-meta-value { font-size: 14px; font-weight: 600; color: var(--text); }
+
+    /* ── ALERT BANNER ── */
+    .alert-banner {
+      background: linear-gradient(90deg, rgba(245,158,11,0.12), rgba(239,68,68,0.08));
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin: 32px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .alert-text { font-size: 13.5px; color: var(--text); }
+    .alert-text strong { color: var(--amber); }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 60px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .section-number {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 3px 10px;
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 99px;
+    }
+    h2 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    h4 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    p { color: var(--muted); margin-bottom: 12px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color .2s, transform .2s;
+    }
+    .card:hover { border-color: rgba(99,102,241,0.35); transform: translateY(-2px); }
+    .card-grid { display: grid; gap: 16px; }
+    .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+    /* ── STAT CARDS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .stat-value.green { color: var(--green); }
+    .stat-value.accent { color: var(--accent); }
+    .stat-value.cyan { color: var(--accent3); }
+    .stat-value.amber { color: var(--amber); }
+    .stat-label { font-size: 11.5px; color: var(--subtle); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ── STRATEGY CARDS ── */
+    .strategy-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: all .25s;
+    }
+    .strategy-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 14px 14px 0 0;
+    }
+    .strategy-card.tier-1::before { background: linear-gradient(90deg, var(--green), var(--accent3)); }
+    .strategy-card.tier-2::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .strategy-card.tier-3::before { background: linear-gradient(90deg, var(--amber), var(--red)); }
+    .strategy-card:hover { border-color: rgba(99,102,241,0.4); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+    .strategy-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .tier-1 .strategy-num { color: var(--green); }
+    .tier-2 .strategy-num { color: var(--accent); }
+    .tier-3 .strategy-num { color: var(--amber); }
+    .strategy-card h3 { font-size: 18px; margin-bottom: 10px; }
+    .strategy-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    .tag-green { background: rgba(16,185,129,0.15); color: var(--green); }
+    .tag-blue { background: rgba(99,102,241,0.15); color: var(--accent); }
+    .tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent3); }
+    .tag-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .tag-red { background: rgba(239,68,68,0.15); color: var(--red); }
+    .tag-purple { background: rgba(139,92,246,0.15); color: var(--accent2); }
+    .strategy-why {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 16px;
+      border-left: 3px solid;
+    }
+    .tier-1 .strategy-why { border-color: var(--green); }
+    .tier-2 .strategy-why { border-color: var(--accent); }
+    .tier-3 .strategy-why { border-color: var(--amber); }
+    .strategy-why p { font-size: 13px; color: var(--muted); margin-bottom: 0; }
+    .strategy-funding {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .strategy-funding strong { color: var(--text); }
+
+    /* ── FUNDING TABLE ── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px; top: 6px; bottom: 6px;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: var(--bg);
+    }
+    .timeline-dot.green { border-color: var(--green); }
+    .timeline-dot.cyan { border-color: var(--accent3); }
+    .timeline-date { font-size: 11.5px; color: var(--subtle); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .timeline-content h3 { font-size: 16px; }
+    .timeline-content p { font-size: 13.5px; }
+
+    /* ── COMPETITOR TABLE ── */
+    .comp-table { width: 100%; border-collapse: collapse; }
+    .comp-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .comp-table td {
+      padding: 12px 14px;
+      font-size: 13.5px;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(30,35,48,0.6);
+      vertical-align: top;
+    }
+    .comp-table td:first-child { font-weight: 600; color: var(--text); }
+    .comp-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .comp-threat {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .threat-low { background: var(--green); }
+    .threat-med { background: var(--amber); }
+    .threat-high { background: var(--red); }
+
+    /* ── QUOTE BLOCK ── */
+    .quote-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 20px 24px;
+      margin: 20px 0;
+      position: relative;
+    }
+    .quote-block::before {
+      content: '"';
+      position: absolute;
+      top: -8px; left: 16px;
+      font-size: 48px;
+      color: rgba(99,102,241,0.25);
+      line-height: 1;
+      font-family: Georgia, serif;
+    }
+    .quote-text { font-size: 15px; font-style: italic; color: var(--text); margin-bottom: 8px; }
+    .quote-attr { font-size: 12px; color: var(--subtle); }
+
+    /* ── PERSON CARD ── */
+    .person-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .person-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .person-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .person-title { font-size: 12.5px; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+    .person-bio { font-size: 13px; color: var(--muted); }
+
+    /* ── RISK / GEOPOLITICS ── */
+    .risk-item {
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .risk-icon { font-size: 22px; flex-shrink: 0; }
+    .risk-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .risk-desc { font-size: 13px; color: var(--muted); }
+    .risk-level {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-left: 8px;
+    }
+    .risk-level.high { background: rgba(239,68,68,0.15); color: var(--red); }
+    .risk-level.med { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .risk-level.low { background: rgba(16,185,129,0.15); color: var(--green); }
+    .risk-level.opp { background: rgba(99,102,241,0.15); color: var(--accent); }
+
+    /* ── QUESTIONS ── */
+    .question-item {
+      display: flex;
+      gap: 16px;
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .question-num {
+      width: 28px; height: 28px;
+      background: rgba(99,102,241,0.15);
+      color: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .question-text { font-size: 14px; color: var(--text); font-weight: 600; margin-bottom: 4px; }
+    .question-why { font-size: 13px; color: var(--muted); }
+
+    /* ── MARKET DATA ── */
+    .market-bar-wrap { margin-bottom: 14px; }
+    .market-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .market-bar-label span:last-child { color: var(--text); font-weight: 600; }
+    .market-bar-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .market-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent3));
+    }
+
+    /* ── CUSTOMER GRID ── */
+    .customer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .customer-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .customer-desc { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+    .customer-quote { font-size: 13px; font-style: italic; color: var(--accent3); border-left: 2px solid var(--accent3); padding-left: 10px; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      color: var(--subtle);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── UTILS ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+    ul.checklist { list-style: none; }
+    ul.checklist li {
+      padding: 7px 0;
+      padding-left: 22px;
+      position: relative;
+      font-size: 13.5px;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(30,35,48,0.5);
+    }
+    ul.checklist li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge-a16z { background: rgba(99,102,241,0.18); color: var(--accent); }
+    .badge-new { background: rgba(16,185,129,0.18); color: var(--green); }
+    .badge-watch { background: rgba(245,158,11,0.18); color: var(--amber); }
+    .badge-risk { background: rgba(239,68,68,0.18); color: var(--red); }
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+    .text-green { color: var(--green); }
+    .text-accent { color: var(--accent); }
+    .text-cyan { color: var(--accent3); }
+    .text-amber { color: var(--amber); }
+    .text-muted { color: var(--muted); }
+    .mt-24 { margin-top: 24px; }
+    .mt-16 { margin-top: 16px; }
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.05));
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════ NAV ════════════════════════════════ -->
+<nav>
+  <a href="#" class="nav-logo">Stitch · Strategic Brief</a>
+  <a href="#overview">Overview</a>
+  <a href="#team">Team</a>
+  <a href="#funding">Funding</a>
+  <a href="#market">Market</a>
+  <a href="#competitors">Competitors</a>
+  <a href="#geopolitics">Geopolitics</a>
+  <a href="#pivots">Strategic Pivots</a>
+  <a href="#questions">Questions</a>
+</nav>
+
+<!-- ════════════════════════════════ HERO ════════════════════════════════ -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Strategic Brief · Confidential · May 22 2026</div>
+    <h1>Stitch — <span>7 Pivots</span> to<br/>Unlock the Next Round</h1>
+    <p class="hero-sub">
+      A deep-research brief for your meeting with Mohamed Oueida, CEO of Stitch.
+      Compiled from 170+ searches across funding data, competitor intelligence,
+      founder interviews, market reports, and geopolitical context.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Total Raised</span>
+        <span class="hero-meta-value">$35M ($25M Series A, May 2026)</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Lead Investor</span>
+        <span class="hero-meta-value">Andreessen Horowitz (a16z) — first-ever GCC deal</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Platform Volume</span>
+        <span class="hero-meta-value">$5B+ transacted (last 6 months)</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-label">Revenue Growth</span>
+        <span class="hero-meta-value">20× YoY in 2025</span>
+      </div>
+    </div>
+
+    <div class="alert-banner" style="margin-top:36px;">
+      <span class="alert-icon">⚡</span>
+      <div class="alert-text">
+        <strong>Timing context:</strong> This meeting is happening 7 days after Stitch's Series A announcement —
+        Mohamed is in full momentum mode. a16z's entry into GCC is the biggest fintech infrastructure story
+        in the region this year. He will be bullish, visionary, and thinking about what the next 18-month narrative looks like.
+        This is the right moment to discuss partnership, distribution, and strategic alignment.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ 1. OVERVIEW ════════════════════════════════ -->
+<section id="overview">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2>Company Overview</h2>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value green">$5B+</div>
+        <div class="stat-label">Transacted (6 months)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value accent">20×</div>
+        <div class="stat-label">Revenue growth 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value cyan">10×</div>
+        <div class="stat-label">Customer growth 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value amber">~$9.5M</div>
+        <div class="stat-label">Estimated ARR</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:#e2e8f0">90 days</div>
+        <div class="stat-label">Launch to live (vs. 12 months)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:#e2e8f0">~32</div>
+        <div class="stat-label">Team size</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3>What Stitch Is</h3>
+        <p>
+          Stitch is an <strong style="color:var(--text)">operating system for modern financial institutions</strong> —
+          a cloud-native, API-first platform that replaces fragmented, decades-old core banking infrastructure.
+          The tagline: <em>"The operating system every bank wishes it had built 20 years ago."</em>
+        </p>
+        <p>
+          Founded in Riyadh, Saudi Arabia in 2022 by Mohamed Oueida, Stitch provides a single modular
+          stack that lets banks, fintechs, and non-financial companies launch financial products 80% faster
+          than legacy systems — going live in under 90 days.
+        </p>
+        <h4 style="margin-top:20px;">Product Modules</h4>
+        <ul class="checklist">
+          <li><strong style="color:var(--text)">Lending</strong> — Origination, underwriting, disbursement, servicing, collections; Islamic murabaha-compatible</li>
+          <li><strong style="color:var(--text)">Cards</strong> — Prepaid, debit, credit card programs (physical + virtual)</li>
+          <li><strong style="color:var(--text)">Wallets</strong> — P2P transfers, bill payments, multi-currency</li>
+          <li><strong style="color:var(--text)">Deposits</strong> — Savings, term deposits, demand deposit accounts</li>
+          <li><strong style="color:var(--text)">Payments</strong> — Unified switch across cards, bank transfers, wallets</li>
+          <li><strong style="color:var(--text)">Ledgers</strong> — Double-entry, multi-currency, real-time, programmable</li>
+          <li><strong style="color:var(--text)">BNPL Software</strong> — Infrastructure for institutions to launch their own BNPL</li>
+        </ul>
+      </div>
+      <div>
+        <h3>The Core Thesis</h3>
+        <div class="quote-block">
+          <p class="quote-text">Financial institutions run on fragmented legacy infrastructure, and AI on top of broken infrastructure is a dead end — which is why Stitch was built to fix that.</p>
+          <p class="quote-attr">— Mohamed Oueida, Founder & CEO</p>
+        </div>
+        <div class="quote-block" style="border-left-color:var(--accent3);margin-top:16px;">
+          <p class="quote-text">The Gulf is a rare greenfield for core replacements. What Stitch is building — a modern, unified system of record — is what makes everything else possible.</p>
+          <p class="quote-attr">— James da Costa, General Partner, Andreessen Horowitz</p>
+        </div>
+        <div class="highlight-box" style="margin-top:20px;">
+          <h4>Business Model</h4>
+          <p>SaaS + API pricing — <strong style="color:var(--green)">no per-transaction fees</strong>, predictable expansion-friendly structures. Customers can adopt modules independently — no big-bang core replacement required.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:36px;">Live Customers</h3>
+    <div class="card-grid card-grid-2 mt-16">
+      <div class="customer-card">
+        <div class="customer-name">LuLu Exchange</div>
+        <div class="customer-desc">UAE exchange house · 140+ branches · GCC digital remittances</div>
+        <div class="customer-quote">Used Stitch to open digital remittance corridors across GCC</div>
+      </div>
+      <div class="customer-card">
+        <div class="customer-name">Foodics</div>
+        <div class="customer-desc">Saudi POS + fintech platform · $13B GMV in 2025 · SAMA-licensed</div>
+        <div class="customer-quote">Embedded payments and lending on Stitch infrastructure</div>
+      </div>
+      <div class="customer-card">
+        <div class="customer-name">Noqodi</div>
+        <div class="customer-desc">UAE digital wallet · CBUAE-regulated · owned by emaratech / ICD</div>
+        <div class="customer-quote">Powering wallet infrastructure and payment rails</div>
+      </div>
+      <div class="customer-card">
+        <div class="customer-name">Raya Financing</div>
+        <div class="customer-desc">Lending arm of Hyundai & Peugeot in the region</div>
+        <div class="customer-quote">"Cut loan product launch times by months"</div>
+      </div>
+      <div class="customer-card">
+        <div class="customer-name">Peko</div>
+        <div class="customer-desc">Cards program · global deployment</div>
+        <div class="customer-quote">"Tech was beyond what the market had to offer. Geography isn't the limitation."</div>
+      </div>
+      <div class="customer-card">
+        <div class="customer-name">Muhlah</div>
+        <div class="customer-desc">Digital lending · KSA</div>
+        <div class="customer-quote">"Helped accelerate Muhlah's digital lending journey in under a month."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 2. TEAM ════════════════════════════════ -->
+<section id="team">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2>Founders & Key People</h2>
+    </div>
+
+    <div class="card-grid card-grid-2">
+      <div class="person-card">
+        <div class="person-avatar">MO</div>
+        <div>
+          <div class="person-name">Mohamed Oueida</div>
+          <div class="person-title">Founder & CEO</div>
+          <div class="person-bio">
+            Founded Stitch in 2022 in Riyadh. LinkedIn: linkedin.com/in/mohamedoueida · X: @MoOueida.
+            Deep understanding of both technology and GCC regulatory landscape per a16z.
+            Vision: reinvent how financial and non-financial institutions bring banking
+            and payment products to market.
+          </div>
+        </div>
+      </div>
+      <div class="person-card">
+        <div class="person-avatar" style="background: linear-gradient(135deg,#06b6d4,#6366f1)">SM</div>
+        <div>
+          <div class="person-name">Shehan Mohamed</div>
+          <div class="person-title">Senior Executive</div>
+          <div class="person-bio">
+            Prominent in company operations and product. Background in financial infrastructure.
+            Part of the founding team that has scaled Stitch from seed to Series A in 24 months.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px;">Strategic Advisors & Angels</h3>
+    <div class="card-grid card-grid-2 mt-16">
+      <div class="person-card">
+        <div class="person-avatar" style="background: linear-gradient(135deg,#10b981,#06b6d4)">JG</div>
+        <div>
+          <div class="person-name">Jason Gardner</div>
+          <div class="person-title">Angel Investor · Founder of Marqeta (NASDAQ: MQ)</div>
+          <div class="person-bio">
+            Participated in Stitch's seed round. Marqeta is the global leader in card issuing
+            infrastructure, processing $230B+ annually. Gardner's backing validates Stitch's
+            card infrastructure positioning at the highest level.
+          </div>
+        </div>
+      </div>
+      <div class="person-card">
+        <div class="person-avatar" style="background: linear-gradient(135deg,#f59e0b,#ef4444)">AA</div>
+        <div>
+          <div class="person-name">Abdulmalik AlSheikh</div>
+          <div class="person-title">Angel Investor · Founder of mada & Sadad</div>
+          <div class="person-bio">
+            <strong style="color:var(--amber)">Stitch's most powerful connection.</strong> AlSheikh personally
+            established mada (Saudi Arabia's national debit network) and Sadad (national bill payment network) —
+            the backbone of Saudi's entire payment infrastructure. His endorsement signals deep trust from
+            the Saudi financial establishment.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px;">Team Pedigree</h3>
+    <p>Stitch has recruited talent from organizations that built the world's most ambitious payment systems:</p>
+    <div class="card-grid card-grid-3 mt-16">
+      <div class="card">
+        <h3>FIS</h3>
+        <p>World's largest banking technology company — $14B+ revenue. Stitch has engineers who know enterprise banking infrastructure from the inside.</p>
+      </div>
+      <div class="card">
+        <h3>Geidea</h3>
+        <p>Saudi Arabia's #1 payment acceptance company — 75% market share, 700,000+ terminals. Stitch has deep Saudi payments DNA.</p>
+      </div>
+      <div class="card">
+        <h3>NPCI India</h3>
+        <p>Built UPI — India's national payment infrastructure processing 15B+ transactions/month. This is the pedigree that built the world's most successful real-time payment system.</p>
+      </div>
+      <div class="card">
+        <h3>Rain Financial</h3>
+        <p>MENA's leading crypto exchange. Modern fintech regulatory navigation in GCC markets.</p>
+      </div>
+      <div class="card">
+        <h3>Al Rajhi Bank</h3>
+        <p>Saudi Arabia's largest Islamic bank — $150B+ in assets. Deep Islamic finance product knowledge embedded in the team.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px;">Key Investor Voices</h3>
+    <div class="quote-block mt-16">
+      <p class="quote-text">Financial institutions are sitting on decades of infrastructure debt, and that debt is now the single biggest obstacle to AI adoption.</p>
+      <p class="quote-attr">— Alex Rampell, General Partner, Andreessen Horowitz (a16z)</p>
+    </div>
+    <div class="quote-block">
+      <p class="quote-text">[Our] investment in Stitch is driven by our commitment to supporting innovative Saudi-based startups. Stitch has the potential to play a significant role in developing a more capable financial ecosystem in the Middle East and around the world.</p>
+      <p class="quote-attr">— Nora Alsarhan, Deputy CEO, Saudi Venture Capital (SVC) — a government-backed fund</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 3. FUNDING ════════════════════════════════ -->
+<section id="funding">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2>Funding History & Investor Map</h2>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot green"></div>
+            <div class="timeline-date">May 14, 2026</div>
+            <div class="timeline-content">
+              <h3>Series A — $25M <span class="badge badge-a16z">a16z First GCC Deal</span></h3>
+              <p>Led by Andreessen Horowitz (Alex Rampell + James da Costa). Existing investors re-upped: Arbor Ventures, COTU Ventures, Raed Ventures, SVC. Use of funds: product acceleration, GCC deepening, MENA expansion, global GTM, new offices in Bahrain and UAE.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot cyan"></div>
+            <div class="timeline-date">May 2025</div>
+            <div class="timeline-content">
+              <h3>Seed Round — $10M</h3>
+              <p>Led by Arbor Ventures (Singapore, ~$180M fund), COTU Ventures (Dubai, $54M fund), Raed Ventures (Riyadh), SVC (Saudi government-backed). Angels: Jason Gardner (Marqeta founder), Abdulmalik AlSheikh (mada/Sadad founder). Regional family offices also participated.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">2022</div>
+            <div class="timeline-content">
+              <h3>Founded in Riyadh, Saudi Arabia</h3>
+              <p>Mohamed Oueida starts building Stitch with the vision of replacing fragmented banking infrastructure with a cloud-native OS for financial institutions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h4>Investor Profiles</h4>
+        <div class="card" style="margin-bottom:12px;">
+          <h3>Andreessen Horowitz (a16z) <span class="badge badge-new">Lead · Series A</span></h3>
+          <p>$90B+ AUM. First-ever GCC investment. Partners Alex Rampell (payments expertise — previously founder of TrialPay, acquired by Visa) and James da Costa (fintech infrastructure). Their public essay on Stitch lays out a clear infrastructure modernization thesis.</p>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <h3>Raed Ventures <span class="badge badge-watch">Also Invested in Tabby</span></h3>
+          <p>Riyadh-based. 55+ portfolio companies, 13+ fintech investments. Key portfolio: Tabby, Swvl, Tweeq. Raed is the <strong style="color:var(--amber)">common investor bridge between Tabby and Stitch</strong> — almost certainly the relationship that created this meeting.</p>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <h3>SVC (Saudi Venture Capital)</h3>
+          <p>Government-backed. Manages Saudi government's venture capital mandate. SVC's backing = implicit Saudi government alignment with Stitch as national fintech infrastructure. Critical for regulatory relationships.</p>
+        </div>
+        <div class="card">
+          <h3>Arbor Ventures</h3>
+          <p>Singapore-based, ~$180M fund, 46 portfolio companies. Fintech-focused across Asia and Middle East. Also an investor in Tabby's Series E. Another bridge between Tabby and Stitch ecosystems.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 4. MARKET ════════════════════════════════ -->
+<section id="market">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2>Market Context & Opportunity</h2>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value green">$7.3B</div>
+        <div class="stat-label">GCC Fintech Market 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value accent">$26.8B</div>
+        <div class="stat-label">GCC Fintech 2034 (proj.)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value cyan">$47.6B</div>
+        <div class="stat-label">GCC Digital Banking 2032</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value amber">$131.5B</div>
+        <div class="stat-label">GCC Remittances 2023</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:#e2e8f0">79%</div>
+        <div class="stat-label">Saudi cashless rate (was 28% in 2019)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:#e2e8f0">525</div>
+        <div class="stat-label">Saudi fintech target by 2030</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3>Saudi Arabia: The Greenfield</h3>
+        <p>Saudi Arabia is planning to license <strong style="color:var(--text)">hundreds of new financial institutions</strong> over the next five years under Vision 2030. These institutions need core banking software from scratch — they have no legacy to migrate from.</p>
+        <div class="mt-16">
+          <div class="market-bar-wrap">
+            <div class="market-bar-label"><span>Vision 2030 Fintech Target (companies)</span><span>526</span></div>
+            <div class="market-bar-track"><div class="market-bar-fill" style="width:43%"></div></div>
+          </div>
+          <div class="market-bar-wrap">
+            <div class="market-bar-label"><span>Achieved by 2024</span><span>226+</span></div>
+            <div class="market-bar-track"><div class="market-bar-fill" style="width:43%;background:linear-gradient(90deg,var(--green),var(--accent3))"></div></div>
+          </div>
+          <div class="market-bar-wrap">
+            <div class="market-bar-label"><span>Cashless transactions target (hit 2 years early)</span><span>79%</span></div>
+            <div class="market-bar-track"><div class="market-bar-fill" style="width:79%;background:linear-gradient(90deg,var(--green),var(--green))"></div></div>
+          </div>
+          <div class="market-bar-wrap">
+            <div class="market-bar-label"><span>Saudi legacy banks affected by infrastructure debt</span><span>55%+</span></div>
+            <div class="market-bar-track"><div class="market-bar-fill" style="width:55%;background:linear-gradient(90deg,var(--amber),var(--red))"></div></div>
+          </div>
+        </div>
+        <h4 style="margin-top:24px;">New Saudi Digital Banks (2025)</h4>
+        <ul class="checklist">
+          <li><strong style="color:var(--text)">STC Bank</strong> — Launched from STC Pay; named "Best Digital Bank in Saudi Arabia" Jan 2026</li>
+          <li><strong style="color:var(--text)">D360 Bank</strong> — Launched Dec 2024; 1M+ customers; targeting Tadawul IPO in 4 years</li>
+          <li><strong style="color:var(--text)">Vision Bank</strong> — Launched Sept 2025; fresh infrastructure requirements</li>
+        </ul>
+      </div>
+      <div>
+        <h3>UAE & Broader MENA</h3>
+        <p>UAE has a dual-hub framework (DIFC/DFSA and ADGM/FSRA) with new CBUAE law effective September 2025. Open Finance regulation effective July 2025 requires the big 8 UAE banks to open APIs.</p>
+        <h4 style="margin-top:20px;">UAE Digital Banks</h4>
+        <ul class="checklist">
+          <li><strong style="color:var(--text)">Wio Bank</strong> — 250K retail, 120K business clients; planning payments spinout 2026</li>
+          <li><strong style="color:var(--text)">Zand</strong> — First fully licensed UAE digital bank; expanding Gulf + Africa</li>
+          <li><strong style="color:var(--text)">Liv</strong> — 500K+ users; added crypto trading March 2025</li>
+          <li><strong style="color:var(--text)">Mal</strong> — AI-native Islamic bank; $230M raised Jan 2026</li>
+        </ul>
+        <h4 style="margin-top:20px;">Open Banking Milestone</h4>
+        <div class="card mt-16">
+          <h3 class="text-green">Lean Technologies: First SAMA Open Banking License</h3>
+          <p>March 2026 — Saudi Arabia's first open banking license issued to Lean Technologies ($67.5M Series B, General Catalyst). 1M+ bank accounts connected. This opens the door for infrastructure players like Stitch to build on top of open banking rails.</p>
+        </div>
+        <h4 style="margin-top:24px;">Funding Environment (2026)</h4>
+        <p>Q1 2026 MENA startup funding fell 37% YoY amid geopolitical tensions — making Stitch's $25M raise more notable as a vote of confidence. Investors are shifting to <strong style="color:var(--text)">profitable growth, infrastructure, and AI-enabling platforms</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 5. COMPETITORS ════════════════════════════════ -->
+<section id="competitors">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">05</span>
+      <h2>Competitive Landscape</h2>
+    </div>
+
+    <h3>Core Banking Infrastructure — Global</h3>
+    <p style="margin-bottom:20px;">Stitch's most direct competition for enterprise banking OS contracts in GCC.</p>
+    <div style="overflow-x:auto;">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>HQ</th>
+            <th>Positioning</th>
+            <th>Stitch Advantage</th>
+            <th>Threat</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Temenos</td>
+            <td>Switzerland</td>
+            <td>Global leader, 3,000+ bank clients, 20× Gartner #1</td>
+            <td>Stitch: 90-day launch vs. years; no per-transaction fees; AI-native</td>
+            <td><span class="comp-threat threat-high"></span>High</td>
+          </tr>
+          <tr>
+            <td>Mambu</td>
+            <td>Germany</td>
+            <td>Cloud-native, good for neobanks, 250+ clients</td>
+            <td>Stitch: GCC-native, Islamic finance, faster GTM in MENA</td>
+            <td><span class="comp-threat threat-high"></span>High</td>
+          </tr>
+          <tr>
+            <td>Thought Machine</td>
+            <td>UK</td>
+            <td>Modern "Vault" core, Standard Chartered partnership</td>
+            <td>Stitch: Lower setup cost, stronger MENA regulatory knowledge</td>
+            <td><span class="comp-threat threat-med"></span>Med</td>
+          </tr>
+          <tr>
+            <td>Oracle FLEXCUBE</td>
+            <td>USA</td>
+            <td>Tier-1 bank deployments, 600+ installations</td>
+            <td>Stitch: Cloud-native, modular; FLEXCUBE = expensive monolith</td>
+            <td><span class="comp-threat threat-med"></span>Med</td>
+          </tr>
+          <tr>
+            <td>Finastra</td>
+            <td>UK</td>
+            <td>Broad product suite, $1.9B revenue</td>
+            <td>Stitch: Not legacy architecture, AI-ready from day one</td>
+            <td><span class="comp-threat threat-low"></span>Low</td>
+          </tr>
+          <tr>
+            <td>Finacle (Infosys)</td>
+            <td>India</td>
+            <td>Large bank deployments, emerging market experience</td>
+            <td>Stitch: True cloud-native, modern API-first design</td>
+            <td><span class="comp-threat threat-low"></span>Low</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>BaaS / Embedded Finance — MENA Region</h3>
+    <div style="overflow-x:auto;margin-top:20px;">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>HQ</th>
+            <th>Funding</th>
+            <th>Focus</th>
+            <th>vs. Stitch</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NymCard</td>
+            <td>UAE</td>
+            <td>$33M raised</td>
+            <td>Card issuing BaaS; CBUAE Open Finance licensed</td>
+            <td>Narrower (cards only); Stitch has full stack</td>
+          </tr>
+          <tr>
+            <td>HALA</td>
+            <td>Saudi Arabia</td>
+            <td>$157M Series B (TPG + Sanabil/PIF)</td>
+            <td>Embedded finance for SMEs; 140,000 business clients; $8B+ annual volume</td>
+            <td>Competes at SME layer; Stitch targets institutional core banking</td>
+          </tr>
+          <tr>
+            <td>Lean Technologies</td>
+            <td>Saudi Arabia</td>
+            <td>$67.5M Series B (General Catalyst)</td>
+            <td>Open banking data layer; first SAMA open banking license</td>
+            <td>Complementary: Lean = data access; Stitch = what you build on it</td>
+          </tr>
+          <tr>
+            <td>Tarabut Gateway</td>
+            <td>Bahrain</td>
+            <td>Undisclosed</td>
+            <td>First + largest regulated Open Banking in MENA; 30+ bank partners</td>
+            <td>Data aggregation layer, not full core banking — complementary</td>
+          </tr>
+          <tr>
+            <td>MoneyHash</td>
+            <td>Egypt/MENA</td>
+            <td>$5.2M</td>
+            <td>Payment orchestration; 350+ connections; 40+ markets</td>
+            <td>Payment gateway layer, not infrastructure OS</td>
+          </tr>
+          <tr>
+            <td>Geidea</td>
+            <td>Saudi Arabia</td>
+            <td>Private</td>
+            <td>75% Saudi POS market share; 700,000+ terminals; expanding UAE/Egypt</td>
+            <td>Payment acceptance/acquiring layer; not core banking OS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>BNPL Landscape — UAE + KSA</h3>
+    <p style="margin-bottom:20px;">Relevant because Stitch has a BNPL infrastructure product used by banks to launch their own BNPL programs.</p>
+    <div style="overflow-x:auto;">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Users</th>
+            <th>Valuation / Funding</th>
+            <th>Markets</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tabby <span class="badge badge-watch">Your Company</span></td>
+            <td>15M</td>
+            <td>$4.5B valuation; $604M raised</td>
+            <td>KSA, UAE, Kuwait</td>
+            <td>Market leader; $378M revenue; $55M net profit FY2025; Tadawul IPO prep</td>
+          </tr>
+          <tr>
+            <td>Tamara</td>
+            <td>20M+</td>
+            <td>$1B+ valuation; $2.4B financing (Goldman/Citi/Apollo)</td>
+            <td>KSA, UAE, Kuwait</td>
+            <td>First SAMA consumer finance license; strong #2 in BNPL</td>
+          </tr>
+          <tr>
+            <td>Postpay</td>
+            <td>Undisclosed</td>
+            <td>Smaller round</td>
+            <td>UAE</td>
+            <td>ADIB partnership; smaller footprint</td>
+          </tr>
+          <tr>
+            <td>Cashew</td>
+            <td>Growing</td>
+            <td>Undisclosed</td>
+            <td>UAE/KSA</td>
+            <td>Growing challenger</td>
+          </tr>
+          <tr>
+            <td>Klarna</td>
+            <td>Global 85M+</td>
+            <td>$14.6B IPO (2025)</td>
+            <td>Entering MENA</td>
+            <td>Global BNPL giant expanding to region — watch closely</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 6. GEOPOLITICS ════════════════════════════════ -->
+<section id="geopolitics">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">06</span>
+      <h2>Geopolitical Context & Risk Map</h2>
+    </div>
+
+    <p style="margin-bottom:28px;">The region is navigating significant geopolitical turbulence. Understanding how it affects Stitch's funding narrative and customer pipeline is critical for the meeting.</p>
+
+    <div class="risk-item">
+      <span class="risk-icon">🔴</span>
+      <div>
+        <div class="risk-label">Gaza Conflict & Regional Instability <span class="risk-level high">High Impact</span></div>
+        <div class="risk-desc">
+          MENA startup funding fell 37% YoY in Q1 2026 directly correlated with heightened geopolitical risk. The West Bank economy contracted 28% in 2024. However, <strong style="color:var(--text)">GCC specifically has proven more resilient</strong> — Saudi Arabia and UAE are insulated by oil revenue, government spending, and Vision 2030 mandates. Capital is becoming more selective but continues to flow into infrastructure and B2B tools that are recession-resistant. The conflict is actually <em>accelerating</em> some digital finance adoption as businesses hedge physical risks by digitizing financial operations.
+        </div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <span class="risk-icon">🟡</span>
+      <div>
+        <div class="risk-label">Red Sea Trade Disruptions <span class="risk-level med">Medium Impact</span></div>
+        <div class="risk-desc">
+          Elevated freight costs and shipping route risks from Houthi attacks. This increases the urgency of digital trade finance and cross-border payment infrastructure — directly relevant to Stitch's remittances and payments infrastructure customers (LuLu Exchange). Supply chain disruptions are pushing companies to digitize financial supply chains faster, which is net positive for infrastructure vendors.
+        </div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <span class="risk-icon">🟡</span>
+      <div>
+        <div class="risk-label">Iran-Israel Tensions <span class="risk-level med">Medium Impact</span></div>
+        <div class="risk-desc">
+          Multinationals are reassessing GCC exposure and some Western VCs are taking a more cautious approach to MENA. However, this is creating a narrative that <strong style="color:var(--text)">local GCC-native founders and infrastructure are actually a better bet</strong> — less geopolitical risk transfer, more aligned with the local regulatory environment. a16z's decision to make their first GCC deal now (amid tensions) signals conviction, not caution. Stitch's local Saudi registration and government-backed SVC investor are competitive advantages in this environment.
+        </div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <span class="risk-icon">🟡</span>
+      <div>
+        <div class="risk-label">Iran Sanctions & Cross-Border Payment Complexity <span class="risk-level med">Medium Impact</span></div>
+        <div class="risk-desc">
+          Iran sanctions create compliance complexity for any financial infrastructure touching SWIFT or dollar-denominated flows. Stitch's infrastructure will need robust sanctions screening. However, the region's move toward local payment systems (mada, UAE NAPS, Arab Monetary Fund's Buna) is creating a new rail independent of Western sanctions pressure. This is actually a market tailwind for region-native infrastructure.
+        </div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <span class="risk-icon">🟢</span>
+      <div>
+        <div class="risk-label">Saudi Vision 2030 — Policy-Driven Boom <span class="risk-level opp">Strategic Opportunity</span></div>
+        <div class="risk-desc">
+          Vision 2030 creates government-mandated demand for fintech infrastructure that transcends market cycles. SAMA is issuing new licenses (digital banks, BNPL, open banking, consumer finance) at an unprecedented pace. Each new licensee needs core banking infrastructure. The government itself (through SVC, PIF/Sanabil) is providing anchor capital that de-risks private investment. Stitch is uniquely positioned as a Saudi-HQ company with government investor alignment.
+        </div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <span class="risk-icon">🟢</span>
+      <div>
+        <div class="risk-label">AI Transformation Pressure <span class="risk-level opp">Strategic Opportunity</span></div>
+        <div class="risk-desc">
+          55% of Gulf financial institutions miss growth opportunities due to legacy technology. With AI adoption now a board-level mandate across GCC banks, the infrastructure modernization narrative has shifted from "nice to have" to existential urgency. This is compressing the sales cycle and increasing willingness to pay — and Stitch's positioning as "AI-ready infrastructure" directly addresses the primary obstacle.
+        </div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <span class="risk-icon">🟢</span>
+      <div>
+        <div class="risk-label">GCC Remittances — Massive Underdigitized Market <span class="risk-level opp">Strategic Opportunity</span></div>
+        <div class="risk-desc">
+          GCC workers sent $131.5B in remittances in 2023 — the largest remittance source globally. Saudi expats alone sent $38B+ in 2024. Only 15% of outward remittances are digital vs. 52% global average. Stitch's customer LuLu Exchange is already tapping this. The gap between 15% and 52% represents ~$90B in potential digital remittance volume that needs modern infrastructure.
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>Bottom Line for the Meeting</h4>
+      <p>Geopolitical turbulence is creating a <strong style="color:var(--text)">flight to quality within the GCC</strong>. Investors want recession-resistant, infrastructure-layer, recurring-revenue businesses with government alignment and local regulatory expertise. Stitch ticks every single box. The timing of the a16z deal (immediately after Q1 2026 slowdown) is a deliberate signal. Present ideas that reinforce this narrative — not ideas that expand risk exposure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 7. STRATEGIC PIVOTS ════════════════════════════════ -->
+<section id="pivots">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">07</span>
+      <h2>7 Strategic Pivots to Unlock Funding</h2>
+    </div>
+
+    <p style="margin-bottom:8px;">
+      Stitch is well-positioned but is at an inflection point — having just raised its Series A,
+      the next 18 months will define whether it becomes a $500M-$1B ARR infrastructure company or stays
+      a regional niche player. These pivots are ranked by potential funding impact and feasibility.
+    </p>
+
+    <div class="alert-banner">
+      <span class="alert-icon">📊</span>
+      <div class="alert-text">
+        <strong>Tier 1 (High Impact, Feasible Now):</strong> Green border<br/>
+        <strong>Tier 2 (High Impact, 6-12 months runway needed):</strong> Purple border<br/>
+        <strong>Tier 3 (Ambitious, 12-24 months):</strong> Amber border
+      </div>
+    </div>
+
+    <!-- ── PIVOT 1 ── -->
+    <div class="strategy-card tier-1 mt-24">
+      <div class="strategy-num">Pivot 01 · Tier 1 · Highest Priority</div>
+      <h3>Become the Backbone of Saudi's New Bank Licensing Wave</h3>
+      <div>
+        <span class="strategy-tag tag-green">Vision 2030</span>
+        <span class="strategy-tag tag-cyan">Saudi-First</span>
+        <span class="strategy-tag tag-green">Greenfield</span>
+        <span class="strategy-tag tag-blue">Government Aligned</span>
+      </div>
+      <p style="margin-top:14px;">
+        Saudi Arabia is planning to license <strong style="color:var(--text)">hundreds of new financial institutions</strong> by 2030 —
+        digital banks, consumer finance companies, insurance-linked fintechs, investment platforms.
+        Every single one needs core banking infrastructure from scratch. None have legacy.
+        Stitch should create a <strong style="color:var(--text)">"New Bank Starter Kit"</strong> —
+        a pre-configured, pre-certified, SAMA-compliant core banking bundle that reduces
+        time-to-license from 12+ months to 60 days.
+      </p>
+      <div class="strategy-why">
+        <p><strong>Why this unlocks funding:</strong> This creates a <em>systematic</em> pipeline, not a project-by-project sales cycle.
+        If Stitch captures even 30% of the next 100 Saudi financial institution licenses at $500K–$2M ARR each,
+        that's a $15M–$60M ARR pipeline visible at Series B. Government programs (SVC, SAMA sandbox) become
+        a distribution channel — and SVC is already a Stitch investor. This also makes Stitch
+        the single clearest answer to "what is the infrastructure layer of Saudi Vision 2030 fintech?"</p>
+      </div>
+      <div class="strategy-funding">
+        <strong>Funding narrative:</strong> "We are the SAMA-certified default infrastructure for the next generation of Saudi financial institutions.
+        Vision 2030 mandates the demand; we fulfill the supply."
+      </div>
+    </div>
+
+    <!-- ── PIVOT 2 ── -->
+    <div class="strategy-card tier-1 mt-24">
+      <div class="strategy-num">Pivot 02 · Tier 1 · Highest Priority</div>
+      <h3>Add the AI Intelligence Layer — From "AI-Ready" to "AI-Powered"</h3>
+      <div>
+        <span class="strategy-tag tag-green">AI</span>
+        <span class="strategy-tag tag-cyan">Multiple Expansion</span>
+        <span class="strategy-tag tag-blue">ARR Uplift</span>
+        <span class="strategy-tag tag-purple">Platform Play</span>
+      </div>
+      <p style="margin-top:14px;">
+        Stitch's current positioning is "we are AI-<em>ready</em> infrastructure." That's table stakes by 2026.
+        The next phase is launching <strong style="color:var(--text)">Stitch Intelligence</strong> —
+        an embedded AI layer that sits on top of the unified data that only Stitch has:
+        real-time ledger data, transaction patterns, credit performance, payment behavior.
+        Concrete products: AI credit scoring (trained on Stitch's $5B+ transaction dataset),
+        AI fraud detection (anomaly detection on unified ledger), AI-driven collections optimization,
+        and a financial analytics dashboard for bank product managers.
+      </p>
+      <div class="strategy-why">
+        <p><strong>Why this unlocks funding:</strong> AI products command 3–5× higher ARR multiples than pure infrastructure.
+        A Stitch customer on the infrastructure alone pays $X; add Stitch Intelligence and the contract doubles.
+        More importantly, this is the narrative that gets a16z to lead the Series B — a16z is the world's
+        most vocal investor in AI infrastructure. Their first GCC bet being an AI+infrastructure story
+        is exactly what they want to take to their LPs. Jason Gardner (Marqeta angel investor)
+        would strongly validate this — Marqeta's next act is AI card controls.</p>
+      </div>
+      <div class="strategy-funding">
+        <strong>Funding narrative:</strong> "We are not just replacing legacy systems. We are turning the banking data
+        layer into a real-time AI engine. The $5B that flows through our platform every 6 months
+        becomes a proprietary training dataset that no competitor can replicate."
+      </div>
+    </div>
+
+    <!-- ── PIVOT 3 ── -->
+    <div class="strategy-card tier-1 mt-24">
+      <div class="strategy-num">Pivot 03 · Tier 1 · Near-Term Revenue</div>
+      <h3>Launch "Stitch for Remittances" — Own the $130B GCC Corridor</h3>
+      <div>
+        <span class="strategy-tag tag-green">Large TAM</span>
+        <span class="strategy-tag tag-cyan">Proven Customer</span>
+        <span class="strategy-tag tag-amber">Remittances</span>
+        <span class="strategy-tag tag-blue">Cross-Border</span>
+      </div>
+      <p style="margin-top:14px;">
+        GCC sent $131.5B in remittances in 2023. Only 15% is digital vs. 52% global average —
+        that's a ~$90B+ digitization gap. Stitch already has LuLu Exchange (140+ UAE branches)
+        as a production customer using Stitch to open digital remittance corridors.
+        This is product-market fit signaling. The strategic move: build a
+        <strong style="color:var(--text)">dedicated remittance infrastructure module</strong> that handles
+        multi-currency wallets, FX rate management, compliance/AML for cross-border flows,
+        integration with GCC instant payment systems (Saudi Arabsat, UAE NAPS, Bahrain FAWRI),
+        and corridors to South Asia (India, Pakistan, Philippines, Bangladesh) where 90%+
+        of GCC remittances flow.
+      </p>
+      <div class="strategy-why">
+        <p><strong>Why this unlocks funding:</strong> Remittance infrastructure is a well-understood,
+        large TAM category with proven global comparables (Wise, $12B market cap; Remitly, $3B market cap).
+        Stitch can own the B2B infrastructure layer for remittances in the GCC without competing
+        with consumer-facing players. LuLu Exchange as a reference customer + mada founder Abdulmalik AlSheikh
+        as an angel creates a formidable proof point. This also creates a compelling narrative
+        for sovereign wealth funds (Mubadala, QIA) who have direct interest in regional payment sovereignty.</p>
+      </div>
+      <div class="strategy-funding">
+        <strong>Funding narrative:</strong> "The GCC remittance corridor is the largest in the world.
+        We power the infrastructure behind it."
+      </div>
+    </div>
+
+    <!-- ── PIVOT 4 ── -->
+    <div class="strategy-card tier-2 mt-24">
+      <div class="strategy-num">Pivot 04 · Tier 2 · 6-12 Month Build</div>
+      <h3>Become the "Stitch for BNPL Infrastructure" — Power Banks Competing with Tabby/Tamara</h3>
+      <div>
+        <span class="strategy-tag tag-purple">BNPL</span>
+        <span class="strategy-tag tag-blue">Bank Channel</span>
+        <span class="strategy-tag tag-cyan">Regulatory Tailwind</span>
+        <span class="strategy-tag tag-amber">Watch: Conflict of Interest</span>
+      </div>
+      <p style="margin-top:14px;">
+        Saudi banks and UAE banks are under pressure to compete with Tabby and Tamara directly
+        — especially now that SAMA requires full Consumer Finance licenses (not just BNPL permits).
+        Banks have the balance sheets, customer relationships, and regulatory standing,
+        but they lack the technology. Stitch already has a BNPL software product.
+        The opportunity: white-label the full BNPL stack for Saudi Fransi, Al Ahli,
+        Riyad Bank, FAB, ADIB — turning major banks into BNPL competitors using Stitch's rails.
+      </p>
+      <div class="strategy-why">
+        <p><strong>Why this unlocks funding:</strong> Saudi's largest banks have 50M+ customers collectively.
+        Even 10% BNPL penetration at $3B GMV = significant transaction data on Stitch's infrastructure.
+        Enterprise bank contracts are also typically larger and more durable than fintech contracts.
+        a16z specifically cited "MENA bank infrastructure debt" as the core investment thesis —
+        this pivot operationalizes that bet. Tier-1 bank logos = IPO-ready ARR quality.</p>
+      </div>
+      <div class="strategy-funding">
+        <strong>⚠️ Conflict of Interest Note:</strong> If you are at Tabby, Stitch enabling banks to compete with Tabby via BNPL infrastructure is relevant intelligence.
+        However, the partnership angle is more interesting: Tabby could use Stitch's infrastructure for its own UAE expansion,
+        freeing Tabby from building custom infrastructure in new markets.
+      </div>
+    </div>
+
+    <!-- ── PIVOT 5 ── -->
+    <div class="strategy-card tier-2 mt-24">
+      <div class="strategy-num">Pivot 05 · Tier 2 · Platform Expansion</div>
+      <h3>Islamic Finance Infrastructure-as-a-Service — Own the $3.9T Global Market</h3>
+      <div>
+        <span class="strategy-tag tag-green">Blue Ocean</span>
+        <span class="strategy-tag tag-blue">Niche Dominance</span>
+        <span class="strategy-tag tag-purple">Global Angle</span>
+        <span class="strategy-tag tag-cyan">Underserved</span>
+      </div>
+      <p style="margin-top:14px;">
+        Islamic finance assets totaled $3.9 trillion in 2024 and are growing at 10%+ annually.
+        Global Islamic finance is concentrated in GCC, Malaysia, Indonesia, Pakistan, Bangladesh, Turkey,
+        and the UK. The core problem: <strong style="color:var(--text)">no cloud-native infrastructure provider
+        truly nails Islamic finance</strong>. Mambu and Thought Machine don't natively handle
+        murabaha, musharaka, ijara, sukuk structures. Legacy players like Path Solutions and
+        ICS Financial Systems are not cloud-native.
+        Stitch already supports murabaha-compatible lending. The pivot: make
+        Islamic Finance Infrastructure a first-class, fully documented product pillar with
+        dedicated Sharia compliance tooling, partnership with Sharia advisory boards,
+        and AAOIFI-aligned product design.
+      </p>
+      <div class="strategy-why">
+        <p><strong>Why this unlocks funding:</strong> This creates a unique global positioning no Western competitor can easily replicate.
+        It's a 10–15-year head start in an underserved $3.9T global market.
+        Al Rajhi Bank talent on the Stitch team + Abdulmalik AlSheikh as advisor =
+        Islamic finance credibility. This unlocks Islamic Development Bank (IsDB),
+        Jeddah-based sovereign wealth interest, and Southeast Asian Islamic finance markets
+        (BNI Syariah, Bank Muamalat Indonesia, Maybank Islamic). Global Islamic finance is
+        the pitch that gets Stitch on stage at Davos and in front of $20B+ sovereign funds.</p>
+      </div>
+      <div class="strategy-funding">
+        <strong>Funding narrative:</strong> "We are the only cloud-native infrastructure provider
+        built natively for Islamic finance. The $3.9T Islamic banking industry runs on infrastructure
+        from the 1990s. We are changing that."
+      </div>
+    </div>
+
+    <!-- ── PIVOT 6 ── -->
+    <div class="strategy-card tier-2 mt-24">
+      <div class="strategy-num">Pivot 06 · Tier 2 · Network Effects</div>
+      <h3>Build the GCC Open Finance Marketplace — Aggregator of Aggregators</h3>
+      <div>
+        <span class="strategy-tag tag-blue">Open Banking</span>
+        <span class="strategy-tag tag-cyan">Network Effects</span>
+        <span class="strategy-tag tag-green">Platform Moat</span>
+        <span class="strategy-tag tag-purple">Regulatory Tailwind</span>
+      </div>
+      <p style="margin-top:14px;">
+        Saudi Arabia just issued its first open banking license to Lean Technologies (March 2026).
+        UAE's Open Finance regulation went live July 2025. Stitch's position is unique:
+        it is the <em>destination</em> for data that open banking APIs surface.
+        The strategic move: create a <strong style="color:var(--text)">Stitch Open Finance Marketplace</strong> —
+        a pre-integrated hub where fintech builders can connect to Stitch-powered institutions
+        (as data sources) and where Stitch-powered institutions can consume services from
+        fintechs (KYC, credit scoring, AML, insurance, investment) through pre-certified APIs.
+        Think Plaid × Marqeta in one platform, GCC-native.
+      </p>
+      <div class="strategy-why">
+        <p><strong>Why this unlocks funding:</strong> Marketplaces create network effects that infrastructure-alone cannot.
+        Each new API connector makes Stitch more valuable to every existing customer.
+        This creates switching costs so high that churn becomes structurally impossible.
+        Lean Technologies (backed by General Catalyst) and Tarabut Gateway would likely
+        become partners, not competitors, further expanding the moat.
+        This is the architecture that turns Stitch from "$50M ARR company" into a potential $1B+ platform.</p>
+      </div>
+      <div class="strategy-funding">
+        <strong>Funding narrative:</strong> "We are building the AWS Marketplace of GCC financial services.
+        Every API call that flows through our platform reinforces the network effect."
+      </div>
+    </div>
+
+    <!-- ── PIVOT 7 ── -->
+    <div class="strategy-card tier-3 mt-24">
+      <div class="strategy-num">Pivot 07 · Tier 3 · Ambitious · 12-24 Months</div>
+      <h3>Go Global via the "Islamic Finance + Emerging Markets" Export Strategy</h3>
+      <div>
+        <span class="strategy-tag tag-amber">Long Horizon</span>
+        <span class="strategy-tag tag-blue">Global TAM</span>
+        <span class="strategy-tag tag-purple">Series B Narrative</span>
+        <span class="strategy-tag tag-cyan">GCC Proof → World</span>
+      </div>
+      <p style="margin-top:14px;">
+        Stitch currently operates in GCC, Egypt, Kenya, and Southeast Asia.
+        The Series B story — the one that gets Stitch to a $500M valuation —
+        is a <strong style="color:var(--text)">global emerging markets infrastructure thesis</strong>.
+        The GCC is proof of concept for the larger bet:
+        every emerging market has the same problem Stitch solves — legacy infrastructure,
+        expensive implementations, Islamic finance needs, fast-growing fintech sectors,
+        and regulators pushing for new digital banks.
+        Target markets: Indonesia (270M people, Bank Indonesia pushing digital banks,
+        world's largest Muslim-majority country), Pakistan ($20B+ remittances),
+        Bangladesh (bKash ecosystem), Turkey (Islamic finance + inflation-resistant fintech boom),
+        Nigeria (Africa's largest fintech market, 220M people).
+      </p>
+      <div class="strategy-why">
+        <p><strong>Why this unlocks funding:</strong> a16z has explicitly invested in Stitch as a global company,
+        not just a GCC play. Their public thesis essay says "servicing financial institutions worldwide."
+        The global emerging markets story, anchored by GCC traction and Islamic finance positioning,
+        is how Stitch reaches the scale needed for a $300M+ Series B or IPO on Tadawul.
+        This also aligns with Saudi Arabia's geopolitical ambition to be the financial
+        infrastructure hub for the Global South — a PIF/Mubadala-backable thesis.</p>
+      </div>
+      <div class="strategy-funding">
+        <strong>Funding narrative:</strong> "We proved the model in the GCC — the world's most demanding
+        regulatory environment for Islamic finance. Now we are exporting that infrastructure
+        to 2 billion underbanked customers across the Muslim world and emerging markets."
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:36px;">
+      <h4>Pivots Matrix — Quick Reference</h4>
+      <div style="overflow-x:auto;">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Pivot</th>
+              <th>Funding Unlock</th>
+              <th>Timeline</th>
+              <th>Key Risk</th>
+              <th>Ideal Investor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01 — Saudi New Bank Kit</td>
+              <td class="text-green">Very High</td>
+              <td>3-6 months</td>
+              <td>SAMA approval cycles</td>
+              <td>SVC, PIF, STV</td>
+            </tr>
+            <tr>
+              <td>02 — Stitch Intelligence (AI Layer)</td>
+              <td class="text-green">Very High</td>
+              <td>6-12 months</td>
+              <td>Data density needed</td>
+              <td>a16z, STV, Google</td>
+            </tr>
+            <tr>
+              <td>03 — Remittances Infrastructure</td>
+              <td class="text-green">High</td>
+              <td>6-9 months</td>
+              <td>Corridor compliance</td>
+              <td>Mubadala, QIA, Norrsken</td>
+            </tr>
+            <tr>
+              <td>04 — BNPL for Banks</td>
+              <td class="text-accent">High</td>
+              <td>6-12 months</td>
+              <td>Bank sales cycles slow</td>
+              <td>QED, STV, major banks</td>
+            </tr>
+            <tr>
+              <td>05 — Islamic Finance IaaS</td>
+              <td class="text-accent">High</td>
+              <td>9-18 months</td>
+              <td>Sharia board sourcing</td>
+              <td>IsDB, Mubadala, Jadwa</td>
+            </tr>
+            <tr>
+              <td>06 — Open Finance Marketplace</td>
+              <td class="text-accent">Very High (Series B)</td>
+              <td>12-18 months</td>
+              <td>Partner adoption</td>
+              <td>a16z, General Catalyst</td>
+            </tr>
+            <tr>
+              <td>07 — Global Emerging Markets</td>
+              <td class="text-amber">Very High (Series B/C)</td>
+              <td>18-24 months</td>
+              <td>Execution bandwidth</td>
+              <td>a16z, STV, IFC</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 8. TABBY ANGLE ════════════════════════════════ -->
+<section id="tabby-angle">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">08</span>
+      <h2>Tabby × Stitch — The Partnership Angle</h2>
+    </div>
+
+    <div class="alert-banner">
+      <span class="alert-icon">🤝</span>
+      <div class="alert-text">
+        <strong>Why this meeting likely happened:</strong> Raed Ventures is an investor in <em>both</em> Tabby and Stitch.
+        Arbor Ventures is also an investor in both. This is almost certainly a Raed-brokered
+        strategic introduction — meaning both CEOs are entering this meeting with
+        <em>some</em> hypothesis about potential alignment.
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:24px;">
+      <div>
+        <h3>Why Tabby Could Use Stitch</h3>
+        <p>As Tabby expands beyond BNPL into a full financial services platform, the infrastructure requirements multiply dramatically:</p>
+        <ul class="checklist" style="margin-top:12px;">
+          <li><strong style="color:var(--text)">Consumer Ledger</strong> — Post-SVF license, Tabby must hold customer funds in UAE. Stitch provides a regulated, auditable ledger.</li>
+          <li><strong style="color:var(--text)">Lending Module</strong> — Tabby's SAMA Consumer Finance License enables higher-ticket financing. Stitch's lending infrastructure handles origination through collections.</li>
+          <li><strong style="color:var(--text)">Card Infrastructure</strong> — Tabby Card (Visa virtual card) requires card program management. Stitch does this natively.</li>
+          <li><strong style="color:var(--text)">Tweeq Integration</strong> — Tabby acquired Tweeq (digital wallet). Stitch's wallet + deposits modules could replace or power Tweeq's infrastructure.</li>
+          <li><strong style="color:var(--text)">UAE Expansion</strong> — Building UAE infrastructure from scratch is expensive. Stitch's modular approach means Tabby can plug in specific modules vs. building custom.</li>
+          <li><strong style="color:var(--text)">IPO Readiness</strong> — Tadawul IPO requires auditable, reliable financial infrastructure. Stitch provides the single source of truth that auditors and regulators want.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Why Stitch Wants Tabby</h3>
+        <ul class="checklist" style="margin-top:12px;">
+          <li><strong style="color:var(--text)">$10B+ GMV</strong> — Tabby processing $10B+ annualized on Stitch's infrastructure is the reference that unlocks every Saudi bank deal.</li>
+          <li><strong style="color:var(--text)">IPO Anchor Story</strong> — "We power the infrastructure of Saudi Arabia's largest consumer fintech at IPO" is a Series B narrative in itself.</li>
+          <li><strong style="color:var(--text)">Data Network Effect</strong> — Tabby's 15M customers generating transaction data on Stitch's ledger would accelerate Stitch Intelligence (AI layer).</li>
+          <li><strong style="color:var(--text)">Merchant Distribution</strong> — Tabby's 40,000+ merchants are all potential leads for Stitch's embedded finance products.</li>
+          <li><strong style="color:var(--text)">Geographic Expansion</strong> — Tabby's Kuwait license, UAE operations give Stitch a reference customer across all GCC markets.</li>
+        </ul>
+        <div class="card" style="margin-top:20px;">
+          <h3 class="text-amber">Potential Tension</h3>
+          <p>Stitch's BNPL software product positions them as infrastructure for banks building BNPL programs that compete with Tabby. Mohamed may raise this. The answer: Stitch is B2B infrastructure, not consumer-facing — they empower institutions, not compete with them. The real question is whether Tabby uses Stitch as its infrastructure <em>for</em> BNPL, making this a non-issue.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px;">Tabby Quick Stats — Know Your Side of the Table</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value green">$4.5B</div>
+        <div class="stat-label">Valuation (Oct 2025 secondary)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value accent">15M</div>
+        <div class="stat-label">Customers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value cyan">$378M</div>
+        <div class="stat-label">Revenue FY2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value amber">$55M</div>
+        <div class="stat-label">Net Profit FY2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:#e2e8f0">40K+</div>
+        <div class="stat-label">Merchant Partners</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:#e2e8f0">IPO</div>
+        <div class="stat-label">Tadawul Target (HSBC / JPM / MS)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ 9. QUESTIONS ════════════════════════════════ -->
+<section id="questions">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">09</span>
+      <h2>Questions to Ask Mohamed</h2>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">1</div>
+      <div>
+        <div class="question-text">On AI: "Your thesis is that infrastructure debt is the main blocker for AI adoption — what does the AI layer look like on top of Stitch? Are you building Stitch Intelligence, or is that a partner layer?"</div>
+        <div class="question-why">Forces him to reveal product roadmap and whether there's a gap Tabby's NVIDIA AI investment could accelerate. Also signals you understand his narrative at the deepest level.</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">2</div>
+      <div>
+        <div class="question-text">On Islamic Finance depth: "You mentioned murabaha-compatible lending — how does Stitch handle musharaka and ijara structures at the ledger level? Do you have Sharia scholars embedded in product development?"</div>
+        <div class="question-why">Demonstrates you've done your homework. Islamic finance infrastructure is Stitch's biggest differentiator and greenest ocean globally. His answer reveals how serious they are about it.</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">3</div>
+      <div>
+        <div class="question-text">On competitive dynamics: "In deals where you're competing against Mambu or Thought Machine, what's the sales cycle like? Are GCC banks choosing between you, or is the market still at the stage of 'do we even modernize?'"</div>
+        <div class="question-why">Reveals the real bottleneck — is it product, sales, or market education? Informs whether the BNPL infrastructure play or the New Bank Starter Kit has more near-term traction.</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">4</div>
+      <div>
+        <div class="question-text">On the Raed / common investor angle: "You have Raed Ventures on your cap table — we do too. What was their thesis for investing in both? Did they have a specific hypothesis about how Stitch and Tabby's ecosystems might intersect?"</div>
+        <div class="question-why">Opens the door to discussing the partnership without either party showing their hand first. Raed may have explicitly brokered this meeting for a reason.</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">5</div>
+      <div>
+        <div class="question-text">On the BNPL product: "You have a BNPL software product — is that positioning you as infrastructure for banks launching their own BNPL? Where do you see that fitting into the GCC market given SAMA's full consumer finance licensing requirement?"</div>
+        <div class="question-why">Tests whether Stitch is building infrastructure that helps banks compete with Tabby, or infrastructure that Tabby could use to power its own expansion. Critical for understanding strategic alignment vs. tension.</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">6</div>
+      <div>
+        <div class="question-text">On Series B narrative: "a16z's investment thesis essay mentioned 'servicing financial institutions worldwide.' What's the next geography that validates that? Is it Indonesia, Pakistan, or Turkey?"</div>
+        <div class="question-why">Reveals the next 18-month roadmap and whether Stitch is thinking about global expansion in a way that Tabby could be a co-expansion partner (Tabby is already in KSA/UAE/Kuwait, and Stitch could follow Tabby's merchant footprint).</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">7</div>
+      <div>
+        <div class="question-text">On modular adoption: "When a company like Tabby — which has existing infrastructure — evaluates Stitch, what's the typical entry point? Is it the ledger, the lending module, or the card program management?"</div>
+        <div class="question-why">This is the question that turns the meeting from theoretical to concrete. He will either recognize this as a live sales opportunity or tell you what Tabby would need to do to become a customer. Either way it advances the relationship.</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="question-num">8</div>
+      <div>
+        <div class="question-text">On geopolitical positioning: "The Q1 2026 funding slowdown hit a lot of MENA startups hard. How has the geopolitical environment affected your pipeline, and do you see GCC-native infrastructure as being more or less attractive to global investors in this climate?"</div>
+        <div class="question-why">Gives him a chance to articulate the GCC resilience narrative. His answer reveals how sophisticated his investor narrative is — and whether he's thinking about the political economy the way a16z is.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════ SOURCES ════════════════════════════════ -->
+<section id="sources" style="padding:40px 0;">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number">10</span>
+      <h2>Sources & Research Basis</h2>
+    </div>
+    <p style="margin-bottom:20px;">This brief was compiled from 170+ web searches and source fetches conducted on May 21, 2026. Key sources:</p>
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <h4>Primary (Stitch)</h4>
+        <ul class="checklist">
+          <li>stitch.co (platform, about-us, BNPL product, newsroom)</li>
+          <li>BusinessWire — Series A announcement (May 14, 2026)</li>
+          <li>a16z.com — Investment announcement + thesis essay</li>
+          <li>Fintech Global — Seed & Series A coverage</li>
+          <li>IBS Intelligence — Both funding rounds</li>
+          <li>MENAbytes — Seed round coverage</li>
+          <li>Wamda — a16z GCC deal analysis</li>
+          <li>TechRevolt — Founder vision article</li>
+          <li>FwdStart — Strategic analysis</li>
+          <li>COTU Ventures, Arbor Ventures portfolio pages</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Market & Competitive Intelligence</h4>
+        <ul class="checklist">
+          <li>GlobeNewswire — MENA Fintech & BaaS market reports</li>
+          <li>Roland Berger — AI-Fintech GCC transformation</li>
+          <li>Saudi Vision 2030 official website</li>
+          <li>Wamda — MENA startup funding H1 2025, Q1 2026</li>
+          <li>Fintechnews UAE — Saudi digital banks</li>
+          <li>PYMNTS — GCC fintech coverage</li>
+          <li>TechCrunch — Tabby, MoneyHash, regional fintechs</li>
+          <li>Bloomberg — Tabby valuation, Gulf fintech</li>
+          <li>Gulf Business — Tabby CEO interviews</li>
+          <li>FwdStart — Tabby financial deep-dive</li>
+          <li>Clyde &amp; Co — SAMA open banking licensing</li>
+          <li>Fimple — GCC digital banking projections</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:20px; font-size:12px; color:var(--subtle);">
+      Note: LinkedIn OSINT was limited to publicly available professional information.
+      Employee profiles were identified through public press mentions and company pages only.
+      No private data was accessed or requested.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Strategic Brief · Stitch (stitch.co) · Meeting May 22, 2026</p>
+    <p style="margin-top:6px;">Research compiled May 21, 2026 · Confidential — for internal use only</p>
+  </div>
+</footer>
+
+</body>
+</html>
