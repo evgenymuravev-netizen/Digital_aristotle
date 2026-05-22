@@ -1,0 +1,187 @@
+Please generate a high-quality MP3 audio file from the script below using the OpenAI TTS API (model "tts-1-hd", voice "nova" or "onyx").
+
+Split the text into chunks of ~4000 characters each (OpenAI TTS has a 4096 character limit per request), generate each chunk as an MP3, then concatenate them into a single final MP3 file called "stitch_brief_final.mp3".
+
+Use Python with the openai library. Here is the full script:
+
+---
+
+Stitch. Strategic Meeting Brief. Prepared for May 22nd, 2026.
+
+Introduction.
+
+You are about to meet Mohamed Oueida, the founder and CEO of Stitch, a Saudi Arabian fintech company that just made history. On May 14th 2026, just one week ago, Stitch raised 25 million dollars in a Series A led by Andreessen Horowitz. That was their first-ever investment in the Gulf region. Total funding to date: 35 million dollars.
+
+Section One. What is Stitch?
+
+Stitch is an operating system for modern financial institutions. Think of it this way: most banks today run on software from the 1980s and 1990s. It is fragmented, slow, and expensive to update. Stitch replaces all of that with a single, modern, cloud-native platform.
+
+Their tagline says it best: The operating system every bank wishes it had built 20 years ago.
+
+What can a bank or fintech build with Stitch? Everything. Loans, debit and credit cards, wallets for transfers and bill payments, savings accounts, payments across all channels, and a real-time financial ledger. Each module can be adopted separately. You do not have to replace everything at once.
+
+The key stat: banks can go live in under 90 days using Stitch, compared to 9 to 12 months with traditional providers. That is 80 percent faster.
+
+Mohamed Oueida's core message, which he repeats everywhere: AI on top of broken infrastructure is a dead end, which is why Stitch was built to fix that.
+
+Section Two. The Numbers.
+
+In the six months before their Series A, Stitch processed over 5 billion dollars in transactions on their platform.
+
+In 2025 alone, customers grew 10 times, and revenue grew 20 times.
+
+Estimated annual recurring revenue is approximately 9.5 million dollars.
+
+The team has around 32 people.
+
+Their pricing model is SaaS subscription with no per-transaction fees. Predictable and transparent.
+
+Section Three. Founders and Key People.
+
+Mohamed Oueida is the Founder and CEO. He founded Stitch in Riyadh in 2022. He has deep knowledge of both fintech technology and Gulf regulations, which is exactly what their lead investor said made them decide to invest.
+
+The team comes from some of the most impressive institutions in the world. Engineers from FIS, the world's largest banking technology company. People from Geidea, which controls 75 percent of Saudi Arabia's payment terminals. Talent from the National Payments Corporation of India, the organization that built UPI, India's payment system that now processes 15 billion transactions per month. Staff from Al Rajhi Bank, Saudi Arabia's largest Islamic bank.
+
+Two angel investors stand out as extraordinary.
+
+First: Jason Gardner, the founder of Marqeta, the global card issuing infrastructure company listed on NASDAQ. His backing validates everything Stitch says about card technology.
+
+Second, and this is remarkable: Abdulmalik AlSheikh, the person who personally built mada, Saudi Arabia's national debit network, and Sadad, Saudi Arabia's national bill payment system. This man literally built the infrastructure that all of Saudi Arabia's payments run on today. And he invested personally in Stitch. That is the strongest possible endorsement from the Saudi financial establishment.
+
+Section Four. Investors and Funding.
+
+The seed round in May 2025 was 10 million dollars. Investors included Arbor Ventures from Singapore, COTU Ventures from Dubai, Raed Ventures from Riyadh, and the Saudi Venture Capital company, which is backed by the Saudi government.
+
+The Series A in May 2026 was 25 million dollars, led by Andreessen Horowitz. James da Costa from their team made a statement that is worth remembering going into this meeting: The Gulf is a rare greenfield for core replacements.
+
+What he means: unlike Europe or the United States where banks have 50 years of tangled legacy code, the Gulf's new generation of financial institutions can build on modern infrastructure from scratch. Stitch is the platform they build on.
+
+A critical detail for your meeting: Raed Ventures is an investor in both Stitch and Tabby. Arbor Ventures is also in both. This is almost certainly why this meeting was arranged. Both investors want to see if these two companies can work together.
+
+Section Five. Live Customers.
+
+Stitch has four publicly named customers as of their Series A.
+
+LuLu Exchange, one of the UAE's largest exchange houses with over 140 branches. They used Stitch to open digital remittance corridors across the Gulf.
+
+Foodics, the Saudi restaurant management platform with 13 billion dollars in transaction volume in 2025. They use Stitch for embedded payments and lending.
+
+Noqodi, a UAE digital wallet regulated by the Central Bank of UAE, owned by the Investment Corporation of Dubai.
+
+Raya Financing, the lending arm of Hyundai and Peugeot in the region. They said Stitch cut their loan product launch time by months.
+
+Section Six. The Competitive Landscape.
+
+In core banking infrastructure globally, Stitch competes with Temenos, Mambu, Thought Machine, Oracle FLEXCUBE, and Finastra. All of these are either legacy systems, or cloud-native but not built for the Middle East and not native to Islamic finance.
+
+Stitch's key advantage: it was built in Saudi Arabia, for Saudi Arabia, with Islamic finance support from day one. No Western competitor can replicate that head start.
+
+In the broader MENA fintech ecosystem, relevant players include NymCard, a UAE-based card issuing platform with 33 million dollars raised, but they only do cards, not a full banking stack. HALA, Saudi Arabia's embedded finance leader for small businesses, with a 157 million dollar Series B backed by TPG and the Public Investment Fund. They serve 140 thousand businesses but focus on small business finance, not institutional core banking. And Lean Technologies, which just received Saudi Arabia's first open banking license in March 2026. They are the data layer. Stitch is what you build on top of that data.
+
+Section Seven. Market Size and Vision 2030.
+
+The Gulf fintech market is worth 7.3 billion dollars in 2025 and projected to reach 26.8 billion by 2034.
+
+Saudi Arabia is planning to license hundreds of new financial institutions by 2030 under Vision 2030. Three entirely new digital banks launched in Saudi Arabia in 2025 alone: STC Bank, D360 Bank, and Vision Bank. Each one needs core banking infrastructure from scratch. That is exactly what Stitch provides.
+
+Saudi Arabia hit its 70 percent cashless payments target two years early. They are now at 79 percent.
+
+Section Eight. Geopolitical Context.
+
+MENA startup funding fell 37 percent in the first quarter of 2026 due to geopolitical tensions. However, the Gulf specifically has proven resilient. Saudi Arabia and the UAE are insulated by oil revenue, government mandates, and Vision 2030 policy spending.
+
+For Stitch specifically, the instability has actually made investors prefer locally-registered, government-aligned infrastructure companies with recurring business-to-business revenue. The fact that Andreessen Horowitz chose to make their first-ever Gulf investment right now, in the middle of regional turbulence, is a deliberate signal of confidence.
+
+Section Nine. The Seven Strategic Pivots for Funding.
+
+Here are seven strategic moves Stitch could make to unlock their next major funding round.
+
+Pivot One: Become the default infrastructure for Saudi Arabia's new bank licensing wave.
+
+Saudi Arabia is licensing hundreds of new financial institutions by 2030. Every one of them needs core banking software from scratch. Stitch should create a New Bank Starter Kit: a pre-configured, SAMA-certified bundle that gets new licensees from regulatory approval to live product in 60 days. If Stitch captures even 30 percent of the next 100 Saudi financial institution licenses at between 500 thousand and 2 million dollars in annual recurring revenue each, that is a 15 to 60 million dollar revenue pipeline visible at their Series B. This is Tier One priority.
+
+A simple example: The three new Saudi digital banks that launched in 2025, STC Bank, D360, and Vision Bank, all needed core banking software on day one. Stitch should be the automatic, government-endorsed answer for every future licensee.
+
+Pivot Two: Add an AI intelligence layer, moving from AI-ready to AI-powered.
+
+Launch Stitch Intelligence using the 5 billion dollars in transaction data flowing through their platform. Products would include AI credit scoring, AI fraud detection, AI-driven collections optimization, and a financial analytics dashboard. AI products command 3 to 5 times higher revenue multiples than pure infrastructure. This is also the narrative that gets Andreessen Horowitz to lead the Series B.
+
+A simple example: Instead of just storing loan repayment data, Stitch uses it to predict which borrowers are likely to default 30 days before they do and alerts the bank automatically. That feature alone is worth a premium contract.
+
+Pivot Three: Launch Stitch for Remittances and own the 130 billion dollar Gulf corridor.
+
+Gulf workers sent 131.5 billion dollars in remittances in 2023. Only 15 percent of that is digital, versus a global average of 52 percent. That is a 90 billion dollar digitization gap. Stitch already has LuLu Exchange as a live customer opening digital remittance corridors.
+
+A simple example: A Filipino nurse working in Riyadh wants to send money home. Today she queues at a physical exchange house. With Stitch-powered infrastructure, LuLu Exchange gives her a digital app that sends funds in 30 seconds to a GCash wallet in Manila.
+
+Pivot Four: Power banks competing with Tabby and Tamara in buy now pay later.
+
+Saudi banks and UAE banks want to launch their own installment payment products but lack the technology. Stitch already has a buy-now-pay-later software product. The opportunity is to white-label the full stack for major banks.
+
+A simple example: Al Rajhi Bank, Saudi Arabia's largest Islamic bank with 28 million customers, could launch a sharia-compliant installment product in 90 days using Stitch, instead of 18 months of custom development.
+
+Note: this pivot is relevant to your meeting. Stitch enabling banks to compete with Tabby is something Mohamed may raise. The more interesting question is whether Tabby uses Stitch's infrastructure for its own expansion.
+
+Pivot Five: Become the Islamic Finance Infrastructure provider for the 3.9 trillion dollar global market.
+
+No cloud-native platform truly handles Islamic finance natively. Murabaha, musharaka, and ijara structures are poorly served by Western platforms. Stitch already supports murabaha-compatible lending and has Al Rajhi Bank talent on the team.
+
+A simple example: A new Islamic digital bank launching in Indonesia needs its entire loan book to be sharia-compliant. Currently they would build it manually over two years. With Stitch's Islamic finance module, they configure murabaha loans in a dashboard and go live in 60 days.
+
+Pivot Six: Build the Gulf Open Finance Marketplace.
+
+Saudi Arabia's first open banking license went to Lean Technologies in March 2026. UAE Open Finance went live in July 2025. Build a marketplace where fintech builders connect to Stitch-powered institutions through pre-certified APIs, creating network effects that make switching away from Stitch structurally impossible.
+
+A simple example: A Saudi insurance startup wants to offer better car insurance by seeing customers' loan repayment history. Instead of building direct integrations with 20 banks, they plug into the Stitch marketplace once and access all Stitch-powered banks instantly.
+
+Pivot Seven: Go global via Islamic finance and the emerging markets export strategy.
+
+Use the Gulf as proof of concept and export to Indonesia, with 270 million people and the world's largest Muslim-majority population. Then Pakistan, Turkey, and Nigeria.
+
+A simple example: Bank Muamalat Indonesia wants to launch a digital lending product. They try Mambu, and it does not support murabaha natively. They try Thought Machine, and there is no MENA regulatory expertise. They try Stitch: 90 days to live, Islamic finance built in, Gulf track record as proof.
+
+Section Ten. The Tabby and Stitch Connection.
+
+This is the most important section for your meeting.
+
+Tabby is at a 4.5 billion dollar valuation with 15 million customers, 378 million dollars in revenue, and 55 million dollars in net profit for 2025. Tabby has appointed HSBC, JPMorgan, and Morgan Stanley for a Tadawul IPO on the Saudi stock exchange.
+
+As Tabby expands beyond buy now pay later, through the Tweeq acquisition, the UAE Stored Value Facilities license, and the SAMA Consumer Finance license, the infrastructure requirements multiply dramatically.
+
+Tabby now needs: a regulated consumer ledger to hold customer funds, since the UAE license requires this. Lending infrastructure for higher-ticket financing products. Card program management for the Tabby Card. And wallet infrastructure from the Tweeq integration.
+
+Stitch's modular approach means Tabby could plug in specific modules without replacing the entire technology stack. This is exactly the build-versus-buy question Tabby faces at every stage of its expansion into new products and markets.
+
+From Stitch's perspective, Tabby processing 10 billion dollars annually on their infrastructure would be the reference that unlocks every major Saudi bank deal. And powering the infrastructure of Saudi Arabia's largest consumer fintech at IPO is a Series B narrative in itself.
+
+The connection: Raed Ventures and Arbor Ventures invested in both companies. Someone at Raed made this introduction with a specific hypothesis in mind.
+
+Watch for this in the meeting: if Mohamed raises Stitch's buy-now-pay-later software product proactively, he is either signaling that banks will compete with Tabby using his infrastructure, or testing whether Tabby wants to use Stitch for its own expansion. How he frames it tells you everything about his intentions.
+
+Section Eleven. Eight Questions to Ask Mohamed.
+
+Question one. On AI: Your thesis is that infrastructure debt is the main blocker for AI adoption. What does the AI layer actually look like on top of Stitch? Are you building that, or is it a partner layer?
+
+Question two. On Islamic finance: You mentioned murabaha-compatible lending. How does Stitch handle musharaka and ijara structures at the ledger level? Do you have Sharia scholars embedded in product development?
+
+Question three. On competition: In deals where you are competing against Mambu or Thought Machine, what is the actual sales cycle? Are Gulf banks choosing between you, or are they still deciding whether to modernize at all?
+
+Question four. On shared investors: You have Raed Ventures on your cap table, and we do too. What was their thesis for investing in both? Did they have a specific hypothesis about how Stitch and Tabby's ecosystems might work together?
+
+Question five. On the buy-now-pay-later product: You have a BNPL software product. Is that infrastructure for banks launching their own installment programs? How does that fit with the Gulf market given SAMA's full consumer finance licensing requirement?
+
+Question six. On the Series B narrative: Andreessen Horowitz's investment thesis mentioned servicing financial institutions worldwide. What is the next geography after the Gulf? Indonesia, Pakistan, or Turkey?
+
+Question seven. On pricing: You advertise transparent, non-per-transaction pricing. Can you walk me through the business model? Is it per-module SaaS, by number of accounts, or flat fee?
+
+Question eight. On Tabby as a potential customer: When a company like Tabby, which has existing infrastructure, evaluates Stitch, what is the typical entry point? Is it the ledger, the lending module, or the card program management?
+
+Closing.
+
+You are meeting a founder who just closed his first major institutional round from the world's most prestigious venture firm. Their first Gulf deal ever. He is confident, in momentum, and thinking about the next 18 months.
+
+The most powerful thing you can do is walk in already knowing his thesis better than most investors he will meet. Reference the infrastructure debt argument. Reference the AI readiness narrative. Reference the greenfield Saudi licensing wave. Ask about Islamic finance depth. Show you have done the work.
+
+The meeting is tomorrow. Good luck.
+
+End of brief.
