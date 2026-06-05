@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Digital Aristotle — a battery of scientifically-grounded cognitive tests that reliably tracks whether your thinking is staying sharp in the age of AI." />
+  <meta name="color-scheme" content="dark light" />
+  <title>Digital Aristotle — Is AI Making You Dumber?</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%89%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <button class="brand" data-nav="home" type="button" aria-label="Go to home">
+      <span class="brand-mark" aria-hidden="true">🦉</span>
+      <span class="brand-text">
+        <strong>Digital Aristotle</strong>
+        <small>Cognitive integrity tracker</small>
+      </span>
+    </button>
+    <nav class="topnav" aria-label="Primary">
+      <button data-nav="home" type="button">Home</button>
+      <button data-nav="trends" type="button">Trends</button>
+      <button data-nav="about" type="button">Method</button>
+      <button data-nav="settings" type="button" aria-label="Settings">⚙︎</button>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+
+    <!-- ===================== HOME ===================== -->
+    <section id="screen-home" class="screen" aria-labelledby="home-h">
+      <div class="hero">
+        <h1 id="home-h">Are you getting dumber because of AI?</h1>
+        <p class="lede">
+          Offloading thinking to machines is convenient — but use it or lose it.
+          Digital Aristotle measures the mental muscles AI tends to atrophy and
+          tracks them over time, so you can tell <em>reliably</em> whether you're
+          staying sharp.
+        </p>
+      </div>
+
+      <div class="index-card" id="index-card">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary btn-lg" id="start-full" type="button">
+          ▶ Start full assessment <span class="muted">· ~8 min</span>
+        </button>
+        <button class="btn" id="quick-single" type="button" data-nav="trends">View trends</button>
+      </div>
+
+      <h2 class="section-title">The battery</h2>
+      <p class="section-sub">Six tests, each a standard paradigm from cognitive science. Run one, or do the full set for a composite score.</p>
+      <div class="test-grid" id="test-grid">
+        <!-- filled by JS -->
+      </div>
+    </section>
+
+    <!-- ===================== STAGE (running a test) ===================== -->
+    <section id="screen-stage" class="screen" aria-labelledby="stage-h" aria-live="polite">
+      <div class="stage-head">
+        <h2 id="stage-h" class="stage-title">Test</h2>
+        <button class="btn btn-ghost" id="abort-test" type="button">✕ Quit</button>
+      </div>
+      <div class="stage-progress" id="stage-progress" hidden>
+        <div class="stage-progress-bar"><span id="stage-progress-fill"></span></div>
+        <span id="stage-progress-label" class="muted"></span>
+      </div>
+      <div class="stage" id="stage"></div>
+    </section>
+
+    <!-- ===================== RESULTS ===================== -->
+    <section id="screen-results" class="screen" aria-labelledby="results-h">
+      <h1 id="results-h">Session results</h1>
+      <div id="results-body"></div>
+      <div class="cta-row">
+        <button class="btn btn-primary" data-nav="trends" type="button">See your trend</button>
+        <button class="btn" data-nav="home" type="button">Back home</button>
+      </div>
+    </section>
+
+    <!-- ===================== TRENDS ===================== -->
+    <section id="screen-trends" class="screen" aria-labelledby="trends-h">
+      <h1 id="trends-h">Trends &amp; verdict</h1>
+      <div id="trends-body"></div>
+    </section>
+
+    <!-- ===================== ABOUT / METHOD ===================== -->
+    <section id="screen-about" class="screen" aria-labelledby="about-h">
+      <h1 id="about-h">How this works &amp; why it's reliable</h1>
+      <div class="prose" id="about-body"></div>
+    </section>
+
+    <!-- ===================== SETTINGS ===================== -->
+    <section id="screen-settings" class="screen" aria-labelledby="settings-h">
+      <h1 id="settings-h">Settings &amp; data</h1>
+      <div id="settings-body"></div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>
+      Digital Aristotle is a personal, offline-first self-assessment tool. It is
+      <strong>not</strong> a medical or clinical instrument. All data stays in your browser.
+    </p>
+  </footer>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
