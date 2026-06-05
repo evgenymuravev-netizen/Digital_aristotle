@@ -8,7 +8,7 @@ lose it*. Digital Aristotle measures the mental skills that AI tends to atrophy
 fluid reasoning), tracks them over time, and uses simple statistics to tell you
 **reliably** whether your performance is holding steady, improving, or declining.
 
-> **▶ Live app:** https://evgenymuravev-netizen.github.io/digital_aristotle/
+> **▶ Live app:** https://evgenymuravev-netizen.github.io/digital-aristotle/
 
 It is fully client-side, works offline, stores everything in your browser, and
 has **zero dependencies** and **no build step**.
@@ -89,9 +89,26 @@ js/
 .github/workflows/deploy.yml   # builds & deploys to GitHub Pages
 ```
 
-## Deployment
+## Deploy your own copy
 
-Pushed to GitHub Pages automatically by the workflow in
-`.github/workflows/deploy.yml` (it self-enables Pages via
-`actions/configure-pages`). The site is the repository root — static files, no
-build.
+The whole site is static files at the repo root, so either route works:
+
+**A. GitHub Actions (zero config).** Push this repo to a **public** GitHub repo.
+The included `.github/workflows/deploy.yml` self-enables Pages (via
+`actions/configure-pages`) and publishes on every push to `main`.
+
+**B. Deploy from a branch (no workflow needed).** In a public repo, go to
+**Settings → Pages → Build and deployment → Source: Deploy from a branch**,
+pick `main` and `/ (root)`. Done — `index.html` is served directly.
+
+```bash
+# starting from the unzipped folder:
+git init -b main
+git add -A
+git commit -m "Digital Aristotle"
+git remote add origin https://github.com/<you>/digital-aristotle.git
+git push -u origin main
+```
+
+> GitHub Pages on a **private** repo requires a paid plan; on the free plan use a
+> **public** repo.
