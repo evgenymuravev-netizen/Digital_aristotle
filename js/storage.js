@@ -48,10 +48,20 @@ export function saveSession(results, kind = "full") {
     kind,
     scores: Object.fromEntries(results.map((r) => [r.id, Math.round(r.score)])),
     raw: Object.fromEntries(results.map((r) => [r.id, r.raw])),
+    labels: Object.fromEntries(results.map((r) => [r.id, r.rawLabel || ""])),
   };
   db.sessions.push(session);
   write(KEY, db);
   return session;
+}
+
+/** Remove sessions by id (used when recent single runs are folded into a full assessment). */
+export function deleteSessions(ids) {
+  if (!ids || !ids.length) return;
+  const set = new Set(ids);
+  const db = getDB();
+  db.sessions = db.sessions.filter((s) => !set.has(s.id));
+  write(KEY, db);
 }
 
 export function clearAll() {

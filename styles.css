@@ -348,6 +348,67 @@ canvas.chart { width: 100%; height: auto; display: block; }
   .brand-text small { display: none; }
 }
 
+/* ---------------- full-assessment resume (preflight) ---------------- */
+.preflight { max-width: 60ch; }
+.preflight-list { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; text-align: left; }
+.preflight-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--panel-2);
+}
+.preflight-item.done { border-color: color-mix(in oklab, var(--good) 45%, var(--border)); }
+.preflight-item .pf-mark { font-weight: 800; width: 1.2em; text-align: center; }
+.preflight-item.done .pf-mark { color: var(--good); }
+.preflight-item.todo .pf-mark { color: var(--muted); }
+.preflight-item .tc-icon { font-size: 1.3rem; }
+.preflight-item .pf-body { display: flex; flex-direction: column; min-width: 0; }
+.preflight-item .pf-sub { font-size: .82rem; }
+.preflight-cta { justify-content: center; margin: 4px 0 0; }
+
+/* ---------------- population comparison (norm panel) ---------------- */
+.norm-panel { text-align: left; }
+.norm-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.norm-head .band { font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700; }
+.norm-head .band.up { color: var(--good); }
+.norm-head .band.down { color: var(--bad); }
+.norm-head .band.flat { color: var(--text-dim); }
+.normbar { position: relative; margin: 6px 0 12px; }
+.normbar-track { height: 12px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--border); overflow: hidden; }
+.normbar-track > span { display: block; height: 100%; background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 55%, var(--good)), var(--accent)); }
+.normbar-mark { position: absolute; top: -3px; width: 3px; height: 18px; background: var(--text); border-radius: 2px; transform: translateX(-50%); box-shadow: 0 0 0 2px var(--panel); }
+.norm-foot { font-variant-numeric: tabular-nums; }
+.norm-foot b { color: var(--text); }
+.norm-src { font-size: .8rem; margin-top: 8px; }
+.reused-tag { color: var(--info); font-size: .8rem; white-space: nowrap; }
+
+/* "What this measures" */
+.measures { text-align: left; }
+.measures h3 { margin: 0 0 .4em; color: var(--accent); font-size: 1.1rem; }
+.measures p { margin: .35em 0; color: var(--text-dim); }
+.measures p b { color: var(--text); }
+
+/* ---------------- method page: per-test cards ---------------- */
+.method-tests { display: grid; gap: 14px; margin: 16px 0; }
+.method-test { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--panel); padding: 14px 16px; }
+.method-test h3 { margin: 0 0 .4em; font-size: 1.12rem; color: var(--text); }
+.method-test p { margin: .3em 0; }
+.method-test p b { color: var(--text); }
+.method-test .chip {
+  display: inline-block; font-family: var(--font-sans); font-size: .66rem;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 700;
+  border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border));
+  border-radius: 999px; padding: 2px 8px; vertical-align: middle; margin-left: 6px;
+}
+.method-test .small { font-size: .86rem; }
+.method-test .ref { font-size: .84rem; color: var(--text-dim); border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 10px; }
+.method-test .ref .src { color: var(--muted); }
+
+/* keep wide score tables usable on small screens */
+@media (max-width: 600px) {
+  #results-body .panel, #trends-body .panel { overflow-x: auto; }
+  .score-table { min-width: 540px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }

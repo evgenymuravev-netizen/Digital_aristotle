@@ -184,3 +184,40 @@ export function summarize(sessions, tests) {
     perDomain,
   };
 }
+
+/* ---------------------------- resuming a full assessment ---------------------------- */
+
+/** A standalone test taken within this long still counts toward a full assessment. */
+export const RESUME_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+/**
+ * Most recent *single* result per test within the window.
+ * @returns {Object<string,{id,score,raw,label,sessionId,ts}>}
+ */
+export function recentSingleResults(sessions, ids, now = Date.now(), windowMs = RESUME_WINDOW_MS) {
+  const map = {};
+  for (const s of sessions) {
+    if (s.kind !== "single") continue;
+    if (now - s.ts > windowMs) continue;
+    for (const id of ids) {
+      if (typeof s.scores?.[id] !== "number") continue;
+      const prev = map[id];
+      if (!prev || s.ts > prev.ts) {
+        map[id] = { id, score: s.scores[id], raw: s.raw?.[id], label: s.labels?.[id], sessionId: s.id, ts: s.ts };
+      }
+    }
+  }
+  return map;
+}
+
+/**
+ * Plan a full assessment given what was already done recently.
+ * @returns {{ recent, reusable: Array, remainingIds: string[], reusableCount: number }}
+ */
+export function planFullAssessment(sessions, tests, now = Date.now(), windowMs = RESUME_WINDOW_MS) {
+  const ids = tests.map((t) => t.id);
+  const recent = recentSingleResults(sessions, ids, now, windowMs);
+  const reusable = ids.filter((id) => recent[id]).map((id) => recent[id]);
+  const remainingIds = ids.filter((id) => !recent[id]);
+  return { recent, reusable, remainingIds, reusableCount: reusable.length };
+}

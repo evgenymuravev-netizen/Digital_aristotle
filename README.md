@@ -8,7 +8,7 @@ lose it*. Digital Aristotle measures the mental skills that AI tends to atrophy
 fluid reasoning), tracks them over time, and uses simple statistics to tell you
 **reliably** whether your performance is holding steady, improving, or declining.
 
-> **▶ Live app:** https://evgenymuravev-netizen.github.io/digital-aristotle/
+> **▶ Live app:** https://mypabbeb-star.github.io/digital-aristotle/
 
 It is fully client-side, works offline, stores everything in your browser, and
 has **zero dependencies** and **no build step**.
@@ -29,6 +29,15 @@ Six standard paradigms from cognitive psychology, each producing a 0–100 sub-s
 | 🧩 **Number Series** | Fluid reasoning | Inferring a hidden rule to complete a sequence |
 
 The **Aristotle Index** is the average of all six from one sitting.
+
+Two things make a session friendlier:
+
+- **See how you compare.** Every result shows a **percentile** against published
+  population norms (e.g. *"faster than ~78% of people"*), with the reference and
+  source for each test on the Method tab. Norms only — your data never leaves the device.
+- **Resume a full assessment.** Already ran a few tests on their own? Starting the
+  full assessment offers to **reuse anything you did in the last hour** and only
+  run what's left, then combines it into one composite — no redoing tests.
 
 ## Why the verdict is *reliable*
 
@@ -82,11 +91,22 @@ styles.css          # theming (dark/light) + components
 js/
   app.js            # router, home, results, trends, settings
   storage.js        # versioned localStorage + export/import
-  stats.js          # baseline / reliable-change verdict engine
+  stats.js          # baseline / reliable-change verdict engine + resume planning
+  norms.js          # per-test explainers + population norms & percentiles
   chart.js          # dependency-free canvas charts + radial dial
   ui.js             # DOM & test-flow helpers
   tests/            # one module per test (+ registry)
+test/run.mjs        # unit tests for the pure logic (norms, stats)
 .github/workflows/deploy.yml   # builds & deploys to GitHub Pages
+```
+
+## Tests
+
+Pure logic (percentile math, resume planning, the verdict engine) has a
+dependency-free unit suite that runs under plain Node:
+
+```bash
+node test/run.mjs
 ```
 
 ## Deploy your own copy

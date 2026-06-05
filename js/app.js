@@ -5,13 +5,15 @@
 
 import { el, clear, showScreen, toast, setProgress, instructions, sleep } from "./ui.js";
 import {
-  getSessions, saveSession, clearAll, exportJSON, importJSON, getSettings, setSetting,
+  getSessions, saveSession, deleteSessions, clearAll, exportJSON, importJSON, getSettings, setSetting,
 } from "./storage.js";
 import {
   summarize, verdictFromSeries, testSeries, fmtDate, fmtRelative, STABLE_MIN,
+  planFullAssessment, RESUME_WINDOW_MS,
 } from "./stats.js";
 import { drawLineChart, drawSparkline, indexDial } from "./chart.js";
 import { TESTS, META, byId } from "./tests/index.js";
+import { TESTINFO, compareToNorm, normReference, ordinal } from "./norms.js";
 
 const state = { controller: null };
 
@@ -109,7 +111,26 @@ async function interstitial(stage, doneCount, total, nextMeta, signal) {
   });
 }
 
-async function runSequence(modules, kind) {
+/** Re-create a result object from a stored recent single, to fold into a full session. */
+function buildReusedResult(r) {
+  const m = byId[r.id];
+  return {
+    ...m.meta, score: r.score, raw: r.raw,
+    rawLabel: r.label || `Score ${Math.round(r.score)}/100`,
+    reused: true,
+  };
+}
+
+/**
+ * Run a list of test modules and save the combined result.
+ * @param {Array}  modules  test modules to actually run now
+ * @param {string} kind     "full" | "single"
+ * @param {object} opts     { preResults: [], absorbIds: [] }
+ *   preResults — already-collected results to merge in (e.g. tests done earlier)
+ *   absorbIds  — session ids to delete once merged (so they aren't double-counted)
+ */
+async function runSequence(modules, kind, opts = {}) {
+  const { preResults = [], absorbIds = [] } = opts;
   const controller = new AbortController();
   state.controller = controller;
   showScreen("stage");
@@ -117,16 +138,18 @@ async function runSequence(modules, kind) {
   const titleEl = document.querySelector(".stage-title");
   document.getElementById("abort-test").onclick = () => go("home");
 
-  const results = [];
+  const total = modules.length + preResults.length;
+  const fresh = [];
   try {
     for (let i = 0; i < modules.length; i++) {
       const m = modules[i];
       titleEl.textContent = `${m.meta.icon} ${m.meta.name}`;
       setProgress(0, m.meta.name);
       const res = await m.run(stage, { signal: controller.signal });
-      results.push(res);
+      fresh.push(res);
       if (kind === "full" && i < modules.length - 1) {
-        const cont = await interstitial(stage, i + 1, modules.length, modules[i + 1].meta, controller.signal);
+        const done = preResults.length + i + 1;
+        const cont = await interstitial(stage, done, total, modules[i + 1].meta, controller.signal);
         if (!cont) throw new DOMException("aborted", "AbortError");
       }
     }
@@ -142,9 +165,72 @@ async function runSequence(modules, kind) {
 
   setProgress(null);
   state.controller = null;
-  const session = saveSession(results, kind);
-  renderResults(results, kind, session);
+
+  // Merge reused + freshly-run, ordered canonically by the registry.
+  const combined = [...preResults, ...fresh];
+  const ordered = TESTS.map((t) => combined.find((r) => r.id === t.meta.id)).filter(Boolean);
+  const finalResults = ordered.length ? ordered : combined;
+
+  const session = saveSession(finalResults, kind);
+  if (absorbIds.length) deleteSessions(absorbIds);
+  renderResults(finalResults, kind, session);
   showScreen("results");
+}
+
+/* ----------------------------- full assessment (with resume) ----------------------------- */
+function startFullAssessment() {
+  const plan = planFullAssessment(getSessions(), META, Date.now(), RESUME_WINDOW_MS);
+  if (plan.reusableCount === 0) { runSequence(TESTS, "full"); return; }
+  showScreen("stage");
+  const stage = document.getElementById("stage");
+  document.querySelector(".stage-title").textContent = "▶ Full assessment";
+  setProgress(null);
+  document.getElementById("abort-test").onclick = () => go("home");
+  renderPreflight(stage, plan);
+}
+
+function renderPreflight(stage, plan) {
+  clear(stage);
+  const remaining = plan.remainingIds.length;
+
+  const list = el("div", { class: "preflight-list" });
+  for (const t of TESTS) {
+    const meta = t.meta;
+    const reused = plan.recent[meta.id];
+    list.append(el("div", { class: `preflight-item ${reused ? "done" : "todo"}` }, [
+      el("span", { class: "pf-mark", text: reused ? "✓" : "○" }),
+      el("span", { class: "tc-icon", text: meta.icon }),
+      el("div", { class: "pf-body" }, [
+        el("b", { text: meta.name }),
+        el("div", { class: "muted pf-sub" }, [
+          reused
+            ? `Done ${fmtRelative(reused.ts)} · ${Math.round(reused.score)}/100 — will be reused`
+            : `${meta.domain}${meta.duration ? ` · ${meta.duration}` : ""}`,
+        ]),
+      ]),
+    ]));
+  }
+
+  const runBtn = el("button", { class: "btn btn-primary btn-lg", type: "button" },
+    remaining > 0 ? `Run remaining ${remaining} ▸` : "Combine into full assessment ▸");
+  runBtn.addEventListener("click", () => {
+    const preResults = plan.reusable.map(buildReusedResult);
+    const modules = plan.remainingIds.map((id) => byId[id]);
+    runSequence(modules, "full", { preResults, absorbIds: plan.reusable.map((r) => r.sessionId) });
+  });
+  const redoBtn = el("button", { class: "btn", type: "button", text: "Redo all six" });
+  redoBtn.addEventListener("click", () => runSequence(TESTS, "full"));
+  const cancelBtn = el("button", { class: "btn btn-ghost", type: "button", text: "Cancel" });
+  cancelBtn.addEventListener("click", () => go("home"));
+
+  stage.append(el("div", { class: "instr preflight" }, [
+    el("div", { class: "tc-domain", text: "Resume" }),
+    el("h2", { text: remaining > 0 ? "Pick up where you left off" : "Everything's done — combine it" }),
+    el("p", { class: "muted", html: `You've taken <b>${plan.reusableCount} of ${TESTS.length}</b> tests in the last hour. We'll reuse those so you don't repeat yourself${remaining > 0 ? ` — just <b>${remaining}</b> test${remaining === 1 ? "" : "s"} left.` : "."}` }),
+    list,
+    el("div", { class: "cta-row preflight-cta" }, [runBtn, redoBtn, cancelBtn]),
+  ]));
+  runBtn.focus();
 }
 
 /* ============================================================
@@ -159,6 +245,50 @@ function compareToBaseline(testId) {
   const arrow = delta > 2 ? "▲" : delta < -2 ? "▼" : "▬";
   const cls = delta > 2 ? "up" : delta < -2 ? "down" : "flat";
   return { txt: `${delta >= 0 ? "+" : ""}${delta.toFixed(0)} vs your avg`, cls, arrow };
+}
+
+/* ----------------------------- population comparison ----------------------------- */
+/** Small table cell: where this result sits vs the population. */
+function normCell(r) {
+  const n = compareToNorm(r.id, r.raw);
+  if (!n) return el("span", { class: "muted", text: "—" });
+  return el("span", {
+    class: n.cls,
+    title: `Typical ${n.metricLabel}: ${n.typical}${n.established ? "" : " (rough estimate)"}`,
+  }, `${ordinal(n.pct)} pct`);
+}
+
+/** A visual "how you compare" panel for a single test. */
+function normPanel(id, raw) {
+  const n = compareToNorm(id, raw);
+  if (!n) return null;
+  return el("div", { class: "norm-panel" }, [
+    el("div", { class: "norm-head" }, [
+      el("span", { class: `band ${n.cls}`, text: n.band }),
+      el("span", { class: "muted", text: `${ordinal(n.pct)} percentile` }),
+    ]),
+    el("div", { class: "normbar" }, [
+      el("div", { class: "normbar-track" }, el("span", { style: { width: `${n.pct}%` } })),
+      el("span", { class: "normbar-mark", style: { left: `${n.pct}%` } }),
+    ]),
+    el("div", { class: "norm-foot" }, [
+      `Your ${n.metricLabel.toLowerCase()}: `, el("b", { text: n.yourValue }),
+      el("span", { class: "muted", text: `  ·  typical ≈ ${n.typical}` }),
+    ]),
+    el("div", { class: "norm-src muted", text: `${n.established ? "Source" : "Rough reference"}: ${n.source}` }),
+  ]);
+}
+
+/** "What this measures" explainer for a single test. */
+function measuresPanel(id) {
+  const info = TESTINFO[id];
+  if (!info) return null;
+  return el("div", { class: "measures" }, [
+    el("h3", { text: "What this measures" }),
+    el("p", {}, el("b", { text: info.measures })),
+    el("p", { class: "muted", text: info.why }),
+    el("p", { class: "muted", html: `<b>In daily life:</b> ${info.realWorld}` }),
+  ]);
 }
 
 function renderResults(results, kind, session) {
@@ -181,12 +311,23 @@ function renderResults(results, kind, session) {
     ]);
     body.append(head);
   } else {
+    const r0 = results[0];
     body.append(el("div", { class: "panel center" }, [
-      el("div", { class: "tc-domain", text: results[0].domain }),
-      el("h2", { text: results[0].name }),
-      el("div", { class: "score-big", style: { fontFamily: "var(--font-serif)", fontSize: "3rem", color: "var(--accent)" }, text: String(Math.round(results[0].score)) }),
-      el("div", { class: "muted", text: results[0].rawLabel }),
+      el("div", { class: "tc-domain", text: r0.domain }),
+      el("h2", { text: r0.name }),
+      el("div", { class: "score-big", style: { fontFamily: "var(--font-serif)", fontSize: "3rem", color: "var(--accent)" }, text: String(Math.round(r0.score)) }),
+      el("div", { class: "muted", text: r0.rawLabel }),
     ]));
+    const np = normPanel(r0.id, r0.raw);
+    if (np) {
+      body.append(el("div", { class: "panel" }, [
+        el("h2", { text: "How you compare" }),
+        np,
+        el("p", { class: "muted", style: { marginTop: "10px" }, text: "Compared against published population norms — not other users. Your data never leaves this device." }),
+      ]));
+    }
+    const mp = measuresPanel(r0.id);
+    if (mp) body.append(el("div", { class: "panel" }, [mp]));
   }
 
   // breakdown table
@@ -195,7 +336,8 @@ function renderResults(results, kind, session) {
     return el("tr", {}, [
       el("td", {}, [el("span", { class: "tc-icon", text: r.icon }), " ", r.domain]),
       el("td", {}, el("b", { text: r.name })),
-      el("td", { class: "muted", text: r.rawLabel }),
+      el("td", { class: "muted" }, [r.rawLabel, r.reused ? el("span", { class: "reused-tag", text: " ↺ reused" }) : null]),
+      el("td", { class: "num" }, [normCell(r)]),
       el("td", { class: "num" }, [el("span", { class: cmp.cls, text: `${cmp.arrow} ${cmp.txt}` })]),
       el("td", { class: "num" }, [
         el("div", { style: { display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-end" } }, [
@@ -208,11 +350,14 @@ function renderResults(results, kind, session) {
   const table = el("table", { class: "score-table" }, [
     el("thead", {}, el("tr", {}, [
       el("th", { text: "Domain" }), el("th", { text: "Test" }), el("th", { text: "Result" }),
-      el("th", { class: "num", text: "Trend" }), el("th", { class: "num", text: "Score" }),
+      el("th", { class: "num", text: "vs others" }), el("th", { class: "num", text: "Trend" }), el("th", { class: "num", text: "Score" }),
     ])),
     el("tbody", {}, rows),
   ]);
-  body.append(el("div", { class: "panel" }, [table]));
+  body.append(el("div", { class: "panel" }, [
+    table,
+    el("p", { class: "muted", style: { marginTop: "10px" }, text: "“vs others” is your percentile against published population norms (not other users). See the Method tab for the references behind each one." }),
+  ]));
 
   if (getSessions().length < STABLE_MIN) {
     body.append(el("div", { class: "callout", html: `<b>Building your baseline.</b> One session can't tell you much — scores bounce around day to day. Do a few full assessments on different days and the <b>Trends</b> tab will start telling you, reliably, whether you're holding steady.` }));
@@ -307,27 +452,45 @@ function renderTrends() {
 /* ============================================================
    ABOUT / METHOD
    ============================================================ */
+const SCORING = {
+  reaction: "Median of 5 trials. 200&nbsp;ms → 100, 500&nbsp;ms → 0.",
+  nback: "2-back, scored by <i>balanced accuracy</i> (hit-rate &amp; correct-rejection-rate averaged, so ignoring everything can't game it). 50% → 0, 100% → 100.",
+  digitspan: "Longest digit string recalled. Span 2 → 0, span 9 → 100.",
+  stroop: "Accuracy (60%) and speed (40%) on the hard, conflicting trials.",
+  mentalmath: "Correct answers in the 60-second sprint. 20 → 100.",
+  sequences: "Percentage of the 8 problems solved.",
+};
+
 function renderAbout() {
   const body = document.getElementById("about-body");
   if (body.dataset.filled) return; // static content
   body.dataset.filled = "1";
+
+  const sixCards = TESTS.map((t) => {
+    const m = t.meta, info = TESTINFO[m.id], ref = normReference(m.id);
+    return `<div class="method-test">
+      <h3>${m.icon} ${m.name} <span class="chip">${m.domain}</span></h3>
+      <p><b>${info.measures}</b></p>
+      <p class="muted">${info.why}</p>
+      <p class="muted"><b>Everyday:</b> ${info.realWorld}</p>
+      <p class="muted small"><b>Scored:</b> ${SCORING[m.id]}</p>
+      <p class="ref"><b>Typical ${ref.metricLabel.toLowerCase()}:</b> ≈ ${ref.typical}. ${ref.established ? "" : "<i>Rough in-app estimate.</i> "}<span class="src">${ref.source}</span></p>
+    </div>`;
+  }).join("");
+
   body.innerHTML = `
     <p class="lede">Digital Aristotle is a self-experiment. It can't prove AI is or isn't making you sharper or duller — but by measuring the same skills under the same conditions over time, it can tell you <em>reliably</em> whether your own performance is drifting.</p>
 
     <div class="callout"><b>The premise.</b> Cognitive skills follow "use it or lose it." When we offload arithmetic, memory, navigation, and reasoning to machines, the underlying circuits get less practice. This tool stress-tests exactly those skills so a decline would show up here before you'd notice it in daily life.</div>
 
-    <h2>The six tests</h2>
-    <p>Each is a long-standing paradigm from cognitive psychology, chosen to cover the abilities most exposed to automation:</p>
-    <table>
-      <tr><th>Test</th><th>Measures</th><th>What it captures &amp; how it's scored</th></tr>
-      <tr><td><b>⚡ Reaction Time</b></td><td>Processing speed</td><td>Simple reaction time to a visual signal. Median of 5 trials; 200&nbsp;ms→100, 500&nbsp;ms→0.</td></tr>
-      <tr><td><b>🧠 N-Back</b></td><td>Working memory</td><td>2-back: respond when a letter repeats from 2 ago. Scored by <i>balanced accuracy</i> (hit-rate and correct-rejection-rate averaged), so ignoring everything can't game it.</td></tr>
-      <tr><td><b>🔢 Digit Span</b></td><td>Short-term memory</td><td>Recall ever-longer digit strings. Score = your maximum span (2→0, 9→100; typical adult ≈ 7).</td></tr>
-      <tr><td><b>🎯 Stroop</b></td><td>Attention &amp; inhibition</td><td>Name the ink color, not the word. Scored from accuracy (60%) and speed (40%) on the hard, conflicting trials.</td></tr>
-      <tr><td><b>➗ Mental Math</b></td><td>Numeracy</td><td>60-second arithmetic sprint, no calculator — the skill we hand off most. Score scales with correct answers (20→100).</td></tr>
-      <tr><td><b>🧩 Number Series</b></td><td>Fluid reasoning</td><td>Infer the rule, pick the next term. Score = % of 8 problems correct.</td></tr>
-    </table>
-    <p>Each test yields a 0–100 sub-score. The <b>Aristotle Index</b> is the average of all six from a single sitting.</p>
+    <h2>The six tests — what each one measures</h2>
+    <p>Each is a long-standing paradigm from cognitive psychology, chosen to cover the abilities most exposed to automation. Every test yields a 0–100 sub-score; the <b>Aristotle Index</b> is the average of all six from a single sitting.</p>
+    <div class="method-tests">${sixCards}</div>
+
+    <h2>How you compare to others</h2>
+    <p>After each test we show a <b>percentile</b> — where your result sits among adults generally. Because everything runs locally and there's no pool of other users, this is computed against <b>published population norms</b>, never other people using the app.</p>
+    <p>For each test we take a population <b>mean</b> and <b>spread</b> (standard deviation) for its raw metric, standardize your result against them, and read the percentile off the normal curve. “78th percentile” means you'd be expected to outperform about 78% of adults.</p>
+    <div class="callout"><b>Take the percentile lightly.</b> Reaction time and digit span rest on solid published norms; the rest are approximate or rough in-app references (each test lists its source above). Percentiles assume a bell curve and a healthy-adult reference, so treat them as friendly context — not a clinical ranking. Your <em>own trend over time</em> is the number that actually matters.</div>
 
     <h2>Why the verdict is reliable</h2>
     <p>A single score is almost meaningless — you'll vary with sleep, caffeine, mood, and luck. Reliability comes from how the history is read:</p>
@@ -437,7 +600,7 @@ function init() {
     const nav = e.target.closest("[data-nav]");
     if (nav) { e.preventDefault(); go(nav.dataset.nav); }
   });
-  document.getElementById("start-full").addEventListener("click", () => runSequence(TESTS, "full"));
+  document.getElementById("start-full").addEventListener("click", () => startFullAssessment());
 
   // redraw canvases on resize for the active data screens
   window.addEventListener("resize", debounce(() => {

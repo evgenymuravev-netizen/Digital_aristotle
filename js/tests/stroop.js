@@ -95,8 +95,8 @@ export async function run(stage, { signal } = {}) {
   const totalCorrect = results.filter((r) => r.correct).length;
 
   return {
-    ...meta, score, raw: Math.round(accIncong * 100),
-    rawLabel: `${totalCorrect}/${TRIALS} correct · ${interference} ms interference`,
+    ...meta, score, raw: interference,
+    rawLabel: `${interference} ms interference · ${totalCorrect}/${TRIALS} correct`,
     detail: { Accuracy: `${totalCorrect}/${TRIALS}`, "Hard-trial speed": `${Math.round(medIncongRT)} ms`, Interference: `${interference} ms` },
   };
 }
