@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vivid Money — Стратегический анализ | Июнь 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0d1b2a; --navy2:#1b3a5c; --navy3:#2d5986;
+  --vp:#ff2d78; --vpp:#7b2fff;
+  --vgrad:linear-gradient(135deg,#ff2d78 0%,#7b2fff 100%);
+  --gold:#f0b429; --cyan:#00d4ff; --grn:#22c55e; --red:#ef4444;
+  --bcg:#009a44;
+  --g50:#f8fafc; --g100:#f1f5f9; --g200:#e2e8f0; --g300:#cbd5e1;
+  --g600:#475569; --g700:#334155; --g800:#1e293b;
+  --txt:#1e293b; --txt2:#64748b;
+  --nw:270px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#eef2f7;color:var(--txt);line-height:1.6}
+
+/* NAV */
+.nav{position:fixed;left:0;top:0;width:var(--nw);height:100vh;background:var(--navy);z-index:1000;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--navy2) transparent}
+.nav-hd{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.nav-logo{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.nav-dot{width:34px;height:34px;border-radius:9px;background:var(--vgrad);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:15px;flex-shrink:0}
+.nav-title{font-size:13px;font-weight:700;color:#fff;letter-spacing:.3px}
+.nav-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.nav-sec{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-sec-t{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.2px;padding:0 18px 6px}
+.nav a{display:flex;align-items:center;gap:9px;padding:7px 18px;text-decoration:none;color:rgba(255,255,255,.6);font-size:12.5px;transition:all .15s}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a .ic{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+
+/* MAIN */
+.main{margin-left:var(--nw)}
+
+/* HERO */
+.hero{background:linear-gradient(140deg,#0a1628 0%,#1b3a5c 55%,#0a1628 100%);padding:70px 56px 56px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;right:-10%;width:550px;height:550px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,120,.18) 0%,transparent 65%)}
+.hero::after{content:'';position:absolute;bottom:-30%;left:25%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(123,47,255,.15) 0%,transparent 65%)}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,45,120,.12);border:1px solid rgba(255,45,120,.28);border-radius:100px;padding:5px 14px;font-size:11px;color:#ff8ab8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:22px;position:relative;z-index:1}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:50px;font-weight:800;color:#fff;line-height:1.12;margin-bottom:14px;position:relative;z-index:1}
+.hero h1 .acc{background:var(--vgrad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:17px;color:rgba(255,255,255,.55);margin-bottom:36px;max-width:580px;position:relative;z-index:1}
+.hero-meta{display:flex;gap:36px;flex-wrap:wrap;margin-bottom:44px;position:relative;z-index:1}
+.hm-item{display:flex;flex-direction:column;gap:3px}
+.hm-label{font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.6px}
+.hm-val{font-size:14px;color:#fff;font-weight:600}
+.hero-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.08);border-radius:14px;overflow:hidden;position:relative;z-index:1}
+.kpi{background:rgba(255,255,255,.04);padding:24px 20px}
+.kpi-v{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:#fff;margin-bottom:3px}
+.kpi-v.g{background:var(--vgrad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.kpi-l{font-size:11px;color:rgba(255,255,255,.38)}
+
+/* SECTIONS */
+.sec{padding:52px 56px;background:#fff;margin-bottom:3px}
+.sec.alt{background:var(--g50)}
+.sec.dark{background:var(--navy);color:#fff}
+.sec-hd{display:flex;align-items:flex-start;gap:18px;margin-bottom:36px;padding-bottom:22px;border-bottom:2px solid var(--g100)}
+.sec.dark .sec-hd{border-bottom-color:rgba(255,255,255,.08)}
+.sec-num{font-size:10px;font-weight:700;color:var(--vp);text-transform:uppercase;letter-spacing:1px;min-width:70px;padding-top:5px}
+.sec-titles h2{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--navy);line-height:1.2}
+.sec.dark .sec-titles h2{color:#fff}
+.sec-titles p{font-size:15px;color:var(--txt2);margin-top:6px;max-width:680px}
+.sec.dark .sec-titles p{color:rgba(255,255,255,.5)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+/* CARDS */
+.card{background:#fff;border-radius:14px;padding:24px;border:1px solid var(--g200);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card.dark-c{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.card-t{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:var(--navy);margin-bottom:10px}
+.card.dark-c .card-t{color:#fff}
+
+/* METRIC CARDS */
+.mc{background:#fff;border-radius:12px;padding:22px;border:1px solid var(--g200);text-align:center}
+.mc-v{font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.mc-l{font-size:11.5px;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px}
+.mc-d{font-size:12px;font-weight:600;margin-top:6px}
+.mc-d.up{color:var(--grn)} .mc-d.dn{color:var(--red)} .mc-d.na{color:var(--txt2)}
+
+/* TABLES */
+.tbl-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--g200)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--navy);color:#fff;padding:11px 14px;text-align:left;font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+td{padding:11px 14px;border-bottom:1px solid var(--g100);color:var(--txt)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--g50)}
+td.num{font-weight:600;font-family:'Space Grotesk',sans-serif}
+td.pos{color:#16a34a;font-weight:600} td.neg{color:#dc2626;font-weight:600}
+td.neu{color:var(--txt2)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.2px}
+.bg-grn{background:rgba(34,197,94,.1);color:#16a34a}
+.bg-red{background:rgba(239,68,68,.1);color:#dc2626}
+.bg-blu{background:rgba(59,130,246,.1);color:#2563eb}
+.bg-amb{background:rgba(245,158,11,.1);color:#d97706}
+.bg-pk{background:rgba(255,45,120,.1);color:var(--vp)}
+.bg-pur{background:rgba(123,47,255,.1);color:var(--vpp)}
+.bg-gry{background:var(--g100);color:var(--g600)}
+.bg-bcg{background:rgba(0,154,68,.1);color:var(--bcg)}
+
+/* TIMELINE */
+.tl{position:relative;padding-left:36px}
+.tl::before{content:'';position:absolute;left:10px;top:8px;bottom:8px;width:2px;background:linear-gradient(to bottom,var(--vp),var(--vpp))}
+.tl-item{position:relative;margin-bottom:28px}
+.tl-item::before{content:'';position:absolute;left:-30px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--vp);border:2px solid #fff;box-shadow:0 0 0 2px var(--vp)}
+.tl-date{font-size:11px;font-weight:700;color:var(--vp);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.tl-title{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:5px}
+.tl-body{font-size:13.5px;color:var(--txt2);line-height:1.6}
+
+/* HIGHLIGHT */
+.hl{border-left:4px solid var(--vp);background:rgba(255,45,120,.04);padding:18px 22px;border-radius:0 11px 11px 0;margin:20px 0}
+.hl.blu{border-left-color:#3b82f6;background:rgba(59,130,246,.04)}
+.hl.grn{border-left-color:var(--grn);background:rgba(34,197,94,.04)}
+.hl.gold{border-left-color:var(--gold);background:rgba(240,180,41,.06)}
+.hl.bcg{border-left-color:var(--bcg);background:rgba(0,154,68,.05)}
+.hl.navy{border-left-color:var(--navy2);background:rgba(27,58,92,.05)}
+
+/* SWOT */
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:14px;overflow:hidden}
+.swot-cell{padding:28px;min-height:180px}
+.sw-s{background:rgba(34,197,94,.1)} .sw-w{background:rgba(239,68,68,.08)} .sw-o{background:rgba(59,130,246,.08)} .sw-t{background:rgba(245,158,11,.08)}
+.swot-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.sw-s .swot-h{color:#16a34a} .sw-w .swot-h{color:#dc2626} .sw-o .swot-h{color:#2563eb} .sw-t .swot-h{color:#d97706}
+.swot-li{font-size:13px;color:var(--txt);margin-bottom:7px;display:flex;gap:8px;line-height:1.5}
+.swot-li::before{content:'•';flex-shrink:0}
+
+/* PROGRESS */
+.pr-row{margin-bottom:16px}
+.pr-lbl{display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px}
+.pr-name{font-weight:500} .pr-val{color:var(--txt2)}
+.pr-track{height:8px;background:var(--g100);border-radius:100px;overflow:hidden}
+.pr-fill{height:100%;border-radius:100px;background:var(--vgrad)}
+
+/* FORCE DIAGRAM */
+.forces{display:grid;grid-template-areas:'a b c' '. d .' 'e f g';grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:750px;margin:24px auto}
+.force-card{background:#fff;border-radius:12px;padding:20px;border:1px solid var(--g200);text-align:center}
+.force-central{grid-area:d;background:var(--navy);color:#fff}
+.fc-ic{font-size:24px;margin-bottom:6px}
+.fc-name{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt2);margin-bottom:8px}
+.force-central .fc-name{color:rgba(255,255,255,.5)}
+.fc-r{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:6px}
+.fc-r.high{color:#dc2626} .fc-r.med{color:#d97706} .fc-r.low{color:#16a34a}
+.force-central .fc-r{color:#fff}
+.fc-d{font-size:11.5px;color:var(--txt2);line-height:1.4}
+.force-central .fc-d{color:rgba(255,255,255,.55)}
+
+/* BCG MATRIX */
+.bcg-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:12px;overflow:hidden;border:2px solid var(--bcg)}
+.bcg-star{background:rgba(0,154,68,.12)} .bcg-q{background:rgba(59,130,246,.08)} .bcg-cow{background:rgba(245,158,11,.08)} .bcg-dog{background:rgba(239,68,68,.06)}
+.bcg-cell{padding:22px;min-height:140px}
+.bcg-h{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.bcg-star .bcg-h{color:var(--bcg)} .bcg-q .bcg-h{color:#2563eb} .bcg-cow .bcg-h{color:#d97706} .bcg-dog .bcg-h{color:#dc2626}
+.bcg-item{font-size:12.5px;color:var(--txt);margin-bottom:5px;display:flex;gap:7px}
+.bcg-item::before{content:'→';color:var(--vp);font-weight:700;flex-shrink:0}
+
+/* RECOMMENDATIONS */
+.rec{background:#fff;border-radius:14px;padding:26px;border:1px solid var(--g200);border-top:4px solid var(--bcg)}
+.rec-n{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:800;color:rgba(0,154,68,.15);margin-bottom:6px}
+.rec-t{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.rec-b{font-size:14px;color:var(--txt2);line-height:1.7}
+.rec-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.rtag{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:100px;background:rgba(0,154,68,.1);color:var(--bcg)}
+
+/* PROFILE */
+.profile{background:linear-gradient(140deg,#0d1b2a,#1b3a5c);border-radius:18px;padding:32px;color:#fff;position:relative;overflow:hidden}
+.profile::before{content:'';position:absolute;top:-40%;right:-15%;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,120,.18) 0%,transparent 65%)}
+.p-av{width:64px;height:64px;border-radius:50%;background:var(--vgrad);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin-bottom:16px;position:relative;z-index:1}
+.p-name{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;margin-bottom:3px;position:relative;z-index:1}
+.p-role{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:20px;position:relative;z-index:1}
+.p-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);position:relative;z-index:1}
+.ps-v{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;background:var(--vgrad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ps-l{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:2px}
+
+/* CALLOUT */
+.callout{background:linear-gradient(135deg,rgba(255,45,120,.07),rgba(123,47,255,.07));border:1px solid rgba(255,45,120,.18);border-radius:14px;padding:24px;margin:22px 0}
+.callout-t{font-size:11.5px;font-weight:700;color:var(--vp);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.callout-b{font-size:15px;color:var(--navy);font-weight:500;line-height:1.7}
+.callout.bcg-c{background:rgba(0,154,68,.04);border-color:rgba(0,154,68,.18)}
+.callout.bcg-c .callout-t{color:var(--bcg)}
+
+/* QUESTION CARDS */
+.qcard{background:#fff;border-radius:11px;padding:18px 22px;border:1px solid var(--g200);margin-bottom:10px;display:flex;gap:14px}
+.q-n{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--g200);min-width:28px}
+.q-t{font-size:14.5px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.q-w{font-size:12.5px;color:var(--txt2)}
+
+/* COMPETITOR HEADER */
+.comp-hd{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--g100)}
+.comp-logo{width:48px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800}
+.comp-info h3{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.comp-info p{font-size:12.5px;color:var(--txt2)}
+
+/* FEATURE MATRIX */
+.feat-check{color:#16a34a;font-size:15px;font-weight:700}
+.feat-cross{color:#dc2626;font-size:15px}
+.feat-part{color:#d97706;font-size:15px}
+
+/* CHART BARS */
+.cb-row{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.cb-lbl{font-size:12.5px;font-weight:500;min-width:130px;color:var(--txt)}
+.cb-track{flex:1;height:9px;background:var(--g100);border-radius:100px;overflow:hidden}
+.cb-fill{height:100%;border-radius:100px}
+.cb-val{font-size:12.5px;font-weight:600;min-width:70px;text-align:right;color:var(--txt)}
+
+/* TYPOGRAPHY */
+h3.sub{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;color:var(--navy);margin:32px 0 14px}
+h4.sub2{font-size:14.5px;font-weight:700;color:var(--navy);margin:22px 0 9px}
+p{font-size:14.5px;line-height:1.8;color:var(--txt2);margin-bottom:14px}
+ul.st{list-style:none;padding:0}
+ul.st li{font-size:14px;color:var(--txt2);padding:5px 0 5px 18px;position:relative;line-height:1.6}
+ul.st li::before{content:'→';position:absolute;left:0;color:var(--vp);font-weight:700}
+.divider{height:1px;background:var(--g100);margin:28px 0}
+strong{color:var(--txt);font-weight:600}
+
+/* RESPONSIVE */
+@media(max-width:1000px){.nav{display:none}.main{margin-left:0}.hero{padding:36px 22px}.sec{padding:36px 22px}.g2,.g3,.g4{grid-template-columns:1fr}.hero-kpi{grid-template-columns:1fr 1fr}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav class="nav">
+  <div class="nav-hd">
+    <div class="nav-logo">
+      <div class="nav-dot">V</div>
+      <div>
+        <div class="nav-title">Vivid Money</div>
+        <div class="nav-sub">Стратегический брифинг · Июнь 2026</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-t">Обзор</div>
+    <a href="#cheatsheet"><span class="ic">⚡</span>Шпаргалка на встречу</a>
+    <a href="#exec"><span class="ic">🎯</span>Executive Summary</a>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-t">Компания</div>
+    <a href="#company"><span class="ic">🏢</span>Профиль компании</a>
+    <a href="#founders"><span class="ic">👥</span>Основатели</a>
+    <a href="#timeline"><span class="ic">📅</span>Таймлайн</a>
+    <a href="#bizmodel"><span class="ic">💡</span>Бизнес-модель</a>
+    <a href="#products"><span class="ic">📱</span>Продукты</a>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-t">Финансы</div>
+    <a href="#financials"><span class="ic">💰</span>Финансовый анализ</a>
+    <a href="#funding"><span class="ic">🚀</span>История раундов</a>
+    <a href="#uniteco"><span class="ic">📊</span>Юнит-экономика</a>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-t">Рынок</div>
+    <a href="#market"><span class="ic">🌍</span>Европейский рынок</a>
+    <a href="#geo"><span class="ic">📍</span>География</a>
+    <a href="#regulation"><span class="ic">⚖️</span>Регуляторика</a>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-t">Конкуренты</div>
+    <a href="#compoverview"><span class="ic">⚔️</span>Обзор ландшафта</a>
+    <a href="#n26"><span class="ic">🏦</span>N26</a>
+    <a href="#revolut"><span class="ic">🔄</span>Revolut</a>
+    <a href="#traderepublic"><span class="ic">📈</span>Trade Republic</a>
+    <a href="#scalable"><span class="ic">📉</span>Scalable Capital</a>
+    <a href="#matrix"><span class="ic">🔲</span>Матрица фич</a>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-t">Стратегия</div>
+    <a href="#porter"><span class="ic">🔭</span>Porter's 5 Forces</a>
+    <a href="#swot"><span class="ic">🎲</span>SWOT</a>
+    <a href="#bcgmatrix"><span class="ic">🟢</span>BCG Matrix</a>
+    <a href="#scenarios"><span class="ic">🗺️</span>Сценарии</a>
+    <a href="#recs"><span class="ic">💎</span>Рекомендации BCG</a>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-t">Моя ценность</div>
+    <a href="#myprofile"><span class="ic">🙋</span>Мой профиль</a>
+    <a href="#valueprop"><span class="ic">✨</span>Value Proposition</a>
+    <a href="#lending"><span class="ic">🏗️</span>SME Lending Opp.</a>
+    <a href="#questions"><span class="ic">❓</span>Вопросы фаундерам</a>
+    <a href="#career"><span class="ic">🎯</span>Карьерная стратегия</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main class="main">
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="top">
+  <div class="hero-badge">🔴 Конфиденциально · Подготовлено для встречи · 8 июня 2026</div>
+  <h1>
+    <span class="acc">Vivid Money</span><br>
+    Стратегический разбор
+  </h1>
+  <p class="hero-sub">
+    Глубокий анализ бизнеса, конкурентов, финансов и регуляторики.
+    BCG-фреймворк. Value proposition для переговоров.
+  </p>
+  <div class="hero-meta">
+    <div class="hm-item"><span class="hm-label">Подготовлено для</span><span class="hm-val">Евгений Муравев</span></div>
+    <div class="hm-item"><span class="hm-label">Встреча</span><span class="hm-val">8 июня 2026</span></div>
+    <div class="hm-item"><span class="hm-label">Компания</span><span class="hm-val">Vivid Money GmbH / S.A.</span></div>
+    <div class="hm-item"><span class="hm-label">Вертикаль</span><span class="hm-val">SME Fintech · EU</span></div>
+  </div>
+  <div class="hero-kpi">
+    <div class="kpi"><div class="kpi-v g">~€230M</div><div class="kpi-l">Привлечено всего (последний раунд: фев. 2022)</div></div>
+    <div class="kpi"><div class="kpi-v">€775M</div><div class="kpi-l">Оценка на Series C · февраль 2022</div></div>
+    <div class="kpi"><div class="kpi-v g">100K+</div><div class="kpi-l">Бизнес-клиентов (оценка, середина 2026)</div></div>
+    <div class="kpi"><div class="kpi-v">450+</div><div class="kpi-l">Сотрудников · Берлин</div></div>
+  </div>
+</section>
+
+<!-- ═══ S0: CHEATSHEET ═══ -->
+<section class="sec alt" id="cheatsheet">
+  <div class="sec-hd">
+    <div class="sec-num">§ 00</div>
+    <div class="sec-titles">
+      <h2>⚡ Шпаргалка на встречу</h2>
+      <p>Ключевые факты, которые нужно держать в голове. Читать за 5 минут до встречи.</p>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-bottom:24px">
+    <div class="card" style="border-top:3px solid var(--vp)">
+      <div class="card-t">🏢 Кто они</div>
+      <ul class="st">
+        <li>Берлин, 2019. Запуск июнь 2020 (ровно 6 лет назад!)</li>
+        <li>Основатели — бывшие VP/SVP Тинькофф Банка</li>
+        <li>«European Tinkoff» — буквально их pitch</li>
+        <li>Оleg Tinkov публично называл Vivid «маленьким Тинькоффом»</li>
+        <li>Инвесторы: Greenoaks, Ribbit, SoftBank. Всего ~$230M</li>
+        <li>TCS Group (Тинькофф) — вышел из капитала дек. 2022</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid #f0b429">
+      <div class="card-t">🔄 Текущий пивот (март 2025)</div>
+      <ul class="st">
+        <li>Розница — официально не приоритет</li>
+        <li>Фокус: SME/бизнес-банкинг для Европы</li>
+        <li>50K бизнес-клиентов к июню 2025 → ~100K+ сейчас</li>
+        <li>Рост: ~100 новых бизнес-счетов в день</li>
+        <li>Запуск AI Digital Employees (окт. 2025)</li>
+        <li>Treasury: iBonds, ETF, MMF в одном интерфейсе</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--bcg)">
+      <div class="card-t">🎯 Ключевые проблемы</div>
+      <ul class="st">
+        <li>Нет нового раунда с февраля 2022 — 4 года!</li>
+        <li>Нет банковской лицензии (только EMI)</li>
+        <li>Revolut Business уже 767K клиентов — в 7-8x крупнее</li>
+        <li><strong>НЕТ кредитного продукта</strong> для SME</li>
+        <li>Зависимость от Solarisbank (BaFin штрафы)</li>
+        <li>Нет подтверждённой прибыльности</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-t">🎯 Твой главный нарратив на встрече</div>
+    <div class="callout-b">
+      «Я дважды строил B2B fintech с нуля — Ozon ($57M→$502M за 18 мес.) и Tabby ($0→$50M+).
+      Знаю, как масштабировать SME-кредитование в зарегулированной среде.
+      У Vivid есть 100K+ бизнес-клиентов и пока нет кредитного продукта —
+      это самая очевидная точка роста, и я знаю, как её реализовать.»
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-t">💬 Говори на их языке</div>
+      <ul class="st">
+        <li>Они ex-Tinkoff → понимают «super-app» логику, data-driven культуру</li>
+        <li>Говори на русском — это снимет барьер</li>
+        <li>Tinkoff Reference работает: «Как в Тинькоффе сделали X…»</li>
+        <li>Они investor-aware: покажи path to profitability через lending</li>
+        <li>Конкурент страх №1: Revolut Business (масштаб)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-t">🔢 Числа, которые надо знать</div>
+      <ul class="st">
+        <li>Последняя оценка: <strong>€775M</strong> (фев. 2022)</li>
+        <li>Revolut: $75B — в 100x крупнее по оценке</li>
+        <li>N26: €440M revenue 2024, первая прибыль Q3 2024</li>
+        <li>Trade Republic: 10M users, €150B AUM (апр. 2026)</li>
+        <li>Vivid SME: ~100/день новых аккаунтов</li>
+        <li>EU SME fintech TAM: €20-30B</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S1: EXECUTIVE SUMMARY ═══ -->
+<section class="sec" id="exec">
+  <div class="sec-hd">
+    <div class="sec-num">§ 01</div>
+    <div class="sec-titles">
+      <h2>Executive Summary</h2>
+      <p>Синтез: где находится Vivid, в чём главная ставка и почему это важно для тебя.</p>
+    </div>
+  </div>
+
+  <div class="hl">
+    <strong>Главный вывод:</strong> Vivid Money прошёл болезненный, но стратегически правильный пивот от розничного neobank к SME-финтех супер-приложению для Европы. Компания занимает уникальную нишу, но сталкивается с тремя экзистенциальными рисками: отсутствием нового раунда (4 года без финансирования), отсутствием банковской лицензии и масштабным отставанием от Revolut Business.
+  </div>
+
+  <div class="g2" style="margin-top:24px">
+    <div>
+      <h3 class="sub">Где был Vivid</h3>
+      <p>2020–2022: потребительский neobank с уникальной механикой кэшбэка в акциях и интегрированными инвестициями. Вырос до ~500K пользователей в Германии, Франции, Испании, Италии. Поднял €175M за три года. Называл себя «European Tinkoff» — и в этом была и сила, и слабость. Tinkoff-модель потребовала бы дополнительных миллиардов на привлечение пользователей в высококонкурентном EU-рынке, где Revolut уже имел огромную фору.</p>
+
+      <h3 class="sub">Где Vivid сейчас</h3>
+      <p>Март 2025 — официальный пивот. Розничный банкинг более не является инвестиционным приоритетом. Все ресурсы — на SME/бизнес-банкинг. К июню 2026 компания, вероятно, обслуживает 100K+ бизнес-клиентов, растёт со скоростью ~3,000+/месяц, и запустила Treasury (сентябрь 2025) и AI Digital Employees (октябрь 2025).</p>
+    </div>
+    <div>
+      <h3 class="sub">Ключевые стратегические ставки</h3>
+      <ul class="st">
+        <li><strong>Дифференциатор:</strong> Единственный EU SME fintech, объединяющий banking + investing + treasury + AI tools в одном приложении</li>
+        <li><strong>Регуляторный актив:</strong> EU-wide EMI паспорт (через Joompay, Люксембург) + MiCAR лицензия для крипто</li>
+        <li><strong>Пробел конкурентов:</strong> Revolut Business есть, но это generic neobank. N26 не обслуживает юрлица. Qonto без инвестиций.</li>
+        <li><strong>Слепое пятно:</strong> <strong style="color:var(--vp)">Ноль кредитных продуктов для SME</strong> — самая очевидная точка роста и твоя точка входа</li>
+      </ul>
+
+      <div class="hl bcg" style="margin-top:20px">
+        <strong>BCG-Диагноз:</strong> Vivid — «Question Mark» в BCG-матрице. Высокий рыночный потенциал EU SME fintech, но доля рынка пока мала. Требует либо агрессивных инвестиций для захвата доли, либо чёткой нишевой стратегии, обеспечивающей прибыльность до истощения кэша.
+      </div>
+    </div>
+  </div>
+
+  <div class="g4" style="margin-top:28px">
+    <div class="mc"><div class="mc-v" style="font-size:22px">~100K+</div><div class="mc-l">SME клиентов (оценка июнь 2026)</div><div class="mc-d up">▲ с 50K (июнь 2025)</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">4 года</div><div class="mc-l">Без нового раунда (последний фев. 2022)</div><div class="mc-d na">⚠ Давление на капитал</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">EMI</div><div class="mc-l">Тип лицензии (не банковская)</div><div class="mc-d dn">↓ vs N26, Trade Republic</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">30+</div><div class="mc-l">EEA стран через паспортизацию</div><div class="mc-d up">▲ После Joompay (2024)</div></div>
+  </div>
+</section>
+
+<!-- ═══ S2: COMPANY PROFILE ═══ -->
+<section class="sec alt" id="company">
+  <div class="sec-hd">
+    <div class="sec-num">§ 02</div>
+    <div class="sec-titles">
+      <h2>Профиль компании</h2>
+      <p>Происхождение, миссия, структура и ключевые факты.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Генезис</h3>
+      <p>Vivid Money была основана в 2019 году двумя выходцами из Тинькофф Банка — Александром Emeshev (VP по новым продуктам) и Артёмом Ямановым (SVP по бизнес-разработке). Они покинули TCS Group в феврале 2020 года с чёткой идеей: построить «European Tinkoff» — финансовый супер-апп, который объединит банкинг, инвестирование и кэшбэк.</p>
+      <p>Публичный запуск состоялся <strong>8 июня 2020 года</strong> в Германии — ровно 6 лет назад. Первым инвестором стал сам TCS Group (~€25M), выступив стратегическим партнёром. В декабре 2022 года Тинькофф полностью вышел из капитала в связи с санкционным давлением после вторжения России в Украину.</p>
+
+      <div class="tbl-wrap" style="margin-top:20px">
+        <table>
+          <tr><th colspan="2">Основные факты</th></tr>
+          <tr><td>Полное название</td><td>Vivid Money GmbH (DE) / Vivid Money S.A. (LU)</td></tr>
+          <tr><td>Штаб-квартира</td><td>Берлин, Германия</td></tr>
+          <tr><td>Основана</td><td>2019 год</td></tr>
+          <tr><td>Публичный запуск</td><td>8 июня 2020 (Германия)</td></tr>
+          <tr><td>Сотрудники</td><td>~450 (2024–2025)</td></tr>
+          <tr><td>Регулятор (банкинг)</td><td>CSSF, Люксембург (EMI лицензия)</td></tr>
+          <tr><td>Регулятор (инвестиции)</td><td>AFM, Нидерланды (инвестфирма)</td></tr>
+          <tr><td>Регулятор (крипто)</td><td>MiCAR лицензия EU (с июля 2025)</td></tr>
+          <tr><td>BaaS провайдер</td><td>Solarisbank (Берлин)</td></tr>
+          <tr><td>Карточная сеть</td><td>Visa</td></tr>
+          <tr><td>Основные инвесторы</td><td>Greenoaks Capital, Ribbit Capital, SoftBank Vision Fund 2</td></tr>
+          <tr><td>Последний раунд</td><td>Series C, €100M, февраль 2022</td></tr>
+          <tr><td>Последняя оценка</td><td>€775M (~$886M)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Структура компании</h3>
+      <p>Vivid оперирует через несколько юридических лиц в разных юрисдикциях:</p>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-t">🇱🇺 Vivid Money S.A. (Люксембург)</div>
+        <p style="margin:0;font-size:13.5px">Основная операционная сущность. Держит EMI лицензию, пасспортированную на все 30 EEA-стран через CSSF. После приобретения Joompay (янв. 2024) — независимый регуляторный периметр.</p>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-t">🇩🇪 Vivid Money GmbH (Германия)</div>
+        <p style="margin:0;font-size:13.5px">Операционная компания для немецкого рынка. Основные продуктовые команды. Работает под паспортом люксембургской сущности.</p>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-t">🇳🇱 Vivid Money B.V. (Нидерланды)</div>
+        <p style="margin:0;font-size:13.5px">Инвестиционная лицензия от AFM. Обеспечивает регуляторную основу для брокерских услуг (акции, ETF, крипто) на всём EU.</p>
+      </div>
+      <div class="card">
+        <div class="card-t">🔐 MiCAR Licensed Entity (2025)</div>
+        <p style="margin:0;font-size:13.5px">EU MiCAR лицензия получена в июле 2025. Позволяет расширить регулируемые крипто-услуги на Германию, Францию, Нидерланды и другие рынки.</p>
+      </div>
+
+      <div class="hl navy" style="margin-top:20px">
+        <strong>Критический момент:</strong> Vivid не имеет полноценной банковской лицензии. EMI-статус означает, что депозиты клиентов <em>не застрахованы</em> по схеме DGS (до €100K). Это структурный конкурентный недостаток vs. N26 и Trade Republic, которые имеют полные банковские лицензии.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S3: FOUNDERS ═══ -->
+<section class="sec" id="founders">
+  <div class="sec-hd">
+    <div class="sec-num">§ 03</div>
+    <div class="sec-titles">
+      <h2>Основатели</h2>
+      <p>Александр Emeshev и Артём Яманов — два человека, которые построили «European Tinkoff».</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="comp-hd">
+        <div class="comp-logo" style="background:linear-gradient(135deg,#ff2d78,#7b2fff);color:#fff">АЕ</div>
+        <div class="comp-info">
+          <h3>Александр Emeshev</h3>
+          <p>CEO & Co-founder · Берлин</p>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th colspan="2">Бэкграунд</th></tr>
+          <tr><td>До Vivid</td><td>VP, New Product Development — TCS Group (Тинькофф Банк)</td></tr>
+          <tr><td>Роль в Тинькоффе</td><td>Отвечал за запуск новых продуктовых вертикалей, включая платёжные и страховые продукты</td></tr>
+          <tr><td>Уход из TCS</td><td>Февраль 2020 — вместе с Ямановым для запуска Vivid</td></tr>
+          <tr><td>Фокус в Vivid</td><td>Стратегия, продукт, investor relations, growth</td></tr>
+        </table>
+      </div>
+      <div class="hl" style="margin-top:14px">
+        Emeshev — архитектор стратегического пивота 2025 года. Публично объявил, что Vivid «не сжигает миллиарды на рост» и фокусируется на capital efficiency. Это сигнал инвестиционного давления.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="comp-hd">
+        <div class="comp-logo" style="background:linear-gradient(135deg,#00b4d8,#0077b6);color:#fff">АЯ</div>
+        <div class="comp-info">
+          <h3>Артём Яманов</h3>
+          <p>CTO/CPO & Co-founder · Берлин</p>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th colspan="2">Бэкграунд</th></tr>
+          <tr><td>До Vivid</td><td>SVP, Business Development — TCS Group (Тинькофф Банк)</td></tr>
+          <tr><td>Роль в Тинькоффе</td><td>Партнёрства, B2B-каналы, ecosystem development</td></tr>
+          <tr><td>Уход из TCS</td><td>Февраль 2020 — вместе с Emeshev</td></tr>
+          <tr><td>Фокус в Vivid</td><td>Технологии, продукт, операции</td></tr>
+        </table>
+      </div>
+      <div class="hl" style="margin-top:14px">
+        Яманов отвечает за технологическую платформу. Приобретения Joompay и Pile под его руководством — демонстрация стратегии build/buy для ускорения регуляторного и продуктового развития.
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub">Что значит «ex-Tinkoff» для тебя на встрече</h3>
+  <div class="g3">
+    <div class="card">
+      <div class="card-t">🎯 Общий язык</div>
+      <p style="font-size:13.5px">Тинькофф — эталон data-driven финтеха в СНГ. Основатели понимают playbook: кредитование, ML-скоринг, aggressive cross-sell, product-led growth. Ты работал в схожей экосистеме (Ozon Fintech — прямой аналог).</p>
+    </div>
+    <div class="card">
+      <div class="card-t">🇷🇺 Культурный контекст</div>
+      <p style="font-size:13.5px">Разговор на русском снимает барьер. Они мыслят категориями российского финтеха, адаптированными под EU. Твоя карьера — Ozon, X5, MegaFon — это понятные им имена и культура исполнения.</p>
+    </div>
+    <div class="card">
+      <div class="card-t">💡 Кредитный опыт</div>
+      <p style="font-size:13.5px">Тинькофф строился на кредитных картах и потребительском кредитовании. Основатели ЗНАЮТ ценность кредита. Твой аргумент «давайте запустим SME lending» они услышат немедленно — и будут знать, что это правильно.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: TIMELINE ═══ -->
+<section class="sec alt" id="timeline">
+  <div class="sec-hd">
+    <div class="sec-num">§ 04</div>
+    <div class="sec-titles">
+      <h2>Таймлайн компании</h2>
+      <p>От основания до сегодняшнего дня — ключевые события и пивоты.</p>
+    </div>
+  </div>
+
+  <div class="tl">
+    <div class="tl-item">
+      <div class="tl-date">2019</div>
+      <div class="tl-title">Основание компании</div>
+      <div class="tl-body">Emeshev и Яманов покидают TCS Group. Первое финансирование ~€25M от TCS Group и основателей. Разработка продукта и получение первых регуляторных одобрений.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Июнь 2020</div>
+      <div class="tl-title">Публичный запуск в Германии</div>
+      <div class="tl-body">Запуск в Германии с уникальным cashback-в-акциях. Продукт строится на инфраструктуре Solarisbank (BaaS) и платёжной сети Visa. Расширение на Францию, Испанию, Италию.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Ноябрь 2020</div>
+      <div class="tl-title">Series A — $17.6M (Ribbit Capital)</div>
+      <div class="tl-body">Первый институциональный раунд. Ribbit Capital — специализированный fintech VC (Robinhood, Revolut, Nubank). Оценка ~$117M. Подтверждение концепции и масштабирование команды.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Апрель 2021</div>
+      <div class="tl-title">Series B — €60M (Greenoaks Capital)</div>
+      <div class="tl-body">Greenoaks (backing Coupang, Duolingo) входит как лид. Оценка €360M. Расширение продуктовой линейки — запуск investing, crypto, metals. Рост пользователей.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Февраль 2022</div>
+      <div class="tl-title">Series C — €100M (Greenoaks + SoftBank)</div>
+      <div class="tl-body">Пиковая оценка €775M (~$886M). Greenoaks продолжает лидировать, SoftBank Vision Fund 2 заходит. 500K пользователей. Объявлены планы EU-экспансии. <strong>Последний публичный раунд по сей день.</strong></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Октябрь 2022</div>
+      <div class="tl-title">Приобретение клиентской базы Nuri GmbH</div>
+      <div class="tl-body">Nuri (немецкий крипто-банк) объявляет о банкротстве. Vivid поглощает клиентскую базу, предоставляя бывшим клиентам бесплатный доступ к Prime. Стратегическое расширение с минимальными затратами.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Декабрь 2022</div>
+      <div class="tl-title">TCS Group полностью выходит из капитала</div>
+      <div class="tl-body">В связи с санкционным давлением после вторжения России в Украину Тинькофф продаёт свою долю. Vivid дистанцируется от любых российских связей. Greenoaks остаётся крупнейшим институциональным инвестором.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Январь 2024</div>
+      <div class="tl-title">Приобретение Joompay (Люксембург)</div>
+      <div class="tl-body">Стратегически важнейший шаг: покупка люксембургского fintech Joompay (25 человек). Цель — получить независимый EU-wide EMI паспорт, снизив зависимость от проблемного Solarisbank.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Февраль 2024</div>
+      <div class="tl-title">Экспансия в 23 новых EU-страны</div>
+      <div class="tl-body">Используя паспорт Joompay, Vivid расширяется до 30 EEA-стран. Весь европейский рынок теперь доступен регуляторно. Фокус — сначала 5-6 приоритетных рынков для SME.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Июль 2024</div>
+      <div class="tl-title">Приобретение Pile Capital — Treasury для SME</div>
+      <div class="tl-body">Покупка технологического решения Pile: multi-banking, account aggregation, financial reporting для SME. Закладывает основу для treasury-продукта. Ещё один сигнал стратегии buy-vs-build.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Март 2025</div>
+      <div class="tl-title">🔄 Официальный пивот: розница → SME</div>
+      <div class="tl-body">Публичное объявление: розничный банкинг более не является самостоятельным инвестиционным приоритетом. Все ресурсы направляются на SME/бизнес-банкинг. 30K бизнес-клиентов на момент объявления.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Июнь 2025</div>
+      <div class="tl-title">50,000 SME-клиентов milestone</div>
+      <div class="tl-body">Vivid достигает 50K бизнес-аккаунтов. Скорость роста: ~100 новых в день, ~3,000/месяц. Целевой показатель Q3 2025: 75K. Запуск локальных IBAN для Испании и Нидерландов.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Июль 2025</div>
+      <div class="tl-title">MiCAR лицензия — регулируемая крипто для EU</div>
+      <div class="tl-body">Получение EU MiCAR лицензии (Markets in Crypto-Assets). Расширение регулируемых крипто-услуг на Германию, Францию, Нидерланды. Конкурентное преимущество: MiCAR compliance сложен и дорог.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Сентябрь 2025</div>
+      <div class="tl-title">Treasury Product для SME</div>
+      <div class="tl-body">Запуск интегрированного Treasury: iBonds, ETF, Money Market Funds, акции и крипто в едином интерфейсе для бизнеса. Treasury deposits утраиваются YoY к февралю 2026.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Октябрь 2025</div>
+      <div class="tl-title">AI Digital Employees</div>
+      <div class="tl-body">Запуск AI-ассистентов для SME: «Anna» (планирование, email, workflow). Заявленный эффект: экономия 13 часов/неделю, снижение операционных расходов до €4K/месяц. EU AI Act compliant.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Март 2026</div>
+      <div class="tl-title">Партнёрство с lemon.markets</div>
+      <div class="tl-body">API-based brokerage и custody через lemon.markets, начиная с Money Market Funds и mutual funds. Расширение инвестиционной инфраструктуры для бизнес-клиентов.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Июнь 2026 (сегодня)</div>
+      <div class="tl-title">📍 Точка сегодняшней встречи</div>
+      <div class="tl-body">~100K+ SME-клиентов. Treasury + AI tools live. MiCAR лицензия активна. Компания без нового раунда 4+ года. Критический период: нужен либо новый раунд, либо выход на операционную прибыльность.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5: BUSINESS MODEL ═══ -->
+<section class="sec" id="bizmodel">
+  <div class="sec-hd">
+    <div class="sec-num">§ 05</div>
+    <div class="sec-titles">
+      <h2>Бизнес-модель</h2>
+      <p>Как Vivid зарабатывает деньги и почему текущая модель требует эволюции.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Источники выручки</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Поток выручки</th><th>Механика</th><th>Оценка значимости</th></tr>
+          <tr><td><strong>Vivid Prime подписки</strong></td><td>€9.90/месяц, металлическая карта, повышенный кэшбэк</td><td><span class="badge bg-grn">Высокая</span></td></tr>
+          <tr><td><strong>Interchange (комиссия с операций)</strong></td><td>% от оборота по картам (EU: ~0.2% debit)</td><td><span class="badge bg-grn">Высокая</span></td></tr>
+          <tr><td><strong>Торговые комиссии</strong></td><td>€1 за сделку (EU); % в других валютах</td><td><span class="badge bg-amb">Средняя</span></td></tr>
+          <tr><td><strong>FX-маржа</strong></td><td>Markup на конвертацию валюты</td><td><span class="badge bg-amb">Средняя</span></td></tr>
+          <tr><td><strong>Процентный доход</strong></td><td>Spread на депозитах/сберегательных продуктах</td><td><span class="badge bg-blu">Растущая</span></td></tr>
+          <tr><td><strong>Partner cashback комиссии</strong></td><td>Merchant-funded: партнёры платят за доступ к клиентам</td><td><span class="badge bg-amb">Средняя</span></td></tr>
+          <tr><td><strong>SME/бизнес подписки</strong></td><td>Платные тарифы для бизнес-аккаунтов</td><td><span class="badge bg-grn">Ключевая</span></td></tr>
+          <tr><td><strong>Treasury-услуги</strong></td><td>Комиссии за управление, AUM-based fees</td><td><span class="badge bg-blu">Растущая</span></td></tr>
+          <tr><td><strong>Крипто-комиссии</strong></td><td>% от объёма крипто-операций</td><td><span class="badge bg-gry">Низкая</span></td></tr>
+          <tr><td style="color:var(--red);font-weight:600">⚠ ОТСУТСТВУЕТ: SME-кредитование</td><td>Процентный доход по займам</td><td><span class="badge bg-red">Не запущено</span></td></tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3 class="sub">Freemium-архитектура</h3>
+      <div class="card" style="border-top:3px solid var(--g300);margin-bottom:14px">
+        <div class="card-t">📱 Vivid Standard (Free)</div>
+        <ul class="st">
+          <li>IBAN + дебетовая карта (виртуальная)</li>
+          <li>Кэшбэк в акциях до €20/месяц (0.1–0.2%)</li>
+          <li>Инвестиции: до 3,000 акций/ETF за €1/сделка</li>
+          <li>Базовые Pockets (суб-счета)</li>
+          <li>Crипто: 300+ монет</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--vp)">
+        <div class="card-t">💎 Vivid Prime (€9.90/мес)</div>
+        <ul class="st">
+          <li>Металлическая карта Visa</li>
+          <li>Кэшбэк до €100-140/месяц (до 4%)</li>
+          <li>До 15 IBAN под-счетов</li>
+          <li>Процент на остаток до 5.39% (промо)</li>
+          <li>Vivid Shopper: до 50% кэшбэк у партнёров</li>
+          <li>Premium поддержка</li>
+        </ul>
+      </div>
+
+      <div class="hl gold" style="margin-top:16px">
+        <strong>Ключевый insight:</strong> Vivid «Stock Rewards» — уникальная механика на рынке. Кэшбэк начисляется как доля выбранной акции в специальном кармане. Эмоциональная связь с продуктом. Однако в медвежьем рынке 2022 это превратилось в LIABILITY — кэшбэк «таял» вместе с акциями.
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub">Почему текущая модель не обеспечивает прибыльность</h3>
+  <div class="g3">
+    <div class="card" style="border-top:3px solid var(--red)">
+      <div class="card-t" style="color:var(--red)">Проблема 1: Низкий ARPU у розницы</div>
+      <p style="font-size:13.5px">Средний ARPU европейского neobank клиента €15-25/год. Interchange в EU жёстко ограничен регуляторно (0.2% debit). При CAC €30-50+ на приобретение LTV едва перекрывает затраты.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--gold)">
+      <div class="card-t" style="color:var(--gold)">Проблема 2: Отсутствие NIM дохода</div>
+      <p style="font-size:13.5px">EMI статус не позволяет принимать депозиты в банковском смысле. N26 и Trade Republic с банковскими лицензиями зарабатывают на чистой процентной марже. В 2024 N26 получил 50% выручки от interest income.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--grn)">
+      <div class="card-t" style="color:var(--grn)">Решение: SME + Lending</div>
+      <p style="font-size:13.5px">SME клиент имеет ARPU в 5-10x выше: больший оборот, subscription, treasury fees. Добавление кредитования удвоит/утроит монетизацию. Это путь Тинькоффа, Monzo Business, Revolut Business.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S6: PRODUCTS ═══ -->
+<section class="sec alt" id="products">
+  <div class="sec-hd">
+    <div class="sec-num">§ 06</div>
+    <div class="sec-titles">
+      <h2>Продуктовый портфель</h2>
+      <p>Детальный разбор всех продуктов, текущее состояние и продуктовые пробелы.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Personal Banking (основа, де-приоритет)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Продукт</th><th>Ключевые фичи</th><th>Статус</th></tr>
+          <tr><td>EU IBAN</td><td>Немецкий, испанский, нидерландский IBAN; до 15 суб-IBAN</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Debit Card</td><td>Visa (виртуальная бесплатно, металлическая — Prime)</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Spending Pockets</td><td>Именованные суб-счета со своими IBAN для бюджетирования</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Stock Rewards</td><td>Кэшбэк начисляется акциями выбранной компании</td><td><span class="badge bg-grn">Live · Уникально</span></td></tr>
+          <tr><td>Savings Pockets</td><td>Процент до 5.39% промо; ~2.25% ongoing (Prime)</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Multi-currency</td><td>100+ валют, конкурентный FX курс</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Shared Accounts</td><td>Совместные счета / Shared Pockets</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Spending Analytics</td><td>Автокатегоризация, инсайты по расходам</td><td><span class="badge bg-grn">Live</span></td></tr>
+        </table>
+      </div>
+
+      <h3 class="sub">Инвестирование и крипто</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Продукт</th><th>Детали</th><th>Статус</th></tr>
+          <tr><td>Акции и ETF</td><td>3,000+ инструментов, €1/сделка; дробные акции от €1</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Crypto</td><td>300+ монет; MiCAR-лицензированный с июля 2025</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Precious Metals</td><td>Золото, серебро, платина</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Auto-invest Plans</td><td>Автоматические покупки weekly/bi-weekly/monthly</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Bonds (SME)</td><td>iBonds в Treasury для бизнеса</td><td><span class="badge bg-grn">Live с сент. 2025</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Business Banking (главный фокус)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Продукт</th><th>Детали</th><th>Статус</th></tr>
+          <tr><td>Бизнес-счёт (IBAN)</td><td>DE, ES, NL локальные IBAN; EUR</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>Multi-banking</td><td>Агрегация счетов из других банков</td><td><span class="badge bg-grn">Live (Pile)</span></td></tr>
+          <tr><td>Treasury</td><td>iBonds, ETF, MMF, акции, крипто в одном UI</td><td><span class="badge bg-grn">Live с сент. 2025</span></td></tr>
+          <tr><td>Фин. отчётность</td><td>Reconciliation, reporting tools</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td>AI Digital Employees</td><td>«Anna» — AI-ассистент, scheduling, email, workflow</td><td><span class="badge bg-grn">Live с окт. 2025</span></td></tr>
+          <tr><td>Crypto (бизнес)</td><td>Регулируемые крипто для юрлиц, MiCAR</td><td><span class="badge bg-grn">Live с июля 2025</span></td></tr>
+          <tr><td>Multi-currency бизнес</td><td>Мульти-валютные счета для юрлиц</td><td><span class="badge bg-grn">Live</span></td></tr>
+          <tr><td style="color:var(--red);font-weight:600">⚠ SME Lending</td><td>Рабочий капитал, терм-займы, факторинг</td><td><span class="badge bg-red">❌ Не запущено</span></td></tr>
+          <tr><td style="color:var(--gold);font-weight:600">⚠ SME Cards (физические)</td><td>Корпоративные карты для сотрудников</td><td><span class="badge bg-amb">Частично</span></td></tr>
+          <tr><td style="color:var(--gold);font-weight:600">⚠ Payroll / HR integr.</td><td>Выплата зарплат, интеграция с кадровыми сервисами</td><td><span class="badge bg-amb">Неизвестно</span></td></tr>
+          <tr><td style="color:var(--gold);font-weight:600">⚠ Accounting software</td><td>Интеграция с Datev, Xero, QuickBooks</td><td><span class="badge bg-amb">Неизвестно</span></td></tr>
+        </table>
+      </div>
+
+      <div class="callout" style="margin-top:16px">
+        <div class="callout-t">🚨 Критический продуктовый пробел</div>
+        <div class="callout-b">
+          Vivid обслуживает 100K+ SME-клиентов без единого кредитного продукта. Для сравнения: Revolut Business предлагает Revolut Business Loans. Tide (UK) — кредитные линии. Qonto — факторинг. SME всегда нуждаются в рабочем капитале. Это самый очевидный следующий шаг — и именно здесь твой опыт наиболее ценен.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: FINANCIALS ═══ -->
+<section class="sec" id="financials">
+  <div class="sec-hd">
+    <div class="sec-num">§ 07</div>
+    <div class="sec-titles">
+      <h2>Финансовый анализ</h2>
+      <p>Публичные данные, оценки и интерпретация финансового положения компании.</p>
+    </div>
+  </div>
+
+  <div class="callout bcg-c">
+    <div class="callout-t">📋 О раскрытии данных</div>
+    <div class="callout-b">Vivid Money публикует ежегодную отчётность в Amtsgericht Charlottenburg (HRB 209049 B), однако конкретные цифры выручки и P&L не раскрываются публично. Ниже — данные по раундам, оценкам и операционным метрикам, подтверждённые из публичных источников.</div>
+  </div>
+
+  <div class="g4" style="margin-top:24px">
+    <div class="mc"><div class="mc-v g" style="font-size:22px;background:var(--vgrad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">€25M</div><div class="mc-l">Seed (TCS Group, 2019-20)</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">$17.6M</div><div class="mc-l">Series A · Ribbit · ноябрь 2020</div><div class="mc-d na">Оценка ~$117M</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">€60M</div><div class="mc-l">Series B · Greenoaks · апрель 2021</div><div class="mc-d na">Оценка €360M</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">€100M</div><div class="mc-l">Series C · Greenoaks+SoftBank · фев. 2022</div><div class="mc-d up">Оценка €775M</div></div>
+  </div>
+
+  <div class="g2" style="margin-top:28px">
+    <div>
+      <h3 class="sub">Таблица раундов финансирования</h3>
+      <div class="tbl-wrap" id="funding">
+        <table>
+          <tr><th>Раунд</th><th>Дата</th><th>Сумма</th><th>Лид-инвестор</th><th>Оценка (post)</th></tr>
+          <tr><td>Seed</td><td>2019 – нач. 2020</td><td class="num">~€25M</td><td>TCS Group (Тинькофф)</td><td>Не раскрыта</td></tr>
+          <tr><td>Series A</td><td>Ноябрь 2020</td><td class="num">$17.6M</td><td>Ribbit Capital</td><td class="num">~$117M</td></tr>
+          <tr><td>Series B</td><td>Апрель 2021</td><td class="num">€60M</td><td>Greenoaks Capital</td><td class="num">€360M</td></tr>
+          <tr><td>Series C</td><td>Февраль 2022</td><td class="num">€100M</td><td>Greenoaks Capital + SoftBank VF2</td><td class="num"><strong>€775M ($886M)</strong></td></tr>
+          <tr style="background:rgba(255,45,120,.04)"><td colspan="2"><strong>ИТОГО привлечено</strong></td><td class="num"><strong>~$230M</strong></td><td>— Последний раунд: 4+ года назад —</td><td class="num"><strong>€775M peak</strong></td></tr>
+        </table>
+      </div>
+
+      <div class="hl" style="margin-top:16px">
+        <strong>Критическое наблюдение:</strong> Ни один fintech стартап категории «challenger bank» не прошёл 4 года без раунда и без подтверждённой прибыльности. Это либо признак жёсткой финансовой дисциплины (Emeshev буквально говорил о capital efficiency), либо сигнал сложности привлечения по приемлемой оценке в пост-2022 рынке. Вероятно — оба фактора.
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Операционные метрики (публичные)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Метрика</th><th>Значение</th><th>Дата / Источник</th></tr>
+          <tr><td>Розничные пользователи</td><td class="num">~500,000</td><td>Фев. 2022 (последнее)</td></tr>
+          <tr><td>SME клиенты</td><td class="num">50,000</td><td>12 июня 2025</td></tr>
+          <tr><td>SME клиенты (оценка)</td><td class="num">~100,000+</td><td>Июнь 2026 (расчётно)</td></tr>
+          <tr><td>Скорость роста SME</td><td class="num">~100/день</td><td>Середина 2025</td></tr>
+          <tr><td>Treasury growth (пользователи)</td><td class="num">+2.5x YoY</td><td>Фев. 2025 – фев. 2026</td></tr>
+          <tr><td>Treasury deposits</td><td class="num">3x YoY</td><td>Фев. 2025 – фев. 2026</td></tr>
+          <tr><td>Stock Rewards выплачено</td><td class="num">€17M+</td><td>2024/2025</td></tr>
+          <tr><td>Brand awareness (DE)</td><td class="num">43%</td><td>2022</td></tr>
+          <tr><td>Доля рынка DE (neobank)</td><td class="num">11%</td><td>2022</td></tr>
+          <tr><td>Сотрудники</td><td class="num">~450</td><td>2024</td></tr>
+        </table>
+      </div>
+
+      <h3 class="sub" id="uniteco">Юнит-экономика (оценка)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Показатель</th><th>Розница</th><th>SME (оценка)</th></tr>
+          <tr><td>ARPU (годовой)</td><td class="num">€15–25</td><td class="num">€120–300+</td></tr>
+          <tr><td>CAC</td><td class="num">€30–60</td><td class="num">€80–150</td></tr>
+          <tr><td>LTV/CAC ratio</td><td class="num neg">~0.5–1x ❌</td><td class="num pos">~2–4x ✓</td></tr>
+          <tr><td>Retention (12 мес)</td><td class="num">~60–70%</td><td class="num">~80–90%</td></tr>
+          <tr><td>Монетизация</td><td>Subscription + interchange</td><td>Subscription + interchange + treasury + (future: lending)</td></tr>
+          <tr><td>С lending</td><td class="neu">N/A</td><td class="num pos">€500–1,500+ ARPU потенциал</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ S8: MARKET ═══ -->
+<section class="sec" id="market">
+  <div class="sec-hd">
+    <div class="sec-num">§ 08</div>
+    <div class="sec-titles">
+      <h2>Европейский рынок</h2>
+      <p>TAM, динамика и ключевые тренды EU fintech.</p>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="mc"><div class="mc-v">$96.5B</div><div class="mc-l">EU Fintech рынок 2024</div><div class="mc-d up">▲ CAGR 17.6% → $444B к 2033</div></div>
+    <div class="mc"><div class="mc-v">$28.1B</div><div class="mc-l">EU Neobanking 2024</div><div class="mc-d up">▲ CAGR 21.1% → $88.3B к 2030</div></div>
+    <div class="mc"><div class="mc-v">€20-30B</div><div class="mc-l">EU SME embedded finance TAM</div><div class="mc-d up">~3% от банковской выручки</div></div>
+  </div>
+
+  <div class="g2" style="margin-top:28px">
+    <div>
+      <h3 class="sub">Структура EU Neobank рынка 2025</h3>
+      <div class="chart-bar-container">
+        <div class="cb-row"><span class="cb-lbl">Revolut</span><div class="cb-track"><div class="cb-fill" style="width:85%;background:linear-gradient(90deg,#191c57,#4a4eb5)"></div></div><span class="cb-val">68M users</span></div>
+        <div class="cb-row"><span class="cb-lbl">N26</span><div class="cb-track"><div class="cb-fill" style="width:35%;background:#00aaff"></div></div><span class="cb-val">4.8M active</span></div>
+        <div class="cb-row"><span class="cb-lbl">Trade Republic</span><div class="cb-track"><div class="cb-fill" style="width:60%;background:#c7f464"></div></div><span class="cb-val">10M users</span></div>
+        <div class="cb-row"><span class="cb-lbl">Scalable Capital</span><div class="cb-track"><div class="cb-fill" style="width:14%;background:#ff6b35"></div></div><span class="cb-val">1M+ clients</span></div>
+        <div class="cb-row"><span class="cb-lbl">Bunq</span><div class="cb-track"><div class="cb-fill" style="width:10%;background:#00c9a7"></div></div><span class="cb-val">~1M users</span></div>
+        <div class="cb-row"><span class="cb-lbl" style="color:var(--vp);font-weight:600">Vivid (retail)</span><div class="cb-track"><div class="cb-fill" style="width:7%;background:var(--vgrad)"></div></div><span class="cb-val" style="color:var(--vp)">~500K</span></div>
+      </div>
+
+      <h3 class="sub">Ключевые тренды рынка</h3>
+      <div class="tl" style="margin-top:10px">
+        <div class="tl-item">
+          <div class="tl-date">Тренд 1</div>
+          <div class="tl-title">Тиеризация neobanks</div>
+          <div class="tl-body">Рынок расслоился: (a) масштабные прибыльные лидеры — Revolut, N26; (b) прибыльные нишевые игроки — Trade Republic, Scalable; (c) провалившиеся mid-size — ~180 из 630 запущенных neobanks прекратили работу.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Тренд 2</div>
+          <div class="tl-title">Процентные ставки = структурный сдвиг</div>
+          <div class="tl-body">Рост ставок ЕЦБ 2022-2024 дал огромное преимущество банкам с депозитными лицензиями. N26: 50% выручки от процентного дохода в 2024. Trade Republic: 4% ставка по депозитам привлекла миллионы. EMI-игроки как Vivid — в структурно невыгодной позиции.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Тренд 3</div>
+          <div class="tl-title">SME — незанятая ниша</div>
+          <div class="tl-body">25M МСП в EU, большинство обслуживается традиционными банками с плохим UX и высокими ценами. Revolut Business, Qonto, Holvi, Tide борются за долю, но рынок не консолидирован. Opportunity window открыта.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Тренд 4</div>
+          <div class="tl-title">AI = следующий differentiator</div>
+          <div class="tl-body">После базового банкинга битва идёт за AI-powered финансовый помощник. Vivid с «AI Digital Employees» пытается занять позицию первым. Риск: быстрая коммодитизация.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="geo">
+      <h3 class="sub">География и присутствие</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Страна</th><th>Статус</th><th>Тип</th><th>Когда</th></tr>
+          <tr><td>🇩🇪 Германия</td><td><span class="badge bg-grn">Главный рынок</span></td><td>Personal + Business</td><td>Июнь 2020</td></tr>
+          <tr><td>🇫🇷 Франция</td><td><span class="badge bg-grn">Активен</span></td><td>Personal + Business</td><td>2020-21</td></tr>
+          <tr><td>🇪🇸 Испания</td><td><span class="badge bg-grn">Активен</span></td><td>Personal + Business</td><td>2021</td></tr>
+          <tr><td>🇮🇹 Италия</td><td><span class="badge bg-grn">Активен</span></td><td>Personal + Business</td><td>2021</td></tr>
+          <tr><td>🇦🇹 Австрия</td><td><span class="badge bg-grn">Активен</span></td><td>Personal</td><td>2021</td></tr>
+          <tr><td>🇳🇱 Нидерланды</td><td><span class="badge bg-blu">Расширение</span></td><td>Business + NL IBAN</td><td>2025</td></tr>
+          <tr><td>🇱🇺 Люксембург</td><td><span class="badge bg-blu">Расширение</span></td><td>Business</td><td>2025</td></tr>
+          <tr><td>🌍 +23 EEA страны</td><td><span class="badge bg-amb">Паспорт</span></td><td>Через Joompay EMI</td><td>Фев. 2024</td></tr>
+        </table>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <div class="card-t">📊 SME рынки — приоритет 2025-2026</div>
+        <div class="pr-row"><div class="pr-lbl"><span class="pr-name">🇩🇪 Германия</span><span class="pr-val">Приоритет №1</span></div><div class="pr-track"><div class="pr-fill" style="width:90%"></div></div></div>
+        <div class="pr-row"><div class="pr-lbl"><span class="pr-name">🇪🇸 Испания</span><span class="pr-val">Приоритет №2</span></div><div class="pr-track"><div class="pr-fill" style="width:65%"></div></div></div>
+        <div class="pr-row"><div class="pr-lbl"><span class="pr-name">🇮🇹 Италия</span><span class="pr-val">Приоритет №3</span></div><div class="pr-track"><div class="pr-fill" style="width:50%"></div></div></div>
+        <div class="pr-row"><div class="pr-lbl"><span class="pr-name">🇫🇷 Франция</span><span class="pr-val">Приоритет №4</span></div><div class="pr-track"><div class="pr-fill" style="width:45%"></div></div></div>
+        <div class="pr-row"><div class="pr-lbl"><span class="pr-name">🇳🇱 Нидерланды</span><span class="pr-val">Расширение 2025</span></div><div class="pr-track"><div class="pr-fill" style="width:30%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S9: REGULATION ═══ -->
+<section class="sec alt" id="regulation">
+  <div class="sec-hd">
+    <div class="sec-num">§ 09</div>
+    <div class="sec-titles">
+      <h2>Регуляторная среда</h2>
+      <p>EU fintech regulatory framework и специфические риски Vivid.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Ключевые регуляторные рамки EU</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Регуляция</th><th>Статус</th><th>Влияние на Vivid</th></tr>
+          <tr><td><strong>PSD2</strong></td><td><span class="badge bg-grn">В силе</span></td><td>Основа для open banking, multi-banking (Pile)</td></tr>
+          <tr><td><strong>PSD3</strong></td><td><span class="badge bg-amb">Законопроект</span></td><td>Ожидается 2026-27; обновит структуру платежей</td></tr>
+          <tr><td><strong>MiCA / MiCAR</strong></td><td><span class="badge bg-grn">В силе с дек. 2024</span></td><td>Vivid получил лицензию июль 2025 — конк. преимущество</td></tr>
+          <tr><td><strong>FIDA</strong></td><td><span class="badge bg-amb">Готовится</span></td><td>Open Finance; расширит данные-агрегацию</td></tr>
+          <tr><td><strong>DORA</strong></td><td><span class="badge bg-grn">В силе янв. 2025</span></td><td>ICT risk framework — применяется к Vivid как финансовой сущности</td></tr>
+          <tr><td><strong>EU AI Act</strong></td><td><span class="badge bg-grn">В силе 2024</span></td><td>AI Digital Employees — Vivid заявляет о compliance</td></tr>
+          <tr><td><strong>AMLA</strong></td><td><span class="badge bg-amb">Новый орган EU</span></td><td>Усиление AML надзора — риск через Solarisbank</td></tr>
+          <tr><td><strong>DGS (Deposit Guarantee)</strong></td><td><span class="badge bg-grn">В силе</span></td><td>⚠ Vivid НЕ покрыт как EMI — структурный риск</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Регуляторные риски Vivid</h3>
+
+      <div class="card" style="border-left:4px solid var(--red);margin-bottom:14px">
+        <div class="card-t" style="color:var(--red)">⚠ Риск 1: Solarisbank / BaFin</div>
+        <p style="font-size:13.5px;margin:0">Декабрь 2022: BaFin предписал remediation AML/risk. Март 2024: штраф €6.5M. Расширение мандата специального представителя до середины 2024. Vivid не получил прямого штрафа, но операционная зависимость создаёт системный риск. Покупка Joompay — прямой ответ на этот риск.</p>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--gold);margin-bottom:14px">
+        <div class="card-t" style="color:var(--gold)">⚠ Риск 2: EMI vs. Банковская лицензия</div>
+        <p style="font-size:13.5px;margin:0">Без полной банковской лицензии: (1) нет страхования депозитов DGS →100K€; (2) нет NIM на депозиты; (3) кредитование требует партнёрства с лицензированным банком-кредитором (Lender-on-Record модель). Для SME-клиентов отсутствие DGS страховки — реальный барьер.</p>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--bcg);margin-bottom:14px">
+        <div class="card-t" style="color:var(--bcg)">✓ Актив: Luxembourg EMI Passporting</div>
+        <p style="font-size:13.5px;margin:0">После Joompay Vivid имеет независимый EU-passported EMI, покрывающий 30 EEA стран. Это снизило зависимость от Solarisbank и дало регуляторную независимость для масштабирования SME.</p>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--cyan)">
+        <div class="card-t" style="color:#0077b6">✓ Актив: MiCAR лицензия (июль 2025)</div>
+        <p style="font-size:13.5px;margin:0">MiCAR compliance очень сложен и дорог. Большинство конкурентов SME-banking не имеют MiCAR лицензии. Для Vivid это значимый differentiator: regulated crypto for business клиентов по всему EU.</p>
+      </div>
+
+      <div class="hl bcg" style="margin-top:16px">
+        <strong>BCG-совет по регуляторике:</strong> Наиболее стратегически важное следующее действие — получение полной банковской лицензии (или приобретение EMI/банка с лицензией). Это откроет DGS, NIM и упростит кредитование. Путь: 18-24 месяца через ECB/BaFin при наличии капитала.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S10: COMPETITIVE OVERVIEW ═══ -->
+<section class="sec" id="compoverview">
+  <div class="sec-hd">
+    <div class="sec-num">§ 10</div>
+    <div class="sec-titles">
+      <h2>Конкурентный ландшафт</h2>
+      <p>Обзор основных игроков и позиционирование Vivid.</p>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr>
+        <th>Компания</th><th>Пользователи</th><th>Выручка</th><th>Прибыльность</th><th>Лицензия</th><th>SME фокус</th><th>Ключевой дифф.</th>
+      </tr>
+      <tr>
+        <td><strong style="color:#191c57">Revolut</strong></td>
+        <td class="num">68M+ (2025)</td>
+        <td class="num">£4.5B (2025)</td>
+        <td class="pos">$2.3B прибыль</td>
+        <td><span class="badge bg-grn">Банковская (LT, UK)</span></td>
+        <td><span class="badge bg-grn">Revolut Business 767K</span></td>
+        <td>Масштаб + полный банк</td>
+      </tr>
+      <tr>
+        <td><strong style="color:#00aaff">N26</strong></td>
+        <td class="num">4.8M active (2024)</td>
+        <td class="num">€440M (2024)</td>
+        <td class="pos">Q3 2024 первая прибыль</td>
+        <td><span class="badge bg-grn">Банковская (BaFin/ECB)</span></td>
+        <td><span class="badge bg-red">Нет для юрлиц</span></td>
+        <td>Немецкое доверие + лицензия</td>
+      </tr>
+      <tr>
+        <td><strong>Trade Republic</strong></td>
+        <td class="num">10M (апр. 2026)</td>
+        <td class="num">€34.8M прибыль (FY'24)</td>
+        <td class="pos">Прибыльный</td>
+        <td><span class="badge bg-grn">Банковская (ECB, 2023)</span></td>
+        <td><span class="badge bg-red">Нет</span></td>
+        <td>€150B AUM, 4% депозит</td>
+      </tr>
+      <tr>
+        <td><strong>Scalable Capital</strong></td>
+        <td class="num">1M+ (2024)</td>
+        <td>N/A</td>
+        <td class="neu">Неизвестно</td>
+        <td><span class="badge bg-amb">Нет (инвестфирма)</span></td>
+        <td><span class="badge bg-red">Нет</span></td>
+        <td>€30B AUM, robo-advisor</td>
+      </tr>
+      <tr>
+        <td><strong>Qonto</strong></td>
+        <td class="num">~500K SME</td>
+        <td class="num">~€150M (оценка)</td>
+        <td class="neu">Неизвестно</td>
+        <td><span class="badge bg-amb">EMI (Франция)</span></td>
+        <td><span class="badge bg-grn">100% SME фокус</span></td>
+        <td>Chисто SME-banking EU</td>
+      </tr>
+      <tr style="background:rgba(255,45,120,.04)">
+        <td><strong style="color:var(--vp)">Vivid Money</strong></td>
+        <td class="num">~500K retail + ~100K+ SME</td>
+        <td class="num">Не раскрыта</td>
+        <td class="neg">Убыточен (цель 2025)</td>
+        <td><span class="badge bg-pk">EMI (LU) + MiCAR</span></td>
+        <td><span class="badge bg-pk">SME — главный приоритет</span></td>
+        <td>Banking+Investing+AI+Treasury</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="callout bcg-c" style="margin-top:24px">
+    <div class="callout-t">BCG Positioning Statement</div>
+    <div class="callout-b">Vivid занимает уникальное пространство: «SME финансовый супер-апп» с комбинацией banking + investing + treasury + AI. Ни один прямой конкурент не предлагает весь стек. Однако это же означает размытый фокус — и каждый конкурент превосходит Vivid в своей отдельной нише: Revolut Business — по масштабу, Qonto — по SME-только depth, Trade Republic — по investing/savings.</div>
+  </div>
+</section>
+
+<!-- ═══ S11: N26 ═══ -->
+<section class="sec alt" id="n26">
+  <div class="sec-hd">
+    <div class="sec-num">§ 11</div>
+    <div class="sec-titles">
+      <h2>N26 — Детальный анализ</h2>
+      <p>Главный «немецкий конкурент» и единственный с банковской лицензией в Германии.</p>
+    </div>
+  </div>
+  <div class="comp-hd">
+    <div class="comp-logo" style="background:#00aaff;color:#fff">N26</div>
+    <div class="comp-info">
+      <h3>N26 Group</h3>
+      <p>Берлин · Основан 2013 · Банковская лицензия BaFin/ECB (2016)</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Финансовые показатели</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Год</th><th>Выручка</th><th>Чистый убыток</th><th>Активные пользователи</th></tr>
+          <tr><td>2021</td><td class="num">~€130M</td><td class="num neg">~€173M</td><td class="num">~3M</td></tr>
+          <tr><td>2022</td><td class="num">€243M</td><td class="num neg">~€172M</td><td class="num">~4M</td></tr>
+          <tr><td>2023</td><td class="num">~€350M (оц.)</td><td class="num neg">Снижение</td><td class="num">~4.4M</td></tr>
+          <tr><td>2024</td><td class="num pos"><strong>€440M (+40%)</strong></td><td class="num pos"><strong>Первая квартальная прибыль Q3</strong></td><td class="num pos">4.8M</td></tr>
+        </table>
+      </div>
+
+      <h3 class="sub">Структура выручки N26 (2024)</h3>
+      <div class="cb-row"><span class="cb-lbl">Процентный доход</span><div class="cb-track"><div class="cb-fill" style="width:50%;background:#00aaff"></div></div><span class="cb-val">~50%</span></div>
+      <div class="cb-row"><span class="cb-lbl">Interchange</span><div class="cb-track"><div class="cb-fill" style="width:20%;background:#00aaff"></div></div><span class="cb-val">~20%</span></div>
+      <div class="cb-row"><span class="cb-lbl">Подписки</span><div class="cb-track"><div class="cb-fill" style="width:18%;background:#00aaff"></div></div><span class="cb-val">~18%</span></div>
+      <div class="cb-row"><span class="cb-lbl">Партнёрства/прочее</span><div class="cb-track"><div class="cb-fill" style="width:12%;background:#00aaff"></div></div><span class="cb-val">~12%</span></div>
+    </div>
+
+    <div>
+      <h3 class="sub">Ключевые факты</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th colspan="2">Профиль N26</th></tr>
+          <tr><td>Основан</td><td>2013, Берлин</td></tr>
+          <tr><td>Основатели</td><td>Valentin Stalf, Maximilian Tayenthal</td></tr>
+          <tr><td>Лицензия</td><td>Полная банковская (BaFin + ECB supervised, с 2016)</td></tr>
+          <tr><td>Всего привлечено</td><td>~$1.7B</td></tr>
+          <tr><td>Пиковая оценка</td><td>$9B (2021)</td></tr>
+          <tr><td>Рынки</td><td>DE, AT, FR, ES, IT + EU; ушли из США (2022)</td></tr>
+          <tr><td>Регуляторные проблемы</td><td>BaFin ограничил рост клиентской базы 2021-22; лимит снят к 2023</td></tr>
+          <tr><td>SME продукты</td><td>Нет для юридических лиц (только ИП)</td></tr>
+          <tr><td>Ценообразование</td><td>Free / Smart €4.9 / You €9.9 / Metal €16.9/мес</td></tr>
+        </table>
+      </div>
+
+      <div class="hl blu" style="margin-top:16px">
+        <strong>Угроза для Vivid:</strong> N26 с банковской лицензией зарабатывает 50% выручки на NIM — механика недоступная Vivid. Кроме того, для немецких потребителей «банк с BaFin лицензией» = страхование депозитов = доверие. Vivid конкурирует с N26 за розничного немецкого клиента — и структурно проигрывает по доверию.
+      </div>
+
+      <div class="hl grn" style="margin-top:10px">
+        <strong>Возможность для Vivid:</strong> N26 <em>не обслуживает юридические лица</em> вообще. Немецкие SME, лояльные экосистеме N26, могут быть переведены в Vivid Business — особенно с преимуществом treasury + investing.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S12: REVOLUT ═══ -->
+<section class="sec" id="revolut">
+  <div class="sec-hd">
+    <div class="sec-num">§ 12</div>
+    <div class="sec-titles">
+      <h2>Revolut — Детальный анализ</h2>
+      <p>Доминирующий EU neobank. Недостижимый лидер в рознице, но прямой конкурент в SME.</p>
+    </div>
+  </div>
+  <div class="comp-hd">
+    <div class="comp-logo" style="background:#191c57;color:#fff">REV</div>
+    <div class="comp-info">
+      <h3>Revolut Ltd.</h3>
+      <p>Лондон (EU ops: Вильнюс) · Основан 2015 · Банковские лицензии: LT (ECB) + UK (2024)</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Финансовые показатели — Revolut</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Год</th><th>Выручка</th><th>Чистая прибыль</th><th>Пользователи</th><th>Оценка</th></tr>
+          <tr><td>2022</td><td class="num">£850M</td><td class="num neg">-£25M</td><td class="num">20M</td><td class="num">$33B (2021)</td></tr>
+          <tr><td>2023</td><td class="num">£2.2B</td><td class="num pos">£438M</td><td class="num">35M</td><td class="num">$33B</td></tr>
+          <tr><td>2024</td><td class="num pos"><strong>$4.0B (+72%)</strong></td><td class="num pos"><strong>$1.4B</strong></td><td class="num">52.5M</td><td class="num">$45B</td></tr>
+          <tr><td>2025</td><td class="num pos"><strong>£4.5B (+46%)</strong></td><td class="num pos"><strong>$2.3B</strong></td><td class="num">68M+</td><td class="num"><strong>$75B</strong></td></tr>
+        </table>
+      </div>
+
+      <h3 class="sub">Revolut Business — Прямая угроза</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Метрика</th><th>Значение</th></tr>
+          <tr><td>Бизнес-клиенты</td><td class="num">767,000+</td></tr>
+          <tr><td>Рост YoY</td><td class="num pos">+33%</td></tr>
+          <tr><td>Вклад в выручку</td><td class="num">~30% (оценка)</td></tr>
+          <tr><td>Продукты</td><td>Multi-currency, business cards, expense management, loans</td></tr>
+          <tr><td>Преимущество vs. Vivid</td><td>15x больше клиентов, банковская лицензия, кредиты</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Стратегический вывод по Revolut</h3>
+      <div class="callout" style="margin-top:0">
+        <div class="callout-t">❌ Revolut — не прямой конкурент для Vivid</div>
+        <div class="callout-b">Разрыв в масштабе (100x по выручке, 136x по числу пользователей) делает прямую конкуренцию бессмысленной. Vivid должен позиционироваться в нишах, где Revolut слаб: глубокая интеграция investing+treasury для EU SME, AI-productivity tools, регулируемый crypto для бизнеса.</div>
+      </div>
+
+      <h3 class="sub">Слабые места Revolut Business</h3>
+      <ul class="st">
+        <li>Нет серьёзного SME кредитования (только базовые loans)</li>
+        <li>UX для сложного treasury — слабее, чем у специализированных игроков</li>
+        <li>Регуляторные проблемы в ряде EU стран</li>
+        <li>Работа с нишевыми индустриями (крипто, gaming, fintech) ограничена compliance</li>
+        <li>Нет глубоких бухгалтерских интеграций (Datev, Lexoffice)</li>
+      </ul>
+
+      <div class="hl" style="margin-top:16px">
+        <strong>Позиция Vivid:</strong> «Revolut слишком большой и generic. Мы — специализированный EU SME финансовый партнёр с treasury, investing и AI в одном приложении.» Это рабочий narrative против Revolut для SME-продаж.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S13: TRADE REPUBLIC ═══ -->
+<section class="sec alt" id="traderepublic">
+  <div class="sec-hd">
+    <div class="sec-num">§ 13</div>
+    <div class="sec-titles">
+      <h2>Trade Republic — Детальный анализ</h2>
+      <p>От zero-commission брокера к крупнейшей EU инвестиционной платформе с банковской лицензией.</p>
+    </div>
+  </div>
+  <div class="comp-hd">
+    <div class="comp-logo" style="background:#c7f464;color:#0a0a0a">TR</div>
+    <div class="comp-info">
+      <h3>Trade Republic Bank GmbH</h3>
+      <p>Берлин · Основан 2015 · Банковская лицензия ECB (декабрь 2023)</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Финансовые показатели — Trade Republic</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Метрика</th><th>2022</th><th>2023</th><th>2024</th><th>2025-26</th></tr>
+          <tr><td>Пользователи</td><td class="num">~2M</td><td class="num">4M+</td><td class="num">8M (апр.)</td><td class="num pos">10M (апр. 2026)</td></tr>
+          <tr><td>AUM</td><td class="num">~€10B</td><td class="num">€35B+</td><td class="num pos">€100B</td><td class="num pos">€150B (апр. 2026)</td></tr>
+          <tr><td>Прибыль</td><td class="neu">N/A</td><td class="neu">N/A</td><td class="num pos">€34.8M (FY окт.'23-сент.'24)</td><td class="neu">Растёт</td></tr>
+          <tr><td>Привлечено</td><td colspan="4" class="num">€262M (Series C, Sequoia, Accel)</td></tr>
+        </table>
+      </div>
+
+      <h3 class="sub">Продуктовая эволюция</h3>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-date">2015-2020</div>
+          <div class="tl-title">Zero-commission broker</div>
+          <div class="tl-body">Акции, ETF, derivatives — €1 settlement fee. Революционная цена для Германии.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2023</div>
+          <div class="tl-title">💥 4% Savings Account — Game Changer</div>
+          <div class="tl-body">На фоне роста ставок ЕЦБ запустили 4% по незаблокированным остаткам. Взрывной рост: AUM вырос с €35B до €100B за 1 год. Банковская лицензия ECB обеспечила DGS — доверие.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2024</div>
+          <div class="tl-title">Полноценный банк (лицензия ECB)</div>
+          <div class="tl-body">Получение банковской лицензии в декабре 2023. Теперь депозиты застрахованы до €100K. Расширение на 17 стран EU.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Конкуренция с Vivid</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Измерение</th><th>Trade Republic</th><th>Vivid</th></tr>
+          <tr><td>Инвестиции (retail)</td><td class="pos">✓ Доминирует</td><td class="neg">✗ Меньше</td></tr>
+          <tr><td>Savings rate</td><td class="pos">✓ Выше (DGS)</td><td class="neg">✗ EMI, нет DGS</td></tr>
+          <tr><td>Banking features</td><td class="neu">~ Базовый</td><td class="pos">✓ Богаче</td></tr>
+          <tr><td>Cashback</td><td class="neg">✗ Нет</td><td class="pos">✓ Уникальный Stock Rewards</td></tr>
+          <tr><td>SME Banking</td><td class="neg">✗ Нет</td><td class="pos">✓ Главный приоритет</td></tr>
+          <tr><td>Treasury (SME)</td><td class="neg">✗ Нет</td><td class="pos">✓ Live с 2025</td></tr>
+          <tr><td>Кредитование</td><td class="neg">✗ Нет</td><td class="neg">✗ Нет (оба!)</td></tr>
+          <tr><td>Банковская лицензия</td><td class="pos">✓ ECB</td><td class="neg">✗ только EMI</td></tr>
+        </table>
+      </div>
+
+      <div class="hl grn" style="margin-top:16px">
+        <strong>Ключевой insight:</strong> Trade Republic захватил retail investing. Vivid должен отдать эту территорию и сфокусироваться на SME — там Trade Republic отсутствует. Тогда они перестают быть конкурентами и могут стать партнёрами (Vivid Business клиенты инвестируют через TR?).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S14: SCALABLE ═══ -->
+<section class="sec" id="scalable">
+  <div class="sec-hd">
+    <div class="sec-num">§ 14</div>
+    <div class="sec-titles">
+      <h2>Scalable Capital — Детальный анализ</h2>
+      <p>Digital wealth management с B2C и растущим B2B вектором.</p>
+    </div>
+  </div>
+  <div class="comp-hd">
+    <div class="comp-logo" style="background:#ff6b35;color:#fff">SC</div>
+    <div class="comp-info">
+      <h3>Scalable Capital GmbH</h3>
+      <p>Мюнхен · Основан 2014 · Инвестиционная лицензия BaFin</p>
+    </div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Метрика</th><th>Значение</th><th>Дата</th></tr>
+          <tr><td>AUM</td><td class="num pos">€30B+</td><td>Декабрь 2024</td></tr>
+          <tr><td>Клиенты</td><td class="num">1M+</td><td>2024</td></tr>
+          <tr><td>Последний раунд</td><td class="num">$177M (Series E+)</td><td>Q2 2025</td></tr>
+          <tr><td>Всего привлечено</td><td class="num">$535M+</td><td>Накопленно</td></tr>
+          <tr><td>B2B выручка рост</td><td class="num pos">+200% YoY</td><td>2024</td></tr>
+          <tr><td>Инвесторы</td><td colspan="2">BlackRock, Tencent, HV Capital, Tengelmann</td></tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <h3 class="sub">Продукты</h3>
+      <ul class="st">
+        <li><strong>Robo-advisor:</strong> Автоматизированные ETF-портфели (0.75%/год)</li>
+        <li><strong>PRIME Broker:</strong> Прямой trading акций/ETF/крипто (€4.99/месяц)</li>
+        <li><strong>PRIME+:</strong> 4% на свободный кеш, unlimited trading</li>
+        <li><strong>B2B White-label:</strong> Платформа для банков и страховщиков (+200% YoY)</li>
+        <li><strong>EIX:</strong> Собственная торговая площадка (запущена 2024)</li>
+      </ul>
+      <div class="hl gold" style="margin-top:14px">
+        <strong>Overlay с Vivid:</strong> Scalable и Vivid конкурируют в retail investing, но Scalable всё больше B2B и wealth management. Vivid с MiCAR лицензией и treasury имеет продуктовое преимущество для SME-инвестиций. Прямая конкуренция — минимальна при SME-фокусе Vivid.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S15: FEATURE MATRIX ═══ -->
+<section class="sec alt" id="matrix">
+  <div class="sec-hd">
+    <div class="sec-num">§ 15</div>
+    <div class="sec-titles">
+      <h2>Матрица продуктовых фич</h2>
+      <p>Детальное сравнение ключевых возможностей всех игроков.</p>
+    </div>
+  </div>
+
+  <h3 class="sub">Personal Banking</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Фича</th><th>Vivid</th><th>N26</th><th>Revolut</th><th>Trade Republic</th><th>Scalable</th></tr>
+      <tr><td>EU IBAN</td><td class="feat-check">✓</td><td class="feat-check">✓</td><td class="feat-check">✓</td><td class="feat-check">✓</td><td class="feat-cross">✗</td></tr>
+      <tr><td>Мульти-валюта</td><td class="feat-check">✓ 100+</td><td class="feat-part">~ частично</td><td class="feat-check">✓ 30+</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td></tr>
+      <tr><td>Cashback / Rewards</td><td class="feat-check">✓ Stock Rewards (уник.)</td><td class="feat-part">~ базовый</td><td class="feat-check">✓ RevPoints</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td></tr>
+      <tr><td>Суб-счета (Pockets)</td><td class="feat-check">✓ до 15</td><td class="feat-check">✓ Spaces</td><td class="feat-check">✓ Vaults</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td></tr>
+      <tr><td>Банковская лицензия</td><td class="feat-cross">✗ (EMI)</td><td class="feat-check">✓ BaFin</td><td class="feat-check">✓ LT/UK</td><td class="feat-check">✓ ECB</td><td class="feat-cross">✗</td></tr>
+      <tr><td>Страхование депозитов (DGS)</td><td class="feat-cross">✗</td><td class="feat-check">✓ €100K</td><td class="feat-check">✓ €100K (LT)</td><td class="feat-check">✓ €100K</td><td class="feat-cross">✗</td></tr>
+      <tr><td>Savings (% на остаток)</td><td class="feat-check">✓ до 5.39%</td><td class="feat-check">✓ ~3-4%</td><td class="feat-check">✓ Savings Vaults</td><td class="feat-check">✓ 4% (DGS)</td><td class="feat-check">✓ 4%+ (PRIME+)</td></tr>
+      <tr><td>Металлическая карта</td><td class="feat-check">✓ Prime</td><td class="feat-check">✓ Metal</td><td class="feat-check">✓ Ultra/Metal</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td></tr>
+    </table>
+  </div>
+
+  <h3 class="sub" style="margin-top:28px">Investing & Crypto</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Фича</th><th>Vivid</th><th>N26</th><th>Revolut</th><th>Trade Republic</th><th>Scalable Capital</th></tr>
+      <tr><td>Акции/ETF</td><td class="feat-check">✓ 3,000+</td><td class="feat-part">~ ограниченно</td><td class="feat-check">✓ широко</td><td class="feat-check">✓ все доступные</td><td class="feat-check">✓ широко</td></tr>
+      <tr><td>Дробные акции</td><td class="feat-check">✓ от €1</td><td class="feat-cross">✗</td><td class="feat-check">✓</td><td class="feat-check">✓</td><td class="feat-check">✓</td></tr>
+      <tr><td>Crypto</td><td class="feat-check">✓ 300+ MiCAR</td><td class="feat-part">~ ограниченно</td><td class="feat-check">✓ широко</td><td class="feat-check">✓</td><td class="feat-check">✓</td></tr>
+      <tr><td>Precious Metals</td><td class="feat-check">✓</td><td class="feat-cross">✗</td><td class="feat-check">✓</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td></tr>
+      <tr><td>Auto-invest plans</td><td class="feat-check">✓</td><td class="feat-cross">✗</td><td class="feat-check">✓</td><td class="feat-check">✓ Sparplan</td><td class="feat-check">✓ Robo-advisor</td></tr>
+      <tr><td>Комиссия за сделку</td><td class="feat-check">€1 фикс.</td><td class="feat-part">~€0.9+</td><td class="feat-part">Зависит от плана</td><td class="feat-check">€1</td><td class="feat-check">€0 (PRIME)</td></tr>
+      <tr><td>Bonds</td><td class="feat-check">✓ (SME treasury)</td><td class="feat-cross">✗</td><td class="feat-part">~ ограниченно</td><td class="feat-check">✓</td><td class="feat-cross">✗</td></tr>
+    </table>
+  </div>
+
+  <h3 class="sub" style="margin-top:28px">SME / Business Banking</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Фича</th><th>Vivid</th><th>N26</th><th>Revolut Business</th><th>Trade Republic</th><th>Qonto</th></tr>
+      <tr><td>Бизнес-счёт (юрлица)</td><td class="feat-check">✓</td><td class="feat-cross">✗</td><td class="feat-check">✓</td><td class="feat-cross">✗</td><td class="feat-check">✓</td></tr>
+      <tr><td>Мульти-банкинг</td><td class="feat-check">✓ (Pile)</td><td class="feat-cross">✗</td><td class="feat-part">~</td><td class="feat-cross">✗</td><td class="feat-check">✓</td></tr>
+      <tr><td>Treasury (SME)</td><td class="feat-check">✓ iBonds+ETF+MMF</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td></tr>
+      <tr><td>AI Productivity Tools</td><td class="feat-check">✓ AI Employees</td><td class="feat-cross">✗</td><td class="feat-part">~ AI Insights</td><td class="feat-cross">✗</td><td class="feat-part">~ базово</td></tr>
+      <tr><td>MiCAR Crypto (бизнес)</td><td class="feat-check">✓</td><td class="feat-cross">✗</td><td class="feat-part">~</td><td class="feat-cross">✗</td><td class="feat-cross">✗</td></tr>
+      <tr><td><strong style="color:var(--red)">SME Lending</strong></td><td class="feat-cross" style="font-weight:700;color:var(--red)">✗ ПРОБЕЛ</td><td class="feat-cross">✗</td><td class="feat-check">✓ Loans</td><td class="feat-cross">✗</td><td class="feat-part">~ факторинг</td></tr>
+      <tr><td>Expense management</td><td class="feat-part">~</td><td class="feat-cross">✗</td><td class="feat-check">✓</td><td class="feat-cross">✗</td><td class="feat-check">✓</td></tr>
+      <tr><td>Бухгалтерские интеграции</td><td class="feat-part">~ (неизвестно)</td><td class="feat-cross">✗</td><td class="feat-check">✓ Xero, QB</td><td class="feat-cross">✗</td><td class="feat-check">✓ Datev, Lexoffice</td></tr>
+    </table>
+  </div>
+</section>
+
+
+<!-- ═══ S16: PORTER'S FIVE FORCES ═══ -->
+<section class="sec" id="porter">
+  <div class="sec-hd">
+    <div class="sec-num">§ 16</div>
+    <div class="sec-titles">
+      <h2>Porter's Five Forces</h2>
+      <p>Анализ конкурентных сил в сегменте EU SME fintech.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Сила</th><th>Интенсивность</th><th>Ключевые факторы</th></tr>
+          <tr>
+            <td><strong>1. Угроза новых игроков</strong></td>
+            <td><span class="badge bg-amb">Средняя</span></td>
+            <td>Регуляторные барьеры (EMI/банковская лицензия) высоки. Но BaaS (Solarisbank, Swan, Stripe) снижает технический порог. Капитальные требования — реальный барьер.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Угроза субститутов</strong></td>
+            <td><span class="badge bg-red">Высокая</span></td>
+            <td>Традиционные банки (Deutsche Bank, ING) постепенно улучшают SME-UX. Big Tech (Apple, Google) — потенциальные входящие с финансовыми продуктами. Специализированные SaaS (accounting + banking) — угроза снизу.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Рыночная власть поставщиков</strong></td>
+            <td><span class="badge bg-red">Высокая</span></td>
+            <td>Solarisbank — BaFin проблемы, но зависимость сохраняется. Visa — interchange регуляторно ограничен, но зависимость от сети критична. Joompay снизил зависимость, но не устранил.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Рыночная власть клиентов</strong></td>
+            <td><span class="badge bg-amb">Средняя</span></td>
+            <td>SME могут легко сменить банк (низкий switching cost для базового банкинга). Но treasury + investing + AI — создают sticky экосистему. Чем больше интеграций, тем выше retention.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Конкуренция в отрасли</strong></td>
+            <td><span class="badge bg-red">Высокая</span></td>
+            <td>Revolut Business (767K), Qonto (~500K), Penta, Holvi, Tide (UK) активно конкурируют. Традиционные банки защищают enterprise-сегмент. Битва за micro/small SME открыта.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Стратегические импликации</h3>
+      <div class="card" style="border-left:4px solid var(--bcg);margin-bottom:14px">
+        <div class="card-t" style="color:var(--bcg)">Защита от субститутов</div>
+        <p style="font-size:13.5px;margin:0">Единственная защита — глубокая интеграция и switching costs. Treasury + AI tools + investing + banking в одном приложении = чем больше фич использует SME, тем дороже уйти. Vivid правильно выбрал стратегию «super-app» для SME.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--gold);margin-bottom:14px">
+        <div class="card-t" style="color:var(--gold)">Снижение зависимости от поставщиков</div>
+        <p style="font-size:13.5px;margin:0">Joompay — правильный шаг. Следующий: собственная банковская лицензия. Это снизит зависимость от Solarisbank и откроет NIM + DGS. Потребует 18-24 месяца и €10-20M дополнительного капитала.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--vp)">
+        <div class="card-t" style="color:var(--vp)">Дифференциация от конкурентов</div>
+        <p style="font-size:13.5px;margin:0">Ни один прямой конкурент не предлагает: banking + MiCAR crypto + treasury (iBonds/ETF/MMF) + AI tools для EU SME. Это уникальная позиция — нужно aggressively коммуницировать и защищать её быстрым product velocity.</p>
+      </div>
+
+      <div class="hl bcg" style="margin-top:16px">
+        <strong>BCG Вывод:</strong> Отрасль привлекательная (CAGR 21%), но конкурентные силы высоки. Устойчивое преимущество требует либо масштаба (Revolut-путь, недостижим без $1B+), либо глубокой ниши (SME super-app). Vivid правильно выбрал нишу — теперь критично её защитить и монетизировать через lending.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S17: SWOT ═══ -->
+<section class="sec alt" id="swot">
+  <div class="sec-hd">
+    <div class="sec-num">§ 17</div>
+    <div class="sec-titles">
+      <h2>SWOT Анализ</h2>
+      <p>Позиция Vivid через призму сильных/слабых сторон, возможностей и угроз.</p>
+    </div>
+  </div>
+
+  <div class="swot">
+    <div class="swot-cell sw-s">
+      <div class="swot-h">💪 Strengths — Сильные стороны</div>
+      <div class="swot-li">Уникальный Stock Rewards кэшбэк — нет аналогов на рынке</div>
+      <div class="swot-li">EU-wide EMI паспорт (30 EEA стран) через Joompay</div>
+      <div class="swot-li">MiCAR лицензия — редкое конкурентное преимущество для EU crypto</div>
+      <div class="swot-li">Integrated super-app: banking + investing + treasury + AI в одном UI</div>
+      <div class="swot-li">Treasury product — уникален среди SME-fintechs</div>
+      <div class="swot-li">Founders ex-Tinkoff: глубокое понимание data-driven fintech</div>
+      <div class="swot-li">Capital efficiency culture: нет бездумного сжигания денег</div>
+      <div class="swot-li">AI Digital Employees — ранний mover в SME AI productivity</div>
+    </div>
+    <div class="swot-cell sw-w">
+      <div class="swot-h">⚠️ Weaknesses — Слабые стороны</div>
+      <div class="swot-li"><strong>Нет банковской лицензии</strong> — структурный недостаток vs. конкурентов</div>
+      <div class="swot-li">Нет DGS страхования депозитов → недоверие enterprise SME</div>
+      <div class="swot-li"><strong>Нет SME кредитных продуктов</strong> — главный пробел в стеке</div>
+      <div class="swot-li">4 года без нового раунда — давление на капитал</div>
+      <div class="swot-li">Retail user base (~500K) — заморожена без инвестиций в рост</div>
+      <div class="swot-li">Масштаб SME (100K) vs. конкурентов (Revolut 767K, Qonto 500K)</div>
+      <div class="swot-li">Зависимость от Solarisbank с BaFin проблемами</div>
+      <div class="swot-li">Российское происхождение основателей — perception риск в EU</div>
+    </div>
+    <div class="swot-cell sw-o">
+      <div class="swot-h">🚀 Opportunities — Возможности</div>
+      <div class="swot-li"><strong>SME lending</strong> — полностью отсутствует, €20-30B TAM</div>
+      <div class="swot-li">25M EU SME недостаточно обслуживаются традиционными банками</div>
+      <div class="swot-li">FIDA (Open Finance) расширит data aggregation возможности</div>
+      <div class="swot-li">ЕЦБ может снизить ставки → рефокус на credit products</div>
+      <div class="swot-li">Получение банковской лицензии откроет NIM и DGS</div>
+      <div class="swot-li">AI revolution: AI-powered финансовый CFO для SME</div>
+      <div class="swot-li">Партнёрства с accounting software (Datev, Lexoffice) — стик</div>
+      <div class="swot-li">M&A возможности: поглощение нишевых EU fintech игроков</div>
+    </div>
+    <div class="swot-cell sw-t">
+      <div class="swot-h">⛔ Threats — Угрозы</div>
+      <div class="swot-li">Revolut агрессивно масштабирует Business продукт (767K+)</div>
+      <div class="swot-li">Традиционные банки (ING, Deutsche) инвестируют в SME digital</div>
+      <div class="swot-li">Истощение капитала без нового раунда или прибыльности</div>
+      <div class="swot-li">BaFin/ECB ужесточение регуляторики для EMI игроков</div>
+      <div class="swot-li">AI commoditization: Google, Microsoft могут запустить SME AI finance</div>
+      <div class="swot-li">Talent war: сложно нанимать топ-fintech таланты без IPO-перспективы</div>
+      <div class="swot-li">Down round риск при следующем привлечении (оценка €775M 2022 vs. рынок 2026)</div>
+      <div class="swot-li">Конкуренты запустят treasury раньше масштабирования Vivid</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S18: BCG MATRIX ═══ -->
+<section class="sec" id="bcgmatrix">
+  <div class="sec-hd">
+    <div class="sec-num">§ 18</div>
+    <div class="sec-titles">
+      <h2>BCG Growth-Share Matrix</h2>
+      <p>Анализ продуктового портфеля Vivid и стратегические приоритеты ресурсов.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Портфельная матрица</h3>
+      <div style="text-align:center;margin-bottom:8px">
+        <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:2px">
+          <div style="padding:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--txt2);writing-mode:vertical-lr;transform:rotate(180deg)">↑ Рост рынка</div>
+          <div style="background:rgba(0,154,68,.12);border-radius:10px 0 0 0;padding:20px">
+            <div style="font-size:10px;font-weight:700;color:var(--bcg);margin-bottom:8px">⭐ STARS (Инвестировать)</div>
+            <div style="font-size:12.5px;color:var(--txt)">• <strong>SME Business Account</strong> — высокий рост, быстро набирает долю</div>
+            <div style="font-size:12.5px;color:var(--txt);margin-top:6px">• <strong>Treasury для SME</strong> — +2.5x YoY, уникальный продукт</div>
+          </div>
+          <div style="background:rgba(59,130,246,.08);border-radius:0 10px 0 0;padding:20px">
+            <div style="font-size:10px;font-weight:700;color:#2563eb;margin-bottom:8px">❓ QUESTION MARKS (Решить)</div>
+            <div style="font-size:12.5px;color:var(--txt)">• <strong>AI Digital Employees</strong> — рынок растёт, доля не ясна</div>
+            <div style="font-size:12.5px;color:var(--txt);margin-top:6px">• <strong>Crypto (MiCAR)</strong> — большой рынок, насколько sticky?</div>
+            <div style="font-size:12.5px;color:var(--txt);margin-top:6px">• <strong>SME Lending</strong> — НЕ ЗАПУЩЕНО, огромный потенциал</div>
+          </div>
+          <div style="padding:8px"></div>
+          <div style="background:rgba(245,158,11,.08);border-radius:0 0 0 10px;padding:20px">
+            <div style="font-size:10px;font-weight:700;color:#d97706;margin-bottom:8px">🐄 CASH COWS (Доить)</div>
+            <div style="font-size:12.5px;color:var(--txt)">• <strong>Prime Subscription</strong> — стабильный recurring revenue</div>
+            <div style="font-size:12.5px;color:var(--txt);margin-top:6px">• <strong>Stock Rewards Cashback</strong> — дифференцирует, удерживает</div>
+          </div>
+          <div style="background:rgba(239,68,68,.06);border-radius:0 0 10px 0;padding:20px">
+            <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:8px">🐕 DOGS (Сократить)</div>
+            <div style="font-size:12.5px;color:var(--txt)">• <strong>Retail banking expansion</strong> — медленный рост, малая доля</div>
+            <div style="font-size:12.5px;color:var(--txt);margin-top:6px">• <strong>New retail user acquisition</strong> — официально де-приоритетизирован</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0 0 48px;font-size:11px;color:var(--txt2)"><span>← Высокая доля рынка</span><span>Низкая доля рынка →</span></div>
+      </div>
+    </div>
+    <div>
+      <h3 class="sub">Ресурсные рекомендации (BCG-логика)</h3>
+
+      <div class="rec" style="margin-bottom:16px">
+        <div class="rec-n">01</div>
+        <div class="rec-t">Инвестировать в Stars: SME Banking + Treasury</div>
+        <div class="rec-b">Это главные growth engines. Цель — удвоить SME базу в 12 месяцев (100K → 200K+). Treasury — защита от копирования (MiCAR + investing combo сложно реплицировать быстро).</div>
+        <div class="rec-tags"><span class="rtag">Приоритет: Высший</span><span class="rtag">Горизонт: 0-12 мес</span></div>
+      </div>
+
+      <div class="rec" style="margin-bottom:16px">
+        <div class="rec-n">02</div>
+        <div class="rec-t">Запустить Question Mark: SME Lending</div>
+        <div class="rec-b">Это трансформационная возможность. Конвертирует Question Mark в Star. Удвоит ARPU. Требует партнёрства (Lender-on-Record) или собственной лицензии. Именно здесь нужен Евгений.</div>
+        <div class="rec-tags"><span class="rtag">Приоритет: Высший</span><span class="rtag">Горизонт: 6-18 мес</span></div>
+      </div>
+
+      <div class="rec">
+        <div class="rec-n">03</div>
+        <div class="rec-t">Монетизировать Cash Cow: Prime Subscription</div>
+        <div class="rec-b">Удержать существующих Prime пользователей с минимальными инвестициями. Возможно повышение цены (€9.90 → €12-14) если добавить SME-фичи. Переключить розничных пользователей на SME путь.</div>
+        <div class="rec-tags"><span class="rtag">Приоритет: Средний</span><span class="rtag">Горизонт: 12-24 мес</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S19: SCENARIOS ═══ -->
+<section class="sec alt" id="scenarios">
+  <div class="sec-hd">
+    <div class="sec-num">§ 19</div>
+    <div class="sec-titles">
+      <h2>Стратегические сценарии</h2>
+      <p>Три возможных пути развития Vivid. Как BCG-партнёр, ты должен понять, какой сценарий они выбирают.</p>
+    </div>
+  </div>
+
+  <div class="g3">
+    <div class="card" style="border-top:4px solid var(--bcg)">
+      <div style="font-size:10px;font-weight:700;color:var(--bcg);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Сценарий A (Рекомендуемый)</div>
+      <div class="card-t">🚀 «EU SME Full Stack» — Unicorn Path</div>
+      <p style="font-size:13.5px">Vivid становится единственным EU SME финансовым партнёром с полным стеком: banking + investing + treasury + <strong>lending</strong> + AI. Поднимает Series D при оценке €1.5-2B. Получает банковскую лицензию (18-24 мес). К 2028: 500K SME клиентов, €500M+ ARR.</p>
+      <div class="hl bcg" style="margin-top:12px;font-size:13px"><strong>Триггер успеха:</strong> Запуск lending (6-12 мес) + новый раунд (12-18 мес) + banking лицензия (24 мес)</div>
+      <div style="margin-top:10px"><span class="badge bg-grn">Вероятность: 35%</span></div>
+    </div>
+
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <div style="font-size:10px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Сценарий B (Реалистичный)</div>
+      <div class="card-t">💰 «Profitable Niche Player» — Bootstrap Path</div>
+      <p style="font-size:13.5px">Vivid не привлекает новый раунд. Достигает операционной прибыльности через оптимизацию CAC, удержание 100-150K SME клиентов, treasury fees и подписочную модель. Строит устойчивый €100-200M ARR бизнес. Возможно M&A-exit.</p>
+      <div class="hl gold" style="margin-top:12px;font-size:13px"><strong>Триггер:</strong> Достижение unit economics положительных при текущей базе без агрессивного роста</div>
+      <div style="margin-top:10px"><span class="badge bg-amb">Вероятность: 40%</span></div>
+    </div>
+
+    <div class="card" style="border-top:4px solid var(--red)">
+      <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Сценарий C (Нежелательный)</div>
+      <div class="card-t">⛔ «Capital Crunch» — Distressed Path</div>
+      <p style="font-size:13.5px">Капитал заканчивается до достижения прибыльности. Down round при оценке <€300M. Продажа стратегическому игроку (Qonto? ING? Deutsche Bank?) или постепенное схлопывание. Команда расходится.</p>
+      <div class="hl" style="margin-top:12px;font-size:13px"><strong>Триггер риска:</strong> Неспособность показать trajectory к прибыльности в 2026</div>
+      <div style="margin-top:10px"><span class="badge bg-red">Вероятность: 25%</span></div>
+    </div>
+  </div>
+
+  <div class="callout bcg-c" style="margin-top:24px">
+    <div class="callout-t">🎯 Вопрос, который нужно прояснить на встрече</div>
+    <div class="callout-b">
+      Какой сценарий фаундеры считают своим? Это определяет всё: стратегические решения, найм, продуктовый roadmap, следующий раунд. Если они на пути B (bootstrapped profitability) — твой value prop другой, чем на пути A (aggressive growth). Прямо спроси: «What's your 3-year vision — profitable niche player or going for €1B+ scale?»
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S20: BCG RECOMMENDATIONS ═══ -->
+<section class="sec" id="recs">
+  <div class="sec-hd">
+    <div class="sec-num">§ 20</div>
+    <div class="sec-titles">
+      <h2>BCG-Style Рекомендации</h2>
+      <p>Если бы ты был партнёром BCG, нанятым Vivid — вот твой совет.</p>
+    </div>
+  </div>
+
+  <div class="callout bcg-c">
+    <div class="callout-t">BCG Engagement Summary</div>
+    <div class="callout-b">Vivid находится в критической точке: правильный пивот в SME, уникальный продукт, растущая база, но дефицит по двум осям — капитал и монетизация. Рекомендации ниже организованы по горизонтам «Now / Next / Later» — стандартный BCG-формат.</div>
+  </div>
+
+  <h3 class="sub">Now (0-6 месяцев): Stabilize & Monetize</h3>
+  <div class="g2">
+    <div class="rec">
+      <div class="rec-n">01</div>
+      <div class="rec-t">Запустить Lending MVP через Lender-on-Record партнёрство</div>
+      <div class="rec-b">Не нужна собственная лицензия для старта. Партнёрство с European bank (SolarisBank, Multitude, или другим) как Lender-on-Record. Запустить Working Capital Line для SME €5K-€50K. Первые €10M портфеля — за 6 месяцев реально. Это немедленно трансформирует unit economics: ARPU SME x3-5.</div>
+      <div class="rec-tags"><span class="rtag">Impact: Revenue +300%</span><span class="rtag">Timeline: 6 мес</span><span class="rtag">Risk: Средний</span></div>
+    </div>
+    <div class="rec">
+      <div class="rec-n">02</div>
+      <div class="rec-t">Поднять цену Prime / ввести SME тарифные планы</div>
+      <div class="rec-b">€9.90/мес для Prime — недооценённый продукт. Можно поднять до €12-14 при добавлении SME-функций. Создать чёткие SME тарифы: Basic €15/мес, Growth €49/мес (treasury included), Scale €149/мес. Это немедленно улучшит ARPU без CAC.</div>
+      <div class="rec-tags"><span class="rtag">Impact: ARPU +40%</span><span class="rtag">Timeline: 3 мес</span><span class="rtag">Risk: Низкий</span></div>
+    </div>
+  </div>
+
+  <h3 class="sub" style="margin-top:28px">Next (6-18 месяцев): Scale & Differentiate</h3>
+  <div class="g2">
+    <div class="rec">
+      <div class="rec-n">03</div>
+      <div class="rec-t">Углубить accounting интеграции: Datev, Lexoffice, Xero</div>
+      <div class="rec-b">Для немецких SME Datev — критичная интеграция. Qonto уже это делает — Vivid отстаёт. Без Datev-интеграции крупный немецкий SME не сделает Vivid основным банком. Это также создаёт switching costs: бухгалтерский workflow привязывает клиента.</div>
+      <div class="rec-tags"><span class="rtag">Impact: Retention +25%</span><span class="rtag">Timeline: 9 мес</span><span class="rtag">Risk: Низкий</span></div>
+    </div>
+    <div class="rec">
+      <div class="rec-n">04</div>
+      <div class="rec-t">Поднять Series D: €150-200M при оценке €1.2-1.5B</div>
+      <div class="rec-b">Без нового раунда Сценарий C становится реальным. Нарратив для инвесторов: «EU SME super-app с banking + investing + treasury + lending. 100K+ клиентов, растём 3K/мес, treasury x3 YoY.» Greenoaks и Ribbit — правоверные союзники. Целевые новые инвесторы: Nordic Capital, Permira, Eurazeo (EU SME focussed).</div>
+      <div class="rec-tags"><span class="rtag">Impact: Survival</span><span class="rtag">Timeline: 12-18 мес</span><span class="rtag">Risk: Высокий</span></div>
+    </div>
+  </div>
+
+  <h3 class="sub" style="margin-top:28px">Later (18-36 месяцев): Transform & Win</h3>
+  <div class="g2">
+    <div class="rec">
+      <div class="rec-n">05</div>
+      <div class="rec-t">Получить банковскую лицензию (ECB / BaFin)</div>
+      <div class="rec-b">Это unlock DGS (страхование €100K), NIM доход, собственное кредитование без Lender-on-Record. Процесс: 18-36 мес, €10-20M capital requirements. Альтернатива — купить небольшой licensed bank. Пример: Trade Republic получила ECB лицензию за ~2 года. Без лицензии Vivid останется структурно слабее конкурентов.</div>
+      <div class="rec-tags"><span class="rtag">Impact: Трансформационный</span><span class="rtag">Timeline: 24-36 мес</span><span class="rtag">Risk: Высокий но необходим</span></div>
+    </div>
+    <div class="rec">
+      <div class="rec-n">06</div>
+      <div class="rec-t">Построить «EU SME Financial OS» — стать платформой</div>
+      <div class="rec-b">Долгосрочная vision: Vivid — не просто банк для SME, а financial operating system. Embedded finance API для других игроков (как Stripe для платежей). B2B white-label treasury для нефинансовых компаний. AI CFO assistant как standalone SaaS. Монетизация через SaaS + финансовые продукты.</div>
+      <div class="rec-tags"><span class="rtag">Impact: Платформенный</span><span class="rtag">Timeline: 36+ мес</span><span class="rtag">Risk: Высокий</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S21: MY PROFILE ═══ -->
+<section class="sec dark" id="myprofile">
+  <div class="sec-hd">
+    <div class="sec-num" style="color:var(--vp)">§ 21</div>
+    <div class="sec-titles">
+      <h2>Мой профиль</h2>
+      <p style="color:rgba(255,255,255,.45)">Почему именно мой опыт релевантен для Vivid прямо сейчас.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="profile">
+      <div class="p-av">ЕМ</div>
+      <div class="p-name">Евгений Муравев</div>
+      <div class="p-role">Head of B2B Fintech @ Tabby · Dubai, UAE · 16 лет в product</div>
+      <ul class="st" style="margin-top:12px">
+        <li style="color:rgba(255,255,255,.75)">P&L owner B2B fintech (23 FTE, Tabby)</li>
+        <li style="color:rgba(255,255,255,.75)">Scaled SME lending $0→$50M+ (Tabby, &lt;12 мес)</li>
+        <li style="color:rgba(255,255,255,.75)">Scaled SME lending $57M→$502M (Ozon, 18 мес)</li>
+        <li style="color:rgba(255,255,255,.75)">Полный кредитный стек: underwriting, ECL, collections</li>
+        <li style="color:rgba(255,255,255,.75)">BIN issuance + Apple Issuer Certification</li>
+        <li style="color:rgba(255,255,255,.75)">SAMA + CBUAE лицензионные подачи</li>
+        <li style="color:rgba(255,255,255,.75)">AI agent stack для fintech (BigQuery/Slack/Notion)</li>
+        <li style="color:rgba(255,255,255,.75)">9 лет Head of Product, 16 лет в продукте</li>
+      </ul>
+      <div class="p-stats">
+        <div><div class="ps-v">9x</div><div class="ps-l">Рост портфеля Ozon за 18 мес</div></div>
+        <div><div class="ps-v">$50M+</div><div class="ps-l">SME lending с нуля @ Tabby</div></div>
+        <div><div class="ps-v">16Y</div><div class="ps-l">Опыт в product management</div></div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub" style="color:#fff">Ключевые роли</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Компания</th><th>Роль</th><th>Ключевой результат</th></tr>
+          <tr><td><strong>Tabby</strong><br><span style="font-size:11px;color:var(--txt2)">2024-наст.</span></td><td>Head of Product, B2B Fintech</td><td class="pos">$0→$50M+ SME loans; BIN issuance; SAMA+CBUAE submissions</td></tr>
+          <tr><td><strong>Ozon Fintech</strong><br><span style="font-size:11px;color:var(--txt2)">2023-24</span></td><td>Head of Product, B2B Fintech</td><td class="pos">$57M→$502M (9x) за 18 мес; 78% N+1 retention; $15M factoring</td></tr>
+          <tr><td><strong>X5 Retail Group</strong><br><span style="font-size:11px;color:var(--txt2)">2021-22</span></td><td>Head of Product, Operations</td><td>$543M revenue uplift; org 7→3 layers (3000 managers cut)</td></tr>
+          <tr><td><strong>NetByNet</strong><br><span style="font-size:11px;color:var(--txt2)">2019-21</span></td><td>Head of Marketing & Product</td><td>+6% MAU YoY; первый FVNO в СНГ; $60M CAPEX saved</td></tr>
+          <tr><td><strong>VEON</strong><br><span style="font-size:11px;color:var(--txt2)">2010-17</span></td><td>TPM → Sr. TPM</td><td>0→1 запуск 6 продуктов; $2.47M call-center savings</td></tr>
+        </table>
+      </div>
+
+      <div class="hl" style="margin-top:16px;background:rgba(255,255,255,.05);border-left-color:var(--vp)">
+        <strong style="color:#fff">Критический факт:</strong> <span style="color:rgba(255,255,255,.7)">Основатели Vivid — ex-Tinkoff. Ты строил B2B fintech в Ozon и Tabby — аналоги Tinkoff в маркетплейс-экосистемах. У вас одинаковый DNA: data-driven, aggressive scaling, кредит как стержень монетизации. Это не просто совпадение — это культурный матч.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S22: VALUE PROPOSITION ═══ -->
+<section class="sec" id="valueprop">
+  <div class="sec-hd">
+    <div class="sec-num">§ 22</div>
+    <div class="sec-titles">
+      <h2>Мой Value Proposition для Vivid</h2>
+      <p>Конкретные области, где твой опыт создаёт наибольшую ценность прямо сейчас.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-t">🎯 Главный нарратив</div>
+    <div class="callout-b">
+      У Vivid есть 100K+ SME-клиентов, растущая treasury платформа и амбиция стать «EU SME Financial OS».
+      Главная недостающая деталь — кредитный продукт. Я единственный человек на рынке, который дважды
+      построил SME lending с нуля в масштабируемой fintech-платформе и знает полный стек от underwriting
+      до коллекций. Именно это нужно Vivid прямо сейчас.
+    </div>
+  </div>
+
+  <div class="g2" style="margin-top:24px">
+    <div>
+      <h3 class="sub">Маппинг: Мой опыт → Потребности Vivid</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Потребность Vivid</th><th>Мой опыт</th><th>Доказательство</th></tr>
+          <tr>
+            <td style="color:var(--vp);font-weight:600">SME Lending запуск</td>
+            <td>0→1 lending дважды</td>
+            <td class="pos">Tabby $0→$50M; Ozon $57M→$502M</td>
+          </tr>
+          <tr>
+            <td>Полный кредитный стек</td>
+            <td>Underwriting, ECL, collections, reconciliation, CRM</td>
+            <td class="pos">Built at Tabby (3 Lender-on-Record models)</td>
+          </tr>
+          <tr>
+            <td>Регуляторные сабмиты</td>
+            <td>Lending license пакеты</td>
+            <td class="pos">SAMA + CBUAE submissions @ Tabby</td>
+          </tr>
+          <tr>
+            <td>BIN issuance / Business Card</td>
+            <td>BIN issuance + Apple Issuer Certification</td>
+            <td class="pos">Business card 0→1 @ Tabby</td>
+          </tr>
+          <tr>
+            <td>AI для fintech</td>
+            <td>AI agent stack (underwriting, CX, OSINT KYC)</td>
+            <td class="pos">BigQuery/Slack/Granola/Notion pipeline @ Tabby</td>
+          </tr>
+          <tr>
+            <td>Масштабирование команд</td>
+            <td>Hiring & leading product teams 23-30 FTE</td>
+            <td class="pos">30 FTE @ Ozon, 23 FTE @ Tabby</td>
+          </tr>
+          <tr>
+            <td>B2B SME UX/Journey</td>
+            <td>78% N+1 retention через journey redesign</td>
+            <td class="pos">Ozon SME lending retention</td>
+          </tr>
+          <tr>
+            <td>Unit economics discipline</td>
+            <td>2x NTM через pricing optimization</td>
+            <td class="pos">Ozon payout fee 2.2% → 4.5%</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Конкретные Quick Wins (первые 90 дней)</h3>
+
+      <div class="card" style="border-left:4px solid var(--bcg);margin-bottom:14px">
+        <div class="card-t" style="color:var(--bcg)">Week 1-4: SME Lending Strategy</div>
+        <ul class="st" style="margin-top:8px">
+          <li>Аудит текущей SME базы: кредитный спрос, segmentation</li>
+          <li>Выбор Lender-on-Record партнёра (EU candidates)</li>
+          <li>Дизайн MVP: Working Capital Line €5K-€100K</li>
+          <li>Underwriting framework на базе transaction data (Vivid уже видит обороты)</li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--vp);margin-bottom:14px">
+        <div class="card-t" style="color:var(--vp)">Month 2-3: AI для андеррайтинга</div>
+        <ul class="st" style="margin-top:8px">
+          <li>OSINT-based KYB: UBO checks через AI агентов (мой опыт @ Tabby)</li>
+          <li>Автоматический скоринг на основе treasury/transaction data</li>
+          <li>3pp Approval Rate improvement через external data sources</li>
+          <li>ECL модель: Expected Credit Loss для EU SME портфеля</li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--gold)">
+        <div class="card-t" style="color:var(--gold)">Month 3+: Scale & Regulatory</div>
+        <ul class="st" style="margin-top:8px">
+          <li>Подготовка к EU banking license application</li>
+          <li>Factoring product для SME с marketplace-like клиентами</li>
+          <li>Revenue-Based Financing для e-commerce SME (мой опыт @ Ozon)</li>
+          <li>Cross-sell: lending → treasury → payments integration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S23: SME LENDING OPP ═══ -->
+<section class="sec alt" id="lending">
+  <div class="sec-hd">
+    <div class="sec-num">§ 23</div>
+    <div class="sec-titles">
+      <h2>SME Lending: Главная Возможность</h2>
+      <p>Детальный разбор самого очевидного и трансформационного шага для Vivid — и твоей точки входа.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-bottom:28px">
+    <div class="callout-t">💡 Почему это самый важный следующий шаг для Vivid</div>
+    <div class="callout-b">
+      Vivid обслуживает 100K+ SME клиентов. Видит их транзакции. Видит treasury. Видит обороты. Это идеальные данные для кредитного скоринга. Отсутствие кредитного продукта — это не стратегический выбор, это просто незакрытый пробел. Каждый месяц без lending Vivid теряет $500-1500 потенциального годового ARPU на каждом SME клиенте, который берёт кредит у другого банка.
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Экономика SME Lending</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Параметр</th><th>Значение</th><th>Источник</th></tr>
+          <tr><td>EU SME lending TAM</td><td class="num">€1.5T ежегодно</td><td>ECB SME Finance statistics</td></tr>
+          <tr><td>Средний кредит micro SME</td><td class="num">€10K-€100K</td><td>Отраслевые данные</td></tr>
+          <tr><td>Средняя ставка (EU fintech)</td><td class="num">8-18% p.a.</td><td>Revolut Business, Qonto</td></tr>
+          <tr><td>ARPU с lending</td><td class="num pos">€500-1,500/год</td><td>vs €100-300 без</td></tr>
+          <tr><td>LTV/CAC с lending</td><td class="num pos">5-10x</td><td>vs 1-2x без</td></tr>
+          <tr><td>Retention (с кредитом)</td><td class="num pos">>90%</td><td>Табби, Ozon данные</td></tr>
+        </table>
+      </div>
+
+      <h3 class="sub" style="margin-top:24px">Мои прецеденты</h3>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Компания</th><th>Стартовые условия</th><th>Результат за 18 мес</th></tr>
+          <tr>
+            <td><strong>Ozon Fintech</strong></td>
+            <td>$57M существующий портфель, marketplace ecosystem</td>
+            <td class="pos">$502M (9x рост) — stock-secured + vehicle-secured lending</td>
+          </tr>
+          <tr>
+            <td><strong>Tabby B2B</strong></td>
+            <td>$0 (с нуля), BNPL платформа, 40K+ merchants</td>
+            <td class="pos">$50M+ за <12 мес — term loans + RBF + 3 Lender-on-Record модели</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Дорожная карта запуска (как я бы это делал)</h3>
+
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-date">Месяц 1-2</div>
+          <div class="tl-title">Underwriting Framework</div>
+          <div class="tl-body">Segmentation Vivid SME базы. Дизайн scorecard на основе: transaction history, treasury balance, business age, industry. Vivid уже имеет лучшие данные для скоринга — лучше любого банка.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Месяц 2-3</div>
+          <div class="tl-title">Lender-on-Record Partnership</div>
+          <div class="tl-body">Выбор EU лицензированного банка-партнёра. Европейские кандидаты: Multitude Bank (Мальта), CreditPlus, или крупный банк. Структура: Vivid генерирует leads + underwriting, банк выдаёт кредит, Vivid зарабатывает fee + servicing.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Месяц 3-6</div>
+          <div class="tl-title">MVP: Working Capital Line</div>
+          <div class="tl-body">Запуск для 1,000 наиболее creditworthy SME клиентов. Лимиты €5K-€50K. Срок 6-12 месяцев. Ставка 9-15% p.a. Онбординг: 100% online через Vivid app. AI OSINT для KYB/UBO verification.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Месяц 6-12</div>
+          <div class="tl-title">Scale: €10-50M Portfolio</div>
+          <div class="tl-body">Расширение на все qualified SME. Запуск invoice factoring (Vivid видит инвойсы через multi-banking). RBF для e-commerce SME с платёжными данными. Первые €10M → target €50M за год.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">12-24 мес</div>
+          <div class="tl-title">Own Balance Sheet</div>
+          <div class="tl-body">После доказательства credit book — привлечение warehouse facility. Переход с Lender-on-Record на собственный баланс. €100M+ портфель. Это фундамент для банковской лицензии application.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-top:24px">
+    <div class="mc"><div class="mc-v" style="font-size:22px;background:var(--vgrad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">€15-30M</div><div class="mc-l">Дополнительный ARR при 10% penetration в 100K SME</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">3-5x</div><div class="mc-l">Мультипликатор ARPU у SME клиента с кредитом vs. без</div></div>
+    <div class="mc"><div class="mc-v" style="font-size:22px">&gt;90%</div><div class="mc-l">Retention у клиентов с активным кредитом (данные Ozon/Tabby)</div></div>
+  </div>
+</section>
+
+<!-- ═══ S24: QUESTIONS ═══ -->
+<section class="sec" id="questions">
+  <div class="sec-hd">
+    <div class="sec-num">§ 24</div>
+    <div class="sec-titles">
+      <h2>Вопросы для фаундеров</h2>
+      <p>Умные вопросы демонстрируют подготовку и открывают стратегический диалог.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">🎯 Стратегические вопросы</h3>
+
+      <div class="qcard">
+        <div class="q-n">1</div>
+        <div>
+          <div class="q-t">«What's your 3-year north star — 300K profitable SME clients, or going for €1B+ ARR unicorn scale?»</div>
+          <div class="q-w">Определяет всё. Если нишевая прибыльность — одна стратегия. Если unicorn path — нужен Series D и кредитование. Ответ подскажет, какую роль тебе предложить.</div>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q-n">2</div>
+        <div>
+          <div class="q-t">«When are you launching SME lending and why haven't you yet?»</div>
+          <div class="q-w">Прямой вопрос по главному продуктовому пробелу. Их ответ покажет: (a) есть ли план; (b) какие барьеры (капитал? регуляторика? команда?); (c) насколько срочна проблема для них.</div>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q-n">3</div>
+        <div>
+          <div class="q-t">«How long is your runway and what's the path to profitability?»</div>
+          <div class="q-w">Деликатный, но необходимый. 4 года без раунда — либо discipline, либо problem. Их ответ определяет срочность Series D и твоё переговорное position.</div>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q-n">4</div>
+        <div>
+          <div class="q-t">«What's your moat against Revolut Business 5 years from now?»</div>
+          <div class="q-w">Revolut Business: 767K клиентов, $75B оценка. Что не позволит им скопировать Vivid treasury + AI? Их ответ покажет стратегическое мышление и защищённость позиции.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">💡 Вопросы для позиционирования себя</h3>
+
+      <div class="qcard">
+        <div class="q-n">5</div>
+        <div>
+          <div class="q-t">«What's the biggest bottleneck to doubling your SME base in 12 months?»</div>
+          <div class="q-w">Позволяет тебе показать понимание их проблем. Вероятный ответ: «продуктовая глубина» или «кредитный продукт». Это твой момент для pitch.</div>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q-n">6</div>
+        <div>
+          <div class="q-t">«Have you thought about RBF or invoice factoring for your SME clients — they already have their transaction data in Vivid?»</div>
+          <div class="q-w">Демонстрирует понимание их data assets и lending mechanics. Может зажечь их энтузиазм и сразу показать твою ценность как эксперта по SME lending.</div>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q-n">7</div>
+        <div>
+          <div class="q-t">«Я строил SME lending в Ozon и Tabby — оба раза с нуля, оба раза 9x+ рост. Вам интересно обсудить, как это могло бы выглядеть у вас?»</div>
+          <div class="q-w">Прямое предложение ценности. Говори на русском — это снижает барьер и создаёт доверие как с «своими». Это может открыть разговор о конкретном сотрудничестве.</div>
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q-n">8</div>
+        <div>
+          <div class="q-t">«What does success look like for you personally in 5 years with Vivid?»</div>
+          <div class="q-w">Человеческий вопрос. Что ими движет: IPO, M&A exit, продукт-дело-жизни? Понимание личной мотивации основателей критично для любого партнёрства.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout bcg-c" style="margin-top:24px">
+    <div class="callout-t">🗣️ Тактика ведения встречи</div>
+    <div class="callout-b">
+      <strong>Первые 10 минут:</strong> Слушай, задавай вопросы 1-2. Позволь им рассказать свою историю.<br>
+      <strong>Середина:</strong> Покажи, что ты понимаешь их бизнес лучше, чем большинство кандидатов. Упомяни конкретные числа (50K→100K SME, treasury 3x YoY).<br>
+      <strong>Конец:</strong> «Я дважды строил именно то, что вам нужно дальше. Давайте обсудим, как мы могли бы работать вместе.»<br>
+      <strong>Говори на русском</strong> — это создаёт доверие с ex-Tinkoff основателями.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S25: CAREER ═══ -->
+<section class="sec alt" id="career">
+  <div class="sec-hd">
+    <div class="sec-num">§ 25</div>
+    <div class="sec-titles">
+      <h2>Карьерная стратегия</h2>
+      <p>Как Vivid вписывается в твою карьерную траекторию — и почему это взаимовыгодно.</p>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div>
+      <h3 class="sub">Что ты получаешь от Vivid</h3>
+
+      <div class="card" style="border-top:3px solid var(--bcg);margin-bottom:14px">
+        <div class="card-t">🇪🇺 EU Fintech Footprint</div>
+        <p style="font-size:13.5px">Твой опыт — СНГ (Ozon, X5, МегаФон) + MENA (Tabby). Vivid даёт EU-опыт. Это критически важно для любого следующего шага в европейском или глобальном fintech. EU regulatory know-how (BaFin, CSSF, ECB, PSD2/3) = редкий актив.</p>
+      </div>
+
+      <div class="card" style="border-top:3px solid var(--vp);margin-bottom:14px">
+        <div class="card-t">🚀 Equity в потенциальном Unicorn</div>
+        <p style="font-size:13.5px">Vivid последний оценивался в €775M. При успешном lending запуске и Series D — потенциал €1.5-2B+. Equity на уровне Head of Product / VP = 0.2-0.5% = €3-10M при successful exit. Это твоя первая реальная equity story в EU fintech.</p>
+      </div>
+
+      <div class="card" style="border-top:3px solid var(--gold)">
+        <div class="card-t">📚 «Third Time Founder» Narrative</div>
+        <p style="font-size:13.5px">После Ozon и Tabby — третий раз строишь SME lending с нуля, но теперь в EU с регуляторным и культурным масштабом. Это делает тебя самым credible EU SME lending builder на рынке. Открывает путь к: VC partnerships, advisory, собственному EU fintech стартапу.</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub">Возможные форматы сотрудничества</h3>
+
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Формат</th><th>Описание</th><th>Для тебя</th></tr>
+          <tr>
+            <td><strong>VP Product, SME</strong></td>
+            <td>Полная занятость, P&L owner SME fintech вертикали. Команда 20-30 FTE.</td>
+            <td class="pos">Equity + EU brand + lending scale</td>
+          </tr>
+          <tr>
+            <td><strong>Head of Lending (0→1)</strong></td>
+            <td>Специализированная роль: запустить SME lending с нуля, потом расширить до VP.</td>
+            <td class="pos">Максимальный impact первого года</td>
+          </tr>
+          <tr>
+            <td><strong>Strategic Advisor</strong></td>
+            <td>3-6 месяцев advisory по lending launch strategy. Cash + equity.</td>
+            <td class="neu">Меньше риска, меньше upside</td>
+          </tr>
+          <tr>
+            <td><strong>Fractional CPO B2B</strong></td>
+            <td>50% времени, помогаешь запустить lending, остаёшься в Tabby.</td>
+            <td class="neu">Диверсификация, но размытость</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="hl bcg" style="margin-top:16px">
+        <strong>Рекомендация:</strong> VP Product SME — оптимальный вариант. Даёт EU footprint, equity, и третий mastery-proof в портфеле. После 2-3 лет ты — самый credible EU SME fintech builder с рельсами для собственного стартапа или C-level в крупном EU fintech (Monzo, Revolut).
+      </div>
+
+      <h3 class="sub" style="margin-top:24px">Твоя долгосрочная карьерная арка</h3>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-date">Сейчас</div>
+          <div class="tl-title">Head of B2B Fintech @ Tabby (Dubai)</div>
+          <div class="tl-body">Strong track record в MENA. Но нет EU опыта, нет equity story в публичном/крупном EU fintech.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2026-2028</div>
+          <div class="tl-title">VP Product SME @ Vivid (Berlin)</div>
+          <div class="tl-body">Запускаешь SME lending в EU. Строишь EU regulatory знание. Получаешь equity в €1B+ компании. Публичный трек record строителя EU SME fintech.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2028-2030</div>
+          <div class="tl-title">CPO/Co-founder уровень</div>
+          <div class="tl-body">После Vivid: (a) CPO в крупном EU/Global fintech (Revolut, N26, Wise); (b) собственный EU SME fintech стартап с готовой командой и relationships; (c) EIR в EU fintech VC (Ribbit, Greenoaks знают тебя через Vivid).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<section class="sec dark" style="padding:36px 56px">
+  <div style="text-align:center">
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:8px">Vivid Money · Стратегический Брифинг</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px">Подготовлено для Евгения Муравева · Встреча 8 июня 2026 · Конфиденциально</div>
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">
+      <span class="badge bg-pk">§00 Шпаргалка</span>
+      <span class="badge bg-pk">§07 Финансы</span>
+      <span class="badge bg-pk">§10-15 Конкуренты</span>
+      <span class="badge bg-bcg">§20 BCG Рекомендации</span>
+      <span class="badge bg-bcg">§22 Value Proposition</span>
+      <span class="badge bg-bcg">§23 SME Lending</span>
+    </div>
+    <div style="margin-top:20px;font-size:12px;color:rgba(255,255,255,.3)">
+      Данные: TechCrunch · Vivid Press Releases · FF News · Tech.eu · Business of Apps · Revolut Annual Report 2025 · N26 Press · Mordor Intelligence
+    </div>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
+
+
