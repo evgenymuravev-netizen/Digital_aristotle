@@ -1,0 +1,236 @@
+/* ============ Noor demo data (fictional) ============ */
+(function(){
+
+window.USER = {
+  first:'John', last:'Reeves', phone:'+971 50 482 7791', email:'john.reeves@gmail.com',
+  eid:'784-1990-63821-4', iban:'AE07 0331 2345 6789 0123 456', since:'June 2026', emirate:'Dubai',
+  salary:32500, salaryDay:25, employer:'TABBY FZ-LLC',
+};
+
+/* Accounts aggregated via Noor Connect. Liquid total = 275 900.76 (deck). */
+window.ACCOUNTS = [
+  {id:'fab-sal',  bank:'fab', kind:'current', name:'Salary account',   mask:'5689', bal:78865.05,  liquid:true},
+  {id:'fab-sav',  bank:'fab', kind:'savings', name:'e-Saver',          mask:'2210', bal:96540.12,  liquid:true},
+  {id:'wio-cur',  bank:'wio', kind:'current', name:'Current account',  mask:'2204', bal:17865.90,  liquid:true},
+  {id:'wio-spc',  bank:'wio', kind:'savings', name:'Saving spaces',    mask:'8804', bal:45000.00,  liquid:true},
+  {id:'ei-sav',   bank:'ei',  kind:'savings', name:'e-Saver',          mask:'8841', bal:37629.69,  liquid:true},
+  {id:'fab-cc',   bank:'fab', kind:'card',    name:'Cashback Visa',    mask:'4412', bal:-8240.50,  due:'20 Jun', min:412.03, limit:30000, art:'linear-gradient(130deg,#0A2E5C,#06182F 70%)'},
+  {id:'ei-cc',    bank:'ei',  kind:'card',    name:'Skywards Visa',    mask:'7733', bal:-1854.30,  due:'28 Jun', min:92.72,  limit:18000, art:'linear-gradient(130deg,#0D5640,#06281D 70%)'},
+  {id:'inv',      bank:'noor',kind:'invest',  name:'Noor Invest',      mask:'',     bal:38500.00},
+  {id:'gold',     bank:'noor',kind:'gold',    name:'Noor Gold · 12.4 g', mask:'',   bal:6030.40},
+  {id:'auto-fin', bank:'dib', kind:'finance', name:'Auto finance (Murabaha)', mask:'5520', bal:-36200.00, monthly:1640, left:'24 payments left'},
+];
+window.LIQUID_TOTAL = 275900.76;
+
+window.BANK_ORDER = ['adcb','adib','ajman','cbd','dib','ei','enbd','fab','hsbc','liv','mashreq','rak','sib','wio'];
+
+/* ---------- transactions (June 2026) ---------- */
+window.TXNS = [
+  {id:'t01', acc:'fab-sal', d:'Today, 14:21',  m:'Transfer to Ahmed Hassan', cat:'transfer', amt:-217.08, note:'Padel court split'},
+  {id:'t02', acc:'wio-cur', d:'Today, 11:03',  m:'Transfer to Sara AlBlooshi', cat:'transfer', amt:-350.00, note:'Birthday gift pool'},
+  {id:'t03', acc:'fab-cc',  d:'Today, 09:48',  m:'Starbucks DIFC', cat:'dining', amt:-24.00},
+  {id:'t04', acc:'wio-cur', d:'Today, 08:12',  m:'Careem', cat:'transport', amt:-38.50},
+  {id:'t05', acc:'fab-cc',  d:'Yesterday',     m:'Carrefour Mall of Emirates', cat:'groceries', amt:-214.35},
+  {id:'t06', acc:'fab-cc',  d:'Yesterday',     m:'Amazon.ae', cat:'shopping', amt:-329.00, note:'Headphones'},
+  {id:'t07', acc:'fab-sal', d:'9 Jun',         m:'DEWA', cat:'bills', amt:-412.60, note:'Autopay'},
+  {id:'t08', acc:'fab-cc',  d:'9 Jun',         m:'Talabat', cat:'dining', amt:-86.40},
+  {id:'t09', acc:'wio-cur', d:'8 Jun',         m:'ENOC 1027', cat:'transport', amt:-180.00, note:'Fuel'},
+  {id:'t10', acc:'fab-cc',  d:'8 Jun',         m:'Netflix.com', cat:'entertainment', amt:-29.00, sub:true},
+  {id:'t11', acc:'fab-sal', d:'7 Jun',         m:'Fitness First', cat:'health', amt:-350.00, sub:true},
+  {id:'t12', acc:'ei-cc',   d:'7 Jun',         m:'Emirates.com', cat:'travel', amt:-1099.00, note:'DXB → LHR · Aug'},
+  {id:'t13', acc:'fab-cc',  d:'6 Jun',         m:'Spinneys Marina', cat:'groceries', amt:-167.20},
+  {id:'t14', acc:'wio-cur', d:'6 Jun',         m:'Salik auto top-up', cat:'transport', amt:-50.00, sub:true},
+  {id:'t15', acc:'fab-cc',  d:'5 Jun',         m:'Sharaf DG', cat:'shopping', amt:-499.00, note:'Smart watch strap'},
+  {id:'t16', acc:'fab-sal', d:'5 Jun',         m:'Al Das Medical Clinic', cat:'health', amt:-390.00},
+  {id:'t17', acc:'fab-cc',  d:'4 Jun',         m:'Spotify', cat:'entertainment', amt:-23.99, sub:true},
+  {id:'t18', acc:'wio-cur', d:'4 Jun',         m:'Careem Food', cat:'dining', amt:-112.30},
+  {id:'t19', acc:'fab-cc',  d:'3 Jun',         m:'du Home Internet', cat:'bills', amt:-389.00, sub:true},
+  {id:'t20', acc:'fab-cc',  d:'3 Jun',         m:'IKEA Festival City', cat:'shopping', amt:-1244.75},
+  {id:'t21', acc:'fab-sal', d:'2 Jun',         m:'Transfer to Wio ··2204', cat:'transfer', amt:-5000.00, note:'Monthly split'},
+  {id:'t22', acc:'wio-cur', d:'2 Jun',         m:'From FAB ··5689', cat:'transfer', amt:5000.00},
+  {id:'t23', acc:'fab-cc',  d:'2 Jun',         m:'iCloud+', cat:'entertainment', amt:-36.99, sub:true},
+  {id:'t24', acc:'fab-cc',  d:'1 Jun',         m:'Carrefour City Walk', cat:'groceries', amt:-312.45},
+  {id:'t25', acc:'fab-sal', d:'1 Jun',         m:'Zoom Pharmacy', cat:'health', amt:-86.00},
+  {id:'t26', acc:'ei-sav',  d:'1 Jun',         m:'Profit distribution', cat:'income', amt:118.42, note:'Mudarabah profit · May'},
+  {id:'t27', acc:'fab-cc',  d:'31 May',        m:'ChatGPT Plus', cat:'entertainment', amt:-73.41, sub:true},
+  {id:'t28', acc:'fab-cc',  d:'30 May',        m:'Anghami Plus', cat:'entertainment', amt:-19.99, sub:true},
+  {id:'t29', acc:'fab-sal', d:'25 May',        m:'TABBY FZ-LLC · Salary', cat:'income', amt:32500.00, note:'Salary'},
+  {id:'t30', acc:'wio-spc', d:'25 May',        m:'Auto-save rule · Salary 20%', cat:'transfer', amt:1500.00, rule:true},
+];
+
+/* ---------- subscriptions (auto-detected) ---------- */
+window.SUBS = [
+  {m:'Netflix',        amt:29.00, day:'12th', next:'Tomorrow', ic:'film',  c:'#E50914', acc:'fab-cc', used:'Watched 14 h in May'},
+  {m:'Fitness First',  amt:350.00,day:'7th',  next:'7 Jul',    ic:'heart', c:'#FF7A6B', acc:'fab-sal',used:'Visited 11× in May'},
+  {m:'du Home Internet',amt:389.00,day:'3rd', next:'3 Jul',    ic:'zap',   c:'#6FB6FF', acc:'fab-cc', used:'Essential'},
+  {m:'ChatGPT Plus',   amt:73.41, day:'31st', next:'30 Jun',   ic:'spark', c:'#B89CFF', acc:'fab-cc', used:'Used daily'},
+  {m:'iCloud+ 2TB',    amt:36.99, day:'2nd',  next:'2 Jul',    ic:'doc',   c:'#9DB2A6', used:'1.1 TB used', acc:'fab-cc'},
+  {m:'Spotify Premium',amt:23.99, day:'4th',  next:'4 Jul',    ic:'film',  c:'#53DE8E', acc:'fab-cc', used:'Last played 26 May', flag:'Overlaps with Anghami'},
+  {m:'Anghami Plus',   amt:19.99, day:'30th', next:'30 Jun',   ic:'film',  c:'#FF8FC0', acc:'fab-cc', used:'Not used for 6 weeks', flag:'Unused — consider cancelling'},
+  {m:'Salik auto top-up',amt:50.00,day:'~6th',next:'When low', ic:'car',   c:'#FFB050', acc:'wio-cur',used:'Balance-based'},
+];
+
+/* ---------- upcoming ---------- */
+window.UPCOMING = [
+  {t:'Netflix', d:'Tomorrow', amt:29.00, ic:'film', c:'#E50914', acc:'FAB ··4412'},
+  {t:'DEWA · autopay', d:'15 Jun', amt:412.60, ic:'zap', c:'#6FB6FF', acc:'FAB ··5689'},
+  {t:'FAB card · min due', d:'20 Jun', amt:412.03, ic:'card', c:'#FFB050', acc:'Pay from any bank'},
+  {t:'Auto finance · DIB', d:'25 Jun', amt:1640.00, ic:'car', c:'#5EE6D0', acc:'Murabaha instalment'},
+  {t:'Salary expected', d:'25 Jun', amt:32500.00, ic:'recv', c:'#53DE8E', acc:'TABBY FZ-LLC', inc:true},
+];
+
+/* ---------- briefing (agentic) ---------- */
+window.BRIEFING = {
+  line:`Today you need <b>to send the documents for the trip</b>. And a <b>doctor's appointment</b> is scheduled for <b>tomorrow</b>.`,
+  items:[
+    {ic:'doc',  c:'#6FB6FF', t:'Send trip documents', d:'Emirates booking RF8Q2P · visa copies due today 18:00', cta:'Open checklist'},
+    {ic:'heart',c:'#FF7A6B', t:"Doctor's appointment", d:'Dr. Mansoor · Al Das Medical · tomorrow 09:30 — AED 390 last visit', cta:'Add to calendar'},
+    {ic:'film', c:'#E50914', t:'Netflix will debit AED 29 tomorrow', d:'From FAB Cashback Visa ··4412', cta:'Manage'},
+    {ic:'card', c:'#FFB050', t:'FAB card payment due in 9 days', d:'Statement AED 8 240,50 · pay in full to stay fee-free', cta:'Pay now'},
+  ]
+};
+
+/* ---------- contacts ---------- */
+window.CONTACTS = [
+  {n:'Sara AlBlooshi', ph:'+971 50 884 2210', fav:true,  bank:'wio'},
+  {n:'Ahmed Hassan',   ph:'+971 55 102 9384', fav:true,  bank:'fab'},
+  {n:'Mariam Khaled',  ph:'+971 52 778 1145', fav:true,  bank:'enbd'},
+  {n:'Omar Farouk',    ph:'+971 50 233 8867', fav:true,  bank:'adcb'},
+  {n:'Layla Haddad',   ph:'+971 54 990 1276', fav:false, bank:'ei'},
+  {n:'Yusuf Rahman',   ph:'+971 56 441 7733', fav:false, bank:'mashreq'},
+  {n:'Dana Petrova',   ph:'+971 58 320 5512', fav:false, bank:'wio'},
+];
+
+/* ---------- offers (deck slide 2 & 10) ---------- */
+window.CARD_OFFERS = [
+  {id:'fab',  bank:'fab', limit:20000, rate:3.99, grace:55, rec:true,  perks:['5% cashback groceries & fuel','No annual fee · first year','Buy-1-get-1 cinema'] , shariah:false},
+  {id:'ei',   bank:'ei',  limit:10000, rate:3.69, grace:55, rec:false, perks:['Skywards miles on every spend','Shariah-compliant (Tawarruq)','Airport lounge ×8 / year'], shariah:true},
+  {id:'wio',  bank:'wio', limit:25000, rate:5.50, grace:60, rec:false, perks:['Virtual card instantly','3% on Wio Saving Spaces','No FX mark-up weekends'], shariah:false},
+];
+window.LOAN_OFFER = {amount:120000, monthly:2641, months:48, rate:5.49, type:'Murabaha personal finance', bank:'ei',
+  note:'Pre-approved from your verified income (AED 32 500/mo, 14 salary credits seen via Noor Connect).'};
+
+window.PS5_OFFERS = [
+  {store:'Sharaf DG',        price:3150, eta:'Today, 2–4 h',  tag:'Best price', art:'ps5'},
+  {store:'Jumbo Electronics',price:3249, eta:'Tomorrow',      tag:'Free HDMI 2.1 cable', art:'ps5'},
+  {store:'Amazon.ae',        price:3329, eta:'Tomorrow',      tag:'Prime delivery', art:'ps5'},
+];
+
+/* ---------- budget ---------- */
+window.BUDGET = {total:18000, spent:14213.40, month:'June'};
+window.CATSPEND = [
+  {cat:'shopping',  amt:3421.75, bud:3000},
+  {cat:'groceries', amt:2845.10, bud:3200},
+  {cat:'bills',     amt:2210.80, bud:2400},
+  {cat:'dining',    amt:1932.55, bud:1400},
+  {cat:'travel',    amt:1099.00, bud:1500},
+  {cat:'transport', amt:864.20,  bud:1000},
+  {cat:'health',    amt:740.00,  bud:900},
+  {cat:'entertainment', amt:612.40, bud:700},
+  {cat:'other',     amt:487.60,  bud:900},
+];
+window.MERCHANTS_TOP = [
+  {m:'IKEA',      n:1, amt:1244.75, cat:'shopping'},
+  {m:'Carrefour', n:9, amt:1240.30, cat:'groceries'},
+  {m:'Emirates',  n:1, amt:1099.00, cat:'travel'},
+  {m:'Amazon.ae', n:4, amt:980.50,  cat:'shopping'},
+  {m:'Talabat',   n:7, amt:642.80,  cat:'dining'},
+  {m:'Careem',    n:11,amt:388.20,  cat:'transport'},
+];
+
+/* ---------- goals ---------- */
+window.GOALS = [
+  {id:'hajj',  n:'Hajj fund',        em:'🕋', cur:12000, tgt:60000, by:'Dec 2027', auto:'AED 1 000 / salary', c:'#E8C268'},
+  {id:'emrg',  n:'Emergency fund',   em:'🛟', cur:19500, tgt:36000, by:'6 months of expenses', auto:'20% of salary', c:'#53DE8E'},
+  {id:'car',   n:'New car',          em:'🚙', cur:22000, tgt:85000, by:'Mar 2028', auto:'Round-ups ×10', c:'#6FB6FF'},
+  {id:'umrah', n:'Umrah with family',em:'🌙', cur:4200,  tgt:15000, by:'Apr 2027', auto:'AED 500 / month', c:'#B89CFF'},
+];
+
+/* ---------- rules (Fi-style automations) ---------- */
+window.RULES = [
+  {id:'r1', on:true,  when:'Salary arrives',                then:'Move 20% to Saving spaces', ic:'recv',  ran:'Ran 25 May · moved AED 1 500'},
+  {id:'r2', on:true,  when:'Every card spend',              then:'Round up to Noor Gold',     ic:'coins', ran:'AED 184,20 saved in May'},
+  {id:'r3', on:true,  when:'Every Friday',                  then:'AED 100 Sadaqah to Dubai Cares', ic:'heart', ran:'Next: Friday 13 Jun'},
+  {id:'r4', on:false, when:'Dining > AED 1 500 in a month', then:'Alert me + freeze food delivery', ic:'food', ran:'Triggered 28 May'},
+  {id:'r5', on:true,  when:'FAB balance < AED 2 000',       then:'Top up AED 3 000 from Wio', ic:'swap',  ran:'Never triggered'},
+];
+
+/* ---------- billers ---------- */
+window.BILLERS = [
+  {n:'DEWA', d:'Electricity & water', ic:'zap', c:'#6FB6FF', due:412.60, autopay:true},
+  {n:'Etisalat e&', d:'Mobile · 050 482 7791', ic:'phone', c:'#53DE8E', due:289.00, autopay:false},
+  {n:'du Home', d:'Internet · account 884512', ic:'globe', c:'#B89CFF', due:389.00, autopay:true},
+  {n:'Salik', d:'Toll · 2 tags', ic:'car', c:'#FFB050', due:0, autopay:true},
+  {n:'Nol card', d:'Transport top-up', ic:'card', c:'#FF8FC0', due:0, autopay:false},
+  {n:'Dubai Police', d:'Traffic fines', ic:'alert', c:'#FF7A6B', due:0, autopay:false},
+];
+
+/* ---------- AECB score ---------- */
+window.SCORE = {
+  v:745, max:900, band:'Very good', delta:+7,
+  hist:[690,698,702,711,718,724,731,738,742,745],
+  factors:[
+    {t:'Payment history', s:'Excellent', d:'36 on-time payments in a row', good:true},
+    {t:'Credit utilisation', s:'27%', d:'AED 10 095 used of AED 48 000 limits', good:true},
+    {t:'Credit age', s:'4.2 years', d:'Oldest: FAB Cashback Visa', good:true},
+    {t:'Recent enquiries', s:'2 in 6 months', d:'Each hard enquiry can cost a few points', good:false},
+  ]
+};
+
+/* ---------- invest ---------- */
+window.INVEST = {
+  total:38500, day:+1.24, positions:[
+    {n:'UAE Sukuk Fund', d:'Fixed income · AAA avg', amt:21000, chg:+2.1, c:'#53DE8E', em:'🕌'},
+    {n:'MSCI World Islamic ETF', d:'Global equity · Halal screened', amt:12400, chg:+4.8, c:'#6FB6FF', em:'🌍'},
+    {n:'US Stocks (Halal)', d:'AAPL · MSFT · TSLA via screen', amt:5100, chg:-1.2, c:'#B89CFF', em:'📈'},
+  ],
+  gold:{grams:12.4, perGram:486.32, val:6030.40, mo:+3.6}
+};
+
+/* ---------- zakat ---------- */
+window.ZAKAT = {
+  cash:275900.76, gold:6030.40, invest:38500.00, nisab:41337.20, rate:0.025,
+  charities:['Dubai Cares','Emirates Red Crescent','Al Jalila Foundation','Beit Al Khair'],
+};
+
+/* ---------- rewards ---------- */
+window.REWARDS = {pts:2340, streak:5, tier:'Gold', scratch:2};
+
+/* ---------- consents (AA-style) ---------- */
+window.CONSENTS = [
+  {bank:'fab', scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
+  {bank:'wio', scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
+  {bank:'ei',  scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
+  {bank:'dib', scope:'Loan account · Balance only',            granted:'11 Jun 2026', expires:'11 Dec 2026', status:'Expiring soon', freq:'1× / day'},
+];
+
+/* ---------- notifications ---------- */
+window.NOTIFS = [
+  {ic:'spark', c:'#D7F050', t:'Your June Money Story is ready', d:'See where your money went in 30 seconds', when:'Just now', act:'story'},
+  {ic:'film',  c:'#E50914', t:'Netflix debits AED 29 tomorrow', d:'FAB Cashback Visa ··4412', when:'2 h ago', act:'subs'},
+  {ic:'card',  c:'#FFB050', t:'Pre-approved: FAB card, AED 20 000 limit', d:'3.99% · 55 days grace · expires in 6 days', when:'5 h ago', act:'chat-card'},
+  {ic:'trendUp',c:'#53DE8E',t:'AECB score up 7 points → 745', d:'On-time FAB card payment reported', when:'Yesterday', act:'score'},
+  {ic:'gift',  c:'#B89CFF', t:'You earned a scratch card', d:'5-day saving streak — keep it up!', when:'Yesterday', act:'rewards'},
+  {ic:'shieldCheck', c:'#5EE6D0', t:'DIB consent expires in 14 days', d:'Renew to keep your loan synced', when:'2 d ago', act:'consents'},
+];
+
+/* ---------- FX ---------- */
+window.FX = [
+  {c:'INR', flag:'🇮🇳', rate:23.42, n:'Indian rupee'},
+  {c:'USD', flag:'🇺🇸', rate:0.2723, n:'US dollar'},
+  {c:'PKR', flag:'🇵🇰', rate:76.40, n:'Pakistani rupee'},
+  {c:'PHP', flag:'🇵🇭', rate:15.62, n:'Philippine peso'},
+  {c:'EGP', flag:'🇪🇬', rate:13.08, n:'Egyptian pound'},
+  {c:'GBP', flag:'🇬🇧', rate:0.2129, n:'British pound'},
+];
+
+/* products marketplace */
+window.MARKET = [
+  {id:'cards', t:'Credit cards', d:'3 pre-approved', ic:'card', c:'#6FB6FF'},
+  {id:'loan',  t:'Personal finance', d:'Up to AED 120 000', ic:'dollar', c:'#53DE8E'},
+  {id:'auto',  t:'Auto finance', d:'From 2.49% flat', ic:'car', c:'#FFB050'},
+  {id:'home',  t:'Home finance', d:'Ijarah · from 3.99%', ic:'home', c:'#B89CFF'},
+  {id:'takaful',t:'Takaful insurance', d:'Car · travel · health', ic:'shield', c:'#5EE6D0'},
+  {id:'invest',t:'Invest & gold', d:'Sukuk · halal ETFs', ic:'trendUp', c:'#E8C268'},
+];
+})();

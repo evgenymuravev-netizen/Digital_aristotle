@@ -1,0 +1,492 @@
+/* ============ cards · products · wealth · islamic · score · rewards · settings ============ */
+(function(){
+
+/* ---------------- cards wallet ---------------- */
+const cardVisual = (a, mini=false) => `
+  <div class="ccvisual ${A.S.frozen?'frozen':''}" style="background:${a.art};${mini?'height:150px':''}" onclick="A.go('card/${a.id}')">
+    <div class="flex between"><span style="font:800 15px Inter">${BANKS[a.bank].name}</span><span class="cc-small">${a.name}</span></div>
+    <div class="cc-chip"></div>
+    <div>
+      <div class="cc-num">•••• •••• •••• ${a.mask}</div>
+      <div class="flex between mt8"><span class="cc-small">${USER.first} ${USER.last}</span><span style="font:800 14px Inter;font-style:italic">VISA</span></div>
+    </div>
+  </div>`;
+SCREENS.cards = () => {
+  const cards = ACCOUNTS.filter(a=>a.kind==='card');
+  return `
+  <div class="scr">
+    ${hdr('Cards',{right:`<button class="chip" onclick="A.go('vcard')">${ic('plus',14)} Virtual</button>`})}
+    <div style="display:flex;flex-direction:column;gap:14px">${cards.map(a=>cardVisual(a)).join('')}</div>
+    <div class="card lime mt16 tap" onclick="A.go('chat-card')">
+      <div class="flex between"><b style="font-size:14px">⚡ 3 pre-approved offers waiting</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">Up to AED 25 000 limit · activated in 1 click</div>
+    </div>
+    <div class="listcard mt12">
+      <div class="row" onclick="A.S.frozen=!A.S.frozen;A.persist();A.refresh();A.toast(A.S.frozen?'All cards frozen':'Cards unfrozen','shield')">
+        <span class="bigico" style="color:var(--blu)">${ic('shield',20)}</span>
+        <div class="row-main"><div class="row-t">Freeze all cards</div><div class="row-d">Instant, reversible — across banks</div></div>
+        <button class="switch ${A.S.frozen?'on':''}"></button>
+      </div>
+    </div>
+  </div>`;
+};
+SCREENS.card = (id) => {
+  const a = ACCOUNTS.find(x=>x.id===id)||ACCOUNTS[5];
+  return `
+  <div class="scr">
+    ${hdr(BANKS[a.bank].name+' card')}
+    ${cardVisual(a)}
+    <div class="grid4 mt16">
+      ${[['lock','Freeze'],['eye','Show PIN'],['gear','Limits'],['doc','Statement']]
+        .map(([i,t])=>`<button class="qa" onclick="${t==='Statement'?`A.go('statement')`:t==='Limits'?`A.sheet(Cards.limits())`:t==='Show PIN'?`A.toast('PIN: •••• — visible after Face ID','lock')`:`A.S.frozen=!A.S.frozen;A.persist();A.refresh()`}"><span class="qa-ic" style="width:48px;height:48px">${ic(i,20)}</span><span>${t}</span></button>`).join('')}
+    </div>
+    <div class="card mt16">
+      <div class="kv"><span class="k">Statement balance</span><span class="v tnum red-t">${aed(a.bal)}</span></div>
+      <div class="kv"><span class="k">Due date</span><span class="v">${a.due} · min AED ${fm(a.min)}</span></div>
+      <div class="kv"><span class="k">Available credit</span><span class="v tnum">AED ${fm(a.limit-Math.abs(a.bal))}</span></div>
+      <button class="btn lime mt8" onclick="A.go('paybill/${a.id}')">Pay card bill</button>
+    </div>
+    <div class="listcard mt12">
+      ${[['globe','Online & international','on'],['qr','Contactless','on'],['bag','ATM withdrawals','off']]
+        .map(([i,t,s])=>`<div class="row static"><span class="bigico">${ic(i,20)}</span><div class="row-main"><div class="row-t">${t}</div></div><button class="switch lime ${s==='on'?'on':''}" onclick="this.classList.toggle('on')"></button></div>`).join('')}
+    </div>
+  </div>`;
+};
+window.Cards = { limits(){ return `
+  <div class="h2">Spending limits</div>
+  <div class="kv mt12"><span class="k">Online · per day</span><span class="v tnum">AED 5 000</span></div>${meter(0.42)}
+  <div class="kv mt12"><span class="k">In-store · per day</span><span class="v tnum">AED 10 000</span></div>${meter(0.2)}
+  <div class="kv mt12"><span class="k">ATM · per day</span><span class="v tnum">AED 3 000</span></div>${meter(0.1)}
+  <button class="btn pri mt16" onclick="A.closeSheet();A.toast('Limits updated','check')">Save</button>`; } };
+
+SCREENS.vcard = () => `
+  <div class="scr">
+    ${hdr('Virtual card')}
+    <div class="ccvisual" style="background:linear-gradient(130deg,#3A4D0E,#141D03 70%)">
+      <div class="flex between"><span style="font:800 17px Inter;color:var(--lime)">noor</span><span class="cc-small">Virtual · disposable</span></div>
+      <div class="cc-chip"></div>
+      <div><div class="cc-num">5311 88•• •••• 4092</div>
+      <div class="flex between mt8"><span class="cc-small">Exp 06/29 · CVV •••</span><span style="font:800 14px Inter">VISA</span></div></div>
+    </div>
+    <div class="listcard mt16">
+      <div class="row static"><div class="row-main"><div class="row-t">Single-use mode</div><div class="row-d">Number burns after one payment</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="row static"><div class="row-main"><div class="row-t">Monthly cap</div><div class="row-d">AED 1 000 for subscriptions</div></div><span class="chev">${ic('chevR',16)}</span></div>
+    </div>
+    <button class="btn lime mt16" onclick="A.toast('Added to Apple Pay','check')"> Add to Apple Pay</button>
+  </div>`;
+
+/* ---------------- pay card bill (CRED-style) ---------------- */
+SCREENS.paybill = (id) => {
+  const a = ACCOUNTS.find(x=>x.id===id)||ACCOUNTS[5];
+  const amt = Math.abs(a.bal);
+  const mode = A.tmp.payMode||'full';
+  return `
+  <div class="scr">
+    ${hdr('Pay card bill')}
+    <div class="card flex" style="gap:13px">${blg(a.bank)}<div class="f1"><div class="row-t">${a.name} ··${a.mask}</div><div class="row-d">Due ${a.due} — in 9 days</div></div>
+      <div class="row-amt tnum red-t">${fm(amt)}</div></div>
+    <div class="card mt12" style="border-color:rgba(215,240,80,.4)">
+      <div class="flex between"><b style="font-size:13.5px">🔍 Fee watchdog found AED 36,00</b><span class="tag lime">✦</span></div>
+      <div class="micro mt4">Late-payment fee (28 Feb) AED 25 + FX markup AED 11 look disputable.</div>
+      <button class="chip mt8" onclick="A.go('dispute')">Dispute both</button>
+    </div>
+    <div class="lbl mt16 mb8">Amount</div>
+    <div class="seg">
+      <button class="${mode==='full'?'on':''}" onclick="A.tmp.payMode='full';A.refresh()">Full — ${fm(amt,0)}</button>
+      <button class="${mode==='min'?'on':''}" onclick="A.tmp.payMode='min';A.refresh()">Min — ${fm(a.min,0)}</button>
+      <button class="${mode==='c'?'on':''}" onclick="A.tmp.payMode='c';A.refresh()">Custom</button>
+    </div>
+    ${mode==='min'?'<div class="micro mt8" style="color:var(--gold)">⚠️ Minimum keeps you revolving at ~42% APR-equivalent. Full saves AED 287 next month.</div>':''}
+    <div class="lbl mt16 mb8">Pay from any bank</div>
+    <div class="listcard">
+      ${[['fab-sal','FAB Salary ··5689',78865.05],['wio-cur','Wio Current ··2204',17865.90],['ei-sav','EI e-Saver ··8841',37629.69]]
+        .map(([aid,n,b],i)=>`<div class="row" onclick="A.tmp.payFrom=${i};A.refresh()">
+          ${blg(aid.split('-')[0])}
+          <div class="row-main"><div class="row-t">${n}</div><div class="row-d tnum">AED ${fm(b)}</div></div>
+          <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:${(A.tmp.payFrom||0)===i?'var(--lime)':'var(--glass2)'}"></span></div>`).join('')}
+    </div>
+    <button class="btn lime mt16" onclick="confetti(document.getElementById('screen'));A.toast('Paid — +120 Noor pts earned 🎉','gift');setTimeout(()=>A.go('rewards'),900)">
+      Pay ${mode==='min'?'AED '+fm(a.min):mode==='full'?'AED '+fm(amt):'custom amount'} & earn 120 pts</button>
+  </div>`;
+};
+SCREENS.dispute = () => `
+  <div class="scr">
+    ${hdr('Raise a dispute')}
+    <div class="listcard">
+      ${[['Late-payment fee · 28 Feb','AED 25,00 — first offence, banks usually waive'],['FX markup · Amazon US','AED 11,00 — charged despite AED billing']]
+        .map(([t,d])=>`<div class="row static"><span class="bigico" style="color:var(--gold)">${ic('alert',20)}</span>
+        <div class="row-main"><div class="row-t" style="white-space:normal">${t}</div><div class="row-d" style="white-space:normal">${d}</div></div>
+        <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:9px;background:var(--lime);color:var(--ink)">${ic('check',14)}</span></div>`).join('')}
+    </div>
+    <div class="card soft mt12"><div class="micro">Noor files the dispute with FAB on your behalf and tracks it. Typical waiver rate for first-time fees: 84%.</div></div>
+    <button class="btn lime mt16" onclick="A.toast('Disputes filed — tracking in your briefing','check');A.back()">File 2 disputes</button>
+  </div>`;
+SCREENS.statement = () => `
+  <div class="scr">
+    ${hdr('Statements & documents')}
+    <div class="listcard">
+      ${[['May 2026 statement','PDF · all accounts combined'],['April 2026 statement','PDF'],['Consent receipts (4)','Noor Connect artefacts'],['Zakat certificate 1447H','For your records'],['Salary certificates','Auto-generated from verified income']]
+        .map(([t,d])=>`<div class="row" onclick="A.toast('Downloading ${esc(t)}…','doc')"><span class="bigico">${ic('doc',20)}</span>
+        <div class="row-main"><div class="row-t">${t}</div><div class="row-d">${d}</div></div><span class="chev">${ic('chevR',16)}</span></div>`).join('')}
+    </div>
+  </div>`;
+
+/* ---------------- 1-click card application ---------------- */
+SCREENS.apply = (id) => {
+  const o = CARD_OFFERS.find(x=>x.id===id)||CARD_OFFERS[0];
+  return `
+  <div class="scr">
+    ${hdr('1-click application')}
+    <div class="card flex" style="gap:13px">${blg(o.bank)}
+      <div class="f1"><div class="row-t">${BANKS[o.bank].name} credit card</div><div class="row-d tnum">AED ${fm(o.limit,0)} pre-approved · ${o.rate}% · ${o.grace} days</div></div>
+      ${o.rec?'<span class="tag solid">⚡</span>':''}</div>
+    <div class="lbl mt16 mb8">Why it’s instant</div>
+    <div class="psteps mt8" id="apSteps">
+      ${['Income verified via Noor Connect','AECB soft-check — no score impact','KYC reused from your Noor profile',(o.shariah?'Shariah contract (Tawarruq) prepared':'Card agreement prepared')]
+        .map((s,i)=>`<div class="pstep dark" id="ap${i}"><div class="pdot">${i+1}</div><div><div class="ps-t">${s}</div></div></div>`).join('')}
+    </div>
+    <div class="card soft mt8"><div class="micro">Perks: ${o.perks.join(' · ')}</div></div>
+    <button class="btn lime mt16" id="apBtn" disabled onclick="A.go('apply-done/${o.id}')">${ic('faceid',20)} Sign with Face ID</button>
+    <div class="micro mt8" style="text-align:center">No documents. No branch. Cancel free within 14 days.</div>
+  </div>`;
+};
+AFTER.apply = () => { let i=0; const step=()=>{ const el=document.getElementById('ap'+i); if(!el) return;
+  el.classList.add('act'); setTimeout(()=>{ el.classList.remove('act'); el.classList.add('done'); el.querySelector('.pdot').innerHTML=ic('check',15);
+    if(++i<4) step(); else { const b=document.getElementById('apBtn'); if(b) b.disabled=false; } },520); }; step(); };
+SCREENS['apply-done'] = (id) => {
+  const o = CARD_OFFERS.find(x=>x.id===id)||CARD_OFFERS[0];
+  return `
+  <div class="scr center">
+    <div class="checkpop">${ic('check',46,'',2.4)}</div>
+    <div class="h1 mt20">Card approved</div>
+    <div class="sub mt8">AED ${fm(o.limit,0)} limit · virtual card is live now,<br>plastic arrives in 2 days.</div>
+    <div class="mt16" style="width:100%">${`
+      <div class="ccvisual" style="background:linear-gradient(130deg,#0A2E5C,#06182F 70%)">
+        <div class="flex between"><span style="font:800 15px Inter">${BANKS[o.bank].name}</span><span class="cc-small">just issued</span></div>
+        <div class="cc-chip"></div>
+        <div><div class="cc-num">5402 33•• •••• 9018</div>
+        <div class="flex between mt8"><span class="cc-small">${USER.first} ${USER.last}</span><span style="font:800 14px Inter;font-style:italic">VISA</span></div></div>
+      </div>`}</div>
+    <div class="btnrow mt16" style="width:100%">
+      <button class="btn ghost" onclick="A.toast('Added to Apple Pay','check')"> Apple Pay</button>
+      <button class="btn pri" onclick="A.go('cards')">Done</button>
+    </div>
+  </div>`;
+};
+AFTER['apply-done'] = () => confetti(document.getElementById('screen'));
+
+/* ---------------- 1-click loan activation ---------------- */
+SCREENS['loan-activate'] = () => `
+  <div class="scr">
+    ${hdr('Activate financing')}
+    <div class="card flex" style="gap:13px">${blg('ei')}
+      <div class="f1"><div class="row-t">Murabaha personal finance</div><div class="row-d tnum">AED 120 000 · 5,49% p.a. · 48 months</div></div>
+      <span class="tag gold">☪</span></div>
+    <div class="chips mt12">${[60,90,120].map(v=>`<button class="chip ${v===120?'on':''}">AED ${v} 000</button>`).join('')}</div>
+    <div class="psteps mt16" id="lnSteps">
+      ${['Debt-burden ratio check — 19%, healthy','Shariah board contract (commodity Murabaha)','Funds routing to FAB ··5689']
+        .map((s,i)=>`<div class="pstep dark" id="ln${i}"><div class="pdot">${i+1}</div><div><div class="ps-t">${s}</div></div></div>`).join('')}
+    </div>
+    <div class="card soft mt8">
+      <div class="kv"><span class="k">Monthly instalment</span><span class="v tnum">AED 2 641 × 48</span></div>
+      <div class="kv"><span class="k">Total profit (disclosed)</span><span class="v tnum">AED 6 768</span></div>
+      <div class="kv"><span class="k">Early settlement</span><span class="v grn-t">Free, anytime</span></div>
+    </div>
+    <button class="btn lime mt16" id="lnBtn" disabled onclick="A.go('loan-done')">${ic('faceid',20)} Activate — funds in ~2 min</button>
+  </div>`;
+AFTER['loan-activate'] = () => { let i=0; const step=()=>{ const el=document.getElementById('ln'+i); if(!el) return;
+  el.classList.add('act'); setTimeout(()=>{ el.classList.remove('act'); el.classList.add('done'); el.querySelector('.pdot').innerHTML=ic('check',15);
+    if(++i<3) step(); else { const b=document.getElementById('lnBtn'); if(b) b.disabled=false; } },600); }; step(); };
+SCREENS['loan-done'] = () => `
+  <div class="scr center">
+    <div class="checkpop">${ic('check',46,'',2.4)}</div>
+    <div class="h1 mt20">AED 120 000<br>on its way</div>
+    <div class="sub mt8">Disbursing to FAB Salary ··5689 — arrives in about 2 minutes. Contract saved to Documents.</div>
+    <div class="card mt16" style="width:100%">
+      <div class="kv"><span class="k">First instalment</span><span class="v">25 July · AED 2 641</span></div>
+      <div class="kv"><span class="k">Auto-pay</span><span class="v grn-t">On · from salary account</span></div>
+    </div>
+    <button class="btn pri mt16" style="width:100%" onclick="A.go('home')">Done</button>
+  </div>`;
+AFTER['loan-done'] = () => confetti(document.getElementById('screen'));
+
+/* ---------------- marketplace ---------------- */
+SCREENS.market = () => `
+  <div class="scr">
+    ${hdr('Products',{big:true})}
+    <div class="card lime tap" onclick="A.go('chat-card')">
+      <b style="font-size:14px">⚡ Pre-approved for you</b>
+      <div class="micro mt4">3 cards · AED 120 000 financing · all 1-click</div>
+    </div>
+    <div class="grid2 mt12">
+      ${MARKET.map(m=>`
+        <div class="tile" onclick="${m.id==='cards'?`A.go('chat-card')`:m.id==='loan'?`A.go('loan-activate')`:m.id==='invest'?`A.go('invest')`:`A.toast('${esc(m.t)} — flow mocked in this build','info')`}">
+          <span class="bigico" style="background:${m.c}1f;color:${m.c}">${ic(m.ic,22)}</span>
+          <div class="t-t">${m.t}</div><div class="t-d">${m.d}</div>
+        </div>`).join('')}
+    </div>
+    <div class="micro mt16" style="text-align:center">Every offer is ranked by true cost for <i>your</i> data — not by commission.</div>
+  </div>`;
+
+/* ---------------- invest & gold ---------------- */
+SCREENS.invest = () => `
+  <div class="scr">
+    ${hdr('Invest')}
+    <div class="card">
+      <span class="lbl">Portfolio</span>
+      <div class="flex between mt8"><span style="font:800 30px Inter" class="tnum">AED ${fm(INVEST.total,0)}</span><span class="tag grn">▲ ${INVEST.day}% today</span></div>
+      <div class="mt12">${spark([31,32.4,31.8,33.5,34.1,35.2,36.4,37.1,38.5],330,70,'#53DE8E')}</div>
+    </div>
+    <div class="listcard mt12">
+      ${INVEST.positions.map(p=>`
+        <div class="row" onclick="A.toast('${esc(p.n)} — detail mocked','trendUp')">
+          <span class="avx" style="background:${p.c}22;color:${p.c};font-size:20px">${p.em}</span>
+          <div class="row-main"><div class="row-t">${p.n}</div><div class="row-d">${p.d}</div></div>
+          <div class="row-r"><div class="row-amt tnum">${fm(p.amt,0)}</div><div class="row-sub" style="color:${p.chg>0?'var(--grn)':'var(--red)'}">${p.chg>0?'▲':'▼'} ${Math.abs(p.chg)}%</div></div>
+        </div>`).join('')}
+    </div>
+    <div class="card mt12 tap" onclick="A.go('gold')">
+      <div class="flex between"><div class="flex" style="gap:12px"><span class="bigico" style="background:rgba(232,194,104,.18);color:var(--gold)">${ic('coins',22)}</span>
+        <div><div class="row-t">Noor Gold</div><div class="row-d">${INVEST.gold.grams} g vaulted · ▲${INVEST.gold.mo}% this month</div></div></div>
+        <div class="row-amt tnum">${fm(INVEST.gold.val,0)}</div></div>
+    </div>
+    <div class="listcard mt12">
+      <div class="row static"><span class="bigico">${ic('repeat'in window?'repeat':'refresh',20)}</span><div class="row-main"><div class="row-t">Auto-invest</div><div class="row-d">AED 1 000/mo into Sukuk fund · on the 26th</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="row" onclick="A.sheet(Halal.sheet())"><span class="bigico" style="color:var(--gold)">${ic('moon',20)}</span><div class="row-main"><div class="row-t">Halal screener</div><div class="row-d">Check any stock in a second</div></div><span class="chev">${ic('chevR',16)}</span></div>
+    </div>
+    <div class="micro mt12" style="text-align:center">All instruments pass AAOIFI screening. Purification amounts auto-calculated.</div>
+  </div>`;
+window.Halal = { sheet(){ return `
+  <div class="h2">Halal screener</div>
+  <div class="input mt12 flex">${ic('search',18)} <span style="color:var(--tx3)">Ticker — try AAPL, TSLA, BUD…</span></div>
+  <div class="listcard mt12">
+    ${[['AAPL · Apple','Pass — debt 18%, no haram revenue','grn','✓ Halal'],['TSLA · Tesla','Pass — watch interest income 3,2%','grn','✓ Halal'],['BUD · AB InBev','Fail — alcohol is core business','red','✗ Not compliant']]
+      .map(([t,d,c,v])=>`<div class="row static"><div class="row-main"><div class="row-t">${t}</div><div class="row-d" style="white-space:normal">${d}</div></div><span class="tag ${c}">${v}</span></div>`).join('')}
+  </div>`; } };
+SCREENS.gold = () => `
+  <div class="scr">
+    ${hdr('Noor Gold')}
+    <div class="card" style="text-align:center;background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
+      <div style="font-size:44px">🪙</div>
+      <div style="font:800 32px Inter" class="tnum mt8">${INVEST.gold.grams} g</div>
+      <div class="micro mt4">≈ AED ${fm(INVEST.gold.val)} · 999.9 vaulted in DMCC · Shariah-certified</div>
+      <div class="mt12">${spark([440,452,448,461,458,470,479,486],300,60,'#E8C268')}</div>
+      <div class="micro">AED ${fm(INVEST.gold.perGram)} / g · ▲${INVEST.gold.mo}% this month</div>
+    </div>
+    <div class="btnrow mt12">
+      <button class="btn pri" onclick="A.toast('Bought 1 g — AED 486,32','check')">Buy</button>
+      <button class="btn ghost" onclick="A.toast('Sold instantly at spot — no spread games','check')">Sell</button>
+    </div>
+    <div class="listcard mt12">
+      <div class="row static"><span class="bigico">${ic('coins',20)}</span><div class="row-main"><div class="row-t">Round-ups feed gold</div><div class="row-d">AED 184,20 added in May</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="row" onclick="A.toast('Physical delivery from 10 g — DMCC vault','info')"><span class="bigico">${ic('bag',20)}</span><div class="row-main"><div class="row-t">Physical delivery</div><div class="row-d">From 10 g, anywhere in UAE</div></div><span class="chev">${ic('chevR',16)}</span></div>
+    </div>
+  </div>`;
+
+/* ---------------- AECB score ---------------- */
+SCREENS.score = () => `
+  <div class="scr">
+    ${hdr('AECB score')}
+    <div class="card" style="display:flex;flex-direction:column;align-items:center">
+      ${gaugeSemi(SCORE.v/SCORE.max, 230, '#53DE8E', `<div style="font:800 44px Inter" class="tnum">${SCORE.v}</div><div class="micro">${SCORE.band} · ▲${SCORE.delta} this month</div>`)}
+      <div class="mt12" style="width:100%">${spark(SCORE.hist,330,54,'#53DE8E')}</div>
+      <div class="micro mt4">Free forever · soft-pull · refreshed monthly</div>
+    </div>
+    <div class="lbl mt16 mb8">What’s driving it</div>
+    <div class="listcard">
+      ${SCORE.factors.map(f=>`
+        <div class="row static"><span class="bigico" style="color:${f.good?'var(--grn)':'var(--gold)'}">${ic(f.good?'check':'alert',20)}</span>
+        <div class="row-main"><div class="row-t">${f.t} — ${f.s}</div><div class="row-d" style="white-space:normal">${f.d}</div></div></div>`).join('')}
+    </div>
+    <div class="card soft mt12">
+      <b style="font-size:13.5px">Simulator</b>
+      <div class="chips mt8">
+        <button class="chip" onclick="A.toast('Projected: 751 (+6) next cycle','trendUp')">Pay card in full</button>
+        <button class="chip" onclick="A.toast('Projected: 741 (−4) — new enquiry','alert')">Apply for auto loan</button>
+        <button class="chip" onclick="A.toast('Projected: 757 (+12) in 3 months','trendUp')">Lower utilisation to 15%</button>
+      </div>
+    </div>
+  </div>`;
+
+/* ---------------- rewards & scratch ---------------- */
+SCREENS.rewards = () => `
+  <div class="scr">
+    ${hdr('Rewards')}
+    <div class="card lime">
+      <div class="flex between"><span class="lbl" style="color:rgba(11,20,16,.55)">Noor points</span><span class="tag" style="background:rgba(11,20,16,.14);color:#0B1410">${REWARDS.tier} tier</span></div>
+      <div style="font:800 36px Inter" class="tnum mt8">${fm(REWARDS.pts,0)}</div>
+      <div class="micro mt4">≈ AED ${fm(REWARDS.pts/20,0)} · redeem on fees, gold or charity</div>
+    </div>
+    <div class="card mt12">
+      <div class="flex between"><b style="font-size:14px">🔥 ${REWARDS.streak}-day money streak</b><span class="micro">opened the app & stayed on budget</span></div>
+      <div class="flex mt12" style="gap:7px">
+        ${['M','T','W','T','F','S','S'].map((d,i)=>`<div style="flex:1;text-align:center"><div class="bigico" style="width:100%;height:40px;border-radius:12px;background:${i<5?'rgba(215,240,80,.2)':'var(--glass)'};color:${i<5?'var(--lime)':'var(--tx3)'}">${i<5?ic('check',16):d}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="lbl mt16 mb8">Scratch cards · ${REWARDS.scratch} waiting</div>
+    <div class="grid2">
+      <div class="tile" style="background:linear-gradient(135deg,#2A3F12,#15240A);text-align:center" onclick="A.go('scratch')">
+        <div style="font-size:34px">🎁</div><div class="t-t">Scratch me</div><div class="t-d">From the 5-day streak</div></div>
+      <div class="tile" style="background:linear-gradient(135deg,#3A2F12,#241D0A);text-align:center" onclick="A.go('scratch')">
+        <div style="font-size:34px">🎁</div><div class="t-t">Scratch me</div><div class="t-d">Card bill paid on time</div></div>
+    </div>
+    <div class="card mt16 flex between tap" onclick="A.toast('Invite link copied — you both get 500 pts','gift')">
+      <div><div class="row-t">Refer a friend</div><div class="row-d">500 pts each when they link a bank</div></div>${ic('share',20)}
+    </div>
+  </div>`;
+SCREENS.scratch = () => `
+  <div class="scr center">
+    ${hdr('Scratch card')}
+    <div class="sub">Scratch with your finger ✨</div>
+    <div class="scratch-wrap mt16" style="width:100%">
+      <div class="scratch-under">
+        <div style="font-size:40px">🎉</div>
+        <div class="h2">+250 points</div>
+        <div class="micro">added to your balance</div>
+      </div>
+      <canvas id="scCv"></canvas>
+    </div>
+    <button class="btn ghost mt20" style="max-width:240px" onclick="A.go('rewards')">Back to rewards</button>
+  </div>`;
+AFTER.scratch = () => {
+  const cv=document.getElementById('scCv'); if(!cv) return;
+  const wrap=cv.parentElement, r=wrap.getBoundingClientRect();
+  cv.width=r.width; cv.height=r.height;
+  const x=cv.getContext('2d');
+  const grd=x.createLinearGradient(0,0,r.width,r.height); grd.addColorStop(0,'#3C4C18'); grd.addColorStop(1,'#202B0B');
+  x.fillStyle=grd; x.fillRect(0,0,r.width,r.height);
+  x.fillStyle='rgba(215,240,80,.8)'; x.font='700 15px Inter'; x.textAlign='center';
+  x.fillText('scratch here', r.width/2, r.height/2+5);
+  let scratched=0, done=false;
+  const rub=(e)=>{ const p=e.touches?e.touches[0]:e; const b=cv.getBoundingClientRect();
+    x.globalCompositeOperation='destination-out'; x.beginPath();
+    x.arc((p.clientX-b.left)*(cv.width/b.width),(p.clientY-b.top)*(cv.height/b.height),26,0,7); x.fill();
+    if(++scratched>26 && !done){ done=true; cv.style.transition='opacity .5s'; cv.style.opacity=0;
+      confetti(document.getElementById('screen')); A.toast('+250 points 🎉','gift'); setTimeout(()=>cv.remove(),600);} };
+  let downFlag=false;
+  cv.addEventListener('mousedown',()=>downFlag=true); window.addEventListener('mouseup',()=>downFlag=false);
+  cv.addEventListener('mousemove',e=>downFlag&&rub(e));
+  cv.addEventListener('touchmove',e=>{e.preventDefault();rub(e);},{passive:false});
+};
+
+/* ---------------- zakat ---------------- */
+SCREENS.zakat = () => {
+  const z=ZAKAT, total=z.cash+z.gold+z.invest, due=total*z.rate;
+  return `
+  <div class="scr">
+    ${hdr('Zakat')}
+    <div class="card" style="background:linear-gradient(150deg,rgba(232,194,104,.14),var(--glass))">
+      <div class="flex between"><span class="tag gold">☪ Zakat al-Maal · 1447H</span><span class="micro">live calculation</span></div>
+      <div style="font:800 36px Inter" class="tnum mt12">AED ${fm(due)}</div>
+      <div class="micro mt4">2,5% of AED ${fm(total)} zakatable wealth · above nisab (AED ${fm(z.nisab,0)}) ✓</div>
+    </div>
+    <div class="lbl mt16 mb8">How it’s calculated</div>
+    <div class="listcard">
+      <div class="kv" style="padding:12px 2px"><span class="k">Cash across 3 banks</span><span class="v tnum">${fm(z.cash)}</span></div>
+      <div class="kv" style="padding:12px 2px"><span class="k">Gold 12,4 g (market)</span><span class="v tnum">${fm(z.gold)}</span></div>
+      <div class="kv" style="padding:12px 2px"><span class="k">Halal investments</span><span class="v tnum">${fm(z.invest)}</span></div>
+      <div class="kv" style="padding:12px 2px"><span class="k">Debts due now</span><span class="v tnum">excluded</span></div>
+    </div>
+    <div class="lbl mt16 mb8">Give to</div>
+    <div class="chips">${z.charities.map((c,i)=>`<button class="chip ${i===0?'on':''}">${c}</button>`).join('')}</div>
+    <div class="btnrow mt16">
+      <button class="btn ghost" onclick="A.toast('Scheduled for 1 Ramadan — auto-recalculated then','cal')">Schedule · Ramadan</button>
+      <button class="btn lime" onclick="confetti(document.getElementById('screen'));A.toast('Zakat paid — certificate in Documents','check')">Pay now</button>
+    </div>
+    <div class="micro mt12" style="text-align:center">Method reviewed by the Noor Shariah board. Hawl tracking per asset is on.</div>
+  </div>`;
+};
+
+/* ---------------- consents (AA-style) ---------------- */
+SCREENS.consents = () => `
+  <div class="scr">
+    ${hdr('Consent centre')}
+    <div class="sub">Every data-sharing permission you’ve granted — purpose-bound, time-bound, revocable. Like India’s Account Aggregator, built for the UAE.</div>
+    <div class="listcard mt12">
+      ${CONSENTS.map(c=>`
+        <div class="row" onclick="A.go('consent/${c.bank}')">
+          ${blg(c.bank)}
+          <div class="row-main"><div class="row-t">${BANKS[c.bank].name}</div><div class="row-d">${c.scope}</div></div>
+          <span class="tag ${c.status==='Active'?'grn':'gold'}">${c.status}</span>
+        </div>`).join('')}
+    </div>
+    <div class="card soft mt12 flex" style="gap:10px">${ic('shieldCheck',20,'lime-t')}<div class="micro">Noor never sells data. Access logs are auditable below — 142 reads this month, all by you or your rules.</div></div>
+    <button class="btn ghost mt12" onclick="A.toast('Access log: 142 reads · 0 third parties','doc')">View access log</button>
+  </div>`;
+SCREENS.consent = (bank) => {
+  const c = CONSENTS.find(x=>x.bank===bank)||CONSENTS[0];
+  return `
+  <div class="scr">
+    ${hdr(BANKS[c.bank].name+' consent')}
+    <div class="card">
+      <div class="kv"><span class="k">Status</span><span class="v" style="color:${c.status==='Active'?'var(--grn)':'var(--gold)'}">${c.status}</span></div>
+      <div class="kv"><span class="k">Scope</span><span class="v" style="max-width:60%">${c.scope}</span></div>
+      <div class="kv"><span class="k">Granted</span><span class="v">${c.granted}</span></div>
+      <div class="kv"><span class="k">Expires</span><span class="v">${c.expires}</span></div>
+      <div class="kv"><span class="k">Refresh frequency</span><span class="v">${c.freq}</span></div>
+      <div class="kv"><span class="k">Consent receipt</span><span class="v lime-t" onclick="A.toast('Receipt downloaded','doc')">Download ↓</span></div>
+    </div>
+    ${c.status!=='Active'?`<button class="btn lime mt12" onclick="A.toast('Consent renewed for 12 months','check');A.back()">Renew consent</button>`:''}
+    <button class="btn danger mt12" onclick="A.confirm('Revoke ${BANKS[c.bank].name} consent?','Syncing stops immediately. Existing data stays on your device until you delete it.',()=>{A.toast('Consent revoked — bank notified','check');A.go('consents')})">Revoke consent</button>
+  </div>`;
+};
+
+/* ---------------- profile & settings ---------------- */
+SCREENS.profile = () => `
+  <div class="scr">
+    ${hdr('Profile')}
+    <div class="card flex" style="gap:14px">
+      ${avx(USER.first+' '+USER.last,'lg')}
+      <div class="f1"><div class="h3">${USER.first} ${USER.last}</div>
+        <div class="micro mt4">${USER.phone} · with Noor since ${USER.since}</div>
+        <div class="flex mt8" style="gap:6px"><span class="tag grn">KYC verified</span><span class="tag gold">${REWARDS.tier}</span></div></div>
+    </div>
+    <div class="listcard mt12">
+      ${[['shieldCheck','Security & privacy','security'],['bank','Linked banks & consents','consents'],['doc','Statements & documents','statement'],
+         ['zap','Noor Rules','rules'],['gift','Rewards','rewards'],['headset','Support — humans, 24/7','support'],['globe','Language · English','language']]
+        .map(([i,t,r])=>`<div class="row" onclick="A.go('${r}')"><span class="bigico">${ic(i,20)}</span><div class="row-main"><div class="row-t">${t}</div></div><span class="chev">${ic('chevR',16)}</span></div>`).join('')}
+    </div>
+    <div class="card soft mt12">
+      <div class="kv"><span class="k">Verified salary</span><span class="v tnum">AED ${fm(USER.salary,0)} / mo · ${USER.employer}</span></div>
+      <div class="kv"><span class="k">Prototype</span><span class="v">v1 · Jun 2026 · fictional data</span></div>
+    </div>
+    <button class="btn ghost mt12" onclick="A.demoReset()">${ic('logout',18)} Restart demo</button>
+  </div>`;
+SCREENS.security = () => `
+  <div class="scr">
+    ${hdr('Security')}
+    <button class="btn danger" onclick="A.S.frozen=!A.S.frozen;A.persist();A.refresh();A.toast(A.S.frozen?'Everything frozen — cards, transfers, logins':'Unfrozen','shield')">
+      ${ic('shield',20)} ${A.S.frozen?'Unfreeze everything':'Freeze everything'}</button>
+    <div class="micro mt8" style="text-align:center">Panic button: blocks cards, outgoing transfers and new devices across all linked banks.</div>
+    <div class="listcard mt16">
+      ${[['faceid','Face ID','on'],['lock','6-digit passcode','set'],['bell','Login alerts','on'],['eye','Hide balances on open','off']]
+        .map(([i,t,s])=>`<div class="row static"><span class="bigico">${ic(i,20)}</span><div class="row-main"><div class="row-t">${t}</div></div>
+        ${s==='set'?`<button class="chip" onclick="A.toast('Passcode change flow (mock)','lock')">Change</button>`:`<button class="switch lime ${s==='on'?'on':''}" onclick="this.classList.toggle('on')"></button>`}</div>`).join('')}
+    </div>
+    <div class="lbl mt16 mb8">Devices</div>
+    <div class="listcard">
+      <div class="row static"><span class="bigico">${ic('phone',20)}</span><div class="row-main"><div class="row-t">iPhone 17 Pro — this device</div><div class="row-d">Dubai · active now</div></div><span class="tag grn">You</span></div>
+      <div class="row static"><span class="bigico">${ic('phone',20)}</span><div class="row-main"><div class="row-t">iPad Air</div><div class="row-d">Last seen 3 May</div></div><button class="chip" onclick="A.toast('Signed out everywhere else','check')">Sign out</button></div>
+    </div>
+  </div>`;
+SCREENS.language = () => `
+  <div class="scr">
+    ${hdr('Language')}
+    <div class="listcard">
+      ${[['English','English (UAE)',true],['العربية','Arabic — full RTL build',false],['اردو','Urdu',false],['हिन्दी','Hindi',false],['Русский','Russian',false],['Filipino','Tagalog',false]]
+        .map(([t,d,on])=>`<div class="row" onclick="A.toast('${esc(t)} — localisation mocked in prototype','globe')">
+        <div class="row-main"><div class="row-t">${t}</div><div class="row-d">${d}</div></div>
+        ${on?`<span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--lime);color:var(--ink)">${ic('check',14)}</span>`:''}</div>`).join('')}
+    </div>
+    <div class="micro mt12" style="text-align:center">Launch languages mirror UAE demographics — 88% expat population.</div>
+  </div>`;
+SCREENS.support = () => `
+  <div class="scr">
+    ${hdr('Support')}
+    <div class="card flex" style="gap:12px">${avx('Noor Care','', '🤝')}<div class="f1"><div class="row-t">Humans, 24/7, in 6 languages</div><div class="row-d">Median first reply: 38 seconds</div></div><span class="tag grn">Online</span></div>
+    <div class="listcard mt12">
+      ${[['Report fraud or a scam','Instant freeze + case officer','alert'],['A payment looks wrong','Dispute with one tap','card'],['Talk about Shariah compliance','Certified advisors, free','moon'],['Anything else','Chat with us','headset']]
+        .map(([t,d,i])=>`<div class="row" onclick="A.toast('Connecting you to a human… (mock)','headset')"><span class="bigico">${ic(i,20)}</span><div class="row-main"><div class="row-t">${t}</div><div class="row-d">${d}</div></div><span class="chev">${ic('chevR',16)}</span></div>`).join('')}
+    </div>
+  </div>`;
+})();
