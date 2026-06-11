@@ -45,11 +45,19 @@ export function compositeForSession(session, testIds) {
   return vals.length ? mean(vals) : null;
 }
 
-/** Composite series across *full* sessions (those covering every test). */
+/** The original six-test battery (v1). Sessions recorded before the battery
+    expanded still count as full assessments for the composite chart. */
+export const CORE_V1_IDS = ["reaction", "nback", "digitspan", "stroop", "mentalmath", "sequences"];
+
+const covers = (s, ids) => ids.every((id) => typeof s.scores[id] === "number");
+
+/** Composite series across *full* sessions — those covering the whole current
+    battery, or the whole v1 battery (legacy data keeps charting). A session's
+    composite is the mean of whichever sub-scores it contains. */
 export function fullCompositeSeries(sessions, testIds) {
   return sessions
-    .filter((s) => testIds.every((id) => typeof s.scores[id] === "number"))
-    .map((s) => ({ ts: s.ts, score: Math.round(compositeForSession(s, testIds)) }));
+    .filter((s) => covers(s, testIds) || covers(s, CORE_V1_IDS))
+    .map((s) => ({ ts: s.ts, score: Math.round(compositeForSession(s, Object.keys(s.scores))) }));
 }
 
 /** Per-test score series across any session that includes that test. */

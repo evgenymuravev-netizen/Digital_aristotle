@@ -9,11 +9,11 @@ import {
 } from "./storage.js";
 import {
   summarize, verdictFromSeries, testSeries, fmtDate, fmtRelative, STABLE_MIN,
-  planFullAssessment, RESUME_WINDOW_MS,
+  planFullAssessment, RESUME_WINDOW_MS, compositeForSession,
 } from "./stats.js";
 import { drawLineChart, drawSparkline, indexDial } from "./chart.js";
-import { TESTS, META, byId } from "./tests/index.js";
-import { TESTINFO, compareToNorm, normReference, ordinal } from "./norms.js";
+import { TESTS, META, byId, NEW_IDS } from "./tests/index.js";
+import { TESTINFO, compareToNorm, normReference, ordinal, overallNorm } from "./norms.js";
 
 const state = { controller: null };
 
@@ -85,12 +85,13 @@ function renderHome() {
       el("div", { class: "tc-top" }, [
         el("span", { class: "tc-icon", text: m.meta.icon }),
         el("span", { class: "tc-domain", text: m.meta.domain }),
+        NEW_IDS.includes(m.meta.id) ? el("span", { class: "new-badge", text: "NEW" }) : null,
       ]),
       el("h3", { text: m.meta.name }),
       el("p", { text: m.meta.blurb }),
       el("div", { class: "tc-foot" }, [
         el("span", { class: "tc-score", html: last ? `Last: <b>${last.score}</b>/100` : "<span class='muted'>Not taken yet</span>" }),
-        el("span", { class: "muted", text: `Run ▸` }),
+        el("span", { class: "muted", text: `${m.meta.duration} ▸` }),
       ]),
     ]);
     card.addEventListener("click", () => runSequence([m], "single"));
@@ -101,12 +102,17 @@ function renderHome() {
 /* ============================================================
    RUNNING TESTS
    ============================================================ */
-async function interstitial(stage, doneCount, total, nextMeta, signal) {
+async function interstitial(stage, doneCount, total, nextMeta, signal, lastResult) {
+  let scoreLine = "";
+  if (lastResult) {
+    const n = compareToNorm(lastResult.id, lastResult.raw);
+    scoreLine = `<div class="inter-score">✓ <b>${lastResult.name}: ${Math.round(lastResult.score)}/100</b>${n ? ` <span class="muted">· better than ~${n.pct}% of people</span>` : ""}</div>`;
+  }
   return instructions(stage, {
     domain: `${doneCount} of ${total} complete`,
     title: "Nice — keep going",
-    bodyHTML: `<p>Next up: <b>${nextMeta.icon} ${nextMeta.name}</b> <span class="muted">(${nextMeta.domain})</span>.</p>
-               <p class="muted">Take a breath, then continue when you're ready. Consistent conditions make your trend more reliable.</p>`,
+    bodyHTML: `${scoreLine}<p>Next up: <b>${nextMeta.icon} ${nextMeta.name}</b> <span class="muted">(${nextMeta.domain})</span>.</p>
+               <p class="muted">Take a breath, then continue when you're ready. Your progress is saved after every test.</p>`,
     button: `Continue ▸`, signal,
   });
 }
@@ -140,6 +146,7 @@ async function runSequence(modules, kind, opts = {}) {
 
   const total = modules.length + preResults.length;
   const fresh = [];
+  const checkpointIds = [];   // per-test sessions saved as we go (full runs only)
   try {
     for (let i = 0; i < modules.length; i++) {
       const m = modules[i];
@@ -147,16 +154,26 @@ async function runSequence(modules, kind, opts = {}) {
       setProgress(0, m.meta.name);
       const res = await m.run(stage, { signal: controller.signal });
       fresh.push(res);
-      if (kind === "full" && i < modules.length - 1) {
-        const done = preResults.length + i + 1;
-        const cont = await interstitial(stage, done, total, modules[i + 1].meta, controller.signal);
-        if (!cont) throw new DOMException("aborted", "AbortError");
+      if (kind === "full") {
+        // Checkpoint: if the run is interrupted, finished tests survive as
+        // singles and the next "Start full assessment" resumes from them.
+        checkpointIds.push(saveSession([res], "single").id);
+        if (i < modules.length - 1) {
+          const done = preResults.length + i + 1;
+          const cont = await interstitial(stage, done, total, modules[i + 1].meta, controller.signal, res);
+          if (!cont) throw new DOMException("aborted", "AbortError");
+        }
       }
     }
   } catch (err) {
     setProgress(null);
     state.controller = null;
-    if (err?.name === "AbortError") { toast("Test stopped — no data saved."); return; }
+    if (err?.name === "AbortError") {
+      toast(fresh.length && kind === "full"
+        ? `Stopped — ${fresh.length} completed test${fresh.length === 1 ? "" : "s"} saved. Start the full assessment again within an hour to resume.`
+        : "Test stopped — no data saved.");
+      return;
+    }
     console.error(err);
     toast("Something went wrong — returning home.");
     go("home");
@@ -172,15 +189,21 @@ async function runSequence(modules, kind, opts = {}) {
   const finalResults = ordered.length ? ordered : combined;
 
   const session = saveSession(finalResults, kind);
-  if (absorbIds.length) deleteSessions(absorbIds);
+  const toDelete = [...absorbIds, ...checkpointIds];
+  if (toDelete.length) deleteSessions(toDelete);
   renderResults(finalResults, kind, session);
   showScreen("results");
 }
 
 /* ----------------------------- full assessment (with resume) ----------------------------- */
+/** Rough wall-clock estimate for running these tests back to back. */
+function minutesFor(ids) {
+  const secs = ids.reduce((a, id) => a + (byId[id]?.meta.seconds || 60), 0) + Math.max(0, ids.length - 1) * 8;
+  return Math.max(1, Math.round(secs / 60));
+}
+
 function startFullAssessment() {
   const plan = planFullAssessment(getSessions(), META, Date.now(), RESUME_WINDOW_MS);
-  if (plan.reusableCount === 0) { runSequence(TESTS, "full"); return; }
   showScreen("stage");
   const stage = document.getElementById("stage");
   document.querySelector(".stage-title").textContent = "▶ Full assessment";
@@ -192,19 +215,20 @@ function startFullAssessment() {
 function renderPreflight(stage, plan) {
   clear(stage);
   const remaining = plan.remainingIds.length;
+  const reused = plan.reusableCount;
+  const mins = minutesFor(plan.remainingIds);
 
   const list = el("div", { class: "preflight-list" });
   for (const t of TESTS) {
     const meta = t.meta;
-    const reused = plan.recent[meta.id];
-    list.append(el("div", { class: `preflight-item ${reused ? "done" : "todo"}` }, [
-      el("span", { class: "pf-mark", text: reused ? "✓" : "○" }),
+    const r = plan.recent[meta.id];
+    list.append(el("div", { class: `preflight-item ${r ? "done" : "todo"}` }, [
+      el("span", { class: "pf-mark", text: r ? "✓" : "○" }),
       el("span", { class: "tc-icon", text: meta.icon }),
       el("div", { class: "pf-body" }, [
         el("b", { text: meta.name }),
         el("div", { class: "muted pf-sub" }, [
-          reused
-            ? `Done ${fmtRelative(reused.ts)} · ${Math.round(reused.score)}/100 — will be reused`
+          r ? `Done ${fmtRelative(r.ts)} · ${Math.round(r.score)}/100 — will be reused`
             : `${meta.domain}${meta.duration ? ` · ${meta.duration}` : ""}`,
         ]),
       ]),
@@ -212,23 +236,34 @@ function renderPreflight(stage, plan) {
   }
 
   const runBtn = el("button", { class: "btn btn-primary btn-lg", type: "button" },
-    remaining > 0 ? `Run remaining ${remaining} ▸` : "Combine into full assessment ▸");
+    remaining === 0 ? "Combine into full assessment ▸"
+      : reused > 0 ? `Run remaining ${remaining} ▸ ~${mins} min`
+        : `Begin ▸ ~${mins} min`);
   runBtn.addEventListener("click", () => {
     const preResults = plan.reusable.map(buildReusedResult);
     const modules = plan.remainingIds.map((id) => byId[id]);
     runSequence(modules, "full", { preResults, absorbIds: plan.reusable.map((r) => r.sessionId) });
   });
-  const redoBtn = el("button", { class: "btn", type: "button", text: "Redo all six" });
-  redoBtn.addEventListener("click", () => runSequence(TESTS, "full"));
+  const buttons = [runBtn];
+  if (reused > 0) {
+    const redoBtn = el("button", { class: "btn", type: "button", text: "Redo all" });
+    redoBtn.addEventListener("click", () => runSequence(TESTS, "full"));
+    buttons.push(redoBtn);
+  }
   const cancelBtn = el("button", { class: "btn btn-ghost", type: "button", text: "Cancel" });
   cancelBtn.addEventListener("click", () => go("home"));
+  buttons.push(cancelBtn);
+
+  const blurb = reused > 0
+    ? `You've taken <b>${reused} of ${TESTS.length}</b> tests in the last hour — they'll be reused${remaining > 0 ? `, only <b>${remaining}</b> to go` : ""}. Progress is saved after every test, so stopping never loses finished work.`
+    : `${TESTS.length} short tests covering ${TESTS.length} cognitive domains. Progress is saved after every test — if you stop midway, finished tests are kept and you can resume within an hour.`;
 
   stage.append(el("div", { class: "instr preflight" }, [
-    el("div", { class: "tc-domain", text: "Resume" }),
-    el("h2", { text: remaining > 0 ? "Pick up where you left off" : "Everything's done — combine it" }),
-    el("p", { class: "muted", html: `You've taken <b>${plan.reusableCount} of ${TESTS.length}</b> tests in the last hour. We'll reuse those so you don't repeat yourself${remaining > 0 ? ` — just <b>${remaining}</b> test${remaining === 1 ? "" : "s"} left.` : "."}` }),
+    el("div", { class: "tc-domain", text: reused > 0 ? "Resume" : "Full assessment" }),
+    el("h2", { text: remaining === 0 ? "Everything's done — combine it" : reused > 0 ? "Pick up where you left off" : "The full battery" }),
+    el("p", { class: "muted", html: blurb }),
     list,
-    el("div", { class: "cta-row preflight-cta" }, [runBtn, redoBtn, cancelBtn]),
+    el("div", { class: "cta-row preflight-cta" }, buttons),
   ]));
   runBtn.focus();
 }
@@ -299,12 +334,14 @@ function renderResults(results, kind, session) {
 
   if (kind === "full") {
     const sum = summarize(getSessions(), META);
+    const ov = overallNorm(results);
     const head = el("div", { class: "panel" }, [
       el("div", { class: "verdict-hero" }, [
         indexDial(composite, 130),
         el("div", {}, [
           el("h2", {}, [`Composite: ${composite}/100 `, verdictPill(sum.verdict)]),
           el("p", { html: sum.verdict.message }),
+          ov ? el("p", { class: "muted", html: `Overall vs population: ≈ <b>${ordinal(ov.pct)} percentile</b> — your per-test standings averaged (rough norms, ${ov.n} tests).` }) : null,
           el("p", { class: "muted", text: `Saved ${fmtDate(session.ts)} · assessment #${sum.fullCount}` }),
         ]),
       ]),
@@ -328,6 +365,17 @@ function renderResults(results, kind, session) {
     }
     const mp = measuresPanel(r0.id);
     if (mp) body.append(el("div", { class: "panel" }, [mp]));
+
+    // nudge: recent singles roll into a full assessment automatically
+    const plan = planFullAssessment(getSessions(), META, Date.now(), RESUME_WINDOW_MS);
+    if (plan.reusableCount > 0 && plan.remainingIds.length > 0) {
+      const btn = el("button", { class: "btn btn-primary", type: "button", text: `Finish the set ▸ ~${minutesFor(plan.remainingIds)} min` });
+      btn.addEventListener("click", () => startFullAssessment());
+      body.append(el("div", { class: "panel center" }, [
+        el("p", { class: "muted", html: `<b>${plan.reusableCount} of ${TESTS.length}</b> tests done in the last hour — they already count toward a full assessment.` }),
+        btn,
+      ]));
+    }
   }
 
   // breakdown table
@@ -453,12 +501,16 @@ function renderTrends() {
    ABOUT / METHOD
    ============================================================ */
 const SCORING = {
-  reaction: "Median of 5 trials. 200&nbsp;ms → 100, 500&nbsp;ms → 0.",
-  nback: "2-back, scored by <i>balanced accuracy</i> (hit-rate &amp; correct-rejection-rate averaged, so ignoring everything can't game it). 50% → 0, 100% → 100.",
-  digitspan: "Longest digit string recalled. Span 2 → 0, span 9 → 100.",
-  stroop: "Accuracy (60%) and speed (40%) on the hard, conflicting trials.",
+  reaction: "Median of 7 trials, anticipations (&lt;120&nbsp;ms) rejected. 200&nbsp;ms → 100, 500&nbsp;ms → 0.",
+  coding: "Correct symbol→digit matches in 60&nbsp;s; key shuffled every session. 36 → 100.",
+  nback: "2-back, scored by <i>balanced accuracy</i> (hit-rate &amp; correct-rejection-rate averaged, so ignoring everything can't game it); d′ reported alongside.",
+  corsi: "Longest block sequence tapped back in order. Span 2 → 0, span 8 → 100.",
+  stroop: "Guaranteed 12/12 congruent–incongruent mix. Accuracy (60%) and speed (40%) on the conflicting trials.",
+  gonogo: "Balanced go/no-go accuracy (80%) plus speed on correct GO responses (20%).",
+  digitspan: "Forward and backward halves averaged. Forward: span 2 → 0, 9 → 100. Backward: 1 → 0, 8 → 100.",
+  switching: "Accuracy above chance (60%) plus the speed cost of switching rules (40%).",
   mentalmath: "Correct answers in the 60-second sprint. 20 → 100.",
-  sequences: "Percentage of the 8 problems solved.",
+  sequences: "Problems run easy → hard and are difficulty-weighted; score = weighted % solved.",
 };
 
 function renderAbout() {
@@ -466,7 +518,7 @@ function renderAbout() {
   if (body.dataset.filled) return; // static content
   body.dataset.filled = "1";
 
-  const sixCards = TESTS.map((t) => {
+  const testCards = TESTS.map((t) => {
     const m = t.meta, info = TESTINFO[m.id], ref = normReference(m.id);
     return `<div class="method-test">
       <h3>${m.icon} ${m.name} <span class="chip">${m.domain}</span></h3>
@@ -483,13 +535,13 @@ function renderAbout() {
 
     <div class="callout"><b>The premise.</b> Cognitive skills follow "use it or lose it." When we offload arithmetic, memory, navigation, and reasoning to machines, the underlying circuits get less practice. This tool stress-tests exactly those skills so a decline would show up here before you'd notice it in daily life.</div>
 
-    <h2>The six tests — what each one measures</h2>
-    <p>Each is a long-standing paradigm from cognitive psychology, chosen to cover the abilities most exposed to automation. Every test yields a 0–100 sub-score; the <b>Aristotle Index</b> is the average of all six from a single sitting.</p>
-    <div class="method-tests">${sixCards}</div>
+    <h2>The battery — what each test measures</h2>
+    <p>Each is a long-standing paradigm from cognitive psychology, chosen to cover the abilities most exposed to automation. Every test yields a 0–100 sub-score; the <b>Aristotle Index</b> is the average of every test in a sitting (ten in the current battery).</p>
+    <div class="method-tests">${testCards}</div>
 
     <h2>How you compare to others</h2>
     <p>After each test we show a <b>percentile</b> — where your result sits among adults generally. Because everything runs locally and there's no pool of other users, this is computed against <b>published population norms</b>, never other people using the app.</p>
-    <p>For each test we take a population <b>mean</b> and <b>spread</b> (standard deviation) for its raw metric, standardize your result against them, and read the percentile off the normal curve. “78th percentile” means you'd be expected to outperform about 78% of adults.</p>
+    <p>For each test we take a population <b>mean</b> and <b>spread</b> (standard deviation) for its raw metric, standardize your result against them, and read the percentile off the normal curve. “78th percentile” means you'd be expected to outperform about 78% of adults. A full session also gets an <b>overall percentile</b> — your per-test standings averaged in standardized units.</p>
     <div class="callout"><b>Take the percentile lightly.</b> Reaction time and digit span rest on solid published norms; the rest are approximate or rough in-app references (each test lists its source above). Percentiles assume a bell curve and a healthy-adult reference, so treat them as friendly context — not a clinical ranking. Your <em>own trend over time</em> is the number that actually matters.</div>
 
     <h2>Why the verdict is reliable</h2>
@@ -509,6 +561,7 @@ function renderAbout() {
     <p>If your baseline is unusually tight, we floor its standard deviation at <code>4 points</code> so ordinary day-to-day variation can't masquerade as a real change.</p>
     <h3>4. Practice effects, handled</h3>
     <p>You <i>will</i> improve at these tasks the first few times simply from familiarity. So your very first full session is treated as calibration and dropped once enough data exists, and early gains are flagged as part practice. Genuine decline shows up as a downward break from an established plateau — which is what the baseline comparison detects.</p>
+    <p class="muted"><i>Battery versions:</i> the battery expanded from six to ten tests in June 2026. Older sessions keep counting — a session's composite is simply the average of the tests it contains, and your baseline adapts within a few sessions. A full assessment also checkpoints after every test, so an interrupted run resumes instead of restarting.</p>
 
     <div class="callout"><b>For a trustworthy read:</b> do the full battery a handful of times across different days first (to build a baseline past the practice bump), then test regularly under similar conditions — same time of day, not exhausted, no interruptions. ${STABLE_MIN}+ full sessions are required before any verdict is shown.</div>
 
@@ -584,6 +637,42 @@ function renderSettings() {
     fileInput,
   ]));
 
+  // session history with per-session delete (data hygiene: drop interrupted
+  // or unrepresentative sessions so they don't pollute the trend)
+  const hist = el("div", { class: "history" });
+  const recent = [...sessions].reverse().slice(0, 25);
+  if (!recent.length) {
+    hist.append(el("p", { class: "muted", text: "No sessions yet — your history will appear here." }));
+  }
+  for (const s of recent) {
+    const isFull = s.kind === "full";
+    const ids = Object.keys(s.scores || {});
+    const label = isFull
+      ? `Aristotle Index ${Math.round(compositeForSession(s, ids) ?? 0)} · ${ids.length} tests`
+      : ids.map((id) => `${byId[id]?.meta.icon || ""} ${byId[id]?.meta.name || id} — ${s.scores[id]}`).join(" · ");
+    const del = el("button", { class: "btn btn-ghost btn-sm", type: "button", "aria-label": "Delete this session", text: "🗑" });
+    del.addEventListener("click", () => {
+      if (confirm("Delete this session? This cannot be undone.")) {
+        deleteSessions([s.id]);
+        toast("Session deleted.");
+        renderSettings();
+      }
+    });
+    hist.append(el("div", { class: "history-row" }, [
+      el("span", { class: `hist-kind ${isFull ? "full" : "single"}`, text: isFull ? "FULL" : "SINGLE" }),
+      el("div", { class: "hist-main" }, [
+        el("b", { text: label }),
+        el("div", { class: "muted hist-date", text: `${fmtDate(s.ts)} · ${fmtRelative(s.ts)}` }),
+      ]),
+      del,
+    ]));
+  }
+  body.append(el("div", { class: "panel" }, [
+    el("h2", { text: "History" }),
+    el("p", { class: "muted", text: "Delete a session if it was interrupted or unrepresentative (sick, distracted, wrong device) — pruning bad data makes your trend more reliable." }),
+    hist,
+  ]));
+
   body.append(el("div", { class: "callout", html: "Tip: your history lives only in this browser. If you clear site data or switch devices, use <b>Export</b> first." }));
 }
 
@@ -601,6 +690,8 @@ function init() {
     if (nav) { e.preventDefault(); go(nav.dataset.nav); }
   });
   document.getElementById("start-full").addEventListener("click", () => startFullAssessment());
+  const durEl = document.getElementById("full-duration");
+  if (durEl) durEl.textContent = `· ~${minutesFor(META.map((m) => m.id))} min · resumable`;
 
   // redraw canvases on resize for the active data screens
   window.addEventListener("resize", debounce(() => {

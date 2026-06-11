@@ -17,27 +17,35 @@ has **zero dependencies** and **no build step**.
 
 ## The battery
 
-Six standard paradigms from cognitive psychology, each producing a 0–100 sub-score:
+Ten standard paradigms from cognitive psychology, each producing a 0–100 sub-score:
 
 | Test | Domain | Measures |
 | --- | --- | --- |
-| ⚡ **Reaction Time** | Processing speed | Simple reaction time (median of 5 trials) |
-| 🧠 **N-Back (2-back)** | Working memory | Holding & updating a moving window of info; scored by balanced accuracy |
-| 🔢 **Digit Span** | Short-term memory | Adaptive recall of ever-longer digit strings |
-| 🎯 **Stroop** | Attention & inhibition | Naming ink colour while suppressing the word |
+| ⚡ **Reaction Time** | Processing speed | Simple reaction time (median of 7 trials, anticipations rejected) |
+| 🔣 **Symbol Coding** | Coding speed | SDMT-style symbol→digit substitution against the clock |
+| 🧠 **N-Back (2-back)** | Working memory | Holding & updating a moving window; balanced accuracy + d′ |
+| 🧊 **Corsi Blocks** | Spatial memory | Adaptive visuospatial span — digit span's visual twin |
+| 🎯 **Stroop** | Attention & inhibition | Naming ink colour while suppressing the word (12/12 design) |
+| 🚦 **Go / No-Go** | Impulse control | Respond fast to GO, withhold on NO-GO |
+| 🔢 **Digit Span** | Memory | Adaptive recall — **forward and backward** halves |
+| 🔀 **Task Switching** | Mental flexibility | Letter/number rule switches; measures your switch cost |
 | ➗ **Mental Math** | Numeracy | 60-second no-calculator arithmetic sprint |
-| 🧩 **Number Series** | Fluid reasoning | Inferring a hidden rule to complete a sequence |
+| 🧩 **Number Series** | Fluid reasoning | Inferring a hidden rule; difficulty-weighted scoring |
 
-The **Aristotle Index** is the average of all six from one sitting.
+The **Aristotle Index** is the average of every test in one sitting.
 
-Two things make a session friendlier:
+What makes a session friendlier and the score sharper:
 
 - **See how you compare.** Every result shows a **percentile** against published
   population norms (e.g. *"faster than ~78% of people"*), with the reference and
-  source for each test on the Method tab. Norms only — your data never leaves the device.
-- **Resume a full assessment.** Already ran a few tests on their own? Starting the
-  full assessment offers to **reuse anything you did in the last hour** and only
-  run what's left, then combines it into one composite — no redoing tests.
+  source for each test on the Method tab. A full session also gets an **overall
+  percentile**. Norms only — your data never leaves the device.
+- **Resume, and never lose work.** Every finished test is **checkpointed**
+  immediately, so stopping a full assessment midway keeps what you did. Starting it
+  again offers to **reuse anything from the last hour** and only run what's left,
+  then combines it into one composite.
+- **Manage your history.** Settings lists every session with a per-session delete,
+  so you can prune an interrupted or unrepresentative run from your trend.
 
 ## Why the verdict is *reliable*
 
@@ -92,11 +100,11 @@ js/
   app.js            # router, home, results, trends, settings
   storage.js        # versioned localStorage + export/import
   stats.js          # baseline / reliable-change verdict engine + resume planning
-  norms.js          # per-test explainers + population norms & percentiles
+  norms.js          # per-test explainers + population norms, percentiles, probit
   chart.js          # dependency-free canvas charts + radial dial
   ui.js             # DOM & test-flow helpers
-  tests/            # one module per test (+ registry)
-test/run.mjs        # unit tests for the pure logic (norms, stats)
+  tests/            # ten test modules + registry
+test/run.mjs        # unit tests for the pure logic (norms, stats, scoring)
 .github/workflows/deploy.yml   # builds & deploys to GitHub Pages
 ```
 

@@ -10,7 +10,8 @@ export const meta = {
   domain: "Attention",
   icon: "🎯",
   blurb: "Focus on the right cue and suppress the automatic, wrong one.",
-  duration: "~60 sec",
+  duration: "~70 sec",
+  seconds: 70,
 };
 
 const COLORS = [
@@ -19,14 +20,13 @@ const COLORS = [
   { name: "BLUE", css: "#5aa9e6" },
   { name: "YELLOW", css: "#e2b04a" },
 ];
-const TRIALS = 20;
+const TRIALS = 24;   // exactly half congruent, half incongruent (shuffled)
 // RT→score anchors for correct incongruent responses.
 const RT_FAST = 700, RT_SLOW = 1700;
 
-function trial(stage, signal) {
+function trial(stage, congruent, signal) {
   return new Promise((resolve, reject) => {
     const word = COLORS[Math.floor(Math.random() * COLORS.length)];
-    const congruent = Math.random() < 0.5;
     const ink = congruent ? word : shuffle(COLORS.filter((c) => c !== word))[0];
 
     clear(stage);
@@ -57,6 +57,7 @@ function trial(stage, signal) {
     const cleanup = () => { window.removeEventListener("keydown", onKey); signal?.removeEventListener("abort", onAbort); };
     const choose = (c) => {
       const rt = performance.now() - start;
+      if (rt < 150) return;   // ignore accidental immediate taps carried over from the previous trial
       cleanup();
       resolve({ congruent, correct: c === ink, rt });
     };
@@ -75,10 +76,13 @@ export async function run(stage, { signal } = {}) {
   if (!ok) throw new DOMException("aborted", "AbortError");
   if (!(await countdown(stage, 3, signal))) throw new DOMException("aborted", "AbortError");
 
+  // Deterministic design: a guaranteed 12/12 congruent–incongruent split keeps
+  // the interference estimate stable session to session.
+  const plan = shuffle([...Array(TRIALS / 2).fill(true), ...Array(TRIALS / 2).fill(false)]);
   const results = [];
   for (let i = 0; i < TRIALS; i++) {
     setProgress(i / TRIALS, meta.name);
-    results.push(await trial(stage, signal));
+    results.push(await trial(stage, plan[i], signal));
     clear(stage); await sleep(220);   // brief inter-trial blank
   }
   setProgress(1, meta.name);

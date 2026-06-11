@@ -11,6 +11,7 @@ export const meta = {
   icon: "➗",
   blurb: "Calculate in your head — the first thing we outsource to devices.",
   duration: "60 sec",
+  seconds: 70,
 };
 
 const SECONDS = 60;

@@ -44,12 +44,48 @@ export const TESTINFO = {
     },
   },
   digitspan: {
-    measures: "Short-term verbal memory capacity — how many items you can hold for a few seconds.",
-    why: "The classic measure of raw memory span. We rarely memorise numbers anymore, so it's directly exposed to outsourcing.",
-    realWorld: "Holding a phone number or address long enough to use it; remembering an order at the counter.",
+    measures: "Short-term and working memory — holding digits for a few seconds (forward), then mentally reversing them (backward).",
+    why: "The classic span measure. We rarely memorise numbers anymore, so it's directly exposed to outsourcing — and the backward half adds true mental manipulation.",
+    realWorld: "Holding a phone number long enough to use it; reversing directions you just heard; mental bookkeeping.",
     norm: {
-      metricLabel: "Forward digit span", unit: "digits", mean: 6.6, sd: 1.3, lowerBetter: false, established: true,
-      source: "Span is famously 7±2 (Miller, 1956); forward-span norms average ≈6.6 digits in healthy adults.",
+      metricLabel: "Total span (forward + backward)", unit: "digits", mean: 11.3, sd: 2.0, lowerBetter: false, established: true,
+      source: "Wechsler-style norms: forward span ≈ 6.6, backward ≈ 4.8 in healthy adults; forward famously 7±2 (Miller, 1956).",
+    },
+  },
+  corsi: {
+    measures: "Visuospatial short-term memory — holding locations and their order in mind.",
+    why: "Navigation, mental imagery and visual thinking all draw on this store — and GPS means we exercise it less than any generation before.",
+    realWorld: "Remembering where you parked, retracing a route, recalling how things were laid out.",
+    norm: {
+      metricLabel: "Corsi span", unit: "blocks", mean: 6.0, sd: 1.2, lowerBetter: false, established: true,
+      source: "Kessels et al. (2000) standardization of the Corsi block-tapping task: span ≈ 6 in healthy adults.",
+    },
+  },
+  coding: {
+    measures: "Processing speed with learning — how fast you absorb a new symbol→meaning key and execute it.",
+    why: "Coding tasks are among the most sensitive general indicators in clinical batteries; they sag early with fatigue and cognitive load.",
+    realWorld: "Picking up a new app's icons, learning keyboard shortcuts, reading unfamiliar notation.",
+    norm: {
+      metricLabel: "Correct matches in 60 s", unit: "correct", mean: 24, sd: 7, lowerBetter: false, established: false,
+      source: "Inspired by SDMT / WAIS coding (≈55 pairings in 90 s on paper); this web format differs — rough in-app reference.",
+    },
+  },
+  gonogo: {
+    measures: "Response inhibition & sustained attention — acting fast, yet withholding when the rule says stop.",
+    why: "Impulse control is the brake pedal of cognition. Constant notifications train the opposite reflex.",
+    realWorld: "Not clicking the phishing link, holding your tongue, stopping at amber.",
+    norm: {
+      metricLabel: "No-go accuracy", unit: "%", mean: 82, sd: 11, lowerBetter: false, established: false,
+      source: "Commission-error rates of 10–25% are typical in fast go/no-go tasks; depends heavily on pacing — rough reference.",
+    },
+  },
+  switching: {
+    measures: "Cognitive flexibility — shifting between rules without one bleeding into the other.",
+    why: "Multitasking is mostly rapid switching, and every switch has an invisible time cost. This measures yours.",
+    realWorld: "Jumping between email and a spreadsheet, switching languages mid-conversation, context-switching at work.",
+    norm: {
+      metricLabel: "Switch cost", unit: "ms", mean: 280, sd: 160, lowerBetter: true, established: false,
+      source: "Mixed-block switch costs of ~150–400 ms are typical (Monsell, 2003); strongly format-dependent — rough reference.",
     },
   },
   stroop: {
@@ -95,6 +131,30 @@ function erf(x) {
 /** Standard-normal CDF. */
 export function normalCdf(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
 
+/** Inverse standard-normal CDF (probit), Acklam's rational approximation. */
+export function probit(p) {
+  if (p <= 0 || p >= 1) throw new RangeError("probit: p must be in (0,1)");
+  const a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.357751867269, -30.66479806614716, 2.506628277459239];
+  const b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572];
+  const c = [-0.007784894002430293, -0.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+  const d = [0.007784695709041462, 0.3224671290700398, 2.445134137142996, 3.754408661907416];
+  const pl = 0.02425;
+  let q, r;
+  if (p < pl) {
+    q = Math.sqrt(-2 * Math.log(p));
+    return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+           ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+  }
+  if (p <= 1 - pl) {
+    q = p - 0.5; r = q * q;
+    return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
+           (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+  }
+  q = Math.sqrt(-2 * Math.log(1 - p));
+  return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+          ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+}
+
 function round1(v) { return Number.isInteger(v) ? String(v) : (Math.round(v * 10) / 10).toFixed(1); }
 
 /** Format a value in a test's units for display. */
@@ -104,6 +164,7 @@ export function fmtNorm(v, unit) {
     case "ms": return `${Math.round(v)} ms`;
     case "%": return `${Math.round(v)}%`;
     case "digits": return `${round1(v)} digits`;
+    case "blocks": return `${round1(v)} blocks`;
     case "correct": return `${Math.round(v)} correct`;
     case "of 8": return `${Math.round(v)} / 8`;
     default: return round1(v);
@@ -139,6 +200,24 @@ export function compareToNorm(id, raw) {
     established: !!n.established, source: n.source,
     phrase: `Better than about ${pct}% of people`,
   };
+}
+
+/**
+ * Overall standing across a set of results: average of per-test z-scores
+ * (each capped at ±3 so one extreme test can't dominate) → percentile.
+ * @param {Array<{id:string, raw:number}>} results
+ * @returns {{z:number, pct:number, n:number}|null}
+ */
+export function overallNorm(results) {
+  const zs = [];
+  for (const r of results || []) {
+    const n = compareToNorm(r.id, r.raw);
+    if (n) zs.push(clamp(n.z, -3, 3));
+  }
+  if (!zs.length) return null;
+  const z = zs.reduce((a, b) => a + b, 0) / zs.length;
+  const pct = clamp(Math.round(normalCdf(z) * 100), 1, 99);
+  return { z, pct, n: zs.length };
 }
 
 /** Compact reference for the Method page. */

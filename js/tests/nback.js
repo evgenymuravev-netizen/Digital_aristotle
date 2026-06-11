@@ -4,6 +4,7 @@
    rejections weighted equally), which is robust to the fact that most
    items are non-targets. */
 import { el, clear, sleep, instructions, countdown, setProgress, clamp, pick } from "../ui.js";
+import { probit } from "../norms.js";
 
 export const meta = {
   id: "nback",
@@ -12,7 +13,14 @@ export const meta = {
   icon: "🧠",
   blurb: "Hold a moving window of information in mind and update it.",
   duration: "~75 sec",
+  seconds: 75,
 };
+
+/** Signal-detection sensitivity (d′) with the standard 1/(2N) correction. */
+export function dPrime(hits, targets, fa, nonTargets) {
+  const adj = (x, n) => Math.min(Math.max(x / Math.max(n, 1), 1 / (2 * Math.max(n, 1))), 1 - 1 / (2 * Math.max(n, 1)));
+  return probit(adj(hits, targets)) - probit(adj(fa, nonTargets));
+}
 
 const N = 2;
 const LEN = 24;                 // total letters
@@ -97,9 +105,10 @@ export async function run(stage, { signal } = {}) {
   const balanced = (hitRate + crRate) / 2;                 // 0.5 = chance, 1 = perfect
   const score = clamp(((balanced - 0.5) / 0.5) * 100, 0, 100);
 
+  const d = dPrime(hits, targets, fa, nonTargets);
   return {
     ...meta, score, raw: Math.round(balanced * 100),
     rawLabel: `${hits}/${targets} matches caught · ${fa} false alarm${fa === 1 ? "" : "s"}`,
-    detail: { Hits: `${hits}/${targets}`, "False alarms": fa, Accuracy: `${Math.round(balanced * 100)}%` },
+    detail: { Hits: `${hits}/${targets}`, "False alarms": fa, Accuracy: `${Math.round(balanced * 100)}%`, "d′": d.toFixed(1) },
   };
 }

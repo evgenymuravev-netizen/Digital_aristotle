@@ -8,12 +8,14 @@ export const meta = {
   domain: "Processing Speed",
   icon: "⚡",
   blurb: "How fast your brain registers and responds to a signal.",
-  duration: "~45 sec",
+  duration: "~60 sec",
+  seconds: 60,
 };
 
-const TRIALS = 5;
+const TRIALS = 7;
 // Score anchors: 200 ms ≈ elite (100), 500 ms ≈ slow (0).
 const FAST = 200, SLOW = 500;
+const ANTICIPATION_MS = 120;   // a "response" faster than this can't be perception
 
 function trial(area, signal) {
   return new Promise((resolve, reject) => {
@@ -41,7 +43,13 @@ function trial(area, signal) {
       } else if (state === "tooSoon") {
         startWait();
       } else if (state === "go") {
-        cleanup(); resolve(performance.now() - goTime);
+        const rt = performance.now() - goTime;
+        if (rt < ANTICIPATION_MS) {   // lucky guess, not a reaction — redo the trial
+          state = "tooSoon";
+          area.className = "rt-target rt-too-soon"; area.textContent = "Too early — tap to retry";
+          return;
+        }
+        cleanup(); resolve(rt);
       }
     };
     const onPress = (e) => { e.preventDefault(); press(); };
@@ -81,9 +89,10 @@ export async function run(stage, { signal } = {}) {
 
   const med = median(rts);
   const score = clamp(((SLOW - med) / (SLOW - FAST)) * 100, 0, 100);
+  const range = Math.round(Math.max(...rts) - Math.min(...rts));
   return {
     ...meta, score, raw: Math.round(med),
     rawLabel: `Median ${Math.round(med)} ms (best ${Math.round(Math.min(...rts))} ms)`,
-    detail: { Median: `${Math.round(med)} ms`, Best: `${Math.round(Math.min(...rts))} ms`, Trials: TRIALS },
+    detail: { Median: `${Math.round(med)} ms`, Best: `${Math.round(Math.min(...rts))} ms`, Consistency: `±${Math.round(range / 2)} ms`, Trials: TRIALS },
   };
 }
