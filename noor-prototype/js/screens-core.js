@@ -375,7 +375,7 @@ SCREENS.chat = () => `
     <div class="ch-quick">
       ${[['💳 Best card','Help me find a credit card with the best terms'],
          ['🎮 PS 5','I want to buy a PS 5, 2 Tb'],
-         ['🏦 Best loan','Get me the best loan with one-click activation'],
+         ['🏦 Best financing','Get me the best financing with one-click activation'],
          ['📉 My spending','Why did I spend so much in June?'],
          ['☪ Zakat','How much zakat do I owe?'],
          ['✈️ Afford a trip?','Can I afford a AED 6 500 trip in August?']]

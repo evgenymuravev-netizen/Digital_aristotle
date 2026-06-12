@@ -175,7 +175,7 @@ SCREENS['apply-done'] = (id) => {
 };
 AFTER['apply-done'] = () => confetti(document.getElementById('screen'));
 
-/* ---------------- 1-click loan activation ---------------- */
+/* ---------------- 1-click financing activation ---------------- */
 SCREENS['loan-activate'] = () => `
   <div class="scr">
     ${hdr('Activate financing')}
@@ -244,7 +244,7 @@ SCREENS.market = () => `
     </div>
     <div class="grid2 mt12">
       ${MARKET.map(m=>`
-        <div class="tile" onclick="${m.id==='cards'?`A.go('chat-card')`:m.id==='loan'?`A.go('loan-activate')`:m.id==='invest'?`A.go('invest')`:`A.toast('${esc(m.t)} — flow mocked in this build','info')`}">
+        <div class="tile" onclick="${m.id==='cards'?`A.go('chat-card')`:m.id==='loan'?`A.go('loan-activate')`:m.id==='invest'?`A.go('invest')`:m.id==='dsf'?`A.go('dsf')`:m.id==='refi'?`A.go('refi')`:`A.toast('${esc(m.t)} — flow mocked in this build','info')`}">
           <span class="bigico" style="background:${m.c}1f;color:${m.c}">${ic(m.ic,22)}</span>
           <div class="t-t">${m.t}</div><div class="t-d">${m.d}</div>
         </div>`).join('')}
@@ -326,7 +326,7 @@ SCREENS.score = () => `
       <b style="font-size:13.5px">Simulator</b>
       <div class="chips mt8">
         <button class="chip" onclick="A.toast('Projected: 751 (+6) next cycle','trendUp')">Pay card in full</button>
-        <button class="chip" onclick="A.toast('Projected: 741 (−4) — new enquiry','alert')">Apply for auto loan</button>
+        <button class="chip" onclick="A.toast('Projected: 741 (−4) — new enquiry','alert')">Apply for auto finance</button>
         <button class="chip" onclick="A.toast('Projected: 757 (+12) in 3 months','trendUp')">Lower utilisation to 15%</button>
       </div>
     </div>
@@ -395,16 +395,17 @@ AFTER.scratch = () => {
 
 /* ---------------- zakat — full module (1447H) ---------------- */
 window.ZK = {
-  st(){ if(!A.tmp.zk) A.tmp.zk = { method:'majority', fam:false, wakala:false, debts:true,
+  st(){ if(!A.tmp.zk) A.tmp.zk = { method:'majority', fam:false, wakala:false,
+    debts:Object.fromEntries(ZK_DEDUCT_ALL().map(d=>[d.id,true])),
     manual:Object.fromEntries(ZAKAT.manual.map(m=>[m.id,{on:m.on,v:m.v}])) };
     return A.tmp.zk; },
   meth(){ return ZK_METHODS[this.st().method]; },
   nisab(){ const m=this.meth(); return m.nisab==='silver' ? ZAKAT.nisabSilverG*ZAKAT.silverPerG : ZAKAT.nisabGoldG*ZAKAT.goldPerG; },
+  debtTotal(){ const s=this.st(); return ZK_DEDUCT_ALL().reduce((x,d)=> x + (s.debts[d.id]?d.v:0), 0); },
   john(){ const s=this.st();
     const auto = ZAKAT.auto.reduce((x,a)=>x+a.v,0);
     const man  = ZAKAT.manual.reduce((x,m)=> x + (s.manual[m.id].on ? s.manual[m.id].v : 0), 0);
-    const debts = s.debts ? ZAKAT.debtsDue : 0;
-    return Math.max(auto + man - debts, 0); },
+    return Math.max(auto + man - this.debtTotal(), 0); },
   aisha(){ const s=this.st(); if(!s.fam) return 0;
     return ZAKAT.spouse.cash + (this.meth().jewellery ? ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG : 0); },
   set(k,v){ this.st()[k]=v; A.refresh(); },
@@ -460,11 +461,20 @@ SCREENS.zakat = () => {
         </div>`).join('')}
     </div>
 
-    <div class="card soft mt12 flex between">
-      <div class="f1"><div class="row-t" style="font-size:13.5px">Deduct debts due now — AED ${fm(z.debtsDue)}</div>
-      <div class="row-d" style="white-space:normal">${z.debtsNote}</div></div>
-      <button class="switch lime ${s.debts?'on':''}" onclick="ZK.set('debts',!ZK.st().debts)"></button>
-    </div>
+    <div class="flex between mt16 mb8"><span class="lbl">Debts to deduct — AED ${fm(ZK.debtTotal())}</span>
+      <button class="chip" onclick="A.go('debts')">Check-up ↗</button></div>
+    <div class="micro mb8">Short-term & due debts deduct in full; long-term financing — next 12 months only (AAOIFI, Qaradawi). The Shafi‘i school doesn’t deduct debts — toggle all off to follow it.</div>
+    ${['personal','business'].map(grp=>`
+      <div class="lbl mt8 mb8" style="font-size:9.5px">${grp==='personal'?'Personal':'Business — incl. your team’s payroll'}</div>
+      <div class="listcard">
+        ${ZAKAT.deduct[grp].map(d=>`
+          <div class="row static">
+            <div class="row-main"><div class="row-t" style="font-size:13px;white-space:normal">${d.t}</div>
+              <div class="row-d" style="white-space:normal">${d.note}</div></div>
+            <div class="row-amt tnum" style="font-size:13px">−${fm(d.v,0)}</div>
+            <button class="switch lime ${s.debts[d.id]?'on':''}" onclick="ZK.st().debts['${d.id}']=!ZK.st().debts['${d.id}'];A.refresh()"></button>
+          </div>`).join('')}
+      </div>`).join('')}
 
     <div class="flex between mt16 mb8"><span class="lbl">Family zakat</span><span class="micro">zakat is individual — but you can pay as wakīl</span></div>
     <div class="listcard">
@@ -500,6 +510,99 @@ SCREENS.zakat = () => {
     <div class="micro mt12" style="text-align:center">Educational prototype — method notes are honest simplifications; confirm with your local mufti. Hawl tracking per asset is on.</div>
   </div>`;
 };
+
+/* ---------------- financing check-up · refinance plan · deposit-secured ---------------- */
+SCREENS.debts = () => {
+  const totOut = DEBTS.reduce((s,d)=>s+d.out,0), totCost = DEBTS.reduce((s,d)=>s+d.costYr,0);
+  const exMortg = totCost - 36708;
+  return `
+  <div class="scr">
+    ${hdr('Financing check-up')}
+    <div class="card">
+      <span class="lbl">All financing & obligations</span>
+      <div style="font:800 32px Inter,sans-serif" class="tnum mt8">AED ${fm(totOut,0)}</div>
+      <div class="micro mt4">9 facilities across 4 providers · auto-detected via Noor Connect</div>
+      <div class="hr"></div>
+      <div class="kv"><span class="k">Profit charges you pay per year</span><span class="v tnum red-t">AED ${fm(totCost,0)}</span></div>
+      <div class="kv"><span class="k">…excluding the home (rate is fine)</span><span class="v tnum">AED ${fm(exMortg,0)}</span></div>
+      <div class="micro">That’s AED ${fm(exMortg/12,0)}/month burning on expensive facilities — most of it fixable.</div>
+    </div>
+    <div class="card lime mt12 tap" onclick="A.go('refi')">
+      <div class="flex between"><b style="font-size:14px">⚡ Refinance plan ready — save AED 6 889/yr</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">Close 1 · transfer 4 · keep 4 — economics checked line by line</div>
+    </div>
+    ${['Personal','Business'].map(kind=>`
+      <div class="lbl mt16 mb8">${kind}</div>
+      <div class="listcard">
+        ${DEBTS.filter(d=>d.kind===kind).map(d=>`
+          <div class="row" onclick="A.go('refi')">
+            ${blg(d.bank)}
+            <div class="row-main"><div class="row-t" style="font-size:13.5px">${d.t}</div>
+              <div class="row-d">${d.rate?d.rate.toFixed(2).replace('.',',')+'% profit'+(d.monthly?' · AED '+fm(d.monthly,0)+'/mo':''):'0% — free terms'}</div></div>
+            <div class="row-r"><div class="row-amt tnum">${fm(d.out,0)}</div>
+              <div class="row-sub" style="color:${d.costYr>1500?'var(--red)':'var(--tx3)'}">${d.costYr?'costs '+fm(d.costYr,0)+'/yr':'—'}</div></div>
+          </div>`).join('')}
+      </div>`).join('')}
+    <div class="micro mt12" style="text-align:center">All facilities are Shariah structures — no interest anywhere; “profit rate” is the disclosed Murabaha/Ijarah cost.</div>
+  </div>`;
+};
+
+SCREENS.refi = () => {
+  const lens = !!A.tmp.refiLens;
+  const saves = DEBTS.reduce((s,d)=>s+d.save,0), rev = DEBTS.reduce((s,d)=>s+d.noorRev,0);
+  const REC = {close:['red','Close it'],transfer:['lime','Transfer'],keep:['grn','Keep'],schedule:['blu','Schedule']};
+  return `
+  <div class="scr">
+    ${hdr('Refinance plan',{right:`<button class="chip ${lens?'on':''}" onclick="A.tmp.refiLens=!A.tmp.refiLens;A.refresh()">💰 Investor lens</button>`})}
+    <div class="card lime">
+      <b style="font-size:14px">Follow the plan → save AED ${fm(saves,0)}/yr</b>
+      <div class="micro mt4">Every recommendation is ranked by <b>your</b> savings — including four “keep”s that earn Noor nothing.</div>
+      ${lens?`<div class="hr" style="background:rgba(11,20,16,.15)"></div>
+      <div class="micro"><b>💰 Noor unit economics (demo):</b> refinancing fees + financing margin ≈ <b>AED ${fm(rev,0)}</b> first-year revenue from this one customer. Honest advice still pays.</div>`:''}
+    </div>
+    ${DEBTS.map(d=>{
+      const [c,label]=REC[d.rec];
+      return `
+      <div class="card mt12">
+        <div class="flex" style="gap:12px">
+          ${blg(d.bank)}
+          <div class="f1"><div class="row-t" style="font-size:14px">${d.t}</div>
+            <div class="row-d">AED ${fm(d.out,0)}${d.rate?' · '+d.rate.toFixed(2).replace('.',',')+'%':''}</div></div>
+          <span class="tag ${c}">${label}</span>
+        </div>
+        <div class="sub mt8" style="font-size:12.5px">${d.why}</div>
+        ${d.to?`<div class="kv mt4"><span class="k">→ ${d.to}</span><span class="v tnum grn-t">save ${fm(d.save,0)}/yr</span></div>`:''}
+        ${lens&&d.noorRev?`<div class="micro" style="color:var(--gold)">💰 Noor earns ≈ AED ${fm(d.noorRev,0)} (1% switch fee + margin share)</div>`:lens?`<div class="micro" style="color:var(--tx3)">💰 Noor earns AED 0 — trust play</div>`:''}
+        ${d.rec==='transfer'?`<button class="btn pri sm mt8" onclick="A.toast('${esc(d.t)} — buyout initiated, old facility settles in 2 days','check')">Transfer in 1 tap</button>`
+        :d.rec==='close'?`<button class="btn pri sm mt8" onclick="A.toast('Settled from e-Saver — AED 3 190/yr stays yours','check')">Settle from e-Saver</button>`
+        :d.rec==='schedule'?`<button class="btn pri sm mt8" onclick="A.toast('Payroll scheduled — 28th, from FAB ··5689','cal')">Schedule payroll</button>`:''}
+      </div>`;}).join('')}
+    <div class="card soft mt12 tap" onclick="A.go('dsf')">
+      <div class="flex between"><b style="font-size:13.5px">🔐 How deposit-secured financing works</b>${ic('chevR',16)}</div>
+      <div class="micro mt4">The engine behind two of these transfers — rahn over your e-Saver</div>
+    </div>
+    <button class="btn lime mt16" onclick="confetti(document.getElementById('screen'));A.toast('Plan applied — 5 actions queued, savings start this month','check')">Apply the whole plan</button>
+  </div>`;
+};
+
+SCREENS.dsf = () => `
+  <div class="scr">
+    ${hdr('Deposit-secured financing')}
+    <div class="card" style="text-align:center;background:linear-gradient(150deg,rgba(215,240,80,.12),var(--glass))">
+      <div style="font-size:40px">🔐</div>
+      <div class="h2 mt8">Borrow against your own savings</div>
+      <div class="sub mt8">${DSF.blurb}</div>
+    </div>
+    <div class="listcard mt12">
+      <div class="kv" style="padding:11px 2px"><span class="k">Your e-Saver (stays earning ${DSF.earn.toFixed(1).replace('.',',')}%)</span><span class="v tnum">AED ${fm(DSF.deposit)}</span></div>
+      <div class="kv" style="padding:11px 2px"><span class="k">Pledge up to ${DSF.pledge*100}% (rahn)</span><span class="v tnum">AED ${fm(DSF.deposit*DSF.pledge,0)}</span></div>
+      <div class="kv" style="padding:11px 2px"><span class="k">Personal rate</span><span class="v tnum">${DSF.rate.toFixed(2).replace('.',',')}% p.a.</span></div>
+      <div class="kv" style="padding:11px 2px"><span class="k">Business rate</span><span class="v tnum">${DSF.bizRate.toFixed(2).replace('.',',')}% p.a.</span></div>
+      <div class="kv" style="padding:11px 2px"><span class="k">Net cost after deposit profit</span><span class="v tnum grn-t">≈ 1,15% — cheapest financing in the app</span></div>
+    </div>
+    <div class="card soft mt12 flex" style="gap:10px">${ic('moon',18,'gold-t')}<div class="micro">Structure: commodity Murabaha with a pledge (rahn) over the deposit — reviewed by the Noor Shariah board; no interest at any step.</div></div>
+    <button class="btn lime mt16" onclick="A.go('refi')">Use it in my refinance plan</button>
+  </div>`;
 
 /* ---------------- consents (AA-style) ---------------- */
 SCREENS.consents = () => `

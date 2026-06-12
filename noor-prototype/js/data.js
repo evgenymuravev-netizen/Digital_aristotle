@@ -229,9 +229,52 @@ window.ZAKAT = {
     {id:'silver',   t:'Silver',                      em:'🥈', v:0,    on:false, note:'595 g nisab on its own'},
     {id:'owed',     t:'Money owed to me (strong debts)', em:'🤝', v:0, on:false, note:'Expected receivables — zakatable now per the majority'},
   ],
-  debtsDue:12522.30, debtsNote:'Card statements + this month’s Murabaha & Tabby instalments',
+  /* debts deductible from the zakat base — itemised.
+     Long-term financing: deduct the next 12 months only (contemporary consensus — AAOIFI, Qaradawi).
+     Short-term & due debts: deduct in full. Wages owed to your team are a debt on you. */
+  deduct:{
+    personal:[
+      {id:'cards',   t:'Card statements due',                      v:10094.80, note:'FAB + EI Visas — due this cycle'},
+      {id:'bnpl',    t:'BNPL outstanding — Tabby & Tamara',        v:1995.00,  note:'All remaining instalments'},
+      {id:'mortg',   t:'Islamic home finance — next 12 months',    v:76200.00, note:'Ijarah, DIB · long-term → 12-month rule'},
+      {id:'car',     t:'Islamic car finance — next 12 months',     v:19680.00, note:'Murabaha, DIB'},
+      {id:'pers',    t:'Islamic personal finance — next 12 months',v:7920.00,  note:'Murabaha, EI'},
+    ],
+    business:[
+      {id:'payroll', t:'Team payroll due — 2 staff',               v:9800.00,  note:'Wages owed are a debt on you — pay on time'},
+      {id:'bizfin',  t:'Islamic business financing — next 12 months', v:30000.00, note:'Murabaha facility, Mashreq'},
+      {id:'invoice', t:'Invoice financing — due in full',          v:22000.00, note:'Short-term — deduct fully'},
+      {id:'po',      t:'Purchase financing — due 90 days',         v:12500.00, note:'PO finance for stock'},
+      {id:'b2b',     t:'B2B BNPL — supplier terms',                v:8400.00,  note:'0% if settled in 60 days'},
+    ],
+  },
   spouse:{name:'Aisha', cash:42300.00, jewelleryG:145},
 };
+window.ZK_DEDUCT_ALL = () => [...ZAKAT.deduct.personal, ...ZAKAT.deduct.business];
+
+/* ---------- the debt book — financing check-up & refinancing ---------- */
+window.DEBTS = [
+  {id:'mortg',  t:'Home finance (Ijarah)',        bank:'dib',     out:920000, rate:3.99, monthly:6350, kind:'Personal', costYr:36708,
+   rec:'keep', why:'Market-best rate — switching would cost you. We earn nothing by saying this.', save:0, noorRev:0},
+  {id:'car',    t:'Car finance (Murabaha)',       bank:'dib',     out:36200,  rate:5.90, monthly:1640, kind:'Personal', costYr:2136,
+   rec:'transfer', to:'Noor auto refinancing · 4,49%', save:510, noorRev:440, why:'Same car, lower profit rate — settled & re-papered in one tap.'},
+  {id:'pers',   t:'Personal finance (Murabaha)',  bank:'ei',      out:18000,  rate:8.50, monthly:660,  kind:'Personal', costYr:1530,
+   rec:'transfer', to:'Noor deposit-secured · 4,25%', save:765, noorRev:310, why:'Your e-Saver pledges as rahn — rate nearly halves while savings keep earning 3,1%.'},
+  {id:'bnpl',   t:'BNPL plans — Tabby & Tamara',  bank:'tabby',   out:1995,   rate:0,    monthly:1208, kind:'Personal', costYr:0,
+   rec:'keep', why:'0 fees — free money. Never refinance free money.', save:0, noorRev:0},
+  {id:'invoice',t:'Invoice financing',            bank:'mashreq', out:22000,  rate:14.50,monthly:0,    kind:'Business', costYr:3190,
+   rec:'close', why:'Your most expensive dirham — settle it from idle e-Saver cash earning 0% there.', save:3190, noorRev:0},
+  {id:'bizfin', t:'Business financing (Murabaha)',bank:'mashreq', out:45000,  rate:9.20, monthly:2750, kind:'Business', costYr:4140,
+   rec:'transfer', to:'Noor deposit-secured business · 4,95%', save:1912, noorRev:765, why:'Pledge part of your deposit — profit rate drops by nearly half.'},
+  {id:'po',     t:'Purchase financing (PO)',      bank:'mashreq', out:12500,  rate:11.00,monthly:0,    kind:'Business', costYr:1375,
+   rec:'transfer', to:'Noor purchase financing · 6,9%', save:512, noorRev:185, why:'Stock finance at a sane rate, repaid as inventory sells.'},
+  {id:'b2b',    t:'B2B BNPL — supplier terms',    bank:'cashew',  out:8400,   rate:0,    monthly:0,    kind:'Business', costYr:0,
+   rec:'keep', why:'0% inside 60 days — I’ll remind you on day 55.', save:0, noorRev:0},
+  {id:'payroll',t:'Team payroll — due 28th',      bank:'noor',    out:9800,   rate:0,    monthly:0,    kind:'Business', costYr:0,
+   rec:'schedule', why:'Not a financing — a trust. Scheduled from FAB ··5689 so it never slips.', save:0, noorRev:0},
+];
+window.DSF = {rate:4.25, bizRate:4.95, pledge:0.8, deposit:96540.12, earn:3.1,
+  blurb:'Commodity Murabaha secured by a pledge (rahn) over your savings — your deposit keeps earning while you pay a near-deposit rate.'};
 /* calculation methods — honest attributions, confirm with your local mufti */
 window.ZK_METHODS = {
   majority:  {n:'Majority',  nisab:'gold',   jewellery:false,
@@ -252,7 +295,7 @@ window.CONSENTS = [
   {bank:'fab', scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
   {bank:'wio', scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
   {bank:'ei',  scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
-  {bank:'dib', scope:'Loan account · Balance only',            granted:'11 Jun 2026', expires:'11 Dec 2026', status:'Expiring soon', freq:'1× / day'},
+  {bank:'dib', scope:'Financing account · Balance only',            granted:'11 Jun 2026', expires:'11 Dec 2026', status:'Expiring soon', freq:'1× / day'},
   {bank:'careem', scope:'Wallet balance · transactions',       granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
   {bank:'tabby',  scope:'Plans · limits · upcoming payments',  granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'2× / day'},
   {bank:'binance',scope:'Read-only API · balances only',       granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'1× / hour'},
@@ -265,7 +308,7 @@ window.NOTIFS = [
   {ic:'card',  c:'#FFB050', t:'Pre-approved: FAB card, AED 20 000 limit', d:'3.99% · 55 days grace · expires in 6 days', when:'5 h ago', act:'chat-card'},
   {ic:'trendUp',c:'#53DE8E',t:'AECB score up 7 points → 745', d:'On-time FAB card payment reported', when:'Yesterday', act:'score'},
   {ic:'gift',  c:'#B89CFF', t:'You earned a scratch card', d:'5-day saving streak — keep it up!', when:'Yesterday', act:'rewards'},
-  {ic:'shieldCheck', c:'#5EE6D0', t:'DIB consent expires in 14 days', d:'Renew to keep your loan synced', when:'2 d ago', act:'consents'},
+  {ic:'shieldCheck', c:'#5EE6D0', t:'DIB consent expires in 14 days', d:'Renew to keep your financing synced', when:'2 d ago', act:'consents'},
 ];
 
 /* ---------- FX ---------- */
@@ -282,6 +325,8 @@ window.FX = [
 window.MARKET = [
   {id:'cards', t:'Credit cards', d:'3 pre-approved', ic:'card', c:'#6FB6FF'},
   {id:'loan',  t:'Personal finance', d:'Up to AED 120 000', ic:'dollar', c:'#53DE8E'},
+  {id:'dsf',   t:'Deposit-secured financing', d:'4,25% — savings keep earning', ic:'lock', c:'#D7F050'},
+  {id:'refi',  t:'Refinance my debts', d:'Save AED 6 889/yr', ic:'swap', c:'#53DE8E'},
   {id:'auto',  t:'Auto finance', d:'From 2.49% flat', ic:'car', c:'#FFB050'},
   {id:'home',  t:'Home finance', d:'Ijarah · from 3.99%', ic:'home', c:'#B89CFF'},
   {id:'takaful',t:'Takaful insurance', d:'Car · travel · health', ic:'shield', c:'#5EE6D0'},

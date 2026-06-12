@@ -15,7 +15,7 @@ A deep, clickable HTML prototype of the **Noor** app from the May 2026 investor 
   (Taqi Usmani / UAE Awqaf / Ibn ‘Uthaymeen / AAOIFI SS 35), family wakāla mode, and Ramadan-eve timing.
 - **Deck moments, pixel-faithful:** “Hi, John” home with *My money AED 275 900,76*, the credit-card
   agent (“I have selected three offers with a pre-approved limit for you”), the PS5 purchase,
-  one-click Murabaha loan activation.
+  one-click Murabaha financing activation.
 - **Onboarding modelled on the Lean Link recording (Apr 2026)** — same flow (intro sheet → bank picker →
   credentials → OTP “From Messages” → Wio two-step → FacePass), rebuilt as **Noor Connect** on CBUAE
   Open Finance rails and **enhanced**: bank-side auth (no credential storage), live progress steps,

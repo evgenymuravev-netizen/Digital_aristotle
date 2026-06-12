@@ -68,7 +68,7 @@ window.SCN_GROUPS = [
   S('Why am I pre-approved?','Transparency: salary 14×, utilisation, AECB 745',()=>chatDeep('whyOffers')),
   S('Buy a PS 5, 2 Tb (deck)','“Ok, I checked, here’s the best offer for you”',()=>chatDeep('ps5')),
   S('Split-in-4 checkout','AED 787,50 × 4 · 0 fees · Murabaha — Tabby-style',()=>{chatDeep('ps5');setTimeout(()=>Pay.buyPS5('Sharaf DG',3150,true),2800);}),
-  S('One-click loan (deck killer)','Pre-approved AED 120 000 Murabaha in chat',()=>chatDeep('loan')),
+  S('One-click financing (deck killer)','Pre-approved AED 120 000 Murabaha in chat',()=>chatDeep('loan')),
   S('Spending forensics','“Why did I spend so much?” — named culprits',()=>chatDeep('spend')),
   S('Subscription cleanup by agent','“Cancel Anghami for me” — and it does',()=>chatDeep('subs')),
   S('Zakat in chat','Live calculation from all linked wealth',()=>chatDeep('zakat')),
@@ -179,6 +179,16 @@ window.SCN_GROUPS = [
   S('Pick your scholar','Taqi Usmani · UAE Awqaf · Ibn ‘Uthaymeen · AAOIFI — math follows the fatwa',()=>chatDeep('zakatFull')),
   S('Family zakat — wakāla','Two incomes, individual obligations; husband pays with her consent',()=>{ZK.st().fam=true;ZK.st().wakala=true;A.go('zakat');}),
   S('Pay tomorrow — 1 Ramadan','Hawl anchored to Ramadan; recalculated at live prices on the day','zakat'),
+  S('Debts that reduce zakat','Payroll, BNPL, 12-month slices of mortgage/car/personal, business facilities — itemised toggles','zakat'),
+]},
+
+{g:'Debt intelligence ✦', items:[
+  S('Financing check-up','All 9 facilities, true profit cost per year — AED 49 079 (12 371 ex-home)','debts'),
+  S('Refinance plan — close · transfer · keep','Honest line-by-line: settle invoice financing, move 4, keep the well-priced ones','refi'),
+  S('Deposit-secured financing','Rahn over your e-Saver: 4,25% while savings keep earning 3,1%','dsf'),
+  S('💰 Investor lens — unit economics','Toggle reveals what Noor earns per recommendation (and the AED 0 trust plays)',()=>{A.tmp.refiLens=true;A.go('refi');}),
+  S('Refi advice in chat','“Should I refinance anything?” — close/transfer/keep with numbers',()=>chatDeep('refi')),
+  S('New value proposition','Control · always-compliant (AI + scholars) · most accurate Zakat · local community','welcome','fresh'),
 ]},
 ];
 

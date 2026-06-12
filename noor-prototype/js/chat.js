@@ -46,6 +46,7 @@ const Chat = window.Chat = {
     const go = s => this.play(s,false);
     if (/(credit )?card/.test(t) && /find|best|help|need|new/.test(t)) return go('findCard');
     if (/ps ?5|playstation/.test(t)) return go('ps5');
+    if (/refinanc|expensive|cheaper|too much.*pay/.test(t)) return go('refi');
     if (/loan|borrow|financ/.test(t)) return go('loan');
     if (/spend|spent|where.*money|expense/.test(t)) return go('spend');
     if (/subscri/.test(t)) return go('subs');
@@ -208,7 +209,16 @@ const SCRIPTS = {
     await c.ai(`<b>Sharaf DG — AED 3 150</b>: cheapest, delivery in 2–4 h, 2-yr warranty.\n<b>Jumbo — AED 3 249</b>: free HDMI 2.1 cable (worth ~AED 120), tomorrow.\n<b>Amazon.ae — AED 3 329</b>: easiest returns.\n\nFor paying: you’re <b>pre-approved on Tabby (AED 4 500)</b> and <b>Tamara (AED 3 800)</b> — both 0 fees — or <b>Noor Split in 4</b> (Murabaha). Paying in full on FAB earns AED 157 cashback. Tap “Split it” and pick.`);
   }},
 
-  loan:{ user:'Get me the best loan with one-click activation', async run(c){
+  refi:{ user:'Should I refinance anything?', async run(c){
+    await c.ai(`I priced every facility you have. The honest read:\n\n🔴 <b>Close</b> — invoice financing 22 000 @ 14,5%: your most expensive dirham. Settle it from idle e-Saver cash → <b>save 3 190/yr</b>.\n\n🟢 <b>Transfer</b> — business 45 000 @ 9,2% and personal 18 000 @ 8,5% → <b>deposit-secured financing</b> (your e-Saver pledges as rahn): 4,95% / 4,25% → <b>save 2 677/yr</b>. Car 36 200 @ 5,9% → 4,49% → <b>510/yr</b>. Purchase financing → 6,9% → <b>512/yr</b>.\n\n⚪ <b>Keep</b> — home Ijarah at 3,99% is market-best (switching costs you — and yes, we’d earn if you switched). BNPL at 0 fees is free money. B2B BNPL is 0% inside 60 days — I’ll ping you day 55.\n\nTotal: <b>AED 6 889/yr back in your pocket.</b>`, 2000);
+    await c.card(`<div class="ch-quick">
+      <button class="chip" onclick="A.go('refi')">⚡ Open the plan — apply in 1 tap</button>
+      <button class="chip" onclick="A.go('dsf')">🔐 Deposit-secured — how it works</button>
+      <button class="chip" onclick="A.go('debts')">Full check-up</button>
+    </div>`,250);
+  }},
+
+  loan:{ user:'Get me the best financing with one-click activation', async run(c){
     await c.ai('You have a <b>pre-approved Murabaha personal finance</b> ready. ' + LOAN_OFFER.note, 1000);
     await c.card(loanCard());
     await c.card(chips([
@@ -333,11 +343,21 @@ window.ZKChat = {
   menu(){ return `<div class="ch-quick">
     <button class="chip" onclick="ZKChat.homecash()">🏠 Cash at home</button>
     <button class="chip" onclick="ZKChat.trade()">📦 Goods I sell</button>
+    <button class="chip" onclick="ZKChat.debtsBiz()">🏢 My debts & payroll</button>
     <button class="chip" onclick="ZKChat.jewel()">💍 Family gold</button>
     <button class="chip" onclick="ZKChat.owed()">🤝 Money owed to me</button>
     <button class="chip" onclick="ZKChat.family()">👫 My wife’s wealth too</button>
     <button class="chip" onclick="ZKChat.verdict()">✅ That’s everything — verdict</button>
   </div>`; },
+  debtsBiz(){ this.guard(async()=>{
+    Chat.user('I have financing and I owe my team payroll — does that reduce zakat?');
+    await Chat.ai(`Yes — <b>debts you owe reduce the zakat base</b> (Hanafi & Hanbali view, adopted by AAOIFI; the Shafi‘i school differs — I’ll respect your method either way).\n\nFrom your linked accounts I already see all of it:\n\n· Card statements <b>10 094,80</b>\n· BNPL plans <b>1 995</b>\n· Islamic home finance — <b>next 12 months only: 76 200</b> (long-term rule)\n· Car <b>19 680</b> · personal <b>7 920</b> (12-month slices)\n· <b>Team payroll due 9 800</b> — wages owed are a debt on you\n· Business financing <b>30 000</b> · invoice <b>22 000</b> · purchase <b>12 500</b> · B2B BNPL <b>8 400</b>\n\nTotal deduction: <b>AED ${fm(ZK.debtTotal(),0)}</b>. Each line has a toggle in the calculator.`, 1700);
+    await Chat.ai(`One more thing — those facilities cost you <b>≈ AED 12 371/yr</b> in profit charges (excluding the home, which is priced well). Want my refinancing read: what to close, what to transfer?`, 1100);
+    await Chat.card(`<div class="ch-quick">
+      <button class="chip" onclick="Chat.chipSend('Yes — should I refinance anything?','refi')">⚡ Yes — refinance check</button>
+      <button class="chip" onclick="ZKChat.verdict()">Later — verdict first</button>
+    </div>`,250);
+  });},
   async guard(fn){ if(CHAT.busy) return; CHAT.busy=true; try{ await fn(); } finally{ CHAT.busy=false; } },
 
   homecash(){ this.guard(async()=>{
@@ -409,7 +429,7 @@ window.ZKChat = {
     await Chat.card(`<div class="offer-card" style="min-width:0">
       <div class="flex between"><span class="tag gold">☪ Zakat 1447H</span><span class="micro">nisab ${m.nisab} basis ✓ exceeded</span></div>
       <div class="offer-amt tnum">AED ${fm(dueJ + (s.fam?dueA:0))}</div>
-      <div class="offer-sub">2,5% · ${s.debts?'after deducting AED '+fm(ZAKAT.debtsDue,0)+' debts due now':'no debt deduction'}</div>
+      <div class="offer-sub">2,5% · after deducting AED ${fm(ZK.debtTotal(),0)} of due debts (incl. payroll & business financing)</div>
       <div class="kv" style="padding-top:10px"><span class="k">${USER.first} — base AED ${fm(john,0)}</span><span class="v tnum">${fm(dueJ)}</span></div>
       ${s.fam?`<div class="kv"><span class="k">${ZAKAT.spouse.name} — base AED ${fm(aisha,0)} ${s.wakala?'(you pay, wakīl)':'(she pays)'}</span><span class="v tnum">${fm(dueA)}</span></div>`:''}
       <div class="micro mt8">${m.who}</div>

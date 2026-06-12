@@ -16,15 +16,17 @@ AFTER.splash = () => setTimeout(()=>A.go('welcome', true), 1400);
 
 /* ---------- welcome carousel ---------- */
 const W_SLIDES = [
-  {h:'Banking products<br>in <span class="lime-t">1-click</span>', d:'Cards, financing and savings — pre-approved from your real data and activated in seconds.',
-   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,#EDFA9B,#D7F050 55%,#9DBE17);display:flex;align-items:center;justify-content:center;color:#0B1410;box-shadow:0 30px 80px rgba(215,240,80,.35)">${ic('zap',86,'',1.4)}</div>`},
-  {h:'All your banks.<br><span class="lime-t">One place.</span>', d:'Connect FAB, Wio, Emirates Islamic and 11 more — see every dirham, get one clear picture.',
+  {h:'Be in control<br>of <span class="lime-t">your finances</span>', d:'Every bank, wallet, BNPL plan, debt and dirham — one live picture, one number you can trust.',
    art:`<div style="display:flex;flex-direction:column;gap:14px;align-items:center">
-        <div class="logo-stack" style="transform:scale(1.6)">${blg('fab')}${blg('wio')}${blg('ei')}${blg('enbd')}</div>
+        <div class="logo-stack" style="transform:scale(1.6)">${blg('fab')}${blg('wio')}${blg('ei')}${blg('tabby')}</div>
         <div style="margin-top:26px;font:800 44px Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275 900<span style="font-size:26px">,76</span></div>
-        <span class="tag lime">Live across 3 banks</span></div>`},
-  {h:'Shariah-first.<br><span class="lime-t">AI-native.</span>', d:'A personal agent that watches, plans and acts — zakat, halal investing and spending, built in.',
-   art:`<div style="width:200px;height:200px;border-radius:60px;background:rgba(255,255,255,.06);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--lime)">${ic('spark',92,'',1.3)}</div>`},
+        <span class="tag lime">Live · banks, wallets, BNPL & crypto</span></div>`},
+  {h:'100% compliant.<br><span class="lime-t">Always.</span>', d:'Every product is tracked by AI and confirmed by leading scholars — you will never violate Shariah without knowing. No interest, anywhere, ever.',
+   art:`<div style="width:200px;height:200px;border-radius:60px;background:rgba(255,255,255,.06);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--lime)">${ic('shieldCheck',92,'',1.2)}</div>`},
+  {h:'The most accurate<br><span class="lime-t">Zakat, ever.</span>', d:'Every asset and every debt — even trade stock and payroll — calculated to the dirham, by your scholar’s method. This is our craft.',
+   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,rgba(232,194,104,.35),rgba(232,194,104,.08));border:1px solid rgba(232,194,104,.35);display:flex;align-items:center;justify-content:center;color:var(--gold)">${ic('moon',88,'',1.2)}</div>`},
+  {h:'Support your<br><span class="lime-t">local community</span>', d:'Zakat and sadaqah flow to local charities; financing backs local businesses. Your money builds the place you live in.',
+   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,#EDFA9B,#D7F050 55%,#9DBE17);display:flex;align-items:center;justify-content:center;color:#0B1410;box-shadow:0 30px 80px rgba(215,240,80,.35)">${ic('heart',86,'',1.4)}</div>`},
 ];
 SCREENS.welcome = () => {
   const i = A.tmp.slide||0, s = W_SLIDES[i];
