@@ -70,7 +70,7 @@ window.SCN_GROUPS = [
   S('Split-in-4 checkout','AED 787,50 × 4 · 0 fees · Murabaha — Tabby-style',()=>{chatDeep('ps5');setTimeout(()=>Pay.buyPS5('Sharaf DG',3150,true),2800);}),
   S('One-click financing (deck killer)','Pre-approved AED 120 000 Murabaha in chat',()=>chatDeep('loan')),
   S('Spending forensics','“Why did I spend so much?” — named culprits',()=>chatDeep('spend')),
-  S('Subscription cleanup by agent','“Cancel Anghami for me” — and it does',()=>chatDeep('subs')),
+  S('Subscription cleanup by agent','Keeps Anghami (31 h ▲), cancels Spotify+Apple Music, fixes the du tariff',()=>chatDeep('subs')),
   S('Zakat in chat','Live calculation from all linked wealth',()=>chatDeep('zakat')),
   S('“Can I afford this trip?”','Cashflow simulation with a verdict',()=>chatDeep('afford')),
   S('Salary radar','Lands on the 25th — rules fire automatically',()=>chatDeep('salary')),
@@ -108,7 +108,7 @@ window.SCN_GROUPS = [
   S('June insights','Donut, budgets, pace warning — “ask why ✦”','insights'),
   S('Category drill-down','Dining +38% with 5-month trend','cat/dining'),
   S('Top merchants','IKEA, Carrefour, Talabat ranked','insights'),
-  S('Subscription hunter','8 detected · AED 972/mo · 2 wasteful','subs'),
+  S('Subscription hunter','11 detected · AED 1 426/mo · AED 1 632/yr to save','subs'),
   S('Cancel via your bank ✦','Noor files the cancellation + refund request','subs'),
   S('Safe-to-spend forecast','AED 9 540 until salary, 94% accuracy','forecast'),
   S('Financial health score','78/100 with named fixes','health'),
@@ -204,9 +204,18 @@ window.SCN_GROUPS = [
   S('SME insight stories','Sales +30%, rejections ↓12% after financing, CAC vs category — Tabby-Business style',()=>{A.tmp.bizI=0;A.go('biz');}),
   S('Notifications → insights','The thesis: nothing nags, every business signal lands as a story card',()=>{A.tmp.bizI=1;A.go('biz');}),
   S('Portfolio advice — whole picture','Buy gold to 8%, property-for-lease at 6,8%, hold shares, cap crypto',()=>chatDeep('advise')),
-  S('Zakat — split into auto-payments','Daily/weekly/monthly ta‘jīl with hawl-end reconciliation + one-tap rule',()=>{ZK.st().pay='monthly';A.go('zakat');}),
+  S('Zakat — split into auto-payments','% of salary or monthly parts with hawl-end guarantee — one-tap rule',()=>{ZK.st().step=3;ZK.st().plan='income';A.go('zakat');}),
   S('Miles & cashback — zakatable?','Cashback yes once credited; points no — and the ḥīlah “lifehack” ruling',()=>{chatDeep('zakatFull');setTimeout(()=>ZKChat.points(),2800);}),
   S('B2B · B2C zakat switch','Solo proprietorship, 30% LLC look-through, fund zakatable ratios — one toggle',()=>{ZK.st().scope='both';A.go('zakat');}),
+]},
+
+{g:'Zakat journey 2.0 ✦', items:[
+  S('3-step journey','Calculate → choose the cause → pay; method chips now carry YOUR total under each',()=>{ZK.st().step=1;A.go('zakat');}),
+  S('Charity trust screen','First-timer friendly: licence, zakat handling, fees, track record per charity',()=>{ZK.st().step=2;A.go('zakat');}),
+  S('Pay later — Qard Ḥasan','Noor advances 100% to charity today; you repay 4 parts, 0 fees — never late',()=>{ZK.st().step=3;ZK.st().plan='later';A.go('zakat');}),
+  S('% of salary until covered','1/2/5% per payday + hawl-end top-up guarantee',()=>{ZK.st().step=3;ZK.st().plan='income';A.go('zakat');}),
+  S('Zakat Pot — save ahead','Monthly Mudarabah pot earns ~3,1% halal profit, pays next hawl in one go',()=>{ZK.st().step=3;ZK.st().plan='pot';A.go('zakat');}),
+  S('Custom amounts everywhere','Type any number in chat mid-interview, or use the input in every asset sheet',()=>{chatDeep('zakatFull');setTimeout(()=>ZKChat.homecash(),2800);}),
 ]},
 ];
 

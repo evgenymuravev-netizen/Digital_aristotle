@@ -372,7 +372,7 @@ SCREENS['connect-success'] = (bank) => {
     <div class="card mt20" style="background:#fff;border:1px solid var(--lt-line);text-align:left">
       <div class="lbl">Noor already found ${enh('instant value')}</div>
       <div class="row static">${catIc('income',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">Your salary — AED 32 500 on the 25th</div></div></div>
-      <div class="row static">${catIc('entertainment',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">8 subscriptions ≈ AED 972/mo</div></div></div>
+      <div class="row static">${catIc('entertainment',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">11 subscriptions ≈ AED 1 426/mo</div></div></div>
       <div class="row static">${catIc('bills',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">2 wasteful fees you can dispute</div></div></div>
     </div>
     ${remaining.length

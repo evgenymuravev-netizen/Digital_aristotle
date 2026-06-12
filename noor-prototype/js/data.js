@@ -82,10 +82,20 @@ window.SUBS = [
   {m:'Netflix',        amt:29.00, day:'12th', next:'Tomorrow', ic:'film',  c:'#E50914', acc:'fab-cc', used:'Watched 14 h in May'},
   {m:'Fitness First',  amt:350.00,day:'7th',  next:'7 Jul',    ic:'heart', c:'#FF7A6B', acc:'fab-sal',used:'Visited 11× in May'},
   {m:'du Home Internet',amt:389.00,day:'3rd', next:'3 Jul',    ic:'zap',   c:'#6FB6FF', acc:'fab-cc', used:'Essential'},
+  {m:'du Mobile · Power 25GB', amt:289.00, day:'1st', next:'1 Jul', ic:'phone', c:'#3FA9F5', acc:'fab-sal',
+   used:'6,2 GB of 25 GB · 210 min', flag:'Overprovisioned — a cheaper plan fits you',
+   usage:{gb:[6.2,25],min:'210 min (flexi unlimited)', rec:{plan:'du Smart 12GB', price:199, save:1080, why:'Your 6-month average is 6,8 GB — even 12 GB leaves headroom'}}},
+  {m:'Claude API',     amt:142.67,day:'5th',  next:'Usage-based', ic:'spark', c:'#D97A4A', acc:'fab-cc',
+   used:'AED 142,67 in May (≈ $38,85) · tokens ▲ 38%', flag:'Usage-based — caching could cut ~40%'},
   {m:'ChatGPT Plus',   amt:73.41, day:'31st', next:'30 Jun',   ic:'spark', c:'#B89CFF', acc:'fab-cc', used:'Used daily'},
   {m:'iCloud+ 2TB',    amt:36.99, day:'2nd',  next:'2 Jul',    ic:'doc',   c:'#9DB2A6', used:'1.1 TB used', acc:'fab-cc'},
-  {m:'Spotify Premium',amt:23.99, day:'4th',  next:'4 Jul',    ic:'film',  c:'#53DE8E', acc:'fab-cc', used:'Last played 26 May', flag:'Overlaps with Anghami'},
-  {m:'Anghami Plus',   amt:19.99, day:'30th', next:'30 Jun',   ic:'film',  c:'#FF8FC0', acc:'fab-cc', used:'Not used for 6 weeks', flag:'Unused — consider cancelling'},
+  /* music cluster — main metric: hours listened + trend */
+  {m:'Anghami Plus',   amt:19.99, day:'30th', next:'30 Jun',   ic:'film',  c:'#FF8FC0', acc:'fab-cc', music:true,
+   hours:31, trend:+24, used:'31 h this month ▲ 24%', flag:'Keep — your main player, best Arabic catalogue'},
+  {m:'Spotify Premium',amt:23.99, day:'4th',  next:'4 Jul',    ic:'film',  c:'#53DE8E', acc:'fab-cc', music:true,
+   hours:2.1, trend:-67, used:'2,1 h this month ▼ 67%', flag:'Overlaps Anghami & Apple Music — cancel'},
+  {m:'Apple Music',    amt:21.99, day:'9th',  next:'9 Jul',    ic:'film',  c:'#FA445C', acc:'fab-cc', music:true,
+   hours:0.4, trend:-81, used:'0,4 h this month ▼ 81%', flag:'Overlaps Anghami & Spotify — cancel'},
   {m:'Salik auto top-up',amt:50.00,day:'~6th',next:'When low', ic:'car',   c:'#FFB050', acc:'wio-cur',used:'Balance-based'},
 ];
 
@@ -225,6 +235,21 @@ window.SCORE_PROJ = {
 window.ZAKAT = {
   cash:275900.76, gold:6030.40, invest:38500.00, nisab:41337.20, rate:0.025,
   charities:['Dubai Cares','Emirates Red Crescent','Al Jalila Foundation','Beit Al Khair'],
+  /* rich charity profiles — built for a first-time payer's trust */
+  charityInfo:[
+    {n:'Dubai Cares', em:'🎓', since:2007, focus:'Education & child welfare',
+     lic:'Licensed UAE charity · founded by H.H. Sheikh Mohammed', fee:'0% admin on zakat — Noor covers processing',
+     reach:'21M children reached across 60 countries', zk:'Zakat programmes ringfenced & Shariah-audited yearly'},
+    {n:'Emirates Red Crescent', em:'🌙', since:1983, focus:'Relief · orphans · debt relief (ghārimīn)',
+     lic:'Federal-decree body · IFRC member', fee:'100% of zakat reaches beneficiaries',
+     reach:'1,2M beneficiaries supported in 2025', zk:'Dedicated zakat fund with scholar oversight'},
+    {n:'Al Jalila Foundation', em:'🏥', since:2013, focus:'Medical treatment for those who can’t afford it',
+     lic:'Dubai decree · part of Dubai Health', fee:'0% on zakat donations',
+     reach:'Funded treatment for 18 000+ patients', zk:'Treating the poor qualifies (fuqarā’/masākīn category)'},
+    {n:'Beit Al Khair Society', em:'🤲', since:1989, focus:'Local UAE families — the closest poor come first',
+     lic:'UAE Ministry of Community Development', fee:'In-house Shariah board',
+     reach:'AED 2,1B distributed since 1989', zk:'Strict zakat ledger — the 8 maṣārif tracked separately'},
+  ],
   /* live metal prices */
   goldPerG:486.32, silverPerG:5.62, nisabGoldG:85, nisabSilverG:595,
   hijri:'29 Sha’ban 1447 — Ramadan starts tomorrow',

@@ -438,18 +438,27 @@ window.ZK = {
   debtTotal(){ const s=this.st();
     const grp = s.scope==='personal' ? ZAKAT.deduct.personal : s.scope==='business' ? ZAKAT.deduct.business : ZK_DEDUCT_ALL();
     return grp.reduce((x,d)=> x + (s.debts[d.id]?d.v:0), 0); },
-  john(){ const s=this.st();
+  baseUnder(mid){ const s=this.st(), M=ZK_METHODS[mid];
     const persAuto = ZAKAT.auto.reduce((x,a)=>x+a.v,0);
     const man = id => s.manual[id].on ? s.manual[id].v : 0;
-    const persMan = ['homecash','jewel','silver','owed','points'].reduce((x,id)=>x+man(id),0);
-    const bizMan  = man('trade');
-    const biz = ZAKAT.bizAssets.reduce((x,b)=> x + (s.biz[b.id]?b.v:0), 0) + bizMan;
+    /* personal-use jewellery only counts under methods that zakat it */
+    const persMan = ['homecash','silver','owed','points'].reduce((x,id)=>x+man(id),0) + (M.jewellery?man('jewel'):0);
+    const biz = ZAKAT.bizAssets.reduce((x,b)=> x + (s.biz[b.id]?b.v:0), 0) + man('trade');
     const base = (s.scope==='personal') ? persAuto+persMan
                : (s.scope==='business') ? biz
                : persAuto+persMan+biz;
     return Math.max(base - this.debtTotal(), 0); },
-  aisha(){ const s=this.st(); if(!s.fam) return 0;
-    return ZAKAT.spouse.cash + (this.meth().jewellery ? ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG : 0); },
+  john(){ return this.baseUnder(this.st().method); },
+  aishaUnder(mid){ const s=this.st(); if(!s.fam) return 0;
+    return ZAKAT.spouse.cash + (ZK_METHODS[mid].jewellery ? ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG : 0); },
+  aisha(){ return this.aishaUnder(this.st().method); },
+  nisabUnder(mid){ return ZK_METHODS[mid].nisab==='silver' ? ZAKAT.nisabSilverG*ZAKAT.silverPerG : ZAKAT.nisabGoldG*ZAKAT.goldPerG; },
+  dueUnder(mid){ const s=this.st(), nis=this.nisabUnder(mid);
+    const bj=this.baseUnder(mid), ba=this.aishaUnder(mid);
+    const dj = bj>=nis ? bj*ZAKAT.rate : 0;
+    const da = (s.fam && ba>=nis) ? ba*ZAKAT.rate : 0;
+    return {j:dj, a:da, t:dj+da}; },
+  due(){ return this.dueUnder(this.st().method); },
   set(k,v){ this.st()[k]=v; A.refresh(); },
   makeRule(){
     const s=this.st(), due=(this.john()+(s.fam?this.aisha():0))*ZAKAT.rate;
@@ -467,15 +476,111 @@ window.ZK = {
         ${vals.map(v=>`<button class="chip" onclick="ZK.st().manual['${id}']={on:true,v:${v}};A.closeSheet();A.refresh()">AED ${fm(v,0)}</button>`).join('')}
         <button class="chip" onclick="ZK.st().manual['${id}']={on:false,v:0};A.closeSheet();A.refresh()">None</button>
       </div>
+      <div class="lbl mt12 mb8">Or type any amount</div>
+      <div class="flex" style="gap:8px">
+        <input id="zkCustom" class="input tnum" type="number" inputmode="decimal" placeholder="AED 0,00" style="flex:1"
+          onkeydown="if(event.key==='Enter')ZK.custom('${id}')">
+        <button class="btn pri sm" onclick="ZK.custom('${id}')">Set</button>
+      </div>
       ${id==='jewel'?'<div class="micro mt12">Tip: 50 g ≈ AED 24 319 · 100 g ≈ 48 632 · 145 g ≈ 70 516 at today’s price.</div>':''}`); },
+  custom(id){
+    const el=document.getElementById('zkCustom');
+    const v=parseFloat(String(el&&el.value||'').replace(/[ ,]/g,''));
+    if(!isFinite(v)||v<0){ if(el){el.classList.add('err'); setTimeout(()=>el.classList.remove('err'),400);} return; }
+    this.st().manual[id]={on:v>0, v}; A.closeSheet(); A.refresh();
+    A.toast(`Set: AED ${fm(v)} — recalculated`,'check');
+  },
 };
 SCREENS.zakat = () => {
   const s = ZK.st(), m = ZK.meth(), z = ZAKAT;
+  const step = s.step||1;
   const nis = ZK.nisab(), john = ZK.john(), aisha = ZK.aisha();
-  const dueJ = john*z.rate, dueA = aisha*z.rate, due = dueJ + (s.fam?dueA:0);
+  const D = ZK.due(), due = D.t;
+  const stepper = `
+    <div class="chips mb12" style="justify-content:center">
+      ${[[1,'1 · Calculate'],[2,'2 · Cause'],[3,'3 · Pay']].map(([n,tt])=>
+        `<button class="chip ${step===n?'on':''}" ${n<step?`onclick="ZK.set('step',${n})"`:''} style="${n>step?'opacity:.45':''}">${tt}</button>`).join('')}
+    </div>`;
+
+  /* ---------- STEP 2 · choose the cause ---------- */
+  if(step===2){
+    const sel = s.charity||0;
+    return `
+    <div class="scr">
+      ${hdr('Where your zakat goes',{back:"ZK.set('step',1)"})}
+      ${stepper}
+      <div class="sub">First time paying through an app? Fair question — here’s exactly who these organisations are and why they can be trusted with a religious duty.</div>
+      ${z.charityInfo.map((c,i)=>`
+        <div class="card mt12 tap" style="${sel===i?'outline:2px solid var(--lime)':''}" onclick="ZK.set('charity',${i})">
+          <div class="flex" style="gap:12px">
+            <span class="avx" style="background:rgba(215,240,80,.14);font-size:24px">${c.em}</span>
+            <div class="f1"><div class="row-t">${c.n}</div><div class="row-d">${c.focus} · since ${c.since}</div></div>
+            ${sel===i?`<span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--lime);color:var(--ink)">${ic('check',14)}</span>`:''}
+          </div>
+          <div class="hr" style="margin:10px 0"></div>
+          <div class="kv" style="padding:4px 0"><span class="k">Licence</span><span class="v" style="font-size:12px;max-width:60%">${c.lic}</span></div>
+          <div class="kv" style="padding:4px 0"><span class="k">Zakat handling</span><span class="v" style="font-size:12px;max-width:60%">${c.zk}</span></div>
+          <div class="kv" style="padding:4px 0"><span class="k">Fees</span><span class="v" style="font-size:12px;max-width:60%">${c.fee}</span></div>
+          <div class="kv" style="padding:4px 0"><span class="k">Track record</span><span class="v" style="font-size:12px;max-width:60%">${c.reach}</span></div>
+        </div>`).join('')}
+      <div class="card soft mt12 flex" style="gap:10px">${ic('shieldCheck',20,'lime-t')}
+        <div class="micro"><b>Noor takes 0%.</b> Every receipt lands in your Documents within minutes, with the charity’s zakat-fund reference — auditable end-to-end.</div></div>
+      <button class="btn lime mt16" onclick="ZK.set('step',3)">Continue — ${z.charityInfo[sel].n}</button>
+    </div>`;
+  }
+
+  /* ---------- STEP 3 · how & when to pay ---------- */
+  if(step===3){
+    const plan = s.plan||'now', pct = s.pct||2;
+    const salary = USER.salary, perSal = salary*pct/100;
+    const months = Math.max(1, Math.ceil(due/perSal));
+    const MONTHS = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan ’27','Feb ’27','Mar ’27','Apr ’27','May ’27','Jun ’27'];
+    const finish = MONTHS[Math.min(months-1, MONTHS.length-1)];
+    const PLANS = [
+      ['now','Pay in full now', `AED ${fm(due)} · done before Ramadan starts`],
+      ['ramadan','Tomorrow · 1 Ramadan', 'The most rewarded day — amount refreshed at live prices'],
+      ['later','Pay later — Noor advances it (Qard Ḥasan)', `Charity receives 100% today · you repay 4 × AED ${fm(due/4)} · 0 fees — zakat is never late`],
+      ['income','A % of each salary', `${pct}% = AED ${fm(perSal,0)}/salary · finishes by ${finish} — Noor tops up any gap at hawl-end`],
+      ['pot','Zakat Pot — save ahead (Mudarabah)', `AED ${fm(due/12,0)}/mo set aside for NEXT year · earns ~3,1% profit · paid in one payment at hawl-end`],
+    ];
+    return `
+    <div class="scr">
+      ${hdr('How to pay',{back:"ZK.set('step',2)"})}
+      ${stepper}
+      <div class="card" style="background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
+        <div class="kv"><span class="k">Zakat due · ${m.n} method</span><span class="v tnum" style="font-size:18px">AED ${fm(due)}</span></div>
+        <div class="kv"><span class="k">Going to</span><span class="v">${z.charityInfo[s.charity||0].n}</span></div>
+        ${s.fam?`<div class="kv"><span class="k">Covers</span><span class="v">You + ${z.spouse.name} (wakāla)</span></div>`:''}
+      </div>
+      <div class="lbl mt16 mb8">Choose a plan</div>
+      <div class="listcard">
+        ${PLANS.map(([id,tt,dd])=>`
+          <div class="row" onclick="ZK.set('plan','${id}')">
+            <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:${plan===id?'var(--lime)':'var(--glass2)'};color:var(--ink)">${plan===id?ic('check',14):''}</span>
+            <div class="row-main"><div class="row-t" style="font-size:13.5px;white-space:normal">${tt}</div>
+              <div class="row-d" style="white-space:normal">${dd}</div></div>
+          </div>`).join('')}
+      </div>
+      ${plan==='income'?`<div class="chips mt8">${[1,2,5].map(p=>`<button class="chip ${pct===p?'on':''}" onclick="ZK.set('pct',${p})">${p}% of salary</button>`).join('')}</div>`:''}
+      ${plan==='later'?`<div class="micro mt8">Fiqh note: delaying zakat without need is discouraged — so Noor pays it <b>on time, in full</b> as an interest-free loan to you (Qard Ḥasan). Your repayment is a debt, not zakat.</div>`:''}
+      ${plan==='pot'?`<div class="micro mt8">Honesty note: the Pot is still your wealth, so it stays inside next year’s zakat base automatically. Profit is Mudarabah — no interest anywhere.</div>`:''}
+      <button class="btn lime mt16" onclick="ZK.activate()">${
+        plan==='now'?`Pay AED ${fm(due)} now`:
+        plan==='ramadan'?'Schedule for tomorrow · 1 Ramadan':
+        plan==='later'?'Advance my zakat today — repay in 4':
+        plan==='income'?`Activate ${pct}% salary rule`:
+        'Open my Zakat Pot'}</button>
+      <div class="micro mt12" style="text-align:center">Educational prototype — confirm with your local mufti.</div>
+    </div>`;
+  }
+
+  /* ---------- STEP 1 · calculate ---------- */
+  const allDues = Object.keys(ZK_METHODS).map(id=>({id, t:ZK.dueUnder(id).t}));
+  const allEqual = allDues.every(x=>Math.abs(x.t-allDues[0].t)<0.01);
   return `
   <div class="scr">
     ${hdr('Zakat · 1447H',{right:`<button class="iconbtn" onclick="chatDeep('zakatFull')" title="Ask Noor">${ic('spark',18)}</button>`})}
+    ${stepper}
     <div class="card lime">
       <div class="flex between"><b style="font-size:14px">🌙 ${z.hijri}</b></div>
       <div class="micro mt4">Anchor your hawl to 1 Ramadan and pay tomorrow — Noor recalculates on the day at live prices.</div>
@@ -488,11 +593,12 @@ SCREENS.zakat = () => {
     </div>
     <div class="micro mt8">${s.scope==='personal'?'Only your personal wealth and personal debts.':s.scope==='business'?'Solo-proprietorship view: trade stock, business cash, receivables, your company share and fund units — minus business debts.':'The full picture — most owners need exactly this. Each side stays itemised below.'}</div>
 
-    <div class="lbl mt16 mb8">Calculation method</div>
+    <div class="lbl mt16 mb8">Method — each shows YOUR total under it</div>
     <div class="chips">
-      ${Object.entries(ZK_METHODS).map(([id,mm])=>`<button class="chip ${s.method===id?'on':''}" onclick="ZK.set('method','${id}')">${mm.n}</button>`).join('')}
+      ${allDues.map(({id,t})=>`<button class="chip ${s.method===id?'on':''}" onclick="ZK.set('method','${id}')">${ZK_METHODS[id].n} · ${fm(t,0)}</button>`).join('')}
     </div>
     <div class="micro mt8">${m.who}</div>
+    ${allEqual?`<div class="card soft mt8"><div class="micro">ℹ️ <b>Why all four match right now:</b> you’re above both nisabs and have no personal-use jewellery declared — the methods only diverge on jewellery and the nisab line. Add jewellery or include ${z.spouse.name} and watch them split.</div></div>`:''}
     <button class="chip mt8" onclick="chatDeep('zakatFull')">✦ Not sure? Noor interviews you & matches your scholar</button>
 
     <div class="card mt16">
@@ -508,12 +614,12 @@ SCREENS.zakat = () => {
       ${z.auto.map(a=>`<div class="kv" style="padding:11px 2px"><span class="k">${a.t}<br><span class="micro">${a.src}</span></span><span class="v tnum">${fm(a.v)}</span></div>`).join('')}
     </div>
 
-    <div class="flex between mt16 mb8"><span class="lbl">Declared by you</span><span class="micro">things no bank can see</span></div>
+    <div class="flex between mt16 mb8"><span class="lbl">Declared by you</span><span class="micro">tap a row for presets or a custom amount</span></div>
     <div class="listcard">
       ${z.manual.map(mn=>`
         <div class="row" onclick="ZK.editSheet('${mn.id}')">
           <span style="font-size:22px">${mn.em}</span>
-          <div class="row-main"><div class="row-t" style="font-size:13.5px">${mn.t}</div><div class="row-d" style="white-space:normal">${mn.note}</div></div>
+          <div class="row-main"><div class="row-t" style="font-size:13px;white-space:normal">${mn.t}</div><div class="row-d" style="white-space:normal">${mn.note}</div></div>
           <div class="row-r"><div class="row-amt tnum">${s.manual[mn.id].on?fm(s.manual[mn.id].v,0):'—'}</div></div>
           <button class="switch lime ${s.manual[mn.id].on?'on':''}" onclick="event.stopPropagation();ZK.toggleManual('${mn.id}')"></button>
         </div>`).join('')}
@@ -570,33 +676,25 @@ SCREENS.zakat = () => {
     <div class="card mt16" style="background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
       <div class="flex between"><span class="tag gold">☪ Total zakat due · ${m.n} method</span><span class="micro">2,5% (lunar year)</span></div>
       <div style="font:800 38px Inter,sans-serif" class="tnum mt8">AED ${fm(due)}</div>
-      <div class="kv mt8"><span class="k">${USER.first} — on AED ${fm(john)}</span><span class="v tnum">${fm(dueJ)}</span></div>
-      ${s.fam?`<div class="kv"><span class="k">${z.spouse.name} — on AED ${fm(aisha)}</span><span class="v tnum">${fm(dueA)}</span></div>
+      <div class="kv mt8"><span class="k">${USER.first} — on AED ${fm(john)}</span><span class="v tnum">${fm(D.j)}</span></div>
+      ${s.fam?`<div class="kv"><span class="k">${z.spouse.name} — on AED ${fm(aisha)}</span><span class="v tnum">${fm(D.a)}</span></div>
       ${s.wakala?'':`<div class="micro">Wakāla is off — share her breakdown instead: <b onclick="A.toast('Breakdown sent to Aisha','share')" style="color:var(--lime);cursor:pointer">Send ↗</b></div>`}`:''}
     </div>
-
-    <div class="lbl mt16 mb8">When to pay</div>
-    <div class="seg">
-      ${[['once','1 Ramadan'],['monthly','Monthly'],['weekly','Weekly'],['daily','Daily']].map(([id,tt])=>
-        `<button class="${(s.pay||'once')===id?'on':''}" onclick="ZK.set('pay','${id}')">${tt}</button>`).join('')}
-    </div>
-    ${s.pay==='once'||!s.pay
-      ?`<div class="micro mt8">🌙 Tomorrow is 1 Ramadan — the most rewarded month to give. Hawl anchors there; Noor recalculates at live prices on the day.</div>`
-      :`<div class="card soft mt8">
-          <div class="kv"><span class="k">Advance in parts (ta‘jīl — permitted by the majority)</span>
-            <span class="v tnum">AED ${fm(due/(s.pay==='daily'?354:s.pay==='weekly'?51:12))} / ${s.pay==='daily'?'day':s.pay==='weekly'?'week':'month'}</span></div>
-          <div class="micro">Lunar year = 354 days. Noor reconciles at hawl-end: overpaid carries forward, underpaid gets one top-up. You never worry about zakat again.</div>
-          <button class="btn pri sm mt8" onclick="ZK.makeRule()">⚡ Create the auto-zakat rule</button>
-        </div>`}
-
-    <div class="lbl mt16 mb8">Give to</div>
-    <div class="chips">${z.charities.map((c,i)=>`<button class="chip ${i===0?'on':''}">${c}</button>`).join('')}</div>
-    <div class="btnrow mt16">
-      <button class="btn ghost" onclick="A.toast('Scheduled for tomorrow, 1 Ramadan — recalculated at live prices on the day','moon')">Pay tomorrow · 1 Ramadan</button>
-      <button class="btn lime" onclick="confetti(document.getElementById('screen'));A.toast('Zakat paid — certificate in Documents','check')">Pay now</button>
-    </div>
+    <button class="btn lime mt16" onclick="ZK.set('step',2)">Continue — choose where it goes</button>
     <div class="micro mt12" style="text-align:center">Educational prototype — method notes are honest simplifications; confirm with your local mufti. Hawl tracking per asset is on.</div>
   </div>`;
+};
+ZK.activate = function(){
+  const s=this.st(), due=this.due().t, ch=ZAKAT.charityInfo[s.charity||0].n, plan=s.plan||'now';
+  if(plan==='now'){ confetti(document.getElementById('screen')); A.toast(`Zakat paid to ${ch} — certificate in Documents`,'check'); }
+  else if(plan==='ramadan'){ A.toast(`Scheduled for tomorrow, 1 Ramadan — recalculated at live prices, then paid to ${ch}`,'moon'); }
+  else if(plan==='later'){ confetti(document.getElementById('screen'));
+    A.toast(`${ch} received AED ${fm(due)} today — Qard Ḥasan repayment 4 × AED ${fm(due/4)} starts 25 Jul`,'check'); }
+  else if(plan==='income'){ const pct=s.pct||2;
+    RULES.unshift({id:'rzi', on:true, when:'Salary arrives (25th)', then:`Pay ${pct}% (AED ${fm(USER.salary*pct/100,0)}) of salary as zakat to ${ch} until AED ${fm(due)} is covered`, ic:'moon', ran:'Hawl-end top-up guarantee on — you can never end the year short'});
+    A.toast('Salary-percentage zakat rule active','moon'); A.go('rules'); return; }
+  else { RULES.unshift({id:'rzp', on:true, when:'1st of every month', then:`Move AED ${fm(due/12,0)} into the Zakat Pot (Mudarabah ~3,1%) — auto-pays next hawl-end`, ic:'coins', ran:'Pot opened today · projected AED '+fm(due*1.016,0)+' by next Ramadan'});
+    A.toast('Zakat Pot opened — saving ahead, earning halal profit','coins'); A.go('rules'); return; }
 };
 
 /* ---------------- SME insight stories — notifications become insights ---------------- */

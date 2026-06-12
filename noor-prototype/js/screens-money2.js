@@ -312,7 +312,7 @@ SCREENS.insights = () => {
       <div class="micro mt4">Sales +30% · rejections ↓12% · CAC vs category — your SME side, story-style</div>
     </div>
     <div class="grid2 mt16">
-      <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 972 / mo</div><div class="micro mt4">2 look wasteful</div></div>
+      <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 1 426 / mo</div><div class="micro mt4">AED 1 632/yr to save</div></div>
       <div class="card tap" onclick="A.go('forecast')"><span class="lbl">Safe to spend</span><div class="h3 mt8 tnum lime-t">AED 9 540</div><div class="micro mt4">until salary day</div></div>
       <div class="card tap" onclick="A.go('health')"><span class="lbl">Financial health</span><div class="h3 mt8">78 / 100</div><div class="micro mt4">▲ 4 this month</div></div>
       <div class="card tap" onclick="A.go('score')"><span class="lbl">AECB score</span><div class="h3 mt8">745</div><div class="micro mt4">Very good</div></div>
@@ -355,32 +355,65 @@ SCREENS.subs = () => {
       <div class="micro mt4">≈ AED ${fm(total*12,0)} a year · across 3 banks</div>
     </div>
     <div class="card mt12" style="border-color:rgba(215,240,80,.45)">
-      <b style="font-size:13.5px">✦ Noor found AED 527/yr to save</b>
-      <div class="micro mt4">Anghami unused 6 weeks · Spotify duplicates it</div>
-      <button class="chip mt8" onclick="Subs.cancel('Anghami Plus')">Cancel Anghami for me</button>
+      <b style="font-size:13.5px">✦ Noor found AED 1 632/yr to save</b>
+      <div class="micro mt4">Cheaper du Mobile plan (1 080) + two overlapping music apps (552) — and no, we’re not touching Anghami</div>
     </div>
-    <div class="listcard mt12">
+
+    <div class="card mt12">
+      <div class="flex between"><b style="font-size:13.5px">🎧 3 music services overlap — AED 65,97/mo</b><span class="tag gold">cluster</span></div>
+      <div class="mt8">
+        ${SUBS.filter(x=>x.music).map(x=>`
+          <div class="kv" style="padding:6px 0"><span class="k">${x.m}</span>
+            <span class="v tnum" style="color:${x.trend>0?'var(--grn)':'var(--red)'}">${String(x.hours).replace('.',',')} h ${x.trend>0?'▲':'▼'} ${Math.abs(x.trend)}%</span></div>
+          ${meter(Math.min(x.hours/31,1), x.trend>0?'#53DE8E':'#FF7A6B')}`).join('')}
+      </div>
+      <div class="micro mt8">You actually listen on <b>Anghami</b> — rising, best Arabic catalogue. The other two are muscle memory.</div>
+      <button class="btn pri sm mt8" style="width:100%" onclick="Subs.cancel('Spotify + Apple Music')">Cancel Spotify & Apple Music — save AED 552/yr</button>
+    </div>
+
+    <div class="listcard mt12 wrapd">
       ${SUBS.map((s,i)=>`
         <div class="row" onclick="A.sheet(Subs.sheet(${i}))">
           <span class="bigico" style="background:${s.c}1f;color:${s.c}">${ic(s.ic,21)}</span>
-          <div class="row-main"><div class="row-t">${s.m}</div><div class="row-d">${s.next} · ${s.used}${s.flag?' · <b style=color:var(--gold)>'+s.flag+'</b>':''}</div></div>
+          <div class="row-main"><div class="row-t">${s.m}</div><div class="row-d" style="white-space:normal">${s.next} · ${s.used}${s.flag?' · <b style="color:var(--gold)">'+s.flag+'</b>':''}</div></div>
           <div class="row-amt tnum">${fm(s.amt)}</div>
         </div>`).join('')}
     </div>
   </div>`;
 };
 window.Subs = {
-  sheet(i){ const s=SUBS[i]; return `
+  sheet(i){ const s=SUBS[i];
+    const usage = s.usage ? `
+      <div class="card soft mt12">
+        <div class="kv"><span class="k">Data used (avg 6 mo)</span><span class="v tnum">${String(s.usage.gb[0]).replace('.',',')} GB of ${s.usage.gb[1]} GB</span></div>
+        ${meter(s.usage.gb[0]/s.usage.gb[1], '#3FA9F5')}
+        <div class="kv mt8"><span class="k">Minutes</span><span class="v">${s.usage.min}</span></div>
+      </div>
+      <div class="card mt8" style="border-color:rgba(83,222,142,.45)">
+        <div class="flex between"><b style="font-size:13.5px">Cheaper plan fits: ${s.usage.rec.plan}</b><span class="tag grn">−AED ${fm(s.usage.rec.save,0)}/yr</span></div>
+        <div class="micro mt4">AED ${fm(s.usage.rec.price,0)}/mo instead of ${fm(s.amt,0)} — ${s.usage.rec.why}.</div>
+        <button class="btn pri sm mt8" style="width:100%" onclick="A.closeSheet();A.toast('Plan switch requested with du — active next cycle','check')">Switch to ${s.usage.rec.plan}</button>
+      </div>` : '';
+    const music = s.music ? `
+      <div class="card soft mt12">
+        <div class="kv"><span class="k">Hours listened — this month</span><span class="v tnum" style="color:${s.trend>0?'var(--grn)':'var(--red)'}">${String(s.hours).replace('.',',')} h ${s.trend>0?'▲':'▼'} ${Math.abs(s.trend)}% vs May</span></div>
+        ${meter(Math.min(s.hours/31,1), s.trend>0?'#53DE8E':'#FF7A6B')}
+        <div class="micro mt8">${s.trend>0?'Trending up — clearly your player.':'Trending down — paying for silence.'}</div>
+      </div>` : '';
+    return `
     <div class="h2">${s.m}</div><div class="sub mt4 tnum">AED ${fm(s.amt)} / month · bills on the ${s.day} · ${s.acc.includes('cc')?'FAB Visa':'FAB account'}</div>
-    <div class="card soft mt12"><div class="micro">${s.used}. ${s.flag||'Usage looks healthy.'}</div></div>
+    ${usage}${music}
+    ${!s.usage&&!s.music?`<div class="card soft mt12"><div class="micro">${s.used}. ${s.flag||'Usage looks healthy.'}</div></div>`:''}
     <div class="btnrow mt12">
       <button class="btn ghost" onclick="A.closeSheet();A.toast('Reminder 2 days before each ${esc(s.m)} debit','bell')">Remind me</button>
-      <button class="btn danger" onclick="A.closeSheet();Subs.cancel('${esc(s.m)}')">Cancel it</button>
+      ${s.m==='Anghami Plus'
+        ?`<button class="btn pri" onclick="A.closeSheet();A.toast('Keeping Anghami — good taste 🎵','check')">Keep it</button>`
+        :`<button class="btn danger" onclick="A.closeSheet();Subs.cancel('${esc(s.m)}')">Cancel it</button>`}
     </div>`; },
   cancel(name, fromChat){
     A.toast(`Cancellation for ${name} filed via your bank — refund requested`,'check');
     if(fromChat && document.getElementById('chWrap'))
-      Chat.push({from:'ai', html:`Done ✅ I filed the <b>${name}</b> cancellation through FAB and requested a refund of the unused period. You’ll save <b>AED 240/yr</b>. I’ll confirm within 24 h.`});
+      Chat.push({from:'ai', html:`Done ✅ I filed the <b>${name}</b> cancellation through FAB and requested refunds for unused periods — <b>AED 552/yr</b> stays yours. Anghami stays untouched: 31 h this month and rising. 🎵`});
   }
 };
 

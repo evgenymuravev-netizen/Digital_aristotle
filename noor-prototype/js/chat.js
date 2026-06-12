@@ -44,6 +44,11 @@ const Chat = window.Chat = {
 
   route(t){
     const go = s => this.play(s,false);
+    /* mid-interview: a typed number answers the pending zakat question */
+    if (window.ZKChat && ZKChat.pending){
+      const v = parseFloat(t.replace(/[^\d.]/g,''));
+      if (isFinite(v) && v>=0){ const p=ZKChat.pending; ZKChat.pending=null; ZKChat.applyTyped(p, v); return; }
+    }
     if (/(credit )?card/.test(t) && /find|best|help|need|new/.test(t)) return go('findCard');
     if (/ps ?5|playstation/.test(t)) return go('ps5');
     if (/advice|advis|portfolio|allocat/.test(t)) return go('advise');
@@ -246,9 +251,10 @@ const SCRIPTS = {
 
   subs:{ user:'Show my subscriptions', async run(c){
     const total = SUBS.reduce((s,x)=>s+x.amt,0);
-    await c.ai(`I track <b>${SUBS.length} subscriptions</b> ≈ <b>AED ${fm(total)}/mo</b>. Two look wasteful:\n\n· <b>Anghami Plus</b> — unused for 6 weeks\n· <b>Spotify</b> — overlaps with Anghami\n\nCancelling both saves <b>AED 527/yr</b>.`);
+    await c.ai(`I track <b>${SUBS.length} subscriptions</b> ≈ <b>AED ${fm(total)}/mo</b>. Two findings, AED 1 632/yr total:\n\n🎧 <b>Three music apps overlap.</b> Hours listened this month: Anghami <b>31 h ▲24%</b> · Spotify <b>2,1 h ▼67%</b> · Apple Music <b>0,4 h ▼81%</b>. Keep Anghami — it’s your player (and the Arabic catalogue is unmatched). Cancel the other two → <b>AED 552/yr</b>.\n\n📱 <b>du Mobile is overprovisioned</b> — you use 6,2 GB of 25 GB. The 12 GB plan saves <b>AED 1 080/yr</b>.\n\nAlso watching: <b>Claude API</b> AED 142,67 in May, tokens ▲38% — caching would cut ~40%.`);
     await c.card(chips([
-      {t:'Cancel Anghami for me', fn:"Subs.cancel('Anghami Plus',true)"},
+      {t:'Cancel Spotify & Apple Music', fn:"Subs.cancel('Spotify + Apple Music',true)"},
+      {t:'Switch du plan — save 1 080/yr', fn:"A.toast('Plan switch requested with du — active next cycle','check')"},
       {t:'Open subscriptions', fn:"A.go('subs')"},
     ]), 250);
   }},
@@ -382,23 +388,37 @@ window.ZKChat = {
     </div>`,250);
   });},
   async guard(fn){ if(CHAT.busy) return; CHAT.busy=true; try{ await fn(); } finally{ CHAT.busy=false; } },
+  pending:null,
+  LBL:{homecash:'Cash at home', trade:'Trade stock', owed:'Receivables', points:'Cashback'},
+  amountChips(id, vals){
+    this.pending=id;
+    return `<div class="ch-quick">${vals.map(v=>`<button class="chip" onclick="ZKChat.setManual('${id}',${v},'${this.LBL[id]}')">AED ${fm(v,0)}</button>`).join('')}
+      <button class="chip" onclick="A.toast('Just type the number below — e.g. 199 or 12 500','edit');document.getElementById('chInp')&&document.getElementById('chInp').focus()">✏️ Type any amount</button></div>`;
+  },
+  applyTyped(id, v){ const self=this;
+    this.guard(async()=>{
+      ZK.st().manual[id]={on:v>0, v};
+      await Chat.ai(`Got it ✓ — <b>${self.LBL[id]||id}: AED ${fm(v)}</b>. Recalculated. Anything else?`, 800);
+      await Chat.card(self.menu(),200);
+    });
+  },
 
   homecash(){ this.guard(async()=>{
     Chat.user('There’s some cash at home');
     await Chat.ai('Cash is zakatable wherever it sleeps — drawer, safe or bank. That’s <b>unanimous</b> across all schools. Roughly how much?');
-    await Chat.card(`<div class="ch-quick">${[1000,3500,10000].map(v=>`<button class="chip" onclick="ZKChat.setManual('homecash',${v},'Cash at home')">AED ${fm(v,0)}</button>`).join('')}</div>`,250);
+    await Chat.card(this.amountChips('homecash',[1000,3500,10000]),250);
   });},
   trade(){ this.guard(async()=>{
     Chat.user('I keep goods for sale — I trade on the side');
     await Chat.ai('Then you’re a merchant for zakat purposes 🤝. <b>Trade goods are zakatable at today’s selling price</b> — agreed by <b>all four schools</b> (Hanafi, Maliki, Shafi‘i, Hanbali) and codified in <b>AAOIFI Shari‘ah Standard No. 35</b>. Count what’s in stock for resale — not your equipment. What’s the stock worth today?');
-    await Chat.card(`<div class="ch-quick">${[10000,18000,40000].map(v=>`<button class="chip" onclick="ZKChat.setManual('trade',${v},'Trade stock')">AED ${fm(v,0)}</button>`).join('')}</div>`,250);
+    await Chat.card(this.amountChips('trade',[10000,18000,40000]),250);
   });},
   owed(){ this.guard(async()=>{
     Chat.user('People owe me money');
     await Chat.ai('Receivables you <b>expect to collect</b> (“strong debts”) are zakatable now per the majority; hopeless debts are zakated only if recovered — a Hanafi nuance worth knowing. How much is realistically coming back?');
-    await Chat.card(`<div class="ch-quick">${[2000,8000,20000].map(v=>`<button class="chip" onclick="ZKChat.setManual('owed',${v},'Receivables')">AED ${fm(v,0)}</button>`).join('')}<button class="chip" onclick="ZKChat.setManual('owed',0,'Receivables')">Skip</button></div>`,250);
+    await Chat.card(this.amountChips('owed',[2000,8000,20000]),250);
   });},
-  setManual(id,v,label){ this.guard(async()=>{
+  setManual(id,v,label){ this.pending=null; this.guard(async()=>{
     ZK.st().manual[id]={on:v>0,v};
     Chat.user(`About AED ${fm(v,0)}`);
     await Chat.ai(`Added ✓ — <b>${label}: AED ${fm(v,0)}</b>. Anything else from the list, or shall I give the verdict?`,800);
