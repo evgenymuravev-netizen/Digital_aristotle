@@ -393,31 +393,111 @@ AFTER.scratch = () => {
   cv.addEventListener('touchmove',e=>{e.preventDefault();rub(e);},{passive:false});
 };
 
-/* ---------------- zakat ---------------- */
+/* ---------------- zakat — full module (1447H) ---------------- */
+window.ZK = {
+  st(){ if(!A.tmp.zk) A.tmp.zk = { method:'majority', fam:false, wakala:false, debts:true,
+    manual:Object.fromEntries(ZAKAT.manual.map(m=>[m.id,{on:m.on,v:m.v}])) };
+    return A.tmp.zk; },
+  meth(){ return ZK_METHODS[this.st().method]; },
+  nisab(){ const m=this.meth(); return m.nisab==='silver' ? ZAKAT.nisabSilverG*ZAKAT.silverPerG : ZAKAT.nisabGoldG*ZAKAT.goldPerG; },
+  john(){ const s=this.st();
+    const auto = ZAKAT.auto.reduce((x,a)=>x+a.v,0);
+    const man  = ZAKAT.manual.reduce((x,m)=> x + (s.manual[m.id].on ? s.manual[m.id].v : 0), 0);
+    const debts = s.debts ? ZAKAT.debtsDue : 0;
+    return Math.max(auto + man - debts, 0); },
+  aisha(){ const s=this.st(); if(!s.fam) return 0;
+    return ZAKAT.spouse.cash + (this.meth().jewellery ? ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG : 0); },
+  set(k,v){ this.st()[k]=v; A.refresh(); },
+  toggleManual(id){ const m=this.st().manual[id]; m.on=!m.on; if(m.on&&!m.v) this.editSheet(id); else A.refresh(); },
+  editSheet(id){ const def=ZAKAT.manual.find(m=>m.id===id);
+    const vals = id==='jewel'?[24319,48632,70516]:id==='silver'?[1124,3344,5620]:id==='owed'?[2000,8000,20000]:[1000,3500,10000,18000];
+    A.sheet(`<div class="h2">${def.em} ${def.t}</div><div class="sub mt4">${def.note}.</div>
+      <div class="chips" style="margin-top:14px">
+        ${vals.map(v=>`<button class="chip" onclick="ZK.st().manual['${id}']={on:true,v:${v}};A.closeSheet();A.refresh()">AED ${fm(v,0)}</button>`).join('')}
+        <button class="chip" onclick="ZK.st().manual['${id}']={on:false,v:0};A.closeSheet();A.refresh()">None</button>
+      </div>
+      ${id==='jewel'?'<div class="micro mt12">Tip: 50 g ≈ AED 24 319 · 100 g ≈ 48 632 · 145 g ≈ 70 516 at today’s price.</div>':''}`); },
+};
 SCREENS.zakat = () => {
-  const z=ZAKAT, total=z.cash+z.gold+z.invest, due=total*z.rate;
+  const s = ZK.st(), m = ZK.meth(), z = ZAKAT;
+  const nis = ZK.nisab(), john = ZK.john(), aisha = ZK.aisha();
+  const dueJ = john*z.rate, dueA = aisha*z.rate, due = dueJ + (s.fam?dueA:0);
   return `
   <div class="scr">
-    ${hdr('Zakat')}
-    <div class="card" style="background:linear-gradient(150deg,rgba(232,194,104,.14),var(--glass))">
-      <div class="flex between"><span class="tag gold">☪ Zakat al-Maal · 1447H</span><span class="micro">live calculation</span></div>
-      <div style="font:800 36px Inter,sans-serif" class="tnum mt12">AED ${fm(due)}</div>
-      <div class="micro mt4">2,5% of AED ${fm(total)} zakatable wealth · above nisab (AED ${fm(z.nisab,0)}) ✓</div>
+    ${hdr('Zakat · 1447H',{right:`<button class="iconbtn" onclick="chatDeep('zakatFull')" title="Ask Noor">${ic('spark',18)}</button>`})}
+    <div class="card lime">
+      <div class="flex between"><b style="font-size:14px">🌙 ${z.hijri}</b></div>
+      <div class="micro mt4">Anchor your hawl to 1 Ramadan and pay tomorrow — Noor recalculates on the day at live prices.</div>
     </div>
-    <div class="lbl mt16 mb8">How it’s calculated</div>
+
+    <div class="lbl mt16 mb8">Calculation method</div>
+    <div class="chips">
+      ${Object.entries(ZK_METHODS).map(([id,mm])=>`<button class="chip ${s.method===id?'on':''}" onclick="ZK.set('method','${id}')">${mm.n}</button>`).join('')}
+    </div>
+    <div class="micro mt8">${m.who}</div>
+    <button class="chip mt8" onclick="chatDeep('zakatFull')">✦ Not sure? Noor interviews you & matches your scholar</button>
+
+    <div class="card mt16">
+      <div class="flex between"><span class="lbl">Nisab today</span><span class="tag grn">Above nisab — zakat due ✓</span></div>
+      <div class="kv mt8"><span class="k">Gold basis · 85 g</span><span class="v tnum" style="${m.nisab==='gold'?'color:var(--lime)':''}">AED ${fm(z.nisabGoldG*z.goldPerG)} ${m.nisab==='gold'?'← used':''}</span></div>
+      <div class="kv"><span class="k">Silver basis · 595 g</span><span class="v tnum" style="${m.nisab==='silver'?'color:var(--lime)':''}">AED ${fm(z.nisabSilverG*z.silverPerG)} ${m.nisab==='silver'?'← used':''}</span></div>
+      <div class="micro">Silver basis is lower — the cautious choice; it makes zakat due for more people.</div>
+    </div>
+
+    <div class="lbl mt16 mb8">Seen by Noor (live)</div>
     <div class="listcard">
-      <div class="kv" style="padding:12px 2px"><span class="k">Cash across 3 banks</span><span class="v tnum">${fm(z.cash)}</span></div>
-      <div class="kv" style="padding:12px 2px"><span class="k">Gold 12,4 g (market)</span><span class="v tnum">${fm(z.gold)}</span></div>
-      <div class="kv" style="padding:12px 2px"><span class="k">Halal investments</span><span class="v tnum">${fm(z.invest)}</span></div>
-      <div class="kv" style="padding:12px 2px"><span class="k">Debts due now</span><span class="v tnum">excluded</span></div>
+      ${z.auto.map(a=>`<div class="kv" style="padding:11px 2px"><span class="k">${a.t}<br><span class="micro">${a.src}</span></span><span class="v tnum">${fm(a.v)}</span></div>`).join('')}
     </div>
+
+    <div class="flex between mt16 mb8"><span class="lbl">Declared by you</span><span class="micro">things no bank can see</span></div>
+    <div class="listcard">
+      ${z.manual.map(mn=>`
+        <div class="row" onclick="ZK.editSheet('${mn.id}')">
+          <span style="font-size:22px">${mn.em}</span>
+          <div class="row-main"><div class="row-t" style="font-size:13.5px">${mn.t}</div><div class="row-d" style="white-space:normal">${mn.note}</div></div>
+          <div class="row-r"><div class="row-amt tnum">${s.manual[mn.id].on?fm(s.manual[mn.id].v,0):'—'}</div></div>
+          <button class="switch lime ${s.manual[mn.id].on?'on':''}" onclick="event.stopPropagation();ZK.toggleManual('${mn.id}')"></button>
+        </div>`).join('')}
+    </div>
+
+    <div class="card soft mt12 flex between">
+      <div class="f1"><div class="row-t" style="font-size:13.5px">Deduct debts due now — AED ${fm(z.debtsDue)}</div>
+      <div class="row-d" style="white-space:normal">${z.debtsNote}</div></div>
+      <button class="switch lime ${s.debts?'on':''}" onclick="ZK.set('debts',!ZK.st().debts)"></button>
+    </div>
+
+    <div class="flex between mt16 mb8"><span class="lbl">Family zakat</span><span class="micro">zakat is individual — but you can pay as wakīl</span></div>
+    <div class="listcard">
+      <div class="row static">
+        ${avx('Aisha Reeves')}
+        <div class="row-main"><div class="row-t">Include ${z.spouse.name}’s wealth</div>
+          <div class="row-d" style="white-space:normal">Cash AED ${fm(z.spouse.cash,0)} · gold jewellery ${z.spouse.jewelleryG} g ${m.jewellery?'(counted — '+m.n+')':'(exempt — personal use, '+m.n+')'}</div></div>
+        <button class="switch lime ${s.fam?'on':''}" onclick="ZK.set('fam',!ZK.st().fam)"></button>
+      </div>
+      ${s.fam?`
+      <div class="row static">
+        <span class="bigico">${ic('shieldCheck',20)}</span>
+        <div class="row-main"><div class="row-t" style="font-size:13.5px">Wakāla — she authorised me to pay</div>
+          <div class="row-d" style="white-space:normal">Paying another’s zakat needs their permission — valid in all four schools</div></div>
+        <button class="switch lime ${s.wakala?'on':''}" onclick="ZK.set('wakala',!ZK.st().wakala)"></button>
+      </div>`:''}
+    </div>
+
+    <div class="card mt16" style="background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
+      <div class="flex between"><span class="tag gold">☪ Total zakat due · ${m.n} method</span><span class="micro">2,5% (lunar year)</span></div>
+      <div style="font:800 38px Inter,sans-serif" class="tnum mt8">AED ${fm(due)}</div>
+      <div class="kv mt8"><span class="k">${USER.first} — on AED ${fm(john)}</span><span class="v tnum">${fm(dueJ)}</span></div>
+      ${s.fam?`<div class="kv"><span class="k">${z.spouse.name} — on AED ${fm(aisha)}</span><span class="v tnum">${fm(dueA)}</span></div>
+      ${s.wakala?'':`<div class="micro">Wakāla is off — share her breakdown instead: <b onclick="A.toast('Breakdown sent to Aisha','share')" style="color:var(--lime);cursor:pointer">Send ↗</b></div>`}`:''}
+    </div>
+
     <div class="lbl mt16 mb8">Give to</div>
     <div class="chips">${z.charities.map((c,i)=>`<button class="chip ${i===0?'on':''}">${c}</button>`).join('')}</div>
     <div class="btnrow mt16">
-      <button class="btn ghost" onclick="A.toast('Scheduled for 1 Ramadan — auto-recalculated then','cal')">Schedule · Ramadan</button>
+      <button class="btn ghost" onclick="A.toast('Scheduled for tomorrow, 1 Ramadan — recalculated at live prices on the day','moon')">Pay tomorrow · 1 Ramadan</button>
       <button class="btn lime" onclick="confetti(document.getElementById('screen'));A.toast('Zakat paid — certificate in Documents','check')">Pay now</button>
     </div>
-    <div class="micro mt12" style="text-align:center">Method reviewed by the Noor Shariah board. Hawl tracking per asset is on.</div>
+    <div class="micro mt12" style="text-align:center">Educational prototype — method notes are honest simplifications; confirm with your local mufti. Hawl tracking per asset is on.</div>
   </div>`;
 };
 

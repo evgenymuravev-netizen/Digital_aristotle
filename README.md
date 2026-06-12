@@ -7,10 +7,12 @@ A deep, clickable HTML prototype of the **Noor** app from the May 2026 investor 
 
 ## What’s inside
 
-- **125 key scenarios**, deep-linked from the scenario explorer (left panel / ☰ button on mobile) —
+- **131 key scenarios**, deep-linked from the scenario explorer (left panel / ☰ button on mobile) —
   onboarding, bank linking, payments, cards, AI agent, insights, goals, Islamic suite, consents, rewards,
-  and a “Beyond banks” group: wallets (Careem Pay), BNPL (Tabby/Tamara), crypto (Binance) linking,
-  a pre-approved Tabby-vs-Tamara-vs-Noor-Split checkout, and a post-onboarding invest upsell.
+  a “Beyond banks” group (wallets/BNPL/crypto linking, Tabby-vs-Tamara-vs-Noor-Split checkout, invest upsell),
+  and a “Zakat, properly” group: dual nisab (85 g gold / 595 g silver), declared assets banks can’t see
+  (home cash, trade stock, jewellery), an AI interview citing the four schools with a scholar picker
+  (Taqi Usmani / UAE Awqaf / Ibn ‘Uthaymeen / AAOIFI SS 35), family wakāla mode, and Ramadan-eve timing.
 - **Deck moments, pixel-faithful:** “Hi, John” home with *My money AED 275 900,76*, the credit-card
   agent (“I have selected three offers with a pre-approved limit for you”), the PS5 purchase,
   one-click Murabaha loan activation.

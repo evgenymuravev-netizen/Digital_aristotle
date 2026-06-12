@@ -206,10 +206,42 @@ window.INVEST = {
   gold:{grams:12.4, perGram:486.32, val:6030.40, mo:+3.6}
 };
 
-/* ---------- zakat ---------- */
+/* ---------- zakat (1447H — Ramadan starts tomorrow) ---------- */
 window.ZAKAT = {
   cash:275900.76, gold:6030.40, invest:38500.00, nisab:41337.20, rate:0.025,
   charities:['Dubai Cares','Emirates Red Crescent','Al Jalila Foundation','Beit Al Khair'],
+  /* live metal prices */
+  goldPerG:486.32, silverPerG:5.62, nisabGoldG:85, nisabSilverG:595,
+  hijri:'29 Sha’ban 1447 — Ramadan starts tomorrow',
+  /* auto-detected via Noor Connect */
+  auto:[
+    {t:'Cash across 3 banks',      v:275900.76, src:'FAB · Wio · EI'},
+    {t:'Careem Pay wallet',        v:312.40,    src:'Linked wallet'},
+    {t:'Crypto — Binance spot',    v:9840.00,   src:'Treated as currency (AAOIFI view)'},
+    {t:'Halal investments',        v:38500.00,  src:'Full market value · trading intent'},
+    {t:'Noor Gold · 12,4 g',       v:6030.40,   src:'Vaulted, at today’s price'},
+  ],
+  /* assets Noor cannot see — declared by the user */
+  manual:[
+    {id:'homecash', t:'Cash at home',                em:'🏠', v:3500,  on:true,  note:'Zakatable wherever it sleeps — unanimous'},
+    {id:'trade',    t:'Trade goods in stock',        em:'📦', v:18000, on:true,  note:'Merchant inventory at today’s selling price — agreed by all four schools'},
+    {id:'jewel',    t:'Gold jewellery (personal use)',em:'💍', v:0,    on:false, note:'Khilaf: Hanafi & Ibn ‘Uthaymeen — zakatable · Majority — exempt'},
+    {id:'silver',   t:'Silver',                      em:'🥈', v:0,    on:false, note:'595 g nisab on its own'},
+    {id:'owed',     t:'Money owed to me (strong debts)', em:'🤝', v:0, on:false, note:'Expected receivables — zakatable now per the majority'},
+  ],
+  debtsDue:12522.30, debtsNote:'Card statements + this month’s Murabaha & Tabby instalments',
+  spouse:{name:'Aisha', cash:42300.00, jewelleryG:145},
+};
+/* calculation methods — honest attributions, confirm with your local mufti */
+window.ZK_METHODS = {
+  majority:  {n:'Majority',  nisab:'gold',   jewellery:false,
+    who:'Maliki · Shafi‘i · Hanbali: personal-use jewellery exempt; gold nisab for cash — the line generally followed by UAE Awqaf fatwas.'},
+  hanafi:    {n:'Hanafi',    nisab:'silver', jewellery:true,
+    who:'School of Imam Abu Hanifa: jewellery is zakatable, silver nisab preferred for caution — approach of many Hanafi muftis incl. Mufti Taqi Usmani.'},
+  aaoifi:    {n:'AAOIFI',    nisab:'gold',   jewellery:false,
+    who:'AAOIFI Shari‘ah Standard No. 35 (Zakah) — the institutional standard Islamic banks audit against; board long chaired by Mufti Taqi Usmani.'},
+  precaution:{n:'Safest',    nisab:'silver', jewellery:true,
+    who:'Most cautious combination: silver nisab + jewellery included — jewellery view also held by Sh. Ibn Baz and Sh. Ibn ‘Uthaymeen.'},
 };
 
 /* ---------- rewards ---------- */

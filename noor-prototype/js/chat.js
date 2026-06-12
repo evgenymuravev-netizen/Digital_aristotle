@@ -49,6 +49,7 @@ const Chat = window.Chat = {
     if (/loan|borrow|financ/.test(t)) return go('loan');
     if (/spend|spent|where.*money|expense/.test(t)) return go('spend');
     if (/subscri/.test(t)) return go('subs');
+    if (/scholar|madhhab|nisab|jewell|ramadan|properly/.test(t)) return go('zakatFull');
     if (/zakat/.test(t)) return go('zakat');
     if (/afford/.test(t)) return go('afford');
     if (/salary/.test(t)) return go('salary');
@@ -242,8 +243,19 @@ const SCRIPTS = {
   }},
 
   zakat:{ user:'How much zakat do I owe?', async run(c){
-    await c.ai('I calculated it live from your linked balances, gold and halal investments — wealth is above nisab, so zakat is due:', 1100);
+    await c.ai('🌙 <b>Ramadan starts tomorrow</b> — perfect timing. Here’s the quick version from your linked balances, gold and halal investments (above nisab, so zakat is due):', 1100);
     await c.card(zakatCard());
+    await c.card(`<div class="ch-quick">
+      <button class="chip" onclick="Chat.chipSend('Do it properly — ask me everything','zakatFull')">✦ Do it properly — full interview</button>
+      <button class="chip" onclick="A.go('zakat')">Open the calculator</button>
+    </div>`, 250);
+  }},
+
+  /* ---- the proper zakat interview: hidden assets · scholar matching · family ---- */
+  zakatFull:{ user:'Calculate my zakat properly — ask me everything', async run(c){
+    const auto = ZAKAT.auto.reduce((x,a)=>x+a.v,0);
+    await c.ai(`🌙 <b>Ramadan starts tomorrow</b>, so let’s anchor your hawl to 1 Ramadan and do this right.\n\nI can already see <b>AED ${fm(auto)}</b> of zakatable wealth: bank cash, your Careem wallet, Binance, halal investments and vaulted gold.\n\nNow the things <b>no bank can show me</b> — answer honestly:`, 1300);
+    await c.card(ZKChat.menu(), 300);
   }},
 
   afford:{ user:'Can I afford a AED 6 500 trip in August?', async run(c){
@@ -315,4 +327,95 @@ const SCRIPTS = {
   }},
 };
 window.CHAT_SCRIPTS = SCRIPTS;
+
+/* ---------- zakat interview helper (stateful chips) ---------- */
+window.ZKChat = {
+  menu(){ return `<div class="ch-quick">
+    <button class="chip" onclick="ZKChat.homecash()">🏠 Cash at home</button>
+    <button class="chip" onclick="ZKChat.trade()">📦 Goods I sell</button>
+    <button class="chip" onclick="ZKChat.jewel()">💍 Family gold</button>
+    <button class="chip" onclick="ZKChat.owed()">🤝 Money owed to me</button>
+    <button class="chip" onclick="ZKChat.family()">👫 My wife’s wealth too</button>
+    <button class="chip" onclick="ZKChat.verdict()">✅ That’s everything — verdict</button>
+  </div>`; },
+  async guard(fn){ if(CHAT.busy) return; CHAT.busy=true; try{ await fn(); } finally{ CHAT.busy=false; } },
+
+  homecash(){ this.guard(async()=>{
+    Chat.user('There’s some cash at home');
+    await Chat.ai('Cash is zakatable wherever it sleeps — drawer, safe or bank. That’s <b>unanimous</b> across all schools. Roughly how much?');
+    await Chat.card(`<div class="ch-quick">${[1000,3500,10000].map(v=>`<button class="chip" onclick="ZKChat.setManual('homecash',${v},'Cash at home')">AED ${fm(v,0)}</button>`).join('')}</div>`,250);
+  });},
+  trade(){ this.guard(async()=>{
+    Chat.user('I keep goods for sale — I trade on the side');
+    await Chat.ai('Then you’re a merchant for zakat purposes 🤝. <b>Trade goods are zakatable at today’s selling price</b> — agreed by <b>all four schools</b> (Hanafi, Maliki, Shafi‘i, Hanbali) and codified in <b>AAOIFI Shari‘ah Standard No. 35</b>. Count what’s in stock for resale — not your equipment. What’s the stock worth today?');
+    await Chat.card(`<div class="ch-quick">${[10000,18000,40000].map(v=>`<button class="chip" onclick="ZKChat.setManual('trade',${v},'Trade stock')">AED ${fm(v,0)}</button>`).join('')}</div>`,250);
+  });},
+  owed(){ this.guard(async()=>{
+    Chat.user('People owe me money');
+    await Chat.ai('Receivables you <b>expect to collect</b> (“strong debts”) are zakatable now per the majority; hopeless debts are zakated only if recovered — a Hanafi nuance worth knowing. How much is realistically coming back?');
+    await Chat.card(`<div class="ch-quick">${[2000,8000,20000].map(v=>`<button class="chip" onclick="ZKChat.setManual('owed',${v},'Receivables')">AED ${fm(v,0)}</button>`).join('')}<button class="chip" onclick="ZKChat.setManual('owed',0,'Receivables')">Skip</button></div>`,250);
+  });},
+  setManual(id,v,label){ this.guard(async()=>{
+    ZK.st().manual[id]={on:v>0,v};
+    Chat.user(`About AED ${fm(v,0)}`);
+    await Chat.ai(`Added ✓ — <b>${label}: AED ${fm(v,0)}</b>. Anything else from the list, or shall I give the verdict?`,800);
+    await Chat.card(this.menu(),200);
+  });},
+
+  jewel(){ this.guard(async()=>{
+    Chat.user('My wife has gold jewellery — does it count?');
+    await Chat.ai(`This is a famous <b>khilaf</b> (scholarly difference):\n\n· <b>Hanafi school</b> — jewellery <b>is zakatable</b> (also the recorded view of <b>Sh. Ibn Baz</b> and <b>Sh. Ibn ‘Uthaymeen</b>)\n· <b>Maliki, Shafi‘i, Hanbali (majority)</b> — <b>personal-use</b> jewellery is exempt; only hoarded or trading gold counts\n\nWhich scholar or school do you follow? I’ll set the whole calculation to match.`, 1500);
+    await Chat.card(`<div class="ch-quick">
+      <button class="chip" onclick="ZKChat.scholar('hanafi','Mufti Taqi Usmani — Hanafi')">Mufti Taqi Usmani / Hanafi</button>
+      <button class="chip" onclick="ZKChat.scholar('majority','the UAE Awqaf line — majority view')">UAE Awqaf / Majority</button>
+      <button class="chip" onclick="ZKChat.scholar('precaution','Sh. Ibn ‘Uthaymeen — include jewellery, to be safe')">Ibn ‘Uthaymeen — include it</button>
+      <button class="chip" onclick="ZKChat.scholar('aaoifi','AAOIFI Standard No. 35 — the institutional method')">AAOIFI standard</button>
+    </div>`,250);
+  });},
+  scholar(method, label){ this.guard(async()=>{
+    const s=ZK.st(); s.method=method;
+    if(ZK_METHODS[method].jewellery){ s.fam=true; }
+    Chat.user(`I follow ${label.split('—')[0].trim()}`);
+    await Chat.ai(`Set ✓ — calculating per <b>${label}</b>.\n\n${ZK_METHODS[method].who}\n\nNisab basis: <b>${ZK_METHODS[method].nisab==='silver'?'silver (595 g ≈ AED '+fm(ZAKAT.nisabSilverG*ZAKAT.silverPerG,0)+') — the cautious one':'gold (85 g ≈ AED '+fm(ZAKAT.nisabGoldG*ZAKAT.goldPerG,0)+')'}</b> · jewellery: <b>${ZK_METHODS[method].jewellery?'counted':'exempt (personal use)'}</b>.`, 1400);
+    await Chat.card(this.menu(),200);
+  });},
+
+  family(){ this.guard(async()=>{
+    Chat.user('We have two incomes — my wife works too. I handle zakat for the family.');
+    await Chat.ai(`Important nuance: <b>zakat is an individual obligation</b> — ${ZAKAT.spouse.name} owes on <b>her</b> wealth (her salary savings, her jewellery), you on yours. There’s no “household zakat” in fiqh.\n\nBut you <b>can pay on her behalf as her wakīl</b> — valid in all four schools — as long as she gives permission. I’ll keep two clean ledgers and one payment.`, 1500);
+    await Chat.card(`<div class="ch-quick">
+      <button class="chip" onclick="ZKChat.addSpouse()">Add Aisha’s wealth — she consented</button>
+      <button class="chip" onclick="ZKChat.spouseSolo()">Keep it separate — just remind her</button>
+    </div>`,250);
+  });},
+  addSpouse(){ this.guard(async()=>{
+    const s=ZK.st(); s.fam=true; s.wakala=true;
+    Chat.user('Add her — she consented');
+    await Chat.ai(`Done ✓ — <b>wakāla on</b>. Her ledger: salary savings <b>AED ${fm(ZAKAT.spouse.cash,0)}</b> + gold jewellery <b>${ZAKAT.spouse.jewelleryG} g</b> (≈ AED ${fm(ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG,0)}) — ${ZK.meth().jewellery?'<b>counted</b> under your chosen method':'<b>exempt</b> as personal use under your chosen method'}. She’s above nisab either way.`,1300);
+    await Chat.card(this.menu(),200);
+  });},
+  spouseSolo(){ this.guard(async()=>{
+    const s=ZK.st(); s.fam=true; s.wakala=false;
+    Chat.user('Keep it separate');
+    await Chat.ai(`Respect ✓ — I’ll compute her side so she can verify it, and send her the breakdown to pay herself. Her obligation stays hers.`,1000);
+    await Chat.card(this.menu(),200);
+  });},
+
+  verdict(){ this.guard(async()=>{
+    Chat.user('That’s everything — give me the verdict');
+    const m=ZK.meth(), s=ZK.st();
+    const john=ZK.john(), aisha=ZK.aisha(), dueJ=john*ZAKAT.rate, dueA=aisha*ZAKAT.rate;
+    await Chat.ai(`Here it is — <b>${m.n} method</b>, hawl anchored to 1 Ramadan 1447 (tomorrow):`, 1100);
+    await Chat.card(`<div class="offer-card" style="min-width:0">
+      <div class="flex between"><span class="tag gold">☪ Zakat 1447H</span><span class="micro">nisab ${m.nisab} basis ✓ exceeded</span></div>
+      <div class="offer-amt tnum">AED ${fm(dueJ + (s.fam?dueA:0))}</div>
+      <div class="offer-sub">2,5% · ${s.debts?'after deducting AED '+fm(ZAKAT.debtsDue,0)+' debts due now':'no debt deduction'}</div>
+      <div class="kv" style="padding-top:10px"><span class="k">${USER.first} — base AED ${fm(john,0)}</span><span class="v tnum">${fm(dueJ)}</span></div>
+      ${s.fam?`<div class="kv"><span class="k">${ZAKAT.spouse.name} — base AED ${fm(aisha,0)} ${s.wakala?'(you pay, wakīl)':'(she pays)'}</span><span class="v tnum">${fm(dueA)}</span></div>`:''}
+      <div class="micro mt8">${m.who}</div>
+      <button class="btn lime mt12" onclick="A.go('zakat')">Review & pay tomorrow — 1 Ramadan</button>
+    </div>`);
+    await Chat.ai(`May it be accepted 🤲. I’ll recalculate at <b>live gold/silver prices tomorrow morning</b> before paying, and remind you to niyyah. <i>Educational prototype — confirm with your local mufti.</i>`, 1200);
+  });},
+};
 })();

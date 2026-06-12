@@ -84,10 +84,10 @@ SCREENS.home = () => `
         <div class="h3 mt8">AECB score 745</div>
         <div class="micro mt4">Very good · updated today</div>
       </div>
-      <div class="card tap" style="min-width:190px" onclick="A.go('zakat')">
-        <span class="tag gold">☪ Due</span>
-        <div class="h3 mt8">Zakat ready</div>
-        <div class="micro mt4">Calculated from live balances</div>
+      <div class="card tap" style="min-width:210px" onclick="A.go('zakat')">
+        <span class="tag gold">🌙 Ramadan tomorrow</span>
+        <div class="h3 mt8">Zakat — pay on day 1</div>
+        <div class="micro mt4">Nisab checked · scholar-matched · family mode</div>
       </div>
     </div>
 

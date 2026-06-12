@@ -171,6 +171,15 @@ window.SCN_GROUPS = [
   S('Tabby vs Tamara vs Noor Split','Pre-approved BNPL comparison right at checkout',()=>{chatDeep('ps5');setTimeout(()=>Pay.buyPS5('Sharaf DG',3150,true),2800);}),
   S('Invest upsell — after onboarding','Brokers pitched once banking is in, never during first run','invest-upsell'),
 ]},
+
+{g:'Zakat, properly ✦', items:[
+  S('Nisab — gold vs silver, live','85 g gold vs 595 g silver thresholds; method decides which applies','zakat'),
+  S('Declare what banks can’t see','Cash at home, trade stock, jewellery, receivables — with fiqh notes','zakat'),
+  S('AI interview — every asset','Noor asks about merchant stock & hidden wealth, citing the four schools',()=>chatDeep('zakatFull')),
+  S('Pick your scholar','Taqi Usmani · UAE Awqaf · Ibn ‘Uthaymeen · AAOIFI — math follows the fatwa',()=>chatDeep('zakatFull')),
+  S('Family zakat — wakāla','Two incomes, individual obligations; husband pays with her consent',()=>{ZK.st().fam=true;ZK.st().wakala=true;A.go('zakat');}),
+  S('Pay tomorrow — 1 Ramadan','Hawl anchored to Ramadan; recalculated at live prices on the day','zakat'),
+]},
 ];
 
 window.SCN_FLAT = [];
