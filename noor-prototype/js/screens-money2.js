@@ -46,7 +46,7 @@ SCREENS.send = (name) => {
     ${hdr('Send to '+name.split(' ')[0])}
     <div style="text-align:center">${avx(name,'lg')}
       <div class="h3 mt8">${name}</div><div class="micro">Aani · arrives instantly · free</div></div>
-    <div style="text-align:center;font:800 52px/1 Inter;letter-spacing:-.04em;margin-top:22px" class="tnum">
+    <div style="text-align:center;font:800 52px/1 Inter,sans-serif;letter-spacing:-.04em;margin-top:22px" class="tnum">
       <span style="font-size:24px;color:var(--tx3)">AED</span> ${fm(parseFloat(amt)||0,0)}</div>
     <div class="chips mt16" style="justify-content:center">
       ${[50,100,250,500].map(v=>`<button class="chip" onclick="A.tmp.payAmt='${v}';A.refresh()">AED ${v}</button>`).join('')}
@@ -234,10 +234,10 @@ SCREENS.intl = () => {
     <div class="chips scroll">${FX.map((f,i)=>`<button class="chip ${i===(A.tmp.fxI||0)?'on':''}" onclick="A.tmp.fxI=${i};A.refresh()">${f.flag} ${f.c}</button>`).join('')}</div>
     <div class="card mt16">
       <div class="lbl">You send</div>
-      <div class="flex between mt8"><span style="font:800 30px Inter" class="tnum">AED ${fm(amt,0)}</span><span class="tag gray">FAB ··5689</span></div>
+      <div class="flex between mt8"><span style="font:800 30px Inter,sans-serif" class="tnum">AED ${fm(amt,0)}</span><span class="tag gray">FAB ··5689</span></div>
       <div class="hr"></div>
       <div class="lbl">${fx.n} — they receive</div>
-      <div class="flex between mt8"><span style="font:800 30px Inter;color:var(--lime)" class="tnum">${fx.flag} ${fm(amt*fx.rate,0)} ${fx.c}</span></div>
+      <div class="flex between mt8"><span style="font:800 30px Inter,sans-serif;color:var(--lime)" class="tnum">${fx.flag} ${fm(amt*fx.rate,0)} ${fx.c}</span></div>
     </div>
     <div class="listcard mt12">
       <div class="kv" style="padding:11px 2px"><span class="k">Rate (mid-market, locked 30 min)</span><span class="v tnum">1 AED = ${fx.rate} ${fx.c}</span></div>
@@ -258,7 +258,7 @@ SCREENS.insights = () => {
     <div class="chips mt12"><button class="chip">April</button><button class="chip">May</button><button class="chip on">June</button></div>
     <div class="card mt16" style="display:flex;gap:18px;align-items:center">
       ${donut(CATSPEND.map(c=>({v:c.amt,c:CATS[c.cat].c})),132,15,
-        `<div class="lbl">Spent</div><div style="font:800 19px Inter" class="tnum">${fm(BUDGET.spent,0)}</div><div class="micro">of ${fm(BUDGET.total,0)}</div>`)}
+        `<div class="lbl">Spent</div><div style="font:800 19px Inter,sans-serif" class="tnum">${fm(BUDGET.spent,0)}</div><div class="micro">of ${fm(BUDGET.total,0)}</div>`)}
       <div class="f1">
         <div class="sub">June pace: <b style="color:var(--red)">18% above</b> normal</div>
         <div class="mt8">${meter(BUDGET.spent/BUDGET.total,'#FFB050')}</div>
@@ -290,7 +290,7 @@ SCREENS.insights = () => {
         </div>`).join('')}
     </div>
     <div class="grid2 mt16">
-      <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 922 / mo</div><div class="micro mt4">2 look wasteful</div></div>
+      <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 972 / mo</div><div class="micro mt4">2 look wasteful</div></div>
       <div class="card tap" onclick="A.go('forecast')"><span class="lbl">Safe to spend</span><div class="h3 mt8 tnum lime-t">AED 9 540</div><div class="micro mt4">until salary day</div></div>
       <div class="card tap" onclick="A.go('health')"><span class="lbl">Financial health</span><div class="h3 mt8">78 / 100</div><div class="micro mt4">▲ 4 this month</div></div>
       <div class="card tap" onclick="A.go('score')"><span class="lbl">AECB score</span><div class="h3 mt8">745</div><div class="micro mt4">Very good</div></div>
@@ -306,7 +306,7 @@ SCREENS.cat = (id) => {
     ${hdr(CATS[id].n)}
     <div class="card" style="text-align:center">
       ${catIc(id,56)}
-      <div style="font:800 32px Inter" class="tnum mt12">AED ${fm(c.amt)}</div>
+      <div style="font:800 32px Inter,sans-serif" class="tnum mt12">AED ${fm(c.amt)}</div>
       <div class="micro mt4">June · budget AED ${fm(c.bud,0)} ${c.amt>c.bud?'· <b style="color:var(--red)">over by '+fm(c.amt-c.bud,0)+'</b>':''}</div>
       <div class="barrow mt16">
         ${[0.5,0.7,0.62,0.9,1].map((v,i)=>`<div class="bcol"><div class="b ${i===4?'hot':''}" style="height:${v*70}px"></div><span>${['Feb','Mar','Apr','May','Jun'][i]}</span></div>`).join('')}
@@ -329,7 +329,7 @@ SCREENS.subs = () => {
     ${hdr('Subscriptions')}
     <div class="card">
       <div class="flex between"><span class="lbl">Detected automatically</span><span class="tag lime">${SUBS.length} active</span></div>
-      <div style="font:800 30px Inter" class="tnum mt8">AED ${fm(total)} <span style="font-size:15px;color:var(--tx2)">/ month</span></div>
+      <div style="font:800 30px Inter,sans-serif" class="tnum mt8">AED ${fm(total)} <span style="font-size:15px;color:var(--tx2)">/ month</span></div>
       <div class="micro mt4">≈ AED ${fm(total*12,0)} a year · across 3 banks</div>
     </div>
     <div class="card mt12" style="border-color:rgba(215,240,80,.45)">
@@ -368,7 +368,7 @@ SCREENS.forecast = () => `
     ${hdr('Cashflow forecast')}
     <div class="card">
       <span class="lbl">Safe to spend until salary (25 Jun)</span>
-      <div style="font:800 36px Inter;color:var(--lime)" class="tnum mt8">AED 9 540</div>
+      <div style="font:800 36px Inter,sans-serif;color:var(--lime)" class="tnum mt8">AED 9 540</div>
       <div class="mt12">${spark([27.5,26.9,26.1,25.8,24.9,24.2,23.6,25.1,24.4,23.8,56.3,54.9],330,84,'#53DE8E')}</div>
       <div class="micro mt8">Balance projection across all banks — the jump is salary day. Floor never drops below AED 8 000 ✓</div>
     </div>
@@ -385,7 +385,7 @@ SCREENS.health = () => `
   <div class="scr">
     ${hdr('Financial health')}
     <div class="card" style="display:flex;flex-direction:column;align-items:center">
-      ${gaugeSemi(0.78, 220, '#D7F050', `<div style="font:800 40px Inter" class="tnum">78</div><div class="micro">of 100 · ▲4</div>`)}
+      ${gaugeSemi(0.78, 220, '#D7F050', `<div style="font:800 40px Inter,sans-serif" class="tnum">78</div><div class="micro">of 100 · ▲4</div>`)}
       <div class="sub mt8">Better than <b style="color:var(--lime)">81%</b> of Noor users your age</div>
     </div>
     <div class="listcard mt12">
@@ -433,7 +433,7 @@ SCREENS.goals = () => `
   <div class="scr" style="padding-bottom:170px">
     <div class="flex between"><div class="h1">Goals</div><button class="chip" onclick="A.go('goal-new')">${ic('plus',15)} New</button></div>
     <div class="card mt12 flex" style="gap:14px">
-      ${donut([{v:57700,c:'#D7F050'},{v:138300,c:'rgba(255,255,255,.1)'}],86,10,`<div style="font:800 14px Inter">29%</div>`)}
+      ${donut([{v:57700,c:'#D7F050'},{v:138300,c:'rgba(255,255,255,.1)'}],86,10,`<div style="font:800 14px Inter,sans-serif">29%</div>`)}
       <div class="f1"><div class="h3">AED 57 700 saved</div><div class="micro mt4">across 4 goals · AED 3 184/mo on autopilot</div>
       <div class="micro mt4" style="color:var(--lime)">✦ Profit on goal balances: 3,1% p.a. (Mudarabah)</div></div>
     </div>
@@ -462,7 +462,7 @@ SCREENS.goal = (id) => {
     <div class="card" style="text-align:center">
       <div style="font-size:52px">${g.em}</div>
       ${donut([{v:g.cur,c:g.c},{v:g.tgt-g.cur,c:'rgba(255,255,255,.1)'}],150,13,
-        `<div style="font:800 24px Inter" class="tnum">${Math.round(pct*100)}%</div><div class="micro">funded</div>`)}
+        `<div style="font:800 24px Inter,sans-serif" class="tnum">${Math.round(pct*100)}%</div><div class="micro">funded</div>`)}
       <div class="h3 mt12 tnum">AED ${fm(g.cur,0)} <span style="color:var(--tx3)">of ${fm(g.tgt,0)}</span></div>
       <div class="micro mt4">Target: ${g.by} · on pace ${pct>0.4?'✓':'· tight'}</div>
     </div>

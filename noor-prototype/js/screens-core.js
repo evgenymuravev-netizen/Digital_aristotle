@@ -27,7 +27,7 @@ SCREENS.home = () => `
         <button class="iconbtn" style="width:30px;height:30px;min-width:30px;border:none" onclick="event.stopPropagation();A.S.hideBal=!A.S.hideBal;A.persist();A.refresh()">${ic(A.S.hideBal?'eyeOff':'eye',17)}</button>
       </div>
       <div class="flex between mt8">
-        <div style="font:800 32px/1 Inter;letter-spacing:-.03em" class="tnum">${hideable('AED '+fm(LIQUID_TOTAL))}</div>
+        <div style="font:800 32px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">${hideable('AED '+fm(LIQUID_TOTAL))}</div>
       </div>
       <div class="flex between mt12">
         <span class="logo-stack">${blg('fab','sm')}${blg('wio','sm')}${blg('ei','sm')}</span>
@@ -40,7 +40,7 @@ SCREENS.home = () => `
         <span class="lbl">Budget</span>
         <div class="micro mt4">Trends for June</div>
         <div class="mt8" style="display:flex;justify-content:center">
-          ${donut(CATSPEND.slice(0,5).map(c=>({v:c.amt,c:CATS[c.cat].c})),92,11,`<div style="font:800 13px Inter" class="tnum">${hideable(fm(BUDGET.spent,0))}</div>`)}
+          ${donut(CATSPEND.slice(0,5).map(c=>({v:c.amt,c:CATS[c.cat].c})),92,11,`<div style="font:800 13px Inter,sans-serif" class="tnum">${hideable(fm(BUDGET.spent,0))}</div>`)}
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:11px">
@@ -195,7 +195,7 @@ SCREENS.money = () => {
       <button class="${mode==='net'?'on':''}" onclick="A.tmp.moneyMode='net';A.refresh()">Net worth</button>
     </div>
     <div class="mt16">
-      <div style="font:800 38px/1 Inter;letter-spacing:-.035em" class="tnum">${hideable('AED '+fm(big))}</div>
+      <div style="font:800 38px/1 Inter,sans-serif;letter-spacing:-.035em" class="tnum">${hideable('AED '+fm(big))}</div>
       <div class="flex mt8" style="gap:8px">
         <span class="tag grn">▲ 2,4% this month</span>
         <span class="micro">3 banks · 10 accounts · synced <b id="syncTime">2 min ago</b></span>
@@ -261,7 +261,7 @@ SCREENS.account = (id) => {
     <div class="card" style="text-align:center">
       <div class="flex" style="justify-content:center">${blg(a.bank,'sm')}</div>
       <div class="lbl mt8">${a.name}${a.mask?' ··'+a.mask:''}</div>
-      <div style="font:800 34px/1.1 Inter;letter-spacing:-.03em;color:${a.bal<0?'var(--red)':'var(--tx)'}" class="tnum mt8">${hideable(aed(a.bal))}</div>
+      <div style="font:800 34px/1.1 Inter,sans-serif;letter-spacing:-.03em;color:${a.bal<0?'var(--red)':'var(--tx)'}" class="tnum mt8">${hideable(aed(a.bal))}</div>
       ${isCard?`<div class="micro mt8">of AED ${fm(a.limit,0)} limit · statement due ${a.due}</div>${meter(Math.abs(a.bal)/a.limit,'#FFB050')}`:''}
       <div class="grid4 mt16">
         ${[['swap','Move','between'],['doc','Statement','statement'],['qr','Details','accounts-iban'],[isCard?'card':'refresh',isCard?'Pay':'Sync', isCard?('paybill/'+a.id):'money']]
@@ -289,7 +289,7 @@ SCREENS.txn = (id) => {
     <div class="card" style="text-align:center">
       ${catIc(t.cat,56)}
       <div class="h2 mt12">${t.m}</div>
-      <div style="font:800 32px Inter;letter-spacing:-.03em" class="tnum mt8 ${t.amt>0?'grn-t':''}">${aedS(t.amt)}</div>
+      <div style="font:800 32px Inter,sans-serif;letter-spacing:-.03em" class="tnum mt8 ${t.amt>0?'grn-t':''}">${aedS(t.amt)}</div>
       <div class="micro mt4">${t.d} · ${a?BANKS[a.bank].name+' ··'+a.mask:''} · Completed ✓</div>
     </div>
     <div class="lbl mt16 mb8">Category</div>

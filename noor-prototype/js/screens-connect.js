@@ -3,7 +3,7 @@
 window.CN = { bank:null, replica:false, accSel:{} };
 
 const replicaBar = () => CN.replica
-  ? `<div style="background:#16191C;color:#fff;border-radius:12px;padding:9px 13px;font:600 11px Inter;display:flex;gap:8px;align-items:center;margin-bottom:14px">
+  ? `<div style="background:#16191C;color:#fff;border-radius:12px;padding:9px 13px;font:600 11px Inter,sans-serif;display:flex;gap:8px;align-items:center;margin-bottom:14px">
       🎬 1:1 flow replica of the Lean Link recording — <span style="color:var(--lime)">✦ lime = Noor enhancement</span></div>` : '';
 const enh = t => `<span class="tag" style="background:rgba(215,240,80,.25);color:#5d6e0d;margin-left:6px">✦ ${t}</span>`;
 const pby = () => `<div class="pby">${ic('shieldCheck',14)} powered by <span class="pby-n">noor connect</span> · CBUAE Open Finance</div>`;
@@ -345,7 +345,7 @@ SCREENS['connect-success'] = (bank) => {
     <div class="card mt20" style="background:#fff;border:1px solid var(--lt-line);text-align:left">
       <div class="lbl">Noor already found ${enh('instant value')}</div>
       <div class="row static">${catIc('income',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">Your salary — AED 32 500 on the 25th</div></div></div>
-      <div class="row static">${catIc('entertainment',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">8 subscriptions ≈ AED 922/mo</div></div></div>
+      <div class="row static">${catIc('entertainment',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">8 subscriptions ≈ AED 972/mo</div></div></div>
       <div class="row static">${catIc('bills',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">2 wasteful fees you can dispute</div></div></div>
     </div>
     ${remaining.length
@@ -363,7 +363,7 @@ SCREENS['connect-finale'] = () => `
     <div class="glowblob" style="background:#D7F050;top:-70px;left:-80px;opacity:.2"></div>
     <span class="tag lime">${A.S.linked.length} banks · ${4+A.S.linked.length*2} accounts connected</span>
     <div class="h1 mt16">One number,<br>${USER.first}.</div>
-    <div class="mt16" style="font:800 46px/1 Inter;letter-spacing:-.03em" class="tnum">AED <span id="finTotal">0</span></div>
+    <div class="mt16" style="font:800 46px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED <span id="finTotal">0</span></div>
     <div class="sub mt8">Everything you own, live — across FAB, Wio and Emirates Islamic.</div>
     <div style="position:absolute;bottom:60px;left:26px;right:26px">
       <button class="btn lime" onclick="A.go('home')">Open my dashboard</button>

@@ -108,7 +108,7 @@ window.SCN_GROUPS = [
   S('June insights','Donut, budgets, pace warning — “ask why ✦”','insights'),
   S('Category drill-down','Dining +38% with 5-month trend','cat/dining'),
   S('Top merchants','IKEA, Carrefour, Talabat ranked','insights'),
-  S('Subscription hunter','8 detected · AED 922/mo · 2 wasteful','subs'),
+  S('Subscription hunter','8 detected · AED 972/mo · 2 wasteful','subs'),
   S('Cancel via your bank ✦','Noor files the cancellation + refund request','subs'),
   S('Safe-to-spend forecast','AED 9 540 until salary, 94% accuracy','forecast'),
   S('Financial health score','78/100 with named fixes','health'),

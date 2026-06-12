@@ -8,7 +8,7 @@ const S = () => A.S;
 SCREENS.splash = () => `
   <div class="scr center nopad" style="padding:40px">
     <div class="glowblob" style="background:#D7F050;top:-80px;right:-90px;opacity:.25"></div>
-    <div style="font:800 64px/1 Inter;letter-spacing:-.03em;color:var(--lime)" class="logo-pop">noor</div>
+    <div style="font:800 64px/1 Inter,sans-serif;letter-spacing:-.03em;color:var(--lime)" class="logo-pop">noor</div>
     <div class="sub mt12">Agentic Islamic Finance Platform</div>
     <div class="spinner lm" style="position:absolute;bottom:90px"></div>
   </div>`;
@@ -21,7 +21,7 @@ const W_SLIDES = [
   {h:'All your banks.<br><span class="lime-t">One place.</span>', d:'Connect FAB, Wio, Emirates Islamic and 11 more — see every dirham, get one clear picture.',
    art:`<div style="display:flex;flex-direction:column;gap:14px;align-items:center">
         <div class="logo-stack" style="transform:scale(1.6)">${blg('fab')}${blg('wio')}${blg('ei')}${blg('enbd')}</div>
-        <div style="margin-top:26px;font:800 44px Inter;letter-spacing:-.03em" class="tnum">AED 275 900<span style="font-size:26px">,76</span></div>
+        <div style="margin-top:26px;font:800 44px Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275 900<span style="font-size:26px">,76</span></div>
         <span class="tag lime">Live across 3 banks</span></div>`},
   {h:'Shariah-first.<br><span class="lime-t">AI-native.</span>', d:'A personal agent that watches, plans and acts — zakat, halal investing and spending, built in.',
    art:`<div style="width:200px;height:200px;border-radius:60px;background:rgba(255,255,255,.06);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--lime)">${ic('spark',92,'',1.3)}</div>`},
@@ -30,7 +30,7 @@ SCREENS.welcome = () => {
   const i = A.tmp.slide||0, s = W_SLIDES[i];
   return `
   <div class="scr nopad" style="display:flex;flex-direction:column;padding:70px 26px 46px">
-    <div class="flex between"><span style="font:800 26px Inter;color:var(--lime)">noor</span>
+    <div class="flex between"><span style="font:800 26px Inter,sans-serif;color:var(--lime)">noor</span>
       <button class="chip" onclick="A.demoSkip()">Skip demo →</button></div>
     <div class="f1" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:30px">
       ${s.art}

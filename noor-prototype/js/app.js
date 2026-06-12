@@ -48,7 +48,13 @@ window.A = {
     document.body.classList.toggle('show-fab', tab && this.S.onboarded!==false);
     if(AFTER[name]) try{ AFTER[name](param); }catch(e){ console.warn(e); }
   },
-  syncHash(){ this._hashLock=true; location.hash='#/'+this.route; setTimeout(()=>this._hashLock=false,0); },
+  syncHash(){
+    if(this._running) return;                     /* scenario sets one #s/N hash at the end instead */
+    const h='#/'+this.route; if(location.hash===h) return;
+    this._scn=null;
+    this._hashLock=true; location.hash=h; setTimeout(()=>this._hashLock=false,0);
+  },
+  setHash(h){ if(location.hash===h) return; this._hashLock=true; location.hash=h; setTimeout(()=>this._hashLock=false,0); },
 
   /* ---------- sheets / toasts / confirm ---------- */
   sheet(html){
@@ -81,8 +87,10 @@ window.A = {
     const s=SCN_FLAT[no-1]; if(!s) return;
     this._scn=no; this.tmp={}; this.stack=[]; CN.replica=false;
     if(s.prep==='fresh') this.ensureFresh(); else this.ensureApp();
-    if(typeof s.run==='function') s.run(); else this.go(s.run, true);
-    this._hashLock=true; location.hash='#s/'+no; setTimeout(()=>this._hashLock=false,0);
+    this._running=true;
+    try{ if(typeof s.run==='function') s.run(); else this.go(s.run, true); }
+    finally{ this._running=false; }
+    this.setHash('#s/'+no);
     this.markScn(no);
     document.body.classList.remove('side-open');
     const cap=document.getElementById('caption');
@@ -157,13 +165,18 @@ function fitPhone(){
 /* ---------- boot ---------- */
 function handleHash(){
   const h=location.hash||'';
-  if(h.startsWith('#s/')){ const n=parseInt(h.slice(3),10); if(SCN_FLAT[n-1]){ A.run(n); return true; } }
+  if(h.startsWith('#s/')){
+    const n=parseInt(h.slice(3),10);
+    if(n===A._scn) return true;                /* already running — never re-enter */
+    if(SCN_FLAT[n-1]){ A.run(n); return true; }
+  }
   if(h.startsWith('#/')){
-    const r=h.slice(2);
+    const r=decodeURIComponent(h.slice(2));
+    if(r===A.route) return true;               /* already there */
     const fresh=/^(splash|welcome|ob-|connect-)/.test(r);
     fresh ? A.ensureFresh() : A.ensureApp();
     if(/^(connect-)/.test(r)) A.S.linked=[], A.persist();
-    A.go(decodeURIComponent(r), true); return true;
+    A.go(r, true); return true;
   }
   return false;
 }
