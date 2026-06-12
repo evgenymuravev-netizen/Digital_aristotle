@@ -7,7 +7,7 @@ A deep, clickable HTML prototype of the **Noor** app from the May 2026 investor 
 
 ## What’s inside
 
-- **169 key scenarios**, deep-linked from the scenario explorer (left panel / ☰ button on mobile) —
+- **172 key scenarios**, deep-linked from the scenario explorer (left panel / ☰ button on mobile) —
   onboarding, bank linking, payments, cards, AI agent, insights, goals, Islamic suite, consents, rewards,
   a “Beyond banks” group (wallets/BNPL/crypto linking, Tabby-vs-Tamara-vs-Noor-Split checkout, invest upsell),
   and a “Zakat, properly” group: dual nisab (85 g gold / 595 g silver), declared assets banks can’t see

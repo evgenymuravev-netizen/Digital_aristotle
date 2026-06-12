@@ -705,7 +705,7 @@ SCREENS.agents = () => {
     <div class="card lime">
       <div class="flex between"><span class="lbl" style="color:rgba(11,20,16,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, yield bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(11,20,16,.14);color:#0B1410">${AGENTS.period}</span></div>
       <div style="font:800 36px Inter,sans-serif" class="tnum mt8">AED ${fm(AGENTS.earned,0)}</div>
-      <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')}</div>
+      <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')} — plus ${AGENTS.timeSaved}</div>
     </div>
 
     <div class="lbl mt16 mb8">Strategies — how they decide</div>
@@ -739,6 +739,7 @@ SCREENS.agents = () => {
         </div>
         <div class="kv mt8" style="padding:6px 0"><span class="k">Report</span><span class="v" style="font-size:12px;max-width:64%;font-weight:500">${f.report}</span></div>
         ${f.last?`<div class="micro">${f.last}</div>`:''}
+        ${f.collab?`<div class="micro mt4" style="color:var(--lime)">🤝 ${f.collab}</div>`:''}
         ${f.decision?`
         <div class="card soft mt8">
           <b style="font-size:13px">Live decision ${tipi('The agent shows its math before money moves. Override anytime — or let it decide.')}</b>

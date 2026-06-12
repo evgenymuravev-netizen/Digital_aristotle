@@ -235,9 +235,11 @@ window.SCN_GROUPS = [
   S('Products watchdog','Already opened savings or financing? Still re-shopped weekly — e-Saver 3,1→3,4%',()=>A.go('agents')),
   S('P2P risk strategy (Musharaka)','Opt-in profit-share into vetted SMEs, 9–14% expected, capital at risk',()=>{A.tmp.ag={healthy:true,local:true,promo:true,risk:true,careem:'agent'};A.go('agents');}),
   S('Link Fazaa & Booking.com','New “Perks & booking” category in Noor Connect — deals & instant booking',()=>{A.tmp.cnCat='life';A.go('connect-banks');}),
+  S('Wellbeing agent','Checkups, massage, therapy slots — and it steers the grocery agent toward omega-3 & greens',()=>A.go('agents')),
+  S('Vacation agent — visas first','VFS appointment booked, checklist 6/8, hands off to the Travel agent when the visa clears',()=>A.go('agents')),
+  S('Family agent','Brunch ×4, Disney On Ice for the kids, synced with the Gift planner for the 26th',()=>A.go('agents')),
 ]},
 ];
-
 window.SCN_FLAT = [];
 SCN_GROUPS.forEach(g => g.items.forEach(it => { it.no = SCN_FLAT.length+1; it.group = g.g; SCN_FLAT.push(it); }));
 })();
