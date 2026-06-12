@@ -51,6 +51,7 @@ const Chat = window.Chat = {
     }
     if (/(credit )?card/.test(t) && /find|best|help|need|new/.test(t)) return go('findCard');
     if (/ps ?5|playstation/.test(t)) return go('ps5');
+    if (/birthday|present|anniversar|gift for/.test(t)) return go('gift');
     if (/advice|advis|portfolio|allocat/.test(t)) return go('advise');
     if (/refinanc|expensive|cheaper|too much.*pay/.test(t)) return go('refi');
     if (/loan|borrow|financ/.test(t)) return go('loan');
@@ -351,6 +352,14 @@ const SCRIPTS = {
       {t:'🪙 Buy AED 22 000 gold now', fn:"A.toast('Bought 45,2 g at spot — vaulted in DMCC','check')"},
       {t:'🏠 Show lease-property options', fn:"A.toast('3 Ijarah units shortlisted — in your briefing tomorrow','home')"},
       {t:'Open portfolio', fn:"A.go('invest')"},
+    ]), 250);
+  }},
+
+  gift:{ user:'What should I get Aisha for her birthday?', async run(c){
+    await c.ai(`🎂 <b>14 days out</b> — good timing. With <b>her consented signals</b> (she shared gift categories from her own Noor app), the strongest ideas:\n\n👜 <b>Cult Gaia “Hana” bag · AED 690</b> — searched 6× this month\n🌸 <b>Jo Malone Oud & Bergamot · 540</b> — her ~8-month rebuy is due\n🧘‍♀️ <b>Talise Spa day for two · 750</b> — wellness spends ▲40%\n🎶 <b>Fairuz tribute ×2 · 380</b> — her #1 Anghami artist\n\nI’d reserve <b>AED 800</b> into a hidden Gift pot — fits your safe-to-spend, and the purchase stays <b>masked from shared views</b>.`, 2000);
+    await c.card(chips([
+      {t:'🎁 Open the gift planner', fn:"A.go('gift')"},
+      {t:'Reserve AED 800 quietly', fn:"A.toast('AED 800 set aside in a hidden Gift pot 🤫','check')"},
     ]), 250);
   }},
 

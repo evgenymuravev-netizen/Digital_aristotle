@@ -223,6 +223,8 @@ window.SCN_GROUPS = [
 {g:'Insights 2.0 ✦', items:[
   S('Budget rings — Apple style','Three rings (Essentials · Lifestyle · Travel) close toward plan; red ⚠️ = over, with the why',()=>A.go('insights')),
   S('Tooltips everywhere','Tap ⓘ on nisab, wakāla, Qard Ḥasan, pre-approved, rings, safe-to-spend…',()=>{A.go('zakat');setTimeout(()=>A.tip('Like this — every tricky concept has a one-tap explanation now.'),900);}),
+  S('Birthday radar — gift planner','Aisha’s birthday in 14 days: budget it + ideas from her consent-shared spends, searches & listening',()=>A.go('gift')),
+  S('Gift advice in chat','“What should I get Aisha?” — signals, budget, hidden Gift pot',()=>chatDeep('gift')),
 ]},
 ];
 

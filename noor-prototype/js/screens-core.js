@@ -18,7 +18,7 @@ SCREENS.home = () => `
       <div class="h2 mt8" style="font-weight:600;color:var(--tx2);line-height:1.45" onclick="A.go('briefing')">
         ${BR().line.replace(/<b>/g,'<b style="color:var(--tx);font-weight:700">')}
       </div>
-      <button class="chip mt12" onclick="A.go('briefing')">${ic('spark',15)} Morning briefing · 4 items</button>
+      <button class="chip mt12" onclick="A.go('briefing')">${ic('spark',15)} Morning briefing · ${BR().items.length} items</button>
     </div>
 
     <div class="card mt16 tap" onclick="A.go('money')">
@@ -40,7 +40,11 @@ SCREENS.home = () => `
         <span class="lbl">Budget</span>
         <div class="micro mt4">Trends for June</div>
         <div class="mt8" style="display:flex;justify-content:center">
-          ${donut(CATSPEND.slice(0,5).map(c=>({v:c.amt,c:CATS[c.cat].c})),92,11,`<div style="font:800 13px Inter,sans-serif" class="tnum">${hideable(fm(BUDGET.spent,0))}</div>`)}
+          ${rings([{p:6660/7500,c:'#53DE8E'},{p:5967.95/5100,c:'#FFB050'},{p:1586.6/2400,c:'#5EE6D0'}],88,9,3)}
+        </div>
+        <div class="flex mt8" style="justify-content:center;gap:6px">
+          <span class="tag red" style="font-size:9.5px">● Over budget</span>
+          <span class="micro">Lifestyle 117%</span>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:11px">
@@ -112,7 +116,7 @@ SCREENS.briefing = () => `
   <div class="scr">
     ${hdr('Morning briefing')}
     <div class="flex" style="gap:8px"><span class="tag lime">✦ Noor AI</span><span class="micro">Generated 07:00 from calendar, inbox receipts & accounts</span></div>
-    <div class="h1 mt12">${A.S.lang==='ar'?'4 مهام<br>لليوم يا جون':'4 things for<br>today, '+USER.first}</div>
+    <div class="h1 mt12">${A.S.lang==='ar'?BR().items.length+' مهام<br>لليوم يا جون':BR().items.length+' things for<br>today, '+USER.first}</div>
     <div class="mt16" style="display:flex;flex-direction:column;gap:11px">
       ${BR().items.map((b,i)=>`
         <div class="card">
@@ -122,7 +126,7 @@ SCREENS.briefing = () => `
           </div>
           <div class="btnrow mt12">
             <button class="btn ghost sm" onclick="A.toast('Snoozed to tomorrow 07:00','clock')">Snooze</button>
-            <button class="btn pri sm" onclick="${i===3?"A.go('paybill/fab-cc')":i===2?"A.go('subs')":"A.toast('Done — marked complete','check')"}">${b.cta}</button>
+            <button class="btn pri sm" onclick="${b.act==='gift'?"A.go('gift')":b.act==='paybill'?"A.go('paybill/fab-cc')":b.act==='subs'?"A.go('subs')":"A.toast('Done — marked complete','check')"}">${b.cta}</button>
           </div>
         </div>`).join('')}
     </div>

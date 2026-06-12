@@ -114,11 +114,29 @@ window.UPCOMING = [
 window.BRIEFING = {
   line:`Today you need <b>to send the documents for the trip</b>. And a <b>doctor's appointment</b> is scheduled for <b>tomorrow</b>.`,
   items:[
-    {ic:'doc',  c:'#6FB6FF', t:'Send trip documents', d:'Emirates booking RF8Q2P · visa copies due today 18:00', cta:'Open checklist'},
-    {ic:'heart',c:'#FF7A6B', t:"Doctor's appointment", d:'Dr. Mansoor · Al Das Medical · tomorrow 09:30 — AED 390 last visit', cta:'Add to calendar'},
-    {ic:'film', c:'#E50914', t:'Netflix will debit AED 29 tomorrow', d:'From FAB Cashback Visa ··4412', cta:'Manage'},
-    {ic:'card', c:'#FFB050', t:'FAB card payment due in 9 days', d:'Statement AED 8 240,50 · pay in full to stay fee-free', cta:'Pay now'},
+    {ic:'gift', c:'#FF8FC0', t:'Aisha’s birthday — in 14 days', d:'Thu 26 June · gift plan ready from her shared signals · budget not set yet', cta:'Plan her gift', act:'gift'},
+    {ic:'doc',  c:'#6FB6FF', t:'Send trip documents', d:'Emirates booking RF8Q2P · visa copies due today 18:00', cta:'Open checklist', act:'done'},
+    {ic:'heart',c:'#FF7A6B', t:"Doctor's appointment", d:'Dr. Mansoor · Al Das Medical · tomorrow 09:30 — AED 390 last visit', cta:'Add to calendar', act:'done'},
+    {ic:'film', c:'#E50914', t:'Netflix will debit AED 29 tomorrow', d:'From FAB Cashback Visa ··4412', cta:'Manage', act:'subs'},
+    {ic:'card', c:'#FFB050', t:'FAB card payment due in 9 days', d:'Statement AED 8 240,50 · pay in full to stay fee-free', cta:'Pay now', act:'paybill'},
   ]
+};
+
+/* ---------- birthday gift radar (consent-shared signals) ---------- */
+window.GIFT = {
+  who:'Aisha', date:'Thursday, 26 June', inDays:14,
+  consent:'Aisha shared her wishlist signals on 3 May — spending categories, search & listening interests. Revocable anytime in her Consent centre.',
+  budgets:[400,800,1500],
+  ideas:[
+    {em:'👜', t:'Cult Gaia “Hana” bag', price:690, store:'Ounass · 2-day delivery', src:'🔍 Her searches',
+     why:'Searched 6× this month, saved twice on Instagram'},
+    {em:'🌸', t:'Jo Malone Oud & Bergamot', price:540, store:'Sephora MOE · today', src:'🧾 Her spends',
+     why:'She rebuys every ~8 months — last bottle November, running out about now'},
+    {em:'🧘‍♀️', t:'Talise Spa day for two', price:750, store:'Madinat Jumeirah', src:'🧾 Her spends',
+     why:'Wellness spends up 40% this quarter — she’s been hinting'},
+    {em:'🎶', t:'Fairuz tribute night ×2', price:380, store:'Dubai Opera · 28 Jun', src:'🎧 Her listening',
+     why:'Fairuz is her #1 artist on Anghami this year'},
+  ],
 };
 
 /* ---------- contacts ---------- */
@@ -360,6 +378,7 @@ window.CONSENTS = [
 
 /* ---------- notifications ---------- */
 window.NOTIFS = [
+  {ic:'gift', c:'#FF8FC0', t:'Aisha’s birthday in 14 days 🎂', d:'Gift plan ready — 4 ideas from her shared signals', when:'Just now', act:'gift'},
   {ic:'spark', c:'#D7F050', t:'Your June Money Story is ready', d:'See where your money went in 30 seconds', when:'Just now', act:'story'},
   {ic:'film',  c:'#E50914', t:'Netflix debits AED 29 tomorrow', d:'FAB Cashback Visa ··4412', when:'2 h ago', act:'subs'},
   {ic:'card',  c:'#FFB050', t:'Pre-approved: FAB card, AED 20 000 limit', d:'3.99% · 55 days grace · expires in 6 days', when:'5 h ago', act:'chat-card'},

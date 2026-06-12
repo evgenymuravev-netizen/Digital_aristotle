@@ -696,6 +696,48 @@ ZK.activate = function(){
     A.toast('Zakat Pot opened — saving ahead, earning halal profit','coins'); A.go('rules'); return; }
 };
 
+/* ---------------- birthday gift planner (consent-shared signals) ---------------- */
+SCREENS.gift = () => {
+  const g = GIFT, bud = A.tmp.giftBud||800;
+  return `
+  <div class="scr">
+    ${hdr('Gift planner')}
+    <div class="card" style="background:linear-gradient(150deg,rgba(255,143,192,.16),var(--glass))">
+      <div class="flex between"><b style="font-size:15px">🎂 ${g.who}’s birthday</b><span class="tag" style="background:rgba(255,143,192,.2);color:#FF8FC0">in ${g.inDays} days</span></div>
+      <div class="micro mt4">${g.date} · reminder set — I won’t let it sneak up on you.</div>
+    </div>
+    <div class="card soft mt12 flex" style="gap:10px;align-items:flex-start">${ic('shieldCheck',20,'lime-t')}
+      <div class="micro"><b>With her consent:</b> ${g.consent} ${tipi('These signals come from Aisha’s own Noor app — she chose to share gift-relevant categories with you. You see ideas, never her raw transactions or searches.')}</div></div>
+
+    <div class="lbl mt16 mb8">Budget it ${tipi('Reserved into a hidden Gift pot — masked from shared views and her insights, so the surprise survives.')}</div>
+    <div class="chips">
+      ${g.budgets.map(v=>`<button class="chip ${bud===v?'on':''}" onclick="A.tmp.giftBud=${v};A.refresh()">AED ${fm(v,0)}</button>`).join('')}
+      <button class="chip" onclick="A.tip('Type any amount in the chat — “budget 1 200 for the gift” works too.')">✏️ Custom</button>
+    </div>
+    <button class="btn pri sm mt8" onclick="A.toast('AED ${fm(bud,0)} set aside in a hidden Gift pot 🤫 — fits your safe-to-spend','check')">Reserve AED ${fm(bud,0)} now</button>
+
+    <div class="lbl mt20 mb8">Ideas from her signals</div>
+    ${g.ideas.map(i=>`
+      <div class="card mt8">
+        <div class="flex" style="gap:12px">
+          <span class="avx" style="background:rgba(255,143,192,.14);font-size:22px">${i.em}</span>
+          <div class="f1"><div class="row-t" style="font-size:14px">${i.t}</div>
+            <div class="row-d" style="white-space:normal">${i.store}</div></div>
+          <div class="row-amt tnum">${fm(i.price,0)}</div>
+        </div>
+        <div class="flex mt8" style="gap:8px"><span class="tag" style="background:rgba(255,143,192,.14);color:#FF8FC0">${i.src}</span>
+          <span class="micro f1">${i.why}</span></div>
+        <button class="btn ghost sm mt8" onclick="confetti(document.getElementById('screen'));A.toast('${esc(i.t)} reserved — delivery before the 26th, spend masked in shared views','gift')">Buy with the Gift pot</button>
+      </div>`).join('')}
+
+    <div class="card soft mt12 flex" style="gap:10px">${ic('eyeOff',18,'lime-t')}
+      <div class="micro"><b>Surprise protection:</b> gift purchases are hidden from her shared dashboards and family insights until the 26th.</div></div>
+    <div class="chips mt12">
+      ${[['1 week before','19 Jun'],['3 days before','23 Jun'],['On the day','26 Jun']].map(([t,d])=>`<button class="chip" onclick="A.toast('Reminder set — ${d}, 09:00','bell')">🔔 ${t}</button>`).join('')}
+    </div>
+  </div>`;
+};
+
 /* ---------------- SME insight stories — notifications become insights ---------------- */
 const BIZ_CARDS = [
   {ic:'🚀', icBg:'#FCE7F3',
