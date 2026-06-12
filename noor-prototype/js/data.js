@@ -88,7 +88,9 @@ window.SUBS = [
   {m:'Claude API',     amt:142.67,day:'5th',  next:'Usage-based', ic:'spark', c:'#D97A4A', acc:'fab-cc',
    used:'AED 142,67 in May (≈ $38,85) · tokens ▲ 38%', flag:'Usage-based — caching could cut ~40%'},
   {m:'ChatGPT Plus',   amt:73.41, day:'31st', next:'30 Jun',   ic:'spark', c:'#B89CFF', acc:'fab-cc', used:'Used daily'},
-  {m:'iCloud+ 2TB',    amt:36.99, day:'2nd',  next:'2 Jul',    ic:'doc',   c:'#9DB2A6', used:'1.1 TB used', acc:'fab-cc'},
+  {m:'iCloud+ 2TB',    amt:36.99, day:'2nd',  next:'2 Jul',    ic:'doc',   c:'#9DB2A6', acc:'fab-cc',
+   used:'1,1 TB used · Aisha pays AED 36,99 for her own', flag:'Family Sharing covers you both — one plan, save AED 444/yr',
+   share:{who:'Aisha', herCost:36.99, save:444, why:'iCloud+ 2TB shares with up to 5 family members at no extra cost. You use 1,1 TB — plenty of room for both.'}},
   /* music cluster — main metric: hours listened + trend */
   {m:'Anghami Plus',   amt:19.99, day:'30th', next:'30 Jun',   ic:'film',  c:'#FF8FC0', acc:'fab-cc', music:true,
    hours:31, trend:+24, used:'31 h this month ▲ 24%', flag:'Keep — your main player, best Arabic catalogue'},
@@ -290,6 +292,12 @@ window.ZAKAT = {
     ],
   },
   spouse:{name:'Aisha', cash:42300.00, jewelleryG:145},
+  /* helping relatives — each is an individual obligation; you pay as wakīl WITH their permission */
+  family:[
+    {id:'aisha', rel:'Wife',   name:'Aisha',         cash:42300.00, jewelleryG:145, note:'Salary savings + her jewellery'},
+    {id:'dad',   rel:'Father', name:'Robert (Dad)',  cash:88400.00, jewelleryG:0,   note:'Retired — pension savings, no gold'},
+    {id:'mum',   rel:'Mother', name:'Mary (Mum)',    cash:12600.00, jewelleryG:210, note:'Little cash, much gold — the classic elderly-parent case'},
+  ],
   /* B2B — business-side zakatable assets (solo proprietorship · shares · funds) */
   bizAssets:[
     {id:'bizcash', t:'Business account balance',     em:'🏢', v:22400, on:true,  note:'Wio Business ··7741 — cash is cash'},

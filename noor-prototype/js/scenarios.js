@@ -108,7 +108,7 @@ window.SCN_GROUPS = [
   S('June insights','Donut, budgets, pace warning — “ask why ✦”','insights'),
   S('Category drill-down','Dining +38% with 5-month trend','cat/dining'),
   S('Top merchants','IKEA, Carrefour, Talabat ranked','insights'),
-  S('Subscription hunter','11 detected · AED 1 426/mo · AED 1 632/yr to save','subs'),
+  S('Subscription hunter','11 detected · AED 1 426/mo · AED 2 076/yr to save','subs'),
   S('Cancel via your bank ✦','Noor files the cancellation + refund request','subs'),
   S('Safe-to-spend forecast','AED 9 540 until salary, 94% accuracy','forecast'),
   S('Financial health score','78/100 with named fixes','health'),
@@ -177,7 +177,7 @@ window.SCN_GROUPS = [
   S('Declare what banks can’t see','Cash at home, trade stock, jewellery, receivables — with fiqh notes','zakat'),
   S('AI interview — every asset','Noor asks about merchant stock & hidden wealth, citing the four schools',()=>chatDeep('zakatFull')),
   S('Pick your scholar','Taqi Usmani · UAE Awqaf · Ibn ‘Uthaymeen · AAOIFI — math follows the fatwa',()=>chatDeep('zakatFull')),
-  S('Family zakat — wakāla','Two incomes, individual obligations; husband pays with her consent',()=>{ZK.st().fam=true;ZK.st().wakala=true;A.go('zakat');}),
+  S('Family zakat — wakāla','Two incomes, individual obligations; husband pays with her consent',()=>{const st=ZK.st();st.rel.aisha=true;st.wak.aisha=true;A.go('zakat');}),
   S('Pay tomorrow — 1 Ramadan','Hawl anchored to Ramadan; recalculated at live prices on the day','zakat'),
   S('Debts that reduce zakat','Payroll, BNPL, 12-month slices of mortgage/car/personal, business facilities — itemised toggles','zakat'),
 ]},
@@ -216,6 +216,13 @@ window.SCN_GROUPS = [
   S('% of salary until covered','1/2/5% per payday + hawl-end top-up guarantee',()=>{ZK.st().step=3;ZK.st().plan='income';A.go('zakat');}),
   S('Zakat Pot — save ahead','Monthly Mudarabah pot earns ~3,1% halal profit, pays next hawl in one go',()=>{ZK.st().step=3;ZK.st().plan='pot';A.go('zakat');}),
   S('Custom amounts everywhere','Type any number in chat mid-interview, or use the input in every asset sheet',()=>{chatDeep('zakatFull');setTimeout(()=>ZKChat.homecash(),2800);}),
+  S('Helping elderly parents','Son calculates & pays for Dad and Mum — with their permission (wakāla)',()=>{const st=ZK.st();['dad','mum'].forEach(id=>{st.rel[id]=true;st.wak[id]=true;});A.go('zakat');}),
+  S('Mum’s gold — schools split live','210 g jewellery, little cash: Majority says 0, Hanafi says 2 868 — chips show it',()=>{const st=ZK.st();st.rel.mum=true;st.wak.mum=true;st.method='hanafi';A.go('zakat');}),
+]},
+
+{g:'Insights 2.0 ✦', items:[
+  S('Budget rings — Apple style','Three rings (Essentials · Lifestyle · Travel) close toward plan; red ⚠️ = over, with the why',()=>A.go('insights')),
+  S('Tooltips everywhere','Tap ⓘ on nisab, wakāla, Qard Ḥasan, pre-approved, rings, safe-to-spend…',()=>{A.go('zakat');setTimeout(()=>A.tip('Like this — every tricky concept has a one-tap explanation now.'),900);}),
 ]},
 ];
 

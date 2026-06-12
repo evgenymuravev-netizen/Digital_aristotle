@@ -404,3 +404,9 @@
 
 /* subscriptions list — let flags wrap instead of truncating */
 .wrapd .row-d{white-space:normal}
+
+/* tap tooltips */
+.tipi{display:inline-flex;width:16px;height:16px;border-radius:50%;background:var(--glass2);color:var(--tx2);
+  font:700 10px/16px Inter,sans-serif;justify-content:center;cursor:pointer;vertical-align:middle;margin-left:2px}
+.light .tipi{background:#E9EBF0;color:#6B7280}
+.tipi:active{transform:scale(.9)}

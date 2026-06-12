@@ -88,7 +88,7 @@ window.Pay = {
       <div class="h2">Order PlayStation 5 Pro 2 Tb</div>
       <div class="kv mt8"><span class="k">Store · delivery</span><span class="v">${store} · today 2–4 h</span></div>
       <div class="kv"><span class="k">Price</span><span class="v tnum">AED ${fm(price,0)}</span></div>
-      <div class="lbl mt8 mb8">How do you want to pay? <span class="tag lime" style="margin-left:4px">✦ all pre-approved</span></div>
+      <div class="lbl mt8 mb8">How do you want to pay? <span class="tag lime" style="margin-left:4px">✦ all pre-approved</span> ${tipi('Pre-approved means each provider already confirmed your limit from linked data — nothing here can be declined at checkout.')}</div>
       <div class="listcard" style="padding:2px 14px">
         ${offers.map(o=>`
           <div class="row" onclick="A.tmp.bnpl='${o.id}';Pay.buyPS5('${esc(store)}',${price},true)">
@@ -274,16 +274,31 @@ SCREENS.insights = () => {
   <div class="scr" style="padding-bottom:170px">
     <div class="flex between"><div class="h1">Insights</div><button class="chip" onclick="Story.open()">✦ Money Story</button></div>
     <div class="chips mt12"><button class="chip">April</button><button class="chip">May</button><button class="chip on">June</button></div>
-    <div class="card mt16" style="display:flex;gap:18px;align-items:center">
-      ${donut(CATSPEND.map(c=>({v:c.amt,c:CATS[c.cat].c})),132,15,
-        `<div class="lbl">Spent</div><div style="font:800 19px Inter,sans-serif" class="tnum">${fm(BUDGET.spent,0)}</div><div class="micro">of ${fm(BUDGET.total,0)}</div>`)}
-      <div class="f1">
-        <div class="sub">June pace: <b style="color:var(--red)">18% above</b> normal</div>
-        <div class="mt8">${meter(BUDGET.spent/BUDGET.total,'#FFB050')}</div>
-        <div class="micro mt8">AED ${fm(BUDGET.total-BUDGET.spent,0)} left · 19 days to go</div>
-        <button class="chip mt8" onclick="chatDeep('spend')">Ask why ✦</button>
+    ${(()=>{ /* Apple-Watch-style budget rings: plan vs fact per ring */
+      const grp = (cats)=>cats.reduce((s,id)=>{const c=CATSPEND.find(x=>x.cat===id);return {a:s.a+(c?c.amt:0), b:s.b+(c?c.bud:0)};},{a:0,b:0});
+      const ess=grp(['groceries','bills','transport','health']), life=grp(['shopping','dining','entertainment']), trav=grp(['travel','other']);
+      const R=[{n:'Essentials',d:ess,c:'#53DE8E'},{n:'Lifestyle',d:life,c:'#FFB050'},{n:'Travel & other',d:trav,c:'#5EE6D0'}];
+      const over=R.filter(r=>r.d.a>r.d.b);
+      return `
+    <div class="card mt16">
+      <div class="flex" style="gap:18px;align-items:center">
+        ${rings(R.map(r=>({p:r.d.a/r.d.b, c:r.c})),136)}
+        <div class="f1">
+          <div class="flex" style="gap:6px">${over.length?'<span class="tag red">● Over budget</span>':'<span class="tag grn">● On track</span>'}
+            ${tipi('Each ring closes as a spending group reaches its monthly plan — like Activity rings. A red ring with the warning sign has already passed 100% of plan (fact vs planned).')}</div>
+          <div class="mt8">
+            ${R.map(r=>`<div class="lg-i" style="margin-top:5px"><span class="lg-dot" style="background:${r.d.a>r.d.b?'var(--red)':r.c}"></span>
+              <span class="f1" style="font-size:12px">${r.n}</span><b class="tnum" style="font-size:12px;color:${r.d.a>r.d.b?'var(--red)':'var(--tx)'}">${Math.round(r.d.a/r.d.b*100)}%</b></div>`).join('')}
+          </div>
+        </div>
       </div>
-    </div>
+      <div class="hr"></div>
+      <div class="sub" style="font-size:12.5px"><b style="color:var(--red)">Lifestyle closed its ring 19 days early.</b> Why: IKEA AED 1 244,75 in one trip + dining +38% (7 delivery orders). Essentials are on plan; Travel barely touched.</div>
+      <div class="flex mt8 between">
+        <span class="micro tnum">Spent ${fm(BUDGET.spent,0)} of ${fm(BUDGET.total,0)} · ${fm(BUDGET.total-BUDGET.spent,0)} left · 19 days to go</span>
+        <button class="chip" onclick="chatDeep('spend')">Ask why ✦</button>
+      </div>
+    </div>`;})()}
     ${over.length?`<div class="card mt12" style="border-color:rgba(255,176,80,.4)">
       <b style="font-size:13.5px">⚠️ Over budget: ${over.map(c=>CATS[c.cat].n).join(', ')}</b>
       <div class="micro mt4">Dining is +38% vs May — mostly delivery. Want a cap?</div>
@@ -312,8 +327,8 @@ SCREENS.insights = () => {
       <div class="micro mt4">Sales +30% · rejections ↓12% · CAC vs category — your SME side, story-style</div>
     </div>
     <div class="grid2 mt16">
-      <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 1 426 / mo</div><div class="micro mt4">AED 1 632/yr to save</div></div>
-      <div class="card tap" onclick="A.go('forecast')"><span class="lbl">Safe to spend</span><div class="h3 mt8 tnum lime-t">AED 9 540</div><div class="micro mt4">until salary day</div></div>
+      <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 1 426 / mo</div><div class="micro mt4">AED 2 076/yr to save</div></div>
+      <div class="card tap" onclick="A.go('forecast')"><span class="lbl">Safe to spend ${tipi('What you can still spend before salary day with every known bill, instalment and rule already reserved — across all linked banks.')}</span><div class="h3 mt8 tnum lime-t">AED 9 540</div><div class="micro mt4">until salary day</div></div>
       <div class="card tap" onclick="A.go('health')"><span class="lbl">Financial health</span><div class="h3 mt8">78 / 100</div><div class="micro mt4">▲ 4 this month</div></div>
       <div class="card tap" onclick="A.go('score')"><span class="lbl">AECB score</span><div class="h3 mt8">745</div><div class="micro mt4">Very good</div></div>
     </div>
@@ -355,8 +370,8 @@ SCREENS.subs = () => {
       <div class="micro mt4">≈ AED ${fm(total*12,0)} a year · across 3 banks</div>
     </div>
     <div class="card mt12" style="border-color:rgba(215,240,80,.45)">
-      <b style="font-size:13.5px">✦ Noor found AED 1 632/yr to save</b>
-      <div class="micro mt4">Cheaper du Mobile plan (1 080) + two overlapping music apps (552) — and no, we’re not touching Anghami</div>
+      <b style="font-size:13.5px">✦ Noor found AED 2 076/yr to save</b>
+      <div class="micro mt4">Cheaper du plan (1 080) + two overlapping music apps (552) + iCloud Family Sharing instead of Aisha’s duplicate (444). Anghami stays.</div>
     </div>
 
     <div class="card mt12">
@@ -394,6 +409,15 @@ window.Subs = {
         <div class="micro mt4">AED ${fm(s.usage.rec.price,0)}/mo instead of ${fm(s.amt,0)} — ${s.usage.rec.why}.</div>
         <button class="btn pri sm mt8" style="width:100%" onclick="A.closeSheet();A.toast('Plan switch requested with du — active next cycle','check')">Switch to ${s.usage.rec.plan}</button>
       </div>` : '';
+    const share = s.share ? `
+      <div class="card mt8" style="border-color:rgba(83,222,142,.45)">
+        <div class="flex between"><b style="font-size:13.5px">👨‍👩‍👧 One plan covers the family</b><span class="tag grn">−AED ${fm(s.share.save,0)}/yr</span></div>
+        <div class="micro mt4">${s.share.why} ${s.share.who}’s separate AED ${fm(s.share.herCost)} becomes unnecessary.</div>
+        <div class="btnrow mt8">
+          <button class="btn ghost sm" onclick="A.closeSheet();A.toast('Family Sharing setup guide sent to both of you','share')">Set up sharing</button>
+          <button class="btn pri sm" onclick="A.closeSheet();A.toast('Cancellation queued for ${s.share.who}’s iCloud — pending her OK in her Noor app','check')">Cancel hers — with her OK</button>
+        </div>
+      </div>` : '';
     const music = s.music ? `
       <div class="card soft mt12">
         <div class="kv"><span class="k">Hours listened — this month</span><span class="v tnum" style="color:${s.trend>0?'var(--grn)':'var(--red)'}">${String(s.hours).replace('.',',')} h ${s.trend>0?'▲':'▼'} ${Math.abs(s.trend)}% vs May</span></div>
@@ -402,7 +426,7 @@ window.Subs = {
       </div>` : '';
     return `
     <div class="h2">${s.m}</div><div class="sub mt4 tnum">AED ${fm(s.amt)} / month · bills on the ${s.day} · ${s.acc.includes('cc')?'FAB Visa':'FAB account'}</div>
-    ${usage}${music}
+    ${usage}${share}${music}
     ${!s.usage&&!s.music?`<div class="card soft mt12"><div class="micro">${s.used}. ${s.flag||'Usage looks healthy.'}</div></div>`:''}
     <div class="btnrow mt12">
       <button class="btn ghost" onclick="A.closeSheet();A.toast('Reminder 2 days before each ${esc(s.m)} debit','bell')">Remind me</button>

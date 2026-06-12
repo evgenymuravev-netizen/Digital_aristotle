@@ -77,6 +77,14 @@ window.A = {
         <button class="btn danger" onclick="A.closeSheet();A._cf&&A._cf()">Confirm</button>
       </div>`);
   },
+  tip(msg){
+    const host=document.getElementById('screen');
+    host.querySelectorAll('.toastp').forEach(t=>t.remove());
+    const el=document.createElement('div'); el.className='toastp'; el.style.maxWidth='350px';
+    el.innerHTML=`<span style="color:var(--blu)">${ic('info',18)}</span><span style="font-weight:500">${msg}</span>`;
+    host.appendChild(el);
+    setTimeout(()=>{ el.style.transition='all .35s'; el.style.opacity='0'; setTimeout(()=>el.remove(),360); },5200);
+  },
   toast(msg, icon='check'){
     const host=document.getElementById('screen');
     host.querySelectorAll('.toastp').forEach(t=>t.remove());

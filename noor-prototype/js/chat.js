@@ -251,10 +251,11 @@ const SCRIPTS = {
 
   subs:{ user:'Show my subscriptions', async run(c){
     const total = SUBS.reduce((s,x)=>s+x.amt,0);
-    await c.ai(`I track <b>${SUBS.length} subscriptions</b> ≈ <b>AED ${fm(total)}/mo</b>. Two findings, AED 1 632/yr total:\n\n🎧 <b>Three music apps overlap.</b> Hours listened this month: Anghami <b>31 h ▲24%</b> · Spotify <b>2,1 h ▼67%</b> · Apple Music <b>0,4 h ▼81%</b>. Keep Anghami — it’s your player (and the Arabic catalogue is unmatched). Cancel the other two → <b>AED 552/yr</b>.\n\n📱 <b>du Mobile is overprovisioned</b> — you use 6,2 GB of 25 GB. The 12 GB plan saves <b>AED 1 080/yr</b>.\n\nAlso watching: <b>Claude API</b> AED 142,67 in May, tokens ▲38% — caching would cut ~40%.`);
+    await c.ai(`I track <b>${SUBS.length} subscriptions</b> ≈ <b>AED ${fm(total)}/mo</b>. Three findings, AED 2 076/yr total:\n\n🎧 <b>Three music apps overlap.</b> Hours listened this month: Anghami <b>31 h ▲24%</b> · Spotify <b>2,1 h ▼67%</b> · Apple Music <b>0,4 h ▼81%</b>. Keep Anghami — it’s your player (and the Arabic catalogue is unmatched). Cancel the other two → <b>AED 552/yr</b>.\n\n📱 <b>du Mobile is overprovisioned</b> — you use 6,2 GB of 25 GB. The 12 GB plan saves <b>AED 1 080/yr</b>.\n\n☁️ <b>You and Aisha both pay for iCloud.</b> One iCloud+ 2TB shares with the whole family — cancel hers via Family Sharing → <b>AED 444/yr</b>.\n\nAlso watching: <b>Claude API</b> AED 142,67 in May, tokens ▲38% — caching would cut ~40%.`);
     await c.card(chips([
       {t:'Cancel Spotify & Apple Music', fn:"Subs.cancel('Spotify + Apple Music',true)"},
       {t:'Switch du plan — save 1 080/yr', fn:"A.toast('Plan switch requested with du — active next cycle','check')"},
+      {t:'Set up iCloud Family Sharing', fn:"A.toast('Setup guide sent to you and Aisha — her duplicate flagged for cancellation','share')"},
       {t:'Open subscriptions', fn:"A.go('subs')"},
     ]), 250);
   }},
@@ -449,7 +450,7 @@ window.ZKChat = {
   });},
   scholar(method, label){ this.guard(async()=>{
     const s=ZK.st(); s.method=method;
-    if(ZK_METHODS[method].jewellery){ s.fam=true; }
+    if(ZK_METHODS[method].jewellery){ s.rel.aisha=true; s.wak.aisha=true; }
     Chat.user(`I follow ${label.split('—')[0].trim()}`);
     await Chat.ai(`Set ✓ — calculating per <b>${label}</b>.\n\n${ZK_METHODS[method].who}\n\nNisab basis: <b>${ZK_METHODS[method].nisab==='silver'?'silver (595 g ≈ AED '+fm(ZAKAT.nisabSilverG*ZAKAT.silverPerG,0)+') — the cautious one':'gold (85 g ≈ AED '+fm(ZAKAT.nisabGoldG*ZAKAT.goldPerG,0)+')'}</b> · jewellery: <b>${ZK_METHODS[method].jewellery?'counted':'exempt (personal use)'}</b>.`, 1400);
     await Chat.card(this.menu(),200);
@@ -457,20 +458,27 @@ window.ZKChat = {
 
   family(){ this.guard(async()=>{
     Chat.user('We have two incomes — my wife works too. I handle zakat for the family.');
-    await Chat.ai(`Important nuance: <b>zakat is an individual obligation</b> — ${ZAKAT.spouse.name} owes on <b>her</b> wealth (her salary savings, her jewellery), you on yours. There’s no “household zakat” in fiqh.\n\nBut you <b>can pay on her behalf as her wakīl</b> — valid in all four schools — as long as she gives permission. I’ll keep two clean ledgers and one payment.`, 1500);
+    await Chat.ai(`Important nuance: <b>zakat is an individual obligation</b> — each person owes on <b>their own</b> wealth. There’s no “household zakat” in fiqh.\n\nBut you <b>can calculate and pay on their behalf as wakīl</b> — wife, elderly parents, anyone — valid in all four schools, <b>as long as they give permission</b> (and the niyyah is theirs). One payment from you, clean separate ledgers inside.`, 1600);
     await Chat.card(`<div class="ch-quick">
-      <button class="chip" onclick="ZKChat.addSpouse()">Add Aisha’s wealth — she consented</button>
-      <button class="chip" onclick="ZKChat.spouseSolo()">Keep it separate — just remind her</button>
+      <button class="chip" onclick="ZKChat.addSpouse()">Add Aisha — she consented</button>
+      <button class="chip" onclick="ZKChat.addParents()">Add my elderly parents — they consented</button>
+      <button class="chip" onclick="ZKChat.spouseSolo()">Keep it separate — just remind them</button>
     </div>`,250);
   });},
+  addParents(){ this.guard(async()=>{
+    const s=ZK.st(); s.rel.dad=true; s.wak.dad=true; s.rel.mum=true; s.wak.mum=true;
+    Chat.user('Add my parents — they gave me permission');
+    await Chat.ai(`Done ✓ — <b>wakāla on for both</b>.\n\n👴 <b>Dad</b>: pension savings AED 88 400 → due <b>AED ${fm(ZK.relDue('dad',ZK.st().method)||2210)}</b> under every school.\n\n👵 <b>Mum</b> is the textbook case: cash AED 12 600 + <b>210 g of gold jewellery</b>. Under <b>Majority/AAOIFI</b> she owes <b>nothing</b> (cash below nisab, jewellery exempt). Under <b>Hanafi / Ibn ‘Uthaymeen</b> the gold counts → <b>AED ${fm(ZK.relUnder('mum','hanafi')*ZAKAT.rate)}</b>. Whose school should I follow for her — hers, not yours, ideally?`, 2000);
+    await Chat.card(this.menu(),200);
+  });},
   addSpouse(){ this.guard(async()=>{
-    const s=ZK.st(); s.fam=true; s.wakala=true;
+    const s=ZK.st(); s.rel.aisha=true; s.wak.aisha=true;
     Chat.user('Add her — she consented');
     await Chat.ai(`Done ✓ — <b>wakāla on</b>. Her ledger: salary savings <b>AED ${fm(ZAKAT.spouse.cash,0)}</b> + gold jewellery <b>${ZAKAT.spouse.jewelleryG} g</b> (≈ AED ${fm(ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG,0)}) — ${ZK.meth().jewellery?'<b>counted</b> under your chosen method':'<b>exempt</b> as personal use under your chosen method'}. She’s above nisab either way.`,1300);
     await Chat.card(this.menu(),200);
   });},
   spouseSolo(){ this.guard(async()=>{
-    const s=ZK.st(); s.fam=true; s.wakala=false;
+    const s=ZK.st(); s.rel.aisha=true; s.wak.aisha=false;
     Chat.user('Keep it separate');
     await Chat.ai(`Respect ✓ — I’ll compute her side so she can verify it, and send her the breakdown to pay herself. Her obligation stays hers.`,1000);
     await Chat.card(this.menu(),200);
@@ -479,14 +487,14 @@ window.ZKChat = {
   verdict(){ this.guard(async()=>{
     Chat.user('That’s everything — give me the verdict');
     const m=ZK.meth(), s=ZK.st();
-    const john=ZK.john(), aisha=ZK.aisha(), dueJ=john*ZAKAT.rate, dueA=aisha*ZAKAT.rate;
+    const john=ZK.john(), D=ZK.due(), dueJ=D.j;
     await Chat.ai(`Here it is — <b>${m.n} method</b>, hawl anchored to 1 Ramadan 1447 (tomorrow):`, 1100);
     await Chat.card(`<div class="offer-card" style="min-width:0">
       <div class="flex between"><span class="tag gold">☪ Zakat 1447H</span><span class="micro">nisab ${m.nisab} basis ✓ exceeded</span></div>
-      <div class="offer-amt tnum">AED ${fm(dueJ + (s.fam?dueA:0))}</div>
+      <div class="offer-amt tnum">AED ${fm(D.t)}</div>
       <div class="offer-sub">2,5% · after deducting AED ${fm(ZK.debtTotal(),0)} of due debts (incl. payroll & business financing)</div>
       <div class="kv" style="padding-top:10px"><span class="k">${USER.first} — base AED ${fm(john,0)}</span><span class="v tnum">${fm(dueJ)}</span></div>
-      ${s.fam?`<div class="kv"><span class="k">${ZAKAT.spouse.name} — base AED ${fm(aisha,0)} ${s.wakala?'(you pay, wakīl)':'(she pays)'}</span><span class="v tnum">${fm(dueA)}</span></div>`:''}
+      ${ZAKAT.family.filter(f=>s.rel[f.id]).map(f=>`<div class="kv"><span class="k">${f.name} ${s.wak[f.id]?'(you pay, wakīl)':'(own payment)'}</span><span class="v tnum">${ZK.relDue(f.id,s.method)>0?fm(ZK.relDue(f.id,s.method)):'0 — below nisab'}</span></div>`).join('')}
       <div class="micro mt8">${m.who}</div>
       <button class="btn lime mt12" onclick="A.go('zakat')">Review & pay tomorrow — 1 Ramadan</button>
     </div>`);

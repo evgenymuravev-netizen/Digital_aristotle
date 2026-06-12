@@ -72,6 +72,25 @@ window.gaugeSemi = (pct, size=210, color='#D7F050', center='') => {
     </svg><div class="gauge-c">${center}</div></div>`;
 };
 
+/* Apple-Watch-style concentric budget rings. defs: outer→inner [{p:0..1+, c}] */
+window.rings = (defs, size=140, th=13, gap=5) => {
+  let svg='';
+  defs.forEach((d,i)=>{
+    const r=(size/2)-th/2-i*(th+gap), C=2*Math.PI*r, p=Math.min(d.p,1);
+    const col = d.p>1 ? 'var(--red)' : d.c;
+    svg += `<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${d.p>1?'rgba(255,122,107,.18)':'rgba(255,255,255,.09)'}" stroke-width="${th}"/>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${th}" stroke-linecap="round"
+        stroke-dasharray="${Math.max(C*p-2,2)} ${C}"/>`;
+  });
+  return `<div style="position:relative;width:${size}px;height:${size}px;min-width:${size}px">
+    <svg width="${size}" height="${size}" style="transform:rotate(-90deg)">${svg}</svg>
+    ${defs.some(d=>d.p>1)?`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px">⚠️</div>`:''}
+  </div>`;
+};
+
+/* tap-tooltip: small ⓘ that explains a concept */
+window.tipi = (msg) => `<span class="tipi" onclick="event.stopPropagation();A.tip('${esc(msg)}')">ⓘ</span>`;
+
 window.meter = (pct, color='#D7F050') =>
   `<div class="meter"><i style="width:${Math.min(pct*100,100)}%;background:${color}"></i></div>`;
 

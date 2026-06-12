@@ -428,7 +428,8 @@ AFTER.scratch = () => {
 
 /* ---------------- zakat — full module (1447H) ---------------- */
 window.ZK = {
-  st(){ if(!A.tmp.zk) A.tmp.zk = { method:'majority', fam:false, wakala:false, scope:'both', pay:'once',
+  st(){ if(!A.tmp.zk) A.tmp.zk = { method:'majority', scope:'both', pay:'once',
+    rel:Object.fromEntries(ZAKAT.family.map(f=>[f.id,false])), wak:Object.fromEntries(ZAKAT.family.map(f=>[f.id,false])),
     debts:Object.fromEntries(ZK_DEDUCT_ALL().map(d=>[d.id,true])),
     biz:Object.fromEntries(ZAKAT.bizAssets.map(b=>[b.id,b.on])),
     manual:Object.fromEntries(ZAKAT.manual.map(m=>[m.id,{on:m.on,v:m.v}])) };
@@ -449,25 +450,19 @@ window.ZK = {
                : persAuto+persMan+biz;
     return Math.max(base - this.debtTotal(), 0); },
   john(){ return this.baseUnder(this.st().method); },
-  aishaUnder(mid){ const s=this.st(); if(!s.fam) return 0;
-    return ZAKAT.spouse.cash + (ZK_METHODS[mid].jewellery ? ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG : 0); },
-  aisha(){ return this.aishaUnder(this.st().method); },
+  relUnder(fid, mid){ const f=ZAKAT.family.find(x=>x.id===fid);
+    return f.cash + (ZK_METHODS[mid].jewellery ? f.jewelleryG*ZAKAT.goldPerG : 0); },
+  relDue(fid, mid){ const s=this.st(); if(!s.rel[fid]) return 0;
+    const b=this.relUnder(fid,mid); return b>=this.nisabUnder(mid) ? b*ZAKAT.rate : 0; },
+  aisha(){ return this.st().rel.aisha ? this.relUnder('aisha', this.st().method) : 0; },
   nisabUnder(mid){ return ZK_METHODS[mid].nisab==='silver' ? ZAKAT.nisabSilverG*ZAKAT.silverPerG : ZAKAT.nisabGoldG*ZAKAT.goldPerG; },
-  dueUnder(mid){ const s=this.st(), nis=this.nisabUnder(mid);
-    const bj=this.baseUnder(mid), ba=this.aishaUnder(mid);
+  dueUnder(mid){ const nis=this.nisabUnder(mid);
+    const bj=this.baseUnder(mid);
     const dj = bj>=nis ? bj*ZAKAT.rate : 0;
-    const da = (s.fam && ba>=nis) ? ba*ZAKAT.rate : 0;
-    return {j:dj, a:da, t:dj+da}; },
+    const rels = ZAKAT.family.reduce((x,f)=>x+this.relDue(f.id,mid),0);
+    return {j:dj, rels, t:dj+rels}; },
   due(){ return this.dueUnder(this.st().method); },
   set(k,v){ this.st()[k]=v; A.refresh(); },
-  makeRule(){
-    const s=this.st(), due=(this.john()+(s.fam?this.aisha():0))*ZAKAT.rate;
-    const per=s.pay==='daily'?354:s.pay==='weekly'?51:12, unit=s.pay==='daily'?'day':s.pay==='weekly'?'Friday':'month';
-    RULES.unshift({id:'rz', on:true, when:s.pay==='daily'?'Every day at Fajr':s.pay==='weekly'?'Every Friday':'1st of every month',
-      then:`Pay AED ${fm(due/per)} zakat in advance (ta‘jīl) to Dubai Cares`, ic:'moon',
-      ran:'Starts tomorrow · 1 Ramadan — hawl-end reconciliation on'});
-    A.toast('Auto-zakat rule active — paid in parts, reconciled at hawl-end','moon'); A.go('rules');
-  },
   toggleManual(id){ const m=this.st().manual[id]; m.on=!m.on; if(m.on&&!m.v) this.editSheet(id); else A.refresh(); },
   editSheet(id){ const def=ZAKAT.manual.find(m=>m.id===id);
     const vals = id==='jewel'?[24319,48632,70516]:id==='silver'?[1124,3344,5620]:id==='owed'?[2000,8000,20000]:id==='points'?[100,230,600]:[1000,3500,10000,18000];
@@ -550,9 +545,9 @@ SCREENS.zakat = () => {
       <div class="card" style="background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
         <div class="kv"><span class="k">Zakat due · ${m.n} method</span><span class="v tnum" style="font-size:18px">AED ${fm(due)}</span></div>
         <div class="kv"><span class="k">Going to</span><span class="v">${z.charityInfo[s.charity||0].n}</span></div>
-        ${s.fam?`<div class="kv"><span class="k">Covers</span><span class="v">You + ${z.spouse.name} (wakāla)</span></div>`:''}
+        ${ZAKAT.family.some(f=>s.rel[f.id])?`<div class="kv"><span class="k">Covers</span><span class="v">You + ${ZAKAT.family.filter(f=>s.rel[f.id]).map(f=>f.name.split(' ')[0]).join(' + ')} (wakāla)</span></div>`:''}
       </div>
-      <div class="lbl mt16 mb8">Choose a plan</div>
+      <div class="lbl mt16 mb8">Choose a plan ${tipi('All five plans end with zakat fully paid on time. Qard Hasan = Noor pays the charity today and you repay an interest-free advance; the Pot saves ahead for NEXT year.')}</div>
       <div class="listcard">
         ${PLANS.map(([id,tt,dd])=>`
           <div class="row" onclick="ZK.set('plan','${id}')">
@@ -593,16 +588,16 @@ SCREENS.zakat = () => {
     </div>
     <div class="micro mt8">${s.scope==='personal'?'Only your personal wealth and personal debts.':s.scope==='business'?'Solo-proprietorship view: trade stock, business cash, receivables, your company share and fund units — minus business debts.':'The full picture — most owners need exactly this. Each side stays itemised below.'}</div>
 
-    <div class="lbl mt16 mb8">Method — each shows YOUR total under it</div>
+    <div class="lbl mt16 mb8">Method — each shows YOUR total under it ${tipi('The four approaches differ only on two things: which nisab basis applies, and whether personal-use gold jewellery is zakatable. Tap a chip to recalculate everything.')}</div>
     <div class="chips">
       ${allDues.map(({id,t})=>`<button class="chip ${s.method===id?'on':''}" onclick="ZK.set('method','${id}')">${ZK_METHODS[id].n} · ${fm(t,0)}</button>`).join('')}
     </div>
     <div class="micro mt8">${m.who}</div>
-    ${allEqual?`<div class="card soft mt8"><div class="micro">ℹ️ <b>Why all four match right now:</b> you’re above both nisabs and have no personal-use jewellery declared — the methods only diverge on jewellery and the nisab line. Add jewellery or include ${z.spouse.name} and watch them split.</div></div>`:''}
+    ${allEqual?`<div class="card soft mt8"><div class="micro">ℹ️ <b>Why all four match right now:</b> you’re above both nisabs and have no personal-use jewellery declared — the methods only diverge on jewellery and the nisab line. Add jewellery, or include Mum below (210 g of gold, little cash) — and watch them split hard.</div></div>`:''}
     <button class="chip mt8" onclick="chatDeep('zakatFull')">✦ Not sure? Noor interviews you & matches your scholar</button>
 
     <div class="card mt16">
-      <div class="flex between"><span class="lbl">Nisab today</span>
+      <div class="flex between"><span class="lbl">Nisab today ${tipi('Nisab is the wealth threshold below which no zakat is due — 85 g of gold or 595 g of silver, at live prices. Your method decides which basis applies.')}</span>
         ${john>=nis?'<span class="tag grn">Above nisab — zakat due ✓</span>':'<span class="tag gray">Below nisab in this scope — no zakat due</span>'}</div>
       <div class="kv mt8"><span class="k">Gold basis · 85 g</span><span class="v tnum" style="${m.nisab==='gold'?'color:var(--lime)':''}">AED ${fm(z.nisabGoldG*z.goldPerG)} ${m.nisab==='gold'?'← used':''}</span></div>
       <div class="kv"><span class="k">Silver basis · 595 g</span><span class="v tnum" style="${m.nisab==='silver'?'color:var(--lime)':''}">AED ${fm(z.nisabSilverG*z.silverPerG)} ${m.nisab==='silver'?'← used':''}</span></div>
@@ -656,29 +651,33 @@ SCREENS.zakat = () => {
           </div>`).join('')}
       </div>`).join('')}
 
-    <div class="flex between mt16 mb8"><span class="lbl">Family zakat</span><span class="micro">zakat is individual — but you can pay as wakīl</span></div>
+    <div class="flex between mt16 mb8"><span class="lbl">Helping relatives — wakāla ${tipi('Wakāla = authorised agency. You may calculate and pay zakat for your wife or elderly parents only with their permission — the obligation and intention (niyyah) remain theirs.')}</span><span class="micro">each is an individual obligation</span></div>
+    <div class="micro mb8">A son or spouse may calculate and pay for elderly parents or each other — <b>with their permission</b> (wakāla, valid in all four schools). The niyyah belongs to them.</div>
     <div class="listcard">
+      ${z.family.map(f=>{
+        const on=s.rel[f.id], b=ZK.relUnder(f.id, s.method), dueF=ZK.relDue(f.id, s.method);
+        return `
       <div class="row static">
-        ${avx('Aisha Reeves')}
-        <div class="row-main"><div class="row-t">Include ${z.spouse.name}’s wealth</div>
-          <div class="row-d" style="white-space:normal">Cash AED ${fm(z.spouse.cash,0)} · gold jewellery ${z.spouse.jewelleryG} g ${m.jewellery?'(counted — '+m.n+')':'(exempt — personal use, '+m.n+')'}</div></div>
-        <button class="switch lime ${s.fam?'on':''}" onclick="ZK.set('fam',!ZK.st().fam)"></button>
-      </div>
-      ${s.fam?`
-      <div class="row static">
-        <span class="bigico">${ic('shieldCheck',20)}</span>
-        <div class="row-main"><div class="row-t" style="font-size:13.5px">Wakāla — she authorised me to pay</div>
-          <div class="row-d" style="white-space:normal">Paying another’s zakat needs their permission — valid in all four schools</div></div>
-        <button class="switch lime ${s.wakala?'on':''}" onclick="ZK.set('wakala',!ZK.st().wakala)"></button>
-      </div>`:''}
+        ${avx(f.name)}
+        <div class="row-main"><div class="row-t">${f.rel} — ${f.name}</div>
+          <div class="row-d" style="white-space:normal">Cash AED ${fm(f.cash,0)}${f.jewelleryG?` · gold ${f.jewelleryG} g ${m.jewellery?'(counted)':'(exempt — personal use)'}`:''} · ${f.note}</div>
+          ${on?`<div class="row-sub mt4" style="color:${dueF>0?'var(--gold)':'var(--grn)'}">${dueF>0?`Due under ${m.n}: AED ${fm(dueF)}`:`Below nisab under ${m.n} — no zakat due ✓`}</div>
+          <div class="flex mt4" style="gap:8px"><span class="micro">Authorised me to pay (wakāla)</span>
+            <button class="switch lime ${s.wak[f.id]?'on':''}" style="transform:scale(.8)" onclick="ZK.st().wak['${f.id}']=!ZK.st().wak['${f.id}'];A.refresh()"></button></div>`:''}
+        </div>
+        <button class="switch lime ${on?'on':''}" onclick="ZK.st().rel['${f.id}']=!ZK.st().rel['${f.id}'];ZK.st().wak['${f.id}']=true;A.refresh()"></button>
+      </div>`;}).join('')}
     </div>
+    ${s.rel.mum?`<div class="card soft mt8"><div class="micro">💡 <b>Mum is the textbook case:</b> cash AED 12 600 is below the gold nisab and her jewellery is personal-use — so <b>Majority/AAOIFI: nothing due</b>. Under <b>Hanafi</b>, 210 g counts → AED ${fm(ZK.relUnder('mum','hanafi')*z.rate)}. Pick her school in the chips above and watch the totals move.</div></div>`:''}
 
     <div class="card mt16" style="background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
       <div class="flex between"><span class="tag gold">☪ Total zakat due · ${m.n} method</span><span class="micro">2,5% (lunar year)</span></div>
       <div style="font:800 38px Inter,sans-serif" class="tnum mt8">AED ${fm(due)}</div>
       <div class="kv mt8"><span class="k">${USER.first} — on AED ${fm(john)}</span><span class="v tnum">${fm(D.j)}</span></div>
-      ${s.fam?`<div class="kv"><span class="k">${z.spouse.name} — on AED ${fm(aisha)}</span><span class="v tnum">${fm(D.a)}</span></div>
-      ${s.wakala?'':`<div class="micro">Wakāla is off — share her breakdown instead: <b onclick="A.toast('Breakdown sent to Aisha','share')" style="color:var(--lime);cursor:pointer">Send ↗</b></div>`}`:''}
+      ${z.family.filter(f=>s.rel[f.id]).map(f=>{
+        const dueF=ZK.relDue(f.id,s.method);
+        return `<div class="kv"><span class="k">${f.name} — on AED ${fm(ZK.relUnder(f.id,s.method),0)} ${s.wak[f.id]?'(you pay)':'(own payment)'}</span><span class="v tnum">${dueF>0?fm(dueF):'0 — below nisab'}</span></div>
+        ${s.wak[f.id]?'':`<div class="micro">Wakāla off — share the breakdown: <b onclick="A.toast('Breakdown sent to ${f.name.split(' ')[0]}','share')" style="color:var(--lime);cursor:pointer">Send ↗</b></div>`}`;}).join('')}
     </div>
     <button class="btn lime mt16" onclick="ZK.set('step',2)">Continue — choose where it goes</button>
     <div class="micro mt12" style="text-align:center">Educational prototype — method notes are honest simplifications; confirm with your local mufti. Hawl tracking per asset is on.</div>
@@ -846,7 +845,7 @@ SCREENS.dsf = () => `
       <div class="kv" style="padding:11px 2px"><span class="k">Pledge up to ${DSF.pledge*100}% (rahn)</span><span class="v tnum">AED ${fm(DSF.deposit*DSF.pledge,0)}</span></div>
       <div class="kv" style="padding:11px 2px"><span class="k">Personal rate</span><span class="v tnum">${DSF.rate.toFixed(2).replace('.',',')}% p.a.</span></div>
       <div class="kv" style="padding:11px 2px"><span class="k">Business rate</span><span class="v tnum">${DSF.bizRate.toFixed(2).replace('.',',')}% p.a.</span></div>
-      <div class="kv" style="padding:11px 2px"><span class="k">Net cost after deposit profit</span><span class="v tnum grn-t">≈ 1,15% — cheapest financing in the app</span></div>
+      <div class="kv" style="padding:11px 2px"><span class="k">Net cost after deposit profit ${tipi('You pay 4,25% on the financing while your pledged deposit keeps earning ~3,1% Mudarabah profit — so the true cost is the difference, about 1,15%.')}</span><span class="v tnum grn-t">≈ 1,15% — cheapest financing in the app</span></div>
     </div>
     <div class="card soft mt12 flex" style="gap:10px">${ic('moon',18,'gold-t')}<div class="micro">Structure: commodity Murabaha with a pledge (rahn) over the deposit — reviewed by the Noor Shariah board; no interest at any step.</div></div>
     <button class="btn lime mt16" onclick="A.go('refi')">Use it in my refinance plan</button>
