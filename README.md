@@ -35,8 +35,8 @@ cd noor-prototype && python3 -m http.server 8000
 
 ## Deploy
 
-`.github/workflows/deploy-pages.yml` publishes `noor-prototype/` to GitHub Pages on every push
-to this branch (auto-enables Pages via `actions/configure-pages`).
+GitHub Pages serves the `gh-pages` branch. `.github/workflows/deploy-pages.yml` re-syncs
+`noor-prototype/` to `gh-pages` on every push, so edits publish automatically.
 
 ---
 
