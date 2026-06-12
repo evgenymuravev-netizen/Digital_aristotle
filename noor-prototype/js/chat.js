@@ -46,6 +46,7 @@ const Chat = window.Chat = {
     const go = s => this.play(s,false);
     if (/(credit )?card/.test(t) && /find|best|help|need|new/.test(t)) return go('findCard');
     if (/ps ?5|playstation/.test(t)) return go('ps5');
+    if (/advice|advis|portfolio|allocat/.test(t)) return go('advise');
     if (/refinanc|expensive|cheaper|too much.*pay/.test(t)) return go('refi');
     if (/loan|borrow|financ/.test(t)) return go('loan');
     if (/spend|spent|where.*money|expense/.test(t)) return go('spend');
@@ -326,6 +327,26 @@ const SCRIPTS = {
     ]), 250);
   }},
 
+  advise:{ user:'Give me advice on my whole portfolio', async run(c){
+    await c.ai(`Looking at <b>everything</b> you own — banks, gold, funds, crypto, property exposure:\n\n· Cash <b>AED 276k (78%)</b> — far too heavy. Inflation quietly eats ~3%/yr of it\n· Halal equities & funds <b>38,5k (11%)</b> · Gold <b>6k (1,7%)</b> · Crypto <b>9,8k (2,8%)</b>\n\nMy read for your profile (stable salary, 3.2-month emergency fund, Hajj goal 2027):`, 1700);
+    await c.card(`<div class="offer-card" style="min-width:0">
+      <div class="kv"><span class="k">🪙 Buy more gold → 8% target</span><span class="v">+AED 22 000</span></div>
+      <div class="micro">Your hedge is underweight — round-ups alone won’t get you there.</div>
+      <div class="kv" style="padding-top:10px"><span class="k">🏠 Property for lease (Ijarah)</span><span class="v">AED 80 000 entry</span></div>
+      <div class="micro">Fractional rental units, ~6,8% net yield, Shariah lease structure — turns dead cash into income.</div>
+      <div class="kv" style="padding-top:10px"><span class="k">📈 Your shares</span><span class="v grn-t">Hold</span></div>
+      <div class="micro">Sukuk + halal ETFs are doing their job (▲4,8%). Don’t touch what works.</div>
+      <div class="kv" style="padding-top:10px"><span class="k">⚠️ Crypto</span><span class="v">Cap at 3%</span></div>
+      <div class="micro">Fine as-is — just don’t add more before the emergency fund hits 6 months.</div>
+      <button class="btn lime mt12" onclick="A.toast('Plan drafted — review each move before anything executes','check')">Draft this plan — I approve each step</button>
+    </div>`);
+    await c.card(chips([
+      {t:'🪙 Buy AED 22 000 gold now', fn:"A.toast('Bought 45,2 g at spot — vaulted in DMCC','check')"},
+      {t:'🏠 Show lease-property options', fn:"A.toast('3 Ijarah units shortlisted — in your briefing tomorrow','home')"},
+      {t:'Open portfolio', fn:"A.go('invest')"},
+    ]), 250);
+  }},
+
   fallback:{ async run(c){
     await c.ai(`I can act on anything money-related across your <b>3 linked banks</b> — try one of these:`);
     await c.card(chips([
@@ -344,6 +365,8 @@ window.ZKChat = {
     <button class="chip" onclick="ZKChat.homecash()">🏠 Cash at home</button>
     <button class="chip" onclick="ZKChat.trade()">📦 Goods I sell</button>
     <button class="chip" onclick="ZKChat.debtsBiz()">🏢 My debts & payroll</button>
+    <button class="chip" onclick="ZKChat.points()">✈️ Miles & cashback</button>
+    <button class="chip" onclick="ZKChat.company()">📜 Company shares & funds</button>
     <button class="chip" onclick="ZKChat.jewel()">💍 Family gold</button>
     <button class="chip" onclick="ZKChat.owed()">🤝 Money owed to me</button>
     <button class="chip" onclick="ZKChat.family()">👫 My wife’s wealth too</button>
@@ -382,6 +405,18 @@ window.ZKChat = {
     await Chat.card(this.menu(),200);
   });},
 
+  points(){ this.guard(async()=>{
+    Chat.user('What about my airline miles and cashback — are they zakatable? Is parking money in points a smart way to avoid zakat?');
+    await Chat.ai(`Two different things:\n\n💳 <b>Cashback</b> — once it’s credited to your account it’s simply <b>money → zakatable</b>. I can see <b>AED 230</b> pending payout; I’ve added it.\n\n✈️ <b>Miles & points</b> — per most contemporary fatwa bodies they’re <b>not māl (wealth) yet</b>: you can’t sell or transfer them, the airline can void them, they’re a revocable licence. So <b>no zakat until you redeem them for something monetary</b>.`, 1700);
+    await Chat.ai(`As for the “lifehack” — converting wealth into points <b>to dodge zakat</b> is a classic <b>ḥīlah (evasion trick)</b>, and scholars condemn it: deliberately engineering your wealth right before hawl to drop the obligation is sinful even when the maths technically works. The Qur’an’s garden-owners (al-Qalam 17–33) tried exactly this. Earn points naturally? Halal, enjoy them. Park wealth in them to escape the poor’s right? That defeats the entire point of zakat — and you’d be answerable for the intent.`, 1900);
+    await Chat.card(this.menu(),200);
+  });},
+  company(){ this.guard(async()=>{
+    Chat.user('I own 30% of an LLC and some fund units — how does zakat work there?');
+    await Chat.ai(`Good question — this is where most calculators give up. Per <b>AAOIFI SS 35</b>:\n\n📜 <b>Shares held for dividends</b> (your LLC 30%) → zakat on the <b>company’s zakatable assets, pro-rata</b>: 30% × AED 84 000 net current assets = <b>AED 25 200</b> into your base. Fixed assets, brand, equipment — exempt.\n\n📈 <b>Shares held for trading</b> → full market value instead.\n\n🏛 <b>Funds</b> → use the fund’s reported zakatable ratio (your PE fund: 42% × 15 000 = <b>6 300</b>). Your Sukuk fund pays zakat <b>at fund level</b> — already covered, excluded.\n\nI’ve switched your scope to <b>Both (B2B + B2C)</b> — every business asset is itemised with a toggle.`, 2000);
+    ZK.st().scope='both';
+    await Chat.card(this.menu(),200);
+  });},
   jewel(){ this.guard(async()=>{
     Chat.user('My wife has gold jewellery — does it count?');
     await Chat.ai(`This is a famous <b>khilaf</b> (scholarly difference):\n\n· <b>Hanafi school</b> — jewellery <b>is zakatable</b> (also the recorded view of <b>Sh. Ibn Baz</b> and <b>Sh. Ibn ‘Uthaymeen</b>)\n· <b>Maliki, Shafi‘i, Hanbali (majority)</b> — <b>personal-use</b> jewellery is exempt; only hoarded or trading gold counts\n\nWhich scholar or school do you follow? I’ll set the whole calculation to match.`, 1500);

@@ -428,23 +428,40 @@ AFTER.scratch = () => {
 
 /* ---------------- zakat — full module (1447H) ---------------- */
 window.ZK = {
-  st(){ if(!A.tmp.zk) A.tmp.zk = { method:'majority', fam:false, wakala:false,
+  st(){ if(!A.tmp.zk) A.tmp.zk = { method:'majority', fam:false, wakala:false, scope:'both', pay:'once',
     debts:Object.fromEntries(ZK_DEDUCT_ALL().map(d=>[d.id,true])),
+    biz:Object.fromEntries(ZAKAT.bizAssets.map(b=>[b.id,b.on])),
     manual:Object.fromEntries(ZAKAT.manual.map(m=>[m.id,{on:m.on,v:m.v}])) };
     return A.tmp.zk; },
   meth(){ return ZK_METHODS[this.st().method]; },
   nisab(){ const m=this.meth(); return m.nisab==='silver' ? ZAKAT.nisabSilverG*ZAKAT.silverPerG : ZAKAT.nisabGoldG*ZAKAT.goldPerG; },
-  debtTotal(){ const s=this.st(); return ZK_DEDUCT_ALL().reduce((x,d)=> x + (s.debts[d.id]?d.v:0), 0); },
+  debtTotal(){ const s=this.st();
+    const grp = s.scope==='personal' ? ZAKAT.deduct.personal : s.scope==='business' ? ZAKAT.deduct.business : ZK_DEDUCT_ALL();
+    return grp.reduce((x,d)=> x + (s.debts[d.id]?d.v:0), 0); },
   john(){ const s=this.st();
-    const auto = ZAKAT.auto.reduce((x,a)=>x+a.v,0);
-    const man  = ZAKAT.manual.reduce((x,m)=> x + (s.manual[m.id].on ? s.manual[m.id].v : 0), 0);
-    return Math.max(auto + man - this.debtTotal(), 0); },
+    const persAuto = ZAKAT.auto.reduce((x,a)=>x+a.v,0);
+    const man = id => s.manual[id].on ? s.manual[id].v : 0;
+    const persMan = ['homecash','jewel','silver','owed','points'].reduce((x,id)=>x+man(id),0);
+    const bizMan  = man('trade');
+    const biz = ZAKAT.bizAssets.reduce((x,b)=> x + (s.biz[b.id]?b.v:0), 0) + bizMan;
+    const base = (s.scope==='personal') ? persAuto+persMan
+               : (s.scope==='business') ? biz
+               : persAuto+persMan+biz;
+    return Math.max(base - this.debtTotal(), 0); },
   aisha(){ const s=this.st(); if(!s.fam) return 0;
     return ZAKAT.spouse.cash + (this.meth().jewellery ? ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG : 0); },
   set(k,v){ this.st()[k]=v; A.refresh(); },
+  makeRule(){
+    const s=this.st(), due=(this.john()+(s.fam?this.aisha():0))*ZAKAT.rate;
+    const per=s.pay==='daily'?354:s.pay==='weekly'?51:12, unit=s.pay==='daily'?'day':s.pay==='weekly'?'Friday':'month';
+    RULES.unshift({id:'rz', on:true, when:s.pay==='daily'?'Every day at Fajr':s.pay==='weekly'?'Every Friday':'1st of every month',
+      then:`Pay AED ${fm(due/per)} zakat in advance (ta‘jīl) to Dubai Cares`, ic:'moon',
+      ran:'Starts tomorrow · 1 Ramadan — hawl-end reconciliation on'});
+    A.toast('Auto-zakat rule active — paid in parts, reconciled at hawl-end','moon'); A.go('rules');
+  },
   toggleManual(id){ const m=this.st().manual[id]; m.on=!m.on; if(m.on&&!m.v) this.editSheet(id); else A.refresh(); },
   editSheet(id){ const def=ZAKAT.manual.find(m=>m.id===id);
-    const vals = id==='jewel'?[24319,48632,70516]:id==='silver'?[1124,3344,5620]:id==='owed'?[2000,8000,20000]:[1000,3500,10000,18000];
+    const vals = id==='jewel'?[24319,48632,70516]:id==='silver'?[1124,3344,5620]:id==='owed'?[2000,8000,20000]:id==='points'?[100,230,600]:[1000,3500,10000,18000];
     A.sheet(`<div class="h2">${def.em} ${def.t}</div><div class="sub mt4">${def.note}.</div>
       <div class="chips" style="margin-top:14px">
         ${vals.map(v=>`<button class="chip" onclick="ZK.st().manual['${id}']={on:true,v:${v}};A.closeSheet();A.refresh()">AED ${fm(v,0)}</button>`).join('')}
@@ -464,6 +481,13 @@ SCREENS.zakat = () => {
       <div class="micro mt4">Anchor your hawl to 1 Ramadan and pay tomorrow — Noor recalculates on the day at live prices.</div>
     </div>
 
+    <div class="lbl mt16 mb8">Scope — B2C · B2B</div>
+    <div class="seg">
+      ${[['personal','Personal'],['business','Business'],['both','Both']].map(([id,tt])=>
+        `<button class="${s.scope===id?'on':''}" onclick="ZK.set('scope','${id}')">${tt}</button>`).join('')}
+    </div>
+    <div class="micro mt8">${s.scope==='personal'?'Only your personal wealth and personal debts.':s.scope==='business'?'Solo-proprietorship view: trade stock, business cash, receivables, your company share and fund units — minus business debts.':'The full picture — most owners need exactly this. Each side stays itemised below.'}</div>
+
     <div class="lbl mt16 mb8">Calculation method</div>
     <div class="chips">
       ${Object.entries(ZK_METHODS).map(([id,mm])=>`<button class="chip ${s.method===id?'on':''}" onclick="ZK.set('method','${id}')">${mm.n}</button>`).join('')}
@@ -472,7 +496,8 @@ SCREENS.zakat = () => {
     <button class="chip mt8" onclick="chatDeep('zakatFull')">✦ Not sure? Noor interviews you & matches your scholar</button>
 
     <div class="card mt16">
-      <div class="flex between"><span class="lbl">Nisab today</span><span class="tag grn">Above nisab — zakat due ✓</span></div>
+      <div class="flex between"><span class="lbl">Nisab today</span>
+        ${john>=nis?'<span class="tag grn">Above nisab — zakat due ✓</span>':'<span class="tag gray">Below nisab in this scope — no zakat due</span>'}</div>
       <div class="kv mt8"><span class="k">Gold basis · 85 g</span><span class="v tnum" style="${m.nisab==='gold'?'color:var(--lime)':''}">AED ${fm(z.nisabGoldG*z.goldPerG)} ${m.nisab==='gold'?'← used':''}</span></div>
       <div class="kv"><span class="k">Silver basis · 595 g</span><span class="v tnum" style="${m.nisab==='silver'?'color:var(--lime)':''}">AED ${fm(z.nisabSilverG*z.silverPerG)} ${m.nisab==='silver'?'← used':''}</span></div>
       <div class="micro">Silver basis is lower — the cautious choice; it makes zakat due for more people.</div>
@@ -494,10 +519,26 @@ SCREENS.zakat = () => {
         </div>`).join('')}
     </div>
 
+    ${s.scope!=='personal'?`
+    <div class="flex between mt16 mb8"><span class="lbl">Business assets (B2B)</span><span class="micro">LLC shares · fund units · look-through</span></div>
+    <div class="listcard">
+      ${ZAKAT.bizAssets.map(b=>`
+        <div class="row static">
+          <span style="font-size:22px">${b.em}</span>
+          <div class="row-main"><div class="row-t" style="font-size:13px;white-space:normal">${b.t}</div>
+            <div class="row-d" style="white-space:normal">${b.note}</div></div>
+          ${b.locked
+            ?'<span class="tag grn">✓ paid by fund</span>'
+            :`<div class="row-amt tnum" style="font-size:13px">${fm(b.v,0)}</div>
+              <button class="switch lime ${s.biz[b.id]?'on':''}" onclick="ZK.st().biz['${b.id}']=!ZK.st().biz['${b.id}'];A.refresh()"></button>`}
+        </div>`).join('')}
+    </div>
+    <div class="micro mt8">Shares held for dividends → zakat on the company’s zakatable assets, pro-rata (AAOIFI SS 35). Held for trading → full market value instead.</div>`:''}
+
     <div class="flex between mt16 mb8"><span class="lbl">Debts to deduct — AED ${fm(ZK.debtTotal())}</span>
       <button class="chip" onclick="A.go('debts')">Check-up ↗</button></div>
     <div class="micro mb8">Short-term & due debts deduct in full; long-term financing — next 12 months only (AAOIFI, Qaradawi). The Shafi‘i school doesn’t deduct debts — toggle all off to follow it.</div>
-    ${['personal','business'].map(grp=>`
+    ${['personal','business'].filter(g=>s.scope==='both'||s.scope===g).map(grp=>`
       <div class="lbl mt8 mb8" style="font-size:9.5px">${grp==='personal'?'Personal':'Business — incl. your team’s payroll'}</div>
       <div class="listcard">
         ${ZAKAT.deduct[grp].map(d=>`
@@ -534,6 +575,20 @@ SCREENS.zakat = () => {
       ${s.wakala?'':`<div class="micro">Wakāla is off — share her breakdown instead: <b onclick="A.toast('Breakdown sent to Aisha','share')" style="color:var(--lime);cursor:pointer">Send ↗</b></div>`}`:''}
     </div>
 
+    <div class="lbl mt16 mb8">When to pay</div>
+    <div class="seg">
+      ${[['once','1 Ramadan'],['monthly','Monthly'],['weekly','Weekly'],['daily','Daily']].map(([id,tt])=>
+        `<button class="${(s.pay||'once')===id?'on':''}" onclick="ZK.set('pay','${id}')">${tt}</button>`).join('')}
+    </div>
+    ${s.pay==='once'||!s.pay
+      ?`<div class="micro mt8">🌙 Tomorrow is 1 Ramadan — the most rewarded month to give. Hawl anchors there; Noor recalculates at live prices on the day.</div>`
+      :`<div class="card soft mt8">
+          <div class="kv"><span class="k">Advance in parts (ta‘jīl — permitted by the majority)</span>
+            <span class="v tnum">AED ${fm(due/(s.pay==='daily'?354:s.pay==='weekly'?51:12))} / ${s.pay==='daily'?'day':s.pay==='weekly'?'week':'month'}</span></div>
+          <div class="micro">Lunar year = 354 days. Noor reconciles at hawl-end: overpaid carries forward, underpaid gets one top-up. You never worry about zakat again.</div>
+          <button class="btn pri sm mt8" onclick="ZK.makeRule()">⚡ Create the auto-zakat rule</button>
+        </div>`}
+
     <div class="lbl mt16 mb8">Give to</div>
     <div class="chips">${z.charities.map((c,i)=>`<button class="chip ${i===0?'on':''}">${c}</button>`).join('')}</div>
     <div class="btnrow mt16">
@@ -541,6 +596,68 @@ SCREENS.zakat = () => {
       <button class="btn lime" onclick="confetti(document.getElementById('screen'));A.toast('Zakat paid — certificate in Documents','check')">Pay now</button>
     </div>
     <div class="micro mt12" style="text-align:center">Educational prototype — method notes are honest simplifications; confirm with your local mufti. Hawl tracking per asset is on.</div>
+  </div>`;
+};
+
+/* ---------------- SME insight stories — notifications become insights ---------------- */
+const BIZ_CARDS = [
+  {ic:'🚀', icBg:'#FCE7F3',
+   h:'Your sales this month rocketed 30% vs last month',
+   chart:`<div style="display:flex;align-items:flex-end;justify-content:center;gap:34px;height:170px;margin:18px 0 6px">
+      <div style="text-align:center"><div class="micro" style="color:#6B7280;font-weight:700">32K</div>
+        <div style="width:84px;height:104px;background:#E935D8;border-radius:10px;margin-top:6px"></div>
+        <div class="micro mt8" style="color:#6B7280">Last month</div></div>
+      <div style="text-align:center"><div class="micro" style="color:#111;font-weight:800">41.6K</div>
+        <div style="width:84px;height:140px;background:#E935D8;border-radius:10px;margin-top:6px"></div>
+        <div class="micro mt8" style="color:#6B7280">This month</div></div>
+    </div>`,
+   src:'Based on your sales report', cta:'Keep tracking'},
+  {ic:'💳', icBg:'#D8F8EA',
+   h:'Rejected orders dropped to 12% after adding long-term financing at checkout',
+   chart:`<div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;height:180px;margin:16px 0 4px">
+      ${[['Sep',38,[0,34,28]],['Oct',32,[0,40,28]],['Nov',18,[26,36,20]],['Dec',12,[38,34,16]]].map(([mn,rej,seg])=>`
+        <div style="text-align:center">
+          <div class="micro" style="color:${rej===12?'#fff':'#6B7280'};font-weight:800;${rej===12?'background:#16191C;border-radius:8px;padding:2px 7px':''}">${rej}%</div>
+          <div style="width:56px;height:130px;display:flex;flex-direction:column;justify-content:flex-end;border-radius:10px;overflow:hidden;background:#E9EBF0;margin-top:5px">
+            <div style="height:${seg[0]}%;background:#F7E96B"></div>
+            <div style="height:${seg[1]}%;background:#3ECB7E"></div>
+            <div style="height:${seg[2]}%;background:#A45CFF"></div>
+          </div>
+          <div class="micro mt4" style="color:#6B7280">${mn}</div></div>`).join('')}
+    </div>
+    <div class="chips" style="justify-content:center">
+      <span class="tag" style="background:#FBF3C6;color:#6B5E00">Long-term financing</span>
+      <span class="tag" style="background:#D8F8EA;color:#0B7A45">Pay in 4</span>
+      <span class="tag" style="background:#EFE2FF;color:#6B2BD9">Noor card</span>
+      <span class="tag gray">Rejected</span>
+    </div>`,
+   src:'Based on your sales report', cta:'Keep tracking'},
+  {ic:'👕', icBg:'#EFE2FF',
+   h:'Your customer acquisition cost is 30% higher than average in your category',
+   sub:'Streetwear category, UAE',
+   chart:`<div style="margin:26px 0 10px">
+      <div class="kv" style="font-size:15px"><span class="k" style="color:#6B7280">Average CAC</span><span class="v tnum" style="font-size:22px;font-weight:800;color:#9AA3AD">AED 3,20</span></div>
+      <div class="kv" style="font-size:15px"><span class="k" style="color:#6B7280">Your CAC</span><span class="v tnum" style="font-size:22px;font-weight:800;color:#111">AED 4,21</span></div>
+    </div>`,
+   src:'Based on Noor merchant data', cta:'Show this in a week'},
+];
+SCREENS.biz = () => {
+  const i = Math.min(A.tmp.bizI||0, BIZ_CARDS.length-1), c = BIZ_CARDS[i];
+  return `
+  <div class="scr light" style="display:flex;flex-direction:column">
+    ${hdr('Business insights',{right:`<span class="tag lime" style="color:#5d6e0d">${i+1}/${BIZ_CARDS.length}</span>`})}
+    <div class="card white f1" style="display:flex;flex-direction:column;justify-content:center;text-align:center;border:1px solid var(--lt-line)">
+      <div style="width:74px;height:74px;border-radius:50%;background:${c.icBg};display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto">${c.ic}</div>
+      <div class="h2 mt16" style="line-height:1.35">${c.h}</div>
+      ${c.sub?`<div class="sub mt4">${c.sub}</div>`:''}
+      ${c.chart}
+      <div class="micro mt12">${c.src}</div>
+    </div>
+    <div class="btnrow mt12">
+      <button class="btn ltghost" onclick="A.tmp.bizI=${i+1>=BIZ_CARDS.length?0:i+1};${i+1>=BIZ_CARDS.length?`A.toast('All caught up — new insights land here, not in notifications','check');`:''}A.refresh()">Skip</button>
+      <button class="btn dark" onclick="A.toast('${c.cta==='Keep tracking'?'Tracking — weekly updates in this feed':'Scheduled — back in 7 days'}','check');A.tmp.bizI=${i+1>=BIZ_CARDS.length?0:i+1};A.refresh()">${c.cta}</button>
+    </div>
+    <div class="micro mt8" style="text-align:center">Every business notification becomes an insight story — nothing nags, everything lands here.</div>
   </div>`;
 };
 

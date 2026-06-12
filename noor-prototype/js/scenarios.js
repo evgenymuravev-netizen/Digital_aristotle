@@ -199,6 +199,15 @@ window.SCN_GROUPS = [
   S('Local champions 🇦🇪🇸🇦','Aramco, Alinma, Salik ✓ halal · Emaar, stc, Air Arabia — grey, disclosed',()=>{A.tmp.invMode='balanced';A.go('invest');}),
   S('iPhone standalone link','app.html — no menu, fullscreen, Add-to-Home-Screen ready',()=>{A.go('home');A.sheet(`<div class="h2">📱 Run it like a real app</div><div class="sub mt8">Open this on your iPhone:</div><div class="card soft mt8" style="word-break:break-all"><b style="font-size:13px">evgenymuravev-netizen.github.io/Digital_aristotle/app.html</b></div><div class="sub mt12">1. Open in Safari → the demo loads fullscreen, no explorer menu.<br>2. Share → <b>Add to Home Screen</b> → launches standalone with the noor icon, like an installed app.<br>3. Scenario deep-links still work: app.html#s/27.</div><button class="btn pri mt12" onclick="A.closeSheet()">Got it</button>`);}),
 ]},
+
+{g:'Business & advisor ✦', items:[
+  S('SME insight stories','Sales +30%, rejections ↓12% after financing, CAC vs category — Tabby-Business style',()=>{A.tmp.bizI=0;A.go('biz');}),
+  S('Notifications → insights','The thesis: nothing nags, every business signal lands as a story card',()=>{A.tmp.bizI=1;A.go('biz');}),
+  S('Portfolio advice — whole picture','Buy gold to 8%, property-for-lease at 6,8%, hold shares, cap crypto',()=>chatDeep('advise')),
+  S('Zakat — split into auto-payments','Daily/weekly/monthly ta‘jīl with hawl-end reconciliation + one-tap rule',()=>{ZK.st().pay='monthly';A.go('zakat');}),
+  S('Miles & cashback — zakatable?','Cashback yes once credited; points no — and the ḥīlah “lifehack” ruling',()=>{chatDeep('zakatFull');setTimeout(()=>ZKChat.points(),2800);}),
+  S('B2B · B2C zakat switch','Solo proprietorship, 30% LLC look-through, fund zakatable ratios — one toggle',()=>{ZK.st().scope='both';A.go('zakat');}),
+]},
 ];
 
 window.SCN_FLAT = [];

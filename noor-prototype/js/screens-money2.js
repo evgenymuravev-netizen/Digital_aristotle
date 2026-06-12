@@ -307,6 +307,10 @@ SCREENS.insights = () => {
           <div class="row-amt tnum">${fm(m.amt)}</div>
         </div>`).join('')}
     </div>
+    <div class="card lime mt16 tap" onclick="A.tmp.bizI=0;A.go('biz')">
+      <div class="flex between"><b style="font-size:14px">🏪 Business insights — 3 new stories</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">Sales +30% · rejections ↓12% · CAC vs category — your SME side, story-style</div>
+    </div>
     <div class="grid2 mt16">
       <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 972 / mo</div><div class="micro mt4">2 look wasteful</div></div>
       <div class="card tap" onclick="A.go('forecast')"><span class="lbl">Safe to spend</span><div class="h3 mt8 tnum lime-t">AED 9 540</div><div class="micro mt4">until salary day</div></div>

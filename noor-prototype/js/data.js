@@ -243,6 +243,7 @@ window.ZAKAT = {
     {id:'jewel',    t:'Gold jewellery (personal use)',em:'💍', v:0,    on:false, note:'Khilaf: Hanafi & Ibn ‘Uthaymeen — zakatable · Majority — exempt'},
     {id:'silver',   t:'Silver',                      em:'🥈', v:0,    on:false, note:'595 g nisab on its own'},
     {id:'owed',     t:'Money owed to me (strong debts)', em:'🤝', v:0, on:false, note:'Expected receivables — zakatable now per the majority'},
+    {id:'points',   t:'Cashback pending payout',     em:'💳', v:230,   on:true,  note:'Cash-back is money once credited. Miles & points are NOT māl until redeemed — see the chat for the “lifehack” ruling'},
   ],
   /* debts deductible from the zakat base — itemised.
      Long-term financing: deduct the next 12 months only (contemporary consensus — AAOIFI, Qaradawi).
@@ -264,6 +265,14 @@ window.ZAKAT = {
     ],
   },
   spouse:{name:'Aisha', cash:42300.00, jewelleryG:145},
+  /* B2B — business-side zakatable assets (solo proprietorship · shares · funds) */
+  bizAssets:[
+    {id:'bizcash', t:'Business account balance',     em:'🏢', v:22400, on:true,  note:'Wio Business ··7741 — cash is cash'},
+    {id:'bizrecv', t:'Business receivables (strong)',em:'🧾', v:8000,  on:true,  note:'Invoices you expect to collect'},
+    {id:'llc',     t:'Reeves Trading LLC — your 30%',em:'📜', v:25200, on:true,  note:'Zakat flows through the company: 30% × AED 84 000 net current assets (AAOIFI look-through)'},
+    {id:'pefund',  t:'PE fund units — zakatable 42%',em:'🏛', v:6300,  on:true,  note:'AED 15 000 units × 42% zakatable ratio reported by the fund'},
+    {id:'sukfund', t:'Noor Sukuk Fund',              em:'✅', v:0,     on:false, locked:true, note:'Fund pays zakat at fund level — already covered, excluded here'},
+  ],
 };
 window.ZK_DEDUCT_ALL = () => [...ZAKAT.deduct.personal, ...ZAKAT.deduct.business];
 
