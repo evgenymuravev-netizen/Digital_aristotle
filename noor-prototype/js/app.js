@@ -9,7 +9,7 @@ window.A = {
 
   persist(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(this.S)); }catch(e){} },
   load(){ try{ const v=JSON.parse(localStorage.getItem(LS_KEY)); if(v) this.S=Object.assign(this.S,v); }catch(e){} },
-  ensureApp(){ this.S.onboarded=true; this.S.linked=['fab','wio','ei']; this.persist(); },
+  ensureApp(){ this.S.onboarded=true; this.S.linked=['fab','wio','ei','careem','tabby','binance']; this.persist(); },
   ensureFresh(){ this.S.onboarded=false; this.S.linked=[]; this.persist(); },
 
   /* ---------- routing ---------- */

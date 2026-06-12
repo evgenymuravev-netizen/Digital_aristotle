@@ -86,6 +86,24 @@ window.BANKS = {
   sib:     {name:'Sharjah Islamic',  full:'Sharjah Islamic Bank',      bg:'#0E6B5C', fg:'#FFFFFF', accent:'#E8C268', short:'SIB'},
   ajman:   {name:'Ajman Bank',       full:'Ajman Bank',                bg:'#7A1E3C', fg:'#FFFFFF', accent:'#E8C268', short:'AJ'},
   noor:    {name:'Noor',             full:'Noor Wallet',               bg:'#D7F050', fg:'#0B1410', accent:'#0B1410', short:'n'},
+  /* digital wallets */
+  careem:  {name:'Careem Pay',       full:'Careem Pay wallet',         bg:'#37B44E', fg:'#FFFFFF', accent:'#fff',    short:'C'},
+  payit:   {name:'payit',            full:'payit by FAB',              bg:'#00B5AD', fg:'#FFFFFF', accent:'#fff',    short:'pi'},
+  emoney:  {name:'e& money',         full:'e& money wallet',           bg:'#E0001B', fg:'#FFFFFF', accent:'#fff',    short:'e&'},
+  botim:   {name:'Botim Pay',        full:'Botim Pay wallet',          bg:'#2F6BFF', fg:'#FFFFFF', accent:'#fff',    short:'B'},
+  /* BNPL */
+  tabby:   {name:'Tabby',            full:'Tabby · buy now, pay later',bg:'#3EE5B5', fg:'#0B1410', accent:'#0B1410', short:'tabby'},
+  tamara:  {name:'Tamara',           full:'Tamara · split & pay later',bg:'#1E2A26', fg:'#C7F4D4', accent:'#C7F4D4', short:'tamara'},
+  postpay: {name:'Postpay',          full:'Postpay · pay later',       bg:'#16161A', fg:'#FFFFFF', accent:'#fff',    short:'pp'},
+  cashew:  {name:'Cashew',           full:'Cashew payments',           bg:'#5B3DF5', fg:'#FFFFFF', accent:'#fff',    short:'cw'},
+  /* crypto */
+  binance: {name:'Binance',          full:'Binance exchange',          bg:'#181A20', fg:'#F0B90B', accent:'#F0B90B', short:'◆B'},
+  rain:    {name:'Rain',             full:'Rain · regulated UAE exchange', bg:'#0E63F4', fg:'#FFFFFF', accent:'#fff', short:'R'},
+  bitoasis:{name:'BitOasis',         full:'BitOasis exchange',         bg:'#0A2540', fg:'#4FE3C1', accent:'#4FE3C1', short:'bO'},
+  /* invest / brokers */
+  ibkr:    {name:'Interactive Brokers', full:'IBKR brokerage',         bg:'#D81222', fg:'#FFFFFF', accent:'#fff',    short:'IB'},
+  sarwa:   {name:'Sarwa',            full:'Sarwa invest & trade',      bg:'#0E8A7B', fg:'#FFFFFF', accent:'#fff',    short:'S'},
+  etoro:   {name:'eToro',            full:'eToro brokerage',           bg:'#59C12A', fg:'#FFFFFF', accent:'#fff',    short:'eT'},
 };
 window.blg = (id, size='') => {
   const b = BANKS[id] || {bg:'#444', fg:'#fff', short:'?'};

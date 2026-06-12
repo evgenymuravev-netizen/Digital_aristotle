@@ -69,6 +69,11 @@ SCREENS.home = () => `
         <div class="h3 mt8">June Money Story</div>
         <div class="micro mt4">Your month in 30 seconds</div>
       </div>
+      <div class="card tap" style="min-width:200px" onclick="A.go('invest-upsell')">
+        <span class="tag blu">📈 Upsell moment</span>
+        <div class="h3 mt8">Add your investments</div>
+        <div class="micro mt4">IBKR · Sarwa · eToro — read-only</div>
+      </div>
       <div class="card tap" style="min-width:190px" onclick="A.go('rewards')">
         <span class="tag gold">🎁 2 to scratch</span>
         <div class="h3 mt8">Scratch cards</div>
@@ -172,15 +177,23 @@ SCREENS['accounts-iban'] = () => `
 /* ---------------- MONEY — all balances across banks ---------------- */
 SCREENS.money = () => {
   const mode = A.tmp.moneyMode || 'cash';
-  const assets = 320431.16, liab = 46294.80, net = assets - liab;
-  const big = mode==='cash' ? LIQUID_TOTAL : net;
+  const extra = b => A.S.linked.includes(b);   /* wallets/BNPL/crypto appear once linked */
   const groups = [
     {bank:'fab', accs:ACCOUNTS.filter(a=>a.bank==='fab')},
     {bank:'wio', accs:ACCOUNTS.filter(a=>a.bank==='wio')},
     {bank:'ei',  accs:ACCOUNTS.filter(a=>a.bank==='ei')},
+    {bank:'careem', accs:extra('careem')?ACCOUNTS.filter(a=>a.bank==='careem'):[], label:'Careem Pay · wallet'},
+    {bank:'tabby',  accs:extra('tabby')?ACCOUNTS.filter(a=>a.bank==='tabby'):[],   label:'Tabby · pay later'},
+    {bank:'binance',accs:extra('binance')?ACCOUNTS.filter(a=>a.bank==='binance'):[],label:'Binance · crypto'},
     {bank:'noor',accs:ACCOUNTS.filter(a=>a.bank==='noor'), label:'Noor wealth'},
     {bank:'dib', accs:ACCOUNTS.filter(a=>a.bank==='dib'), label:'DIB · financing'},
   ];
+  const visibleAccs = groups.flatMap(g=>g.accs);
+  const assets = visibleAccs.filter(a=>a.bal>0).reduce((s,a)=>s+a.bal,0);
+  const liab   = -visibleAccs.filter(a=>a.bal<0).reduce((s,a)=>s+a.bal,0);
+  const net = assets - liab;
+  const big = mode==='cash' ? LIQUID_TOTAL : net;
+  const nSources = 3 + ['careem','tabby','binance'].filter(extra).length;
   return `
   <div class="scr" style="padding-bottom:170px">
     <div class="flex between">
@@ -198,7 +211,7 @@ SCREENS.money = () => {
       <div style="font:800 38px/1 Inter,sans-serif;letter-spacing:-.035em" class="tnum">${hideable('AED '+fm(big))}</div>
       <div class="flex mt8" style="gap:8px">
         <span class="tag grn">▲ 2,4% this month</span>
-        <span class="micro">3 banks · 10 accounts · synced <b id="syncTime">2 min ago</b></span>
+        <span class="micro">${nSources} banks & sources · ${visibleAccs.length} accounts · synced <b id="syncTime">2 min ago</b></span>
       </div>
     </div>
     ${mode==='net' ? `
@@ -208,7 +221,7 @@ SCREENS.money = () => {
         <i style="flex:${assets};background:var(--grn)"></i><i style="flex:${liab};background:var(--red)"></i>
       </div>
       <div class="kv"><span class="k">Liabilities</span><span class="v tnum red-t">−${hideable(fm(liab))}</span></div>
-      <div class="micro">Cards −10 094,80 · Auto finance −36 200,00</div>
+      <div class="micro">Cards −10 094,80 · Auto finance −36 200,00${extra('tabby')?' · BNPL plans −1 575,00':''}</div>
     </div>`:''}
 
     ${groups.map(g=>{
@@ -223,10 +236,10 @@ SCREENS.money = () => {
       <div class="listcard">
         ${visible.map(a=>`
           <div class="row" onclick="A.go('account/${a.id}')">
-            <span class="bigico">${ic(a.kind==='card'?'card':a.kind==='invest'?'trendUp':a.kind==='gold'?'coins':a.kind==='finance'?'car':'wallet',21)}</span>
+            <span class="bigico">${ic(a.kind==='card'?'card':a.kind==='invest'?'trendUp':a.kind==='gold'?'coins':a.kind==='finance'?'car':a.kind==='bnpl'?'bag':a.kind==='crypto'?'trendUp':'wallet',21)}</span>
             <div class="row-main">
               <div class="row-t">${a.name}${a.mask?' ··'+a.mask:''}</div>
-              <div class="row-d">${a.kind==='card'?`Due ${a.due} · min AED ${fm(a.min)}`:a.kind==='finance'?a.left:a.kind==='gold'?'486,32 / g · ▲3,6% this month':a.kind==='invest'?'Sukuk · halal ETFs · ▲1,24% today':'Available balance'}</div>
+              <div class="row-d">${a.kind==='card'?`Due ${a.due} · min AED ${fm(a.min)}`:a.kind==='finance'?a.left:a.kind==='gold'?'486,32 / g · ▲3,6% this month':a.kind==='invest'?'Sukuk · halal ETFs · ▲1,24% today':a.kind==='bnpl'?`Next: ${a.next} · limit left AED ${fm(a.limit-Math.abs(a.bal),0)}`:a.kind==='crypto'?'BTC 0,061 · ETH 0,80 · ▲2,1% today':a.kind==='wallet'?'Wallet · top up from any bank':'Available balance'}</div>
             </div>
             <div class="row-r">
               <div class="row-amt tnum" style="color:${a.bal<0?'var(--red)':'var(--tx)'}">${hideable(aed(a.bal))}</div>
@@ -237,10 +250,14 @@ SCREENS.money = () => {
     }).join('')}
 
     <div class="btnrow mt20">
-      <button class="btn ghost" onclick="CN.start()">${ic('plus',18)} Add bank</button>
+      <button class="btn ghost" onclick="CN.start()">${ic('plus',18)} Add source</button>
       <button class="btn ghost" onclick="A.go('consents')">${ic('shieldCheck',18)} Consents</button>
     </div>
-    <div class="micro mt12" style="text-align:center">Aggregated read-only via Noor Connect (CBUAE Open Finance). INDmoney-style net worth, UAE rails.</div>
+    <div class="card lime mt12 tap" onclick="A.go('invest-upsell')">
+      <div class="flex between"><b style="font-size:14px">📈 Complete the picture — link investments</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">IBKR, Sarwa, eToro — read-only, counts into net worth & zakat</div>
+    </div>
+    <div class="micro mt12" style="text-align:center">Banks, wallets, BNPL and crypto — aggregated read-only via Noor Connect (CBUAE Open Finance).</div>
   </div>`;
 };
 window.Money = {

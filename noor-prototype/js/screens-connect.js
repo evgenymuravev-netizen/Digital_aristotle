@@ -26,12 +26,22 @@ SCREENS['connect-intro'] = () => {
             <div class="row-d">${linked.includes(b) ? (b==='fab'?'AED 78 865,05 · Salary ··5689 +1 more':b==='wio'?'AED 62 865,90 · 2 accounts':'AED 37 629,69 · e-Saver ··8841') : 'Not connected'}</div></div>
           <button class="switch lime ${linked.includes(b)?'on':''}" onclick="CN.toggleBank('${b}')"></button>
         </div>`).join('')}
+    </div>
+    <div class="lbl mt16 mb8">Wallets · BNPL · Crypto <span class="tag lime" style="margin-left:6px">✦ beyond banks</span></div>
+    <div class="listcard">
+      ${[['careem','Wallet balance & spends'],['tabby','Plans, limits & due dates'],['binance','Read-only API · balances']].map(([b,d])=>`
+        <div class="row static">
+          ${blg(b)}
+          <div class="row-main"><div class="row-t">${BANKS[b].name}</div><div class="row-d">${linked.includes(b)?(b==='careem'?'AED 312,40 · wallet':b==='tabby'?'−AED 1 575,00 · 2 plans':'AED 9 840,00 · BTC, ETH'):d}</div></div>
+          <button class="switch lime ${linked.includes(b)?'on':''}" onclick="CN.toggleBank('${b}')"></button>
+        </div>`).join('')}
       <div class="row" onclick="CN.start()">
         <span class="bigico">${ic('plus',22)}</span>
-        <div class="row-main"><div class="row-t">Add another bank</div><div class="row-d">14 UAE banks supported</div></div>
+        <div class="row-main"><div class="row-t">Add another provider</div><div class="row-d">14 banks · wallets · BNPL · crypto</div></div>
         <span class="chev">${ic('chevR',18)}</span>
       </div>
     </div>
+    <div class="micro mt8">Investment accounts? Noor suggests them right after onboarding — no need to do everything now.</div>
     <button class="btn lime mt20" onclick="${linked.length?'CN.finale()':'CN.start()'}">${linked.length?'Continue':'Connect first bank'}</button>
     <button class="btn ghost mt8" onclick="A.sheet(CN.dataSheet())">Learn what data Noor uses</button>
   </div>`;
@@ -79,23 +89,33 @@ SCREENS['connect-sheet'] = () => `
     </div>
   </div>`;
 
-/* ---------- select your bank ---------- */
+/* ---------- select your bank / provider (banks · wallets · BNPL · crypto · invest) ---------- */
 SCREENS['connect-banks'] = () => {
   const q = (A.tmp.bankQ||'').toLowerCase();
-  const list = BANK_ORDER.filter(b => !q || BANKS[b].name.toLowerCase().includes(q) || BANKS[b].full.toLowerCase().includes(q));
+  const cat = A.tmp.cnCat || 'all';
   const linked = A.S.linked;
+  const cats = CONNECT_CATS.filter(c => cat==='all' || c.id===cat);
+  const section = c => {
+    const list = c.list.filter(b => !q || BANKS[b].name.toLowerCase().includes(q) || BANKS[b].full.toLowerCase().includes(q));
+    if(!list.length) return '';
+    return `<div class="lbl mt20" style="margin-bottom:4px">${c.id==='banks'?'All banks':c.t} ${c.id!=='banks'?enh('beyond banks'):''}</div>
+      <div class="listcard">${list.map(b=>CN.bankRow(b)).join('')}</div>`;
+  };
   return `
   <div class="scr light">
     ${hdr('',{right:'<button class="chip" onclick="A.go(\'connect-intro\')">Close</button>'})}
     ${replicaBar()}
-    <div class="h1" style="font-size:24px">Select your bank</div>
+    <div class="h1" style="font-size:24px">${CN.replica?'Select your bank':'Select your provider'}</div>
     <div class="input lt mt16 flex" style="font-weight:500;color:${q?'#121517':'#9AA3AD'}" onclick="CN.typeSearch()">${ic('search',18)} <span id="bankQ">${A.tmp.bankQ||'Search banks'}</span></div>
-    ${!q ? `<div class="lbl mt20" style="margin-bottom:4px">Suggested for you ${enh('detected from salary & SIM')}</div>
+    <div class="chips mt12" style="flex-wrap:nowrap;overflow-x:auto">
+      ${[['all','All'],...CONNECT_CATS.map(c=>[c.id,c.t])].map(([id,t])=>`<button class="chip ${cat===id?'on':''}" onclick="A.tmp.cnCat='${id}';A.refresh()">${t}</button>`).join('')}
+    </div>
+    ${!q && cat==='all' ? `<div class="lbl mt20" style="margin-bottom:4px">Suggested for you ${enh('detected from salary & SIM')}</div>
     <div class="listcard">
-      ${['fab','wio','ei'].filter(b=>!linked.includes(b)).map(b=>CN.bankRow(b,'Salary or telecom match')).join('') || '<div class="row static"><div class="row-d">All suggested banks connected ✓</div></div>'}
+      ${['fab','wio','ei','careem','tabby'].filter(b=>!linked.includes(b)).map(b=>CN.bankRow(b,'Detected on this phone')).join('') || '<div class="row static"><div class="row-d">All suggested providers connected ✓</div></div>'}
     </div>`:''}
-    <div class="lbl mt20" style="margin-bottom:4px">All banks</div>
-    <div class="listcard" style="margin-bottom:30px">${list.map(b=>CN.bankRow(b)).join('')}</div>
+    ${cats.map(section).join('')}
+    <div style="height:18px"></div>
     ${pby()}
   </div>`;
 };
@@ -283,6 +303,11 @@ const BANK_ACCTS = {
   fab:[{n:'Salary account',m:'5689',b:78865.05},{n:'e-Saver',m:'2210',b:96540.12},{n:'Cashback Visa',m:'4412',b:-8240.50,card:true}],
   wio:[{n:'Current account',m:'2204',b:17865.90},{n:'Saving spaces',m:'8804',b:45000.00}],
   ei: [{n:'e-Saver',m:'8841',b:37629.69},{n:'Skywards Visa',m:'7733',b:-1854.30,card:true}],
+  careem:[{n:'Careem Pay wallet',m:'',b:312.40}],
+  tabby:[{n:'Active plans (2)',m:'',b:-1575.00},{n:'Spend limit · available',m:'',b:2925.00}],
+  tamara:[{n:'Active plans (1)',m:'',b:-420.00}],
+  binance:[{n:'Spot wallet · BTC, ETH',m:'',b:9840.00},{n:'Earn · staking',m:'',b:1120.00}],
+  ibkr:[{n:'Brokerage account',m:'7104',b:14400.00}],
   def:[{n:'Current account',m:'1102',b:12480.00},{n:'Savings',m:'7719',b:30150.00}],
 };
 SCREENS['connect-accounts'] = (bank) => {
@@ -334,8 +359,10 @@ CN.approve = (bank) => {
 
 /* ---------- success ---------- */
 SCREENS['connect-success'] = (bank) => {
-  const totals = {fab:'AED 167 164,67 across 3 accounts', wio:'AED 62 865,90 across 2 accounts', ei:'AED 35 775,39 across 2 accounts'};
-  const remaining = ['fab','wio','ei'].filter(b=>!A.S.linked.includes(b));
+  const totals = {fab:'AED 167 164,67 across 3 accounts', wio:'AED 62 865,90 across 2 accounts', ei:'AED 35 775,39 across 2 accounts',
+    careem:'AED 312,40 wallet balance', tabby:'2 plans · AED 787,50 due 11 Jul', tamara:'1 plan · AED 420,00 outstanding',
+    binance:'AED 10 960,00 across spot & earn', ibkr:'AED 14 400,00 brokerage'};
+  const remaining = ['fab','wio','ei','careem','tabby','binance'].filter(b=>!A.S.linked.includes(b));
   return `
   <div class="scr light" style="text-align:center">
     <div style="height:36px"></div>
@@ -361,12 +388,13 @@ CN.finale = () => { A.S.onboarded = true; A.persist(); A.go('connect-finale'); }
 SCREENS['connect-finale'] = () => `
   <div class="scr center">
     <div class="glowblob" style="background:#D7F050;top:-70px;left:-80px;opacity:.2"></div>
-    <span class="tag lime">${A.S.linked.length} banks · ${4+A.S.linked.length*2} accounts connected</span>
+    <span class="tag lime">${A.S.linked.length} sources connected — banks · wallet · BNPL · crypto</span>
     <div class="h1 mt16">One number,<br>${USER.first}.</div>
     <div class="mt16" style="font:800 46px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED <span id="finTotal">0</span></div>
-    <div class="sub mt8">Everything you own, live — across FAB, Wio and Emirates Islamic.</div>
+    <div class="sub mt8">Everything you own, live — banks, Careem Pay, Tabby plans and crypto in one place.</div>
     <div style="position:absolute;bottom:60px;left:26px;right:26px">
       <button class="btn lime" onclick="A.go('home')">Open my dashboard</button>
+      <button class="btn ghost mt8" onclick="A.go('invest-upsell')">${ic('trendUp',18)} Also track my investments</button>
     </div>
   </div>`;
 AFTER['connect-finale'] = () => { const el=document.getElementById('finTotal'); if(el) countUp(el, LIQUID_TOTAL); };

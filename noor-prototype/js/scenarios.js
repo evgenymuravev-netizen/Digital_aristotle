@@ -161,6 +161,16 @@ window.SCN_GROUPS = [
   S('Refer a friend','500 pts each on first bank link','rewards'),
   S('Points for paying bills','120 pts on the EI card bill','paybill/ei-cc'),
 ]},
+
+{g:'Beyond banks ✦', items:[
+  S('Wallets · BNPL · crypto in Money','Careem Pay, Tabby plans and Binance join the one-screen view','money'),
+  S('Provider picker — 5 categories','Banks · wallets · BNPL · crypto · brokers in Noor Connect',()=>{A.tmp.cnCat='all';A.go('connect-banks');},'fresh'),
+  S('Link Careem Pay (wallet)','Same Lean-style flow, wallet balance imported','connect-login/careem','fresh'),
+  S('Link Tabby (BNPL)','Plans, limits and due dates land in Upcoming','connect-login/tabby','fresh'),
+  S('Link Binance (crypto)','Read-only API — balances only, keys never stored','connect-login/binance','fresh'),
+  S('Tabby vs Tamara vs Noor Split','Pre-approved BNPL comparison right at checkout',()=>{chatDeep('ps5');setTimeout(()=>Pay.buyPS5('Sharaf DG',3150,true),2800);}),
+  S('Invest upsell — after onboarding','Brokers pitched once banking is in, never during first run','invest-upsell'),
+]},
 ];
 
 window.SCN_FLAT = [];

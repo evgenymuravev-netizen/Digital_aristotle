@@ -195,8 +195,8 @@ const SCRIPTS = {
     await c.ai('Ok, I checked, here’s the best offer for you', 800);
     await c.card(ps5Row());
     await c.card(chips([
+      {t:'Split it — Tabby vs Tamara vs Noor', fn:"Pay.buyPS5('Sharaf DG',3150,true)"},
       {t:'See other offers', fn:"Chat.chipSend('See other offers','ps5More')"},
-      {t:'Split in 4 · AED 787,50/mo', fn:"Pay.buyPS5('Sharaf DG',3150,true)"},
       {t:'Tell more about each proposal', fn:"Chat.chipSend('Tell more about each proposal','ps5Details')"},
     ]), 250);
   }},
@@ -204,7 +204,7 @@ const SCRIPTS = {
     await c.ai('Also in stock: <b>Virgin Megastore</b> AED 3 299 (pickup Dubai Mall today) and <b>noon</b> AED 3 285 (tomorrow). Sharaf DG is still the winner on price + speed.');
   }},
   ps5Details:{ async run(c){
-    await c.ai(`<b>Sharaf DG — AED 3 150</b>: cheapest, delivery in 2–4 h, 2-yr warranty.\n<b>Jumbo — AED 3 249</b>: free HDMI 2.1 cable (worth ~AED 120), tomorrow.\n<b>Amazon.ae — AED 3 329</b>: easiest returns.\n\nPaying with your <b>FAB card</b> earns AED 157 cashback. Or split in 4 — AED 787,50/mo, 0 fees, Shariah-compliant.`);
+    await c.ai(`<b>Sharaf DG — AED 3 150</b>: cheapest, delivery in 2–4 h, 2-yr warranty.\n<b>Jumbo — AED 3 249</b>: free HDMI 2.1 cable (worth ~AED 120), tomorrow.\n<b>Amazon.ae — AED 3 329</b>: easiest returns.\n\nFor paying: you’re <b>pre-approved on Tabby (AED 4 500)</b> and <b>Tamara (AED 3 800)</b> — both 0 fees — or <b>Noor Split in 4</b> (Murabaha). Paying in full on FAB earns AED 157 cashback. Tap “Split it” and pick.`);
   }},
 
   loan:{ user:'Get me the best loan with one-click activation', async run(c){

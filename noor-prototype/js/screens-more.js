@@ -210,6 +210,30 @@ SCREENS['loan-done'] = () => `
   </div>`;
 AFTER['loan-done'] = () => confetti(document.getElementById('screen'));
 
+/* ---------------- invest upsell (post-onboarding, not in the first run) ---------------- */
+SCREENS['invest-upsell'] = () => `
+  <div class="scr">
+    ${hdr('',{right:`<button class="chip" onclick="A.go('home')">Later</button>`})}
+    <span class="tag lime">✦ Suggested after onboarding — never in your first run</span>
+    <div class="h1 mt12">Your banking is in.<br>Now the <span class="lime-t">whole picture.</span></div>
+    <div class="sub mt8">Plug in brokers and pensions — read-only. Net worth, financial health and zakat instantly get smarter.</div>
+    <div class="listcard mt16">
+      ${[['ibkr','AED portfolio + US stocks'],['sarwa','Robo & trade accounts'],['etoro','Stocks & copy-portfolios']]
+        .map(([b,d])=>`
+        <div class="row" onclick="A.go('connect-login/${b}')">
+          ${blg(b)}
+          <div class="row-main"><div class="row-t">${BANKS[b].name}</div><div class="row-d">${d}</div></div>
+          <span class="chev">${ic('chevR',18)}</span>
+        </div>`).join('')}
+      <div class="row" onclick="A.tmp.cnCat='invest';A.go('connect-banks')">
+        <span class="bigico">${ic('plus',20)}</span>
+        <div class="row-main"><div class="row-t">More providers</div><div class="row-d">Pensions, NPS-style schemes, other brokers</div></div>
+        <span class="chev">${ic('chevR',18)}</span>
+      </div>
+    </div>
+    <div class="card soft mt12 flex" style="gap:10px">${ic('moon',18,'gold-t')}<div class="micro">Linked investments are screened for Shariah compliance automatically — purification amounts calculated for you.</div></div>
+  </div>`;
+
 /* ---------------- marketplace ---------------- */
 SCREENS.market = () => `
   <div class="scr">

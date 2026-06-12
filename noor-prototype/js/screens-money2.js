@@ -81,25 +81,43 @@ window.Pay = {
     A.go('pay-success/'+encodeURIComponent(name)+'|'+amt);
   },
   buyPS5(store, price, split){
+    if(!A.tmp.bnpl) A.tmp.bnpl = split ? 'noor' : 'full';
+    const offers = BNPL_OFFERS(price);
+    const sel = offers.find(o=>o.id===A.tmp.bnpl) || offers[0];
     A.sheet(`
       <div class="h2">Order PlayStation 5 Pro 2 Tb</div>
-      <div class="kv mt12"><span class="k">Store</span><span class="v">${store}</span></div>
+      <div class="kv mt8"><span class="k">Store · delivery</span><span class="v">${store} · today 2–4 h</span></div>
       <div class="kv"><span class="k">Price</span><span class="v tnum">AED ${fm(price,0)}</span></div>
-      ${split?`
-        <div class="card soft mt8">
-          <div class="flex between"><b style="font-size:13.5px">Split in 4 · 0 fees</b><span class="tag gold">☪ Murabaha</span></div>
-          <div class="kv mt8"><span class="k">Today</span><span class="v tnum">AED 787,50</span></div>
-          <div class="kv"><span class="k">11 Jul · 11 Aug · 11 Sep</span><span class="v tnum">AED 787,50 × 3</span></div>
-        </div>`
-      :`<div class="kv"><span class="k">Pay with</span><span class="v">FAB Visa · 5% back = AED ${fm(price*0.05,0)}</span></div>`}
-      <div class="kv"><span class="k">Delivery</span><span class="v">Today, 2–4 h · Marina</span></div>
-      <button class="btn lime mt12" onclick="A.closeSheet();Pay.ps5Done('${esc(store)}',${price},${!!split})">${ic('faceid',20)} Confirm with Face ID</button>`);
+      <div class="lbl mt8 mb8">How do you want to pay? <span class="tag lime" style="margin-left:4px">✦ all pre-approved</span></div>
+      <div class="listcard" style="padding:2px 14px">
+        ${offers.map(o=>`
+          <div class="row" onclick="A.tmp.bnpl='${o.id}';Pay.buyPS5('${esc(store)}',${price},true)">
+            ${blg(o.bank)}
+            <div class="row-main">
+              <div class="row-t" style="font-size:13.5px">${o.t}</div>
+              <div class="row-d" style="white-space:normal">${o.d}</div>
+              <div class="row-sub mt4" style="color:${o.rec?'var(--lime)':'var(--grn)'}">${o.tag}${o.pre?' · '+o.pre:''}</div>
+            </div>
+            <div class="row-r">
+              <div class="row-amt tnum">${fm(o.today,2)}</div>
+              <div class="row-sub">${o.parts>1?'× '+o.parts:'once'}</div>
+            </div>
+            <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:${A.tmp.bnpl===o.id?'var(--lime)':'var(--glass2)'};color:var(--ink)">${A.tmp.bnpl===o.id?ic('check',14):''}</span>
+          </div>`).join('')}
+      </div>
+      ${sel.parts>1?`<div class="micro mt8">Today AED ${fm(sel.today)} · then ${sel.parts-1} × AED ${fm(sel.today)} monthly · total AED ${fm(price,0)} — no interest, no late-fee traps.</div>`:''}
+      <button class="btn lime mt12" onclick="A.closeSheet();Pay.ps5Done('${esc(store)}',${price})">${ic('faceid',20)} Confirm with Face ID — ${sel.parts>1?`${sel.parts} × AED ${fm(sel.today)}`:'AED '+fm(price,0)}</button>`);
   },
-  ps5Done(store, price, split){
+  ps5Done(store, price){
+    const offers = BNPL_OFFERS(price);
+    const sel = offers.find(o=>o.id===A.tmp.bnpl) || offers[0];
     confetti(document.getElementById('screen'));
     A.toast('Order placed — courier today 2–4 h','check');
     if (document.getElementById('chWrap')) {
-      Chat.push({from:'ai', html:`Done ✅ Ordered from <b>${store}</b>${split?` — split in 4, AED 787,50 today, the rest auto-debits monthly (0 fees, Shariah-compliant)`:` for AED ${fm(price,0)} on your FAB card (+AED ${fm(price*0.05,0)} cashback)`}. Tracking is in your briefing tomorrow.`});
+      const how = sel.id==='full'
+        ? `for AED ${fm(price,0)} on your FAB card (+AED ${fm(price*0.05,0)} cashback)`
+        : `with <b>${sel.t}</b> — AED ${fm(sel.today)} today, ${sel.parts-1} more monthly, 0 fees${sel.id==='noor'?', Shariah-compliant':''}`;
+      Chat.push({from:'ai', html:`Done ✅ Ordered from <b>${store}</b> ${how}. I compared Tabby, Tamara and Noor Split — all pre-approved; ${sel.id==='noor'?'Noor Split won on total cost':'your pick is locked in'}. Tracking lands in your briefing tomorrow.`});
     }
   },
 };

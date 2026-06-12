@@ -19,10 +19,29 @@ window.ACCOUNTS = [
   {id:'inv',      bank:'noor',kind:'invest',  name:'Noor Invest',      mask:'',     bal:38500.00},
   {id:'gold',     bank:'noor',kind:'gold',    name:'Noor Gold · 12.4 g', mask:'',   bal:6030.40},
   {id:'auto-fin', bank:'dib', kind:'finance', name:'Auto finance (Murabaha)', mask:'5520', bal:-36200.00, monthly:1640, left:'24 payments left'},
+  /* beyond banks — wallets · BNPL · crypto (linked via Noor Connect too) */
+  {id:'careem-w', bank:'careem', kind:'wallet', name:'Careem Pay wallet', mask:'', bal:312.40},
+  {id:'tabby-b',  bank:'tabby',  kind:'bnpl',   name:'Tabby · 2 active plans', mask:'', bal:-1575.00, next:'AED 787,50 on 11 Jul', limit:4500},
+  {id:'binance-c',bank:'binance',kind:'crypto', name:'Binance · BTC, ETH', mask:'', bal:9840.00},
 ];
 window.LIQUID_TOTAL = 275900.76;
 
 window.BANK_ORDER = ['adcb','adib','ajman','cbd','dib','ei','enbd','fab','hsbc','liv','mashreq','rak','sib','wio'];
+/* connectable provider categories (enhanced Noor Connect — beyond banks) */
+window.CONNECT_CATS = [
+  {id:'banks',  t:'Banks',           list:BANK_ORDER},
+  {id:'wallets',t:'Digital wallets', list:['careem','payit','emoney','botim']},
+  {id:'bnpl',   t:'BNPL accounts',   list:['tabby','tamara','postpay','cashew']},
+  {id:'crypto', t:'Crypto',          list:['binance','rain','bitoasis']},
+  {id:'invest', t:'Invest & brokers',list:['ibkr','sarwa','etoro']},
+];
+/* BNPL checkout offers — pre-approved, pulled via linked accounts */
+window.BNPL_OFFERS = (price) => ([
+  {id:'noor',  bank:'noor',  t:'Noor Split in 4',  d:'0 fees · ☪ Murabaha · auto-debits any bank', parts:4, today:price/4,  tag:'Best — 0 total cost', rec:true,  pre:'No limit needed'},
+  {id:'tabby', bank:'tabby', t:'Tabby · 4 payments', d:'0 fees · uses your linked Tabby account',  parts:4, today:price/4,  tag:'✓ Pre-approved · AED 4 500 limit', pre:'AED 2 925 left after this'},
+  {id:'tamara',bank:'tamara',t:'Tamara · split in 3', d:'0 fees · first payment today',            parts:3, today:price/3,  tag:'✓ Pre-approved · AED 3 800 limit', pre:'Instant approval'},
+  {id:'full',  bank:'fab',   t:'Pay in full · FAB Visa', d:'5% cashback = AED '+fm(price*0.05,0),  parts:1, today:price,    tag:'+'+fm(price*0.05,0)+' cashback', pre:''},
+]);
 
 /* ---------- transactions (June 2026) ---------- */
 window.TXNS = [
@@ -202,6 +221,9 @@ window.CONSENTS = [
   {bank:'wio', scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
   {bank:'ei',  scope:'Accounts · Balances · 12m transactions', granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
   {bank:'dib', scope:'Loan account · Balance only',            granted:'11 Jun 2026', expires:'11 Dec 2026', status:'Expiring soon', freq:'1× / day'},
+  {bank:'careem', scope:'Wallet balance · transactions',       granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
+  {bank:'tabby',  scope:'Plans · limits · upcoming payments',  granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'2× / day'},
+  {bank:'binance',scope:'Read-only API · balances only',       granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'1× / hour'},
 ];
 
 /* ---------- notifications ---------- */
