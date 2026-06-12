@@ -226,6 +226,16 @@ window.SCN_GROUPS = [
   S('Birthday radar — gift planner','Aisha’s birthday in 14 days: budget it + ideas from her consent-shared spends, searches & listening',()=>A.go('gift')),
   S('Gift advice in chat','“What should I get Aisha?” — signals, budget, hidden Gift pot',()=>chatDeep('gift')),
 ]},
+
+{g:'Agent economy ✦', items:[
+  S('Agents hub — they earn for you','AED 1 643 this quarter with receipts: groceries, rides, codes, yield, rebooking',()=>A.go('agents')),
+  S('Delegate groceries','Strategy dials: “eat healthy” + “support local brands” — local always ranked first',()=>A.go('agents')),
+  S('Careem: cashback vs Skywards','3% Tabby (AED 1,15) or 1 500 miles? Agent shows the math, you can override',()=>A.go('agents')),
+  S('Promo-code hunter + Fazaa','Every working code tried at checkout; Fazaa Gold partner pricing linked',()=>A.go('agents')),
+  S('Products watchdog','Already opened savings or financing? Still re-shopped weekly — e-Saver 3,1→3,4%',()=>A.go('agents')),
+  S('P2P risk strategy (Musharaka)','Opt-in profit-share into vetted SMEs, 9–14% expected, capital at risk',()=>{A.tmp.ag={healthy:true,local:true,promo:true,risk:true,careem:'agent'};A.go('agents');}),
+  S('Link Fazaa & Booking.com','New “Perks & booking” category in Noor Connect — deals & instant booking',()=>{A.tmp.cnCat='life';A.go('connect-banks');}),
+]},
 ];
 
 window.SCN_FLAT = [];

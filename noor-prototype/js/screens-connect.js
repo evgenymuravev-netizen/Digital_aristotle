@@ -308,6 +308,8 @@ const BANK_ACCTS = {
   tamara:[{n:'Active plans (1)',m:'',b:-420.00}],
   binance:[{n:'Spot wallet · BTC, ETH',m:'',b:9840.00},{n:'Earn · staking',m:'',b:1120.00}],
   ibkr:[{n:'Brokerage account',m:'7104',b:14400.00}],
+  fazaa:[{n:'Fazaa Gold membership ··8821',m:'',b:0}],
+  booking:[{n:'Genius Level 2 · 2 upcoming stays',m:'',b:0}],
   def:[{n:'Current account',m:'1102',b:12480.00},{n:'Savings',m:'7719',b:30150.00}],
 };
 SCREENS['connect-accounts'] = (bank) => {
@@ -361,7 +363,8 @@ CN.approve = (bank) => {
 SCREENS['connect-success'] = (bank) => {
   const totals = {fab:'AED 167 164,67 across 3 accounts', wio:'AED 62 865,90 across 2 accounts', ei:'AED 35 775,39 across 2 accounts',
     careem:'AED 312,40 wallet balance', tabby:'2 plans · AED 787,50 due 11 Jul', tamara:'1 plan · AED 420,00 outstanding',
-    binance:'AED 10 960,00 across spot & earn', ibkr:'AED 14 400,00 brokerage'};
+    binance:'AED 10 960,00 across spot & earn', ibkr:'AED 14 400,00 brokerage',
+    fazaa:'Gold tier — agents now see partner pricing', booking:'Genius L2 — instant booking unlocked'};
   const remaining = ['fab','wio','ei','careem','tabby','binance'].filter(b=>!A.S.linked.includes(b));
   return `
   <div class="scr light" style="text-align:center">

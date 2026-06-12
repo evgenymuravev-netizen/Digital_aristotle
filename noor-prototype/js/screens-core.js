@@ -68,6 +68,11 @@ SCREENS.home = () => `
         <div class="h3 mt8">FAB card · AED 20 000 limit</div>
         <div class="micro mt4">3.99% · 55 days grace · 1-click</div>
       </div>
+      <div class="card tap" style="min-width:215px" onclick="A.go('agents')">
+        <span class="tag lime">🤖 Agents</span>
+        <div class="h3 mt8">They earned AED 1 643</div>
+        <div class="micro mt4">Groceries · Careem · promo codes · yield</div>
+      </div>
       <div class="card tap" style="min-width:190px" onclick="Story.open()">
         <span class="tag lime">✦ New</span>
         <div class="h3 mt8">June Money Story</div>

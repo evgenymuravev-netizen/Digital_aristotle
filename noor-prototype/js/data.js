@@ -34,6 +34,7 @@ window.CONNECT_CATS = [
   {id:'bnpl',   t:'BNPL accounts',   list:['tabby','tamara','postpay','cashew']},
   {id:'crypto', t:'Crypto',          list:['binance','rain','bitoasis']},
   {id:'invest', t:'Invest & brokers',list:['ibkr','sarwa','etoro']},
+  {id:'life',   t:'Perks & booking', list:['fazaa','esaad','smiles','booking']},
 ];
 /* BNPL checkout offers — pre-approved, pulled via linked accounts */
 window.BNPL_OFFERS = (price) => ([
@@ -374,6 +375,8 @@ window.CONSENTS = [
   {bank:'careem', scope:'Wallet balance · transactions',       granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'4× / day'},
   {bank:'tabby',  scope:'Plans · limits · upcoming payments',  granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'2× / day'},
   {bank:'binance',scope:'Read-only API · balances only',       granted:'11 Jun 2026', expires:'11 Jun 2027', status:'Active', freq:'1× / hour'},
+  {bank:'fazaa',  scope:'Membership tier · partner offers',     granted:'12 Jun 2026', expires:'12 Jun 2027', status:'Active', freq:'On demand'},
+  {bank:'booking',scope:'Stays · price alerts · instant booking',granted:'12 Jun 2026', expires:'12 Jun 2027', status:'Active', freq:'On demand'},
 ];
 
 /* ---------- notifications ---------- */
@@ -396,6 +399,33 @@ window.FX = [
   {c:'EGP', flag:'🇪🇬', rate:13.08, n:'Egyptian pound'},
   {c:'GBP', flag:'🇬🇧', rate:0.2129, n:'British pound'},
 ];
+
+
+/* ---------- the agent economy: delegated purchasing & optimisation ---------- */
+window.AGENTS = {
+  earned:1643, period:'this quarter',
+  breakdown:[['Subscription & tariff fixes',612],['Deal swaps & cheaper baskets',314],['Hotel rebooking refunds',230],
+             ['Cashback routed smartly',218],['Savings yield bumps',173],['Promo codes applied',96]],
+  fleet:[
+    {em:'🛒', t:'Grocery agent', sub:'Weekly basket · Kibsons & Carrefour', strat:'Eat healthy + local brands',
+     report:'May: saved AED 142 · 11 swaps to healthier or local items · 2 codes applied',
+     last:'Yesterday: imported berries → Elite Agro strawberries 🇦🇪 (−18%, fresher)'},
+    {em:'🚗', t:'Mobility agent · Careem', sub:'Perk & payment chooser, per ride',
+     report:'May: 38 rides optimised · AED 86 of value routed',
+     decision:{q:'Tonight: 3% Tabby cashback (≈ AED 1,15) — or 1 500 Skywards bonus miles?',
+       pick:'1 500 Skywards miles', why:'You’re 4 300 miles short of the DXB→LHR upgrade for August — this promo is worth ~AED 63 to you, 55× the cashback. Paying with the EI Skywards Visa for the 2× Tuesday multiplier.'}},
+    {em:'✈️', t:'Travel agent · Booking.com', sub:'Instant booking inside your rules',
+     report:'Rebooked your August London hotel on a price drop — AED 230 back',
+     last:'Watching 2 upcoming stays · Genius L2 rates auto-applied'},
+    {em:'🏦', t:'Products watchdog', sub:'Never stops shopping your banks',
+     report:'Moved e-Saver 3,1% → 3,4% (new Liv offer) · found cheaper biz financing at RAK',
+     last:'Already-opened products get re-checked weekly — switching stays one tap'},
+    {em:'🎟', t:'Promo agent', sub:'Codes & vouchers at every checkout', strat:'Tries every working code, incl. Fazaa pricing',
+     report:'May: 9 working codes · AED 96 saved · Fazaa partner pricing used twice'},
+  ],
+  p2p:{exp:'9–14% expected (not guaranteed)', risk:'Capital at risk — Musharaka profit-share into vetted SMEs; the most Shariah-native risk there is',
+       platforms:'Beehive · Funding Souq', alloc:[5,10,15]},
+};
 
 /* products marketplace */
 window.MARKET = [

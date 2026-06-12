@@ -101,6 +101,11 @@ window.BANKS = {
   rain:    {name:'Rain',             full:'Rain · regulated UAE exchange', bg:'#0E63F4', fg:'#FFFFFF', accent:'#fff', short:'R'},
   bitoasis:{name:'BitOasis',         full:'BitOasis exchange',         bg:'#0A2540', fg:'#4FE3C1', accent:'#4FE3C1', short:'bO'},
   /* invest / brokers */
+  /* lifestyle, perks & booking */
+  fazaa:   {name:'Fazaa',            full:'Fazaa privilege card (MOI)',bg:'#C8102E', fg:'#FFFFFF', accent:'#fff',    short:'FZ'},
+  esaad:   {name:'Esaad',            full:'Esaad privilege card',      bg:'#0A7A3D', fg:'#FFFFFF', accent:'#fff',    short:'eS'},
+  smiles:  {name:'Smiles',           full:'Smiles by e&',              bg:'#00A6A6', fg:'#FFFFFF', accent:'#fff',    short:'sm'},
+  booking: {name:'Booking.com',      full:'Booking.com account',       bg:'#003580', fg:'#FFFFFF', accent:'#fff',    short:'B.'},
   ibkr:    {name:'Interactive Brokers', full:'IBKR brokerage',         bg:'#D81222', fg:'#FFFFFF', accent:'#fff',    short:'IB'},
   sarwa:   {name:'Sarwa',            full:'Sarwa invest & trade',      bg:'#0E8A7B', fg:'#FFFFFF', accent:'#fff',    short:'S'},
   etoro:   {name:'eToro',            full:'eToro brokerage',           bg:'#59C12A', fg:'#FFFFFF', accent:'#fff',    short:'eT'},

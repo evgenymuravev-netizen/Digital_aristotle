@@ -696,6 +696,69 @@ ZK.activate = function(){
     A.toast('Zakat Pot opened — saving ahead, earning halal profit','coins'); A.go('rules'); return; }
 };
 
+/* ---------------- agents hub — delegated purchasing ---------------- */
+SCREENS.agents = () => {
+  const st = A.tmp.ag || (A.tmp.ag = {healthy:true, local:true, promo:true, risk:false, careem:'agent'});
+  return `
+  <div class="scr">
+    ${hdr('Your agents',{right:`<button class="iconbtn" onclick="chatDeep('agents')">${ic('spark',18)}</button>`})}
+    <div class="card lime">
+      <div class="flex between"><span class="lbl" style="color:rgba(11,20,16,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, yield bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(11,20,16,.14);color:#0B1410">${AGENTS.period}</span></div>
+      <div style="font:800 36px Inter,sans-serif" class="tnum mt8">AED ${fm(AGENTS.earned,0)}</div>
+      <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')}</div>
+    </div>
+
+    <div class="lbl mt16 mb8">Strategies — how they decide</div>
+    <div class="listcard">
+      <div class="row static"><span style="font-size:20px">🛡</span><div class="row-main"><div class="row-t" style="font-size:13.5px">Shariah-strict only</div><div class="row-d" style="white-space:normal">Agents never touch non-compliant products — locked on</div></div><span class="tag grn">Always</span></div>
+      ${[['healthy','🥗','Eat healthy','Groceries: whole foods first, sugar −30%, organic when ≤10% premium'],
+         ['local','🇦🇪','Support local brands','UAE & GCC brands always ranked first — your community, funded'],
+         ['promo','🎟','Hunt promo codes','Every working code on the internet gets tried at checkout']]
+        .map(([id,em,t,d])=>`
+        <div class="row static"><span style="font-size:20px">${em}</span>
+          <div class="row-main"><div class="row-t" style="font-size:13.5px">${t}</div><div class="row-d" style="white-space:normal">${d}</div></div>
+          <button class="switch lime ${st[id]?'on':''}" onclick="A.tmp.ag.${id}=!A.tmp.ag.${id};A.refresh()"></button>
+        </div>`).join('')}
+      <div class="row static"><span style="font-size:20px">⚡</span>
+        <div class="row-main"><div class="row-t" style="font-size:13.5px">Riskier yield — P2P business financing ${tipi('Musharaka: you share real profit and real loss with vetted SMEs. No interest anywhere — and no guarantees either. The most Shariah-native risk there is.')}</div>
+          <div class="row-d" style="white-space:normal">${AGENTS.p2p.exp} · ${AGENTS.p2p.platforms}</div>
+          ${st.risk?`<div class="row-sub mt4" style="color:var(--gold)">⚠️ ${AGENTS.p2p.risk}</div>
+          <div class="chips mt4">${AGENTS.p2p.alloc.map(p=>`<button class="chip ${p===10?'on':''}" onclick="A.toast('${p}% of savings allocated to Musharaka deals — drip-funded, diversified over 12+ SMEs','check')">${p}% of savings</button>`).join('')}</div>`:''}
+        </div>
+        <button class="switch lime ${st.risk?'on':''}" onclick="A.tmp.ag.risk=!A.tmp.ag.risk;A.refresh()"></button>
+      </div>
+    </div>
+
+    <div class="lbl mt16 mb8">The fleet — delegated to act for you</div>
+    ${AGENTS.fleet.map(f=>`
+      <div class="card mt8">
+        <div class="flex" style="gap:12px">
+          <span class="avx" style="background:rgba(215,240,80,.12);font-size:22px">${f.em}</span>
+          <div class="f1"><div class="row-t" style="font-size:14px">${f.t}</div><div class="row-d" style="white-space:normal">${f.sub}${f.strat?' · '+f.strat:''}</div></div>
+          <button class="switch lime on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="kv mt8" style="padding:6px 0"><span class="k">Report</span><span class="v" style="font-size:12px;max-width:64%;font-weight:500">${f.report}</span></div>
+        ${f.last?`<div class="micro">${f.last}</div>`:''}
+        ${f.decision?`
+        <div class="card soft mt8">
+          <b style="font-size:13px">Live decision ${tipi('The agent shows its math before money moves. Override anytime — or let it decide.')}</b>
+          <div class="sub mt4" style="font-size:12.5px">${f.decision.q}</div>
+          <div class="chips mt8">
+            ${[['cash','Always cashback'],['miles','Always miles'],['agent','Agent decides ✦']].map(([id,t])=>`<button class="chip ${st.careem===id?'on':''}" onclick="A.tmp.ag.careem='${id}';A.refresh()">${t}</button>`).join('')}
+          </div>
+          ${st.careem==='agent'?`<div class="micro mt8"><b style="color:var(--lime)">Picked: ${f.decision.pick}.</b> ${f.decision.why}</div>`:`<div class="micro mt8">Override saved — the agent will stop optimising this one.</div>`}
+        </div>`:''}
+      </div>`).join('')}
+
+    <div class="card soft mt12 flex" style="gap:10px">${ic('shieldCheck',20,'lime-t')}
+      <div class="micro"><b>Linked for better deals:</b> Fazaa Gold (partner pricing) and Booking.com (instant booking) — every agent purchase needs your spend rules; big-ticket always asks first.</div></div>
+    <div class="btnrow mt12">
+      <button class="btn ghost" onclick="A.tmp.cnCat='life';A.go('connect-banks')">${ic('plus',18)} Link Fazaa · Booking</button>
+      <button class="btn pri" onclick="A.toast('Monthly agent report scheduled — 1st of each month','doc')">Email me reports</button>
+    </div>
+  </div>`;
+};
+
 /* ---------------- birthday gift planner (consent-shared signals) ---------------- */
 SCREENS.gift = () => {
   const g = GIFT, bud = A.tmp.giftBud||800;

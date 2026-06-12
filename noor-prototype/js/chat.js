@@ -52,6 +52,7 @@ const Chat = window.Chat = {
     if (/(credit )?card/.test(t) && /find|best|help|need|new/.test(t)) return go('findCard');
     if (/ps ?5|playstation/.test(t)) return go('ps5');
     if (/birthday|present|anniversar|gift for/.test(t)) return go('gift');
+    if (/agent|delegat|fazaa|booking|promo code/.test(t)) return go('agents');
     if (/advice|advis|portfolio|allocat/.test(t)) return go('advise');
     if (/refinanc|expensive|cheaper|too much.*pay/.test(t)) return go('refi');
     if (/loan|borrow|financ/.test(t)) return go('loan');
@@ -360,6 +361,14 @@ const SCRIPTS = {
     await c.card(chips([
       {t:'🎁 Open the gift planner', fn:"A.go('gift')"},
       {t:'Reserve AED 800 quietly', fn:"A.toast('AED 800 set aside in a hidden Gift pot 🤫','check')"},
+    ]), 250);
+  }},
+
+  agents:{ user:'What did my agents do this week?', async run(c){
+    await c.ai(`Your fleet earned <b>AED ${fm(AGENTS.earned,0)} ${AGENTS.period}</b> — receipts attached. This week:\n\n🛒 <b>Grocery</b> — basket follows “eat healthy + local brands”: swapped imported berries → Elite Agro 🇦🇪 (−18%), saved AED 142 in May\n🚗 <b>Careem</b> — tonight’s call: 3% Tabby cashback (AED 1,15) vs <b>1 500 Skywards miles</b> → took the miles (55× more value — you’re 4 300 from the London upgrade), paid with the EI Skywards Visa\n✈️ <b>Booking.com</b> — rebooked your August hotel on a price drop, <b>AED 230 back</b>\n🎟 <b>Promo</b> — 9 working codes + Fazaa partner pricing twice\n🏦 <b>Watchdog</b> — even opened products get re-shopped: e-Saver moved 3,1% → <b>3,4%</b>`, 2200);
+    await c.card(chips([
+      {t:'🤖 Open agents hub', fn:"A.go('agents')"},
+      {t:'⚡ Try the P2P risk strategy', fn:"A.tmp.ag={healthy:true,local:true,promo:true,risk:true,careem:'agent'};A.go('agents')"},
     ]), 250);
   }},
 
