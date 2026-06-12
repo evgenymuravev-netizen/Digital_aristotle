@@ -203,7 +203,22 @@ window.INVEST = {
     {n:'MSCI World Islamic ETF', d:'Global equity · Halal screened', amt:12400, chg:+4.8, c:'#6FB6FF', em:'🌍'},
     {n:'US Stocks (Halal)', d:'AAPL · MSFT · TSLA via screen', amt:5100, chg:-1.2, c:'#B89CFF', em:'📈'},
   ],
-  gold:{grams:12.4, perGram:486.32, val:6030.40, mo:+3.6}
+  gold:{grams:12.4, perGram:486.32, val:6030.40, mo:+3.6},
+  /* local GCC champions — strictness is the user's dial */
+  locals:[
+    {n:'Aramco',      mkt:'KSA', s:'halal', note:'Passes AAOIFI screens — core energy'},
+    {n:'Alinma Bank', mkt:'KSA', s:'halal', note:'Fully Islamic bank'},
+    {n:'Salik',       mkt:'UAE', s:'halal', note:'Toll operator — clean balance sheet'},
+    {n:'Emaar',       mkt:'UAE', s:'grey',  purif:0.8, note:'Debt near the 33% line · conventional financing income'},
+    {n:'stc',         mkt:'KSA', s:'grey',  purif:0.4, note:'Interest income ≈ 0,4% — purify it'},
+    {n:'Air Arabia',  mkt:'UAE', s:'grey',  purif:1.1, note:'Conventional leasing exposure'},
+  ],
+};
+/* AECB score projections (6 months forward) */
+window.SCORE_PROJ = {
+  plan:  {t:'Follow the refi plan', end:772, arr:[745,748,752,757,761,766,772], note:'Utilisation drops as facilities close + on-time history compounds'},
+  min:   {t:'Pay minimums only',    end:718, arr:[745,741,736,731,726,722,718], note:'Revolving balances push utilisation up — the silent score killer'},
+  newfin:{t:'Take new financing',   end:768, arr:[745,741,744,750,757,763,768], note:'Hard-enquiry dip (−4), recovers as the facility seasons'},
 };
 
 /* ---------- zakat (1447H — Ramadan starts tomorrow) ---------- */

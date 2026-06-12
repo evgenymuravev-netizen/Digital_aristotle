@@ -133,3 +133,12 @@ body.show-fab #aiFab{display:flex}
   #phone{width:100%; height:100%; border-radius:0; box-shadow:none; transform:none !important}
   #screen{border-radius:0}
 }
+
+/* ---------- kiosk / standalone app mode (?app=1 · Add to Home Screen) ---------- */
+.kioskroot #side, .kioskroot #sideToggle, .kioskroot #caption{display:none !important}
+.kioskroot #stage{padding:0}
+.kioskroot #phoneWrap{width:100% !important; height:100% !important}
+.kioskroot #phone{width:100%; height:100%; border-radius:0; box-shadow:none; transform:none !important}
+.kioskroot #screen{border-radius:0}
+.kioskroot #island{display:none}
+@media (min-width:561px){ .kioskroot #phone{max-width:430px; margin:0 auto} .kioskroot #phoneWrap{display:flex; justify-content:center} }

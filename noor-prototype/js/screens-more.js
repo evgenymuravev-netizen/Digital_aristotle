@@ -274,11 +274,32 @@ SCREENS.invest = () => `
         <div><div class="row-t">Noor Gold</div><div class="row-d">${INVEST.gold.grams} g vaulted · ▲${INVEST.gold.mo}% this month</div></div></div>
         <div class="row-amt tnum">${fm(INVEST.gold.val,0)}</div></div>
     </div>
+    ${(()=>{ const strict=(A.tmp.invMode||'strict')==='strict'; return `
+    <div class="lbl mt16 mb8">Compliance — your dial</div>
+    <div class="seg">
+      <button class="${strict?'on':''}" onclick="A.tmp.invMode='strict';A.refresh()">Strict halal</button>
+      <button class="${!strict?'on':''}" onclick="A.tmp.invMode='balanced';A.refresh()">Balanced + local</button>
+    </div>
+    <div class="micro mt8">${strict
+      ?'100% AAOIFI-strict — only fully compliant businesses. Grey-area names are hidden.'
+      :'Adds local KSA/UAE champions in the grey area — not fully compliant, flagged honestly, with purification auto-calculated and donated. Your financial health, your call.'}</div>
+    <div class="lbl mt16 mb8">Local champions 🇦🇪 🇸🇦 — support local business</div>
+    <div class="listcard">
+      ${INVEST.locals.filter(l=>!strict||l.s==='halal').map(l=>`
+        <div class="row" onclick="A.toast('${esc(l.n)} ${l.s==='grey'?'added — purification '+String(l.purif).replace('.',',')+'% auto-donated':'added to your halal portfolio'}','check')">
+          <span class="avx" style="background:${l.s==='halal'?'rgba(83,222,142,.18)':'rgba(232,194,104,.18)'};color:${l.s==='halal'?'var(--grn)':'var(--gold)'};font-size:11px;font-weight:800">${l.mkt}</span>
+          <div class="row-main"><div class="row-t">${l.n}</div><div class="row-d" style="white-space:normal">${l.note}</div></div>
+          <span class="tag ${l.s==='halal'?'grn':'gold'}">${l.s==='halal'?'✓ Halal':'Grey · purify '+String(l.purif).replace('.',',')+'%'}</span>
+        </div>`).join('')}
+      ${strict?`<div class="row static"><div class="row-d" style="white-space:normal">3 grey-area locals hidden by Strict mode — switch to Balanced to see them.</div></div>`:''}
+    </div>
+    <div class="card soft mt12 flex" style="gap:10px">${ic('heart',18,'lime-t')}
+      <div class="micro">${strict?'Local impact: 24% of your portfolio backs GCC businesses — all fully compliant.':'Local impact: 38% of your portfolio backs GCC businesses. Purification this year: AED 86, donated to Dubai Cares.'}</div></div>`;})()}
     <div class="listcard mt12">
-      <div class="row static"><span class="bigico">${ic('repeat'in window?'repeat':'refresh',20)}</span><div class="row-main"><div class="row-t">Auto-invest</div><div class="row-d">AED 1 000/mo into Sukuk fund · on the 26th</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="row static"><span class="bigico">${ic('refresh',20)}</span><div class="row-main"><div class="row-t">Auto-invest</div><div class="row-d">AED 1 000/mo into Sukuk fund · on the 26th</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
       <div class="row" onclick="A.sheet(Halal.sheet())"><span class="bigico" style="color:var(--gold)">${ic('moon',20)}</span><div class="row-main"><div class="row-t">Halal screener</div><div class="row-d">Check any stock in a second</div></div><span class="chev">${ic('chevR',16)}</span></div>
     </div>
-    <div class="micro mt12" style="text-align:center">All instruments pass AAOIFI screening. Purification amounts auto-calculated.</div>
+    <div class="micro mt12" style="text-align:center">Strict mode: everything passes AAOIFI screening. Balanced mode: grey names disclosed + purified — never hidden riba.</div>
   </div>`;
 window.Halal = { sheet(){ return `
   <div class="h2">Halal screener</div>
@@ -322,8 +343,20 @@ SCREENS.score = () => `
         <div class="row static"><span class="bigico" style="color:${f.good?'var(--grn)':'var(--gold)'}">${ic(f.good?'check':'alert',20)}</span>
         <div class="row-main"><div class="row-t">${f.t} — ${f.s}</div><div class="row-d" style="white-space:normal">${f.d}</div></div></div>`).join('')}
     </div>
+    ${(()=>{ const k=A.tmp.scProj||'plan', P=SCORE_PROJ[k]; return `
+    <div class="card mt12">
+      <div class="flex between"><b style="font-size:13.5px">Projection — next 6 months</b>
+        <span class="tag ${P.end>=SCORE.v?'grn':'red'}">Dec 2026: ${P.end} (${P.end>=SCORE.v?'+':''}${P.end-SCORE.v})</span></div>
+      <div class="chips mt8">
+        ${Object.entries(SCORE_PROJ).map(([id,p])=>`<button class="chip ${k===id?'on':''}" onclick="A.tmp.scProj='${id}';A.refresh()">${p.t}</button>`).join('')}
+      </div>
+      <div class="mt12">${spark(P.arr,330,64, P.end>=SCORE.v?'#53DE8E':'#FF7A6B')}</div>
+      <div class="flex between"><span class="micro">Jun</span><span class="micro">Aug</span><span class="micro">Oct</span><span class="micro">Dec</span></div>
+      <div class="micro mt8">${P.note}.</div>
+      ${k==='plan'?`<button class="chip mt8" onclick="A.go('refi')">⚡ Open the refi plan</button>`:''}
+    </div>`;})()}
     <div class="card soft mt12">
-      <b style="font-size:13.5px">Simulator</b>
+      <b style="font-size:13.5px">Quick what-ifs</b>
       <div class="chips mt8">
         <button class="chip" onclick="A.toast('Projected: 751 (+6) next cycle','trendUp')">Pay card in full</button>
         <button class="chip" onclick="A.toast('Projected: 741 (−4) — new enquiry','alert')">Apply for auto finance</button>
@@ -650,7 +683,7 @@ SCREENS.profile = () => `
     </div>
     <div class="listcard mt12">
       ${[['shieldCheck','Security & privacy','security'],['bank','Linked banks & consents','consents'],['doc','Statements & documents','statement'],
-         ['zap','Noor Rules','rules'],['gift','Rewards','rewards'],['headset','Support — humans, 24/7','support'],['globe','Language · English','language']]
+         ['zap','Noor Rules','rules'],['gift','Rewards','rewards'],['headset','Support — humans, 24/7','support'],['globe',A.S.lang==='ar'?'اللغة · العربية':'Language · English','language']]
         .map(([i,t,r])=>`<div class="row" onclick="A.go('${r}')"><span class="bigico">${ic(i,20)}</span><div class="row-main"><div class="row-t">${t}</div></div><span class="chev">${ic('chevR',16)}</span></div>`).join('')}
     </div>
     <div class="card soft mt12">
@@ -680,12 +713,17 @@ SCREENS.language = () => `
   <div class="scr">
     ${hdr('Language')}
     <div class="listcard">
-      ${[['English','English (UAE)',true],['العربية','Arabic — full RTL build',false],['اردو','Urdu',false],['हिन्दी','Hindi',false],['Русский','Russian',false],['Filipino','Tagalog',false]]
-        .map(([t,d,on])=>`<div class="row" onclick="A.toast('${esc(t)} — localisation mocked in prototype','globe')">
-        <div class="row-main"><div class="row-t">${t}</div><div class="row-d">${d}</div></div>
-        ${on?`<span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--lime);color:var(--ink)">${ic('check',14)}</span>`:''}</div>`).join('')}
+      <div class="row" onclick="A.S.lang='en';A.persist();A.go('home');A.toast('Switched to English','globe')">
+        <div class="row-main"><div class="row-t">English</div><div class="row-d">English (UAE)</div></div>
+        ${A.S.lang!=='ar'?`<span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--lime);color:var(--ink)">${ic('check',14)}</span>`:''}</div>
+      <div class="row" onclick="A.S.lang='ar';A.persist();A.go('home');A.toast('تم التبديل إلى العربية 🇦🇪','globe')">
+        <div class="row-main"><div class="row-t">العربية</div><div class="row-d">${A.S.lang==='ar'?'واجهة عربية كاملة مع اتجاه من اليمين لليسار':'Arabic — full RTL, live in this prototype'}</div></div>
+        ${A.S.lang==='ar'?`<span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--lime);color:var(--ink)">${ic('check',14)}</span>`:''}</div>
+      ${[['اردو','Urdu'],['हिन्दी','Hindi'],['Русский','Russian'],['Filipino','Tagalog']]
+        .map(([tt,d])=>`<div class="row" onclick="A.toast('${esc(tt)} — mocked in prototype','globe')">
+        <div class="row-main"><div class="row-t">${tt}</div><div class="row-d">${d}</div></div></div>`).join('')}
     </div>
-    <div class="micro mt12" style="text-align:center">Launch languages mirror UAE demographics — 88% expat population.</div>
+    <div class="micro mt12" style="text-align:center">${A.S.lang==='ar'?'الأرقام تبقى لاتينية كما هو معتاد في تطبيقات البنوك الإماراتية. الشاشات الرئيسية معرّبة بالكامل؛ والبقية تتبع في النسخة النهائية.':'Arabic flips the whole app to RTL with translated core screens; numbers stay Western per UAE banking convention. Launch languages mirror UAE demographics — 88% expat population.'}</div>
   </div>`;
 SCREENS.support = () => `
   <div class="scr">

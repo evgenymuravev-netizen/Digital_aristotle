@@ -190,6 +190,15 @@ window.SCN_GROUPS = [
   S('Refi advice in chat','“Should I refinance anything?” — close/transfer/keep with numbers',()=>chatDeep('refi')),
   S('New value proposition','Control · always-compliant (AI + scholars) · most accurate Zakat · local community','welcome','fresh'),
 ]},
+
+{g:'Global & polish ✦', items:[
+  S('العربية — full RTL','Whole app flips right-to-left with translated core screens',()=>{A.S.lang='ar';A.persist();A.go('home');}),
+  S('Back to English','Language switch round-trip',()=>{A.S.lang='en';A.persist();A.go('language');}),
+  S('Score projections','6-month AECB paths: refi plan +27 · minimums −27 · new financing dip-and-recover',()=>{A.tmp.scProj='plan';A.go('score');}),
+  S('Halal strictness dial','Strict (AAOIFI-only) vs Balanced — grey-area local names with purification',()=>{A.tmp.invMode='balanced';A.go('invest');}),
+  S('Local champions 🇦🇪🇸🇦','Aramco, Alinma, Salik ✓ halal · Emaar, stc, Air Arabia — grey, disclosed',()=>{A.tmp.invMode='balanced';A.go('invest');}),
+  S('iPhone standalone link','app.html — no menu, fullscreen, Add-to-Home-Screen ready',()=>{A.go('home');A.sheet(`<div class="h2">📱 Run it like a real app</div><div class="sub mt8">Open this on your iPhone:</div><div class="card soft mt8" style="word-break:break-all"><b style="font-size:13px">evgenymuravev-netizen.github.io/Digital_aristotle/app.html</b></div><div class="sub mt12">1. Open in Safari → the demo loads fullscreen, no explorer menu.<br>2. Share → <b>Add to Home Screen</b> → launches standalone with the noor icon, like an installed app.<br>3. Scenario deep-links still work: app.html#s/27.</div><button class="btn pri mt12" onclick="A.closeSheet()">Got it</button>`);}),
+]},
 ];
 
 window.SCN_FLAT = [];

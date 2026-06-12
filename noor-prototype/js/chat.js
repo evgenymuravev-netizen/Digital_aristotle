@@ -148,7 +148,7 @@ const affordCard = () => `
 /* ---------- scripts ---------- */
 const SCRIPTS = {
   hello:{ async run(c){
-    await c.ai(`Hi, <b>${USER.first}</b>. ${BRIEFING.line}`, 700);
+    await c.ai(A.S.lang==='ar' ? `أهلاً يا <b>جون</b>. ${BR().line}` : `Hi, <b>${USER.first}</b>. ${BR().line}`, 700);
     await c.card(chips([
       {t:'📋 Open today’s briefing', fn:"A.go('briefing')"},
       {t:'💳 Find me a credit card', fn:"Chat.chipSend('Help me find a credit card with the best terms','findCard')"},

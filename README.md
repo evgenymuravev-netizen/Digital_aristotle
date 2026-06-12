@@ -7,7 +7,7 @@ A deep, clickable HTML prototype of the **Noor** app from the May 2026 investor 
 
 ## What’s inside
 
-- **131 key scenarios**, deep-linked from the scenario explorer (left panel / ☰ button on mobile) —
+- **144 key scenarios**, deep-linked from the scenario explorer (left panel / ☰ button on mobile) —
   onboarding, bank linking, payments, cards, AI agent, insights, goals, Islamic suite, consents, rewards,
   a “Beyond banks” group (wallets/BNPL/crypto linking, Tabby-vs-Tamara-vs-Noor-Split checkout, invest upsell),
   and a “Zakat, properly” group: dual nisab (85 g gold / 595 g silver), declared assets banks can’t see
@@ -46,3 +46,10 @@ GitHub Pages serves the `gh-pages` branch. `.github/workflows/deploy-pages.yml` 
 
 *All data is fictional. Bank marks are illustrative monograms. Not affiliated with Lean Technologies —
 the flow replica exists for product-research purposes only.*
+
+## iPhone standalone demo (no explorer menu)
+
+Separate link: **https://evgenymuravev-netizen.github.io/Digital_aristotle/app.html** — loads the phone
+UI fullscreen (kiosk mode, no scenario sidebar). On iPhone: open in Safari → Share → **Add to Home
+Screen** → launches standalone with the noor icon like an installed app. Scenario deep links still
+work (`app.html#s/27`). Arabic/RTL: Profile → Language → العربية.

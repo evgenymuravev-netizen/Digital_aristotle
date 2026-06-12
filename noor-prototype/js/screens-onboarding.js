@@ -25,11 +25,12 @@ const W_SLIDES = [
    art:`<div style="width:200px;height:200px;border-radius:60px;background:rgba(255,255,255,.06);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--lime)">${ic('shieldCheck',92,'',1.2)}</div>`},
   {h:'The most accurate<br><span class="lime-t">Zakat, ever.</span>', d:'Every asset and every debt — even trade stock and payroll — calculated to the dirham, by your scholar’s method. This is our craft.',
    art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,rgba(232,194,104,.35),rgba(232,194,104,.08));border:1px solid rgba(232,194,104,.35);display:flex;align-items:center;justify-content:center;color:var(--gold)">${ic('moon',88,'',1.2)}</div>`},
-  {h:'Support your<br><span class="lime-t">local community</span>', d:'Zakat and sadaqah flow to local charities; financing backs local businesses. Your money builds the place you live in.',
+  {h:'Support your<br><span class="lime-t">local community</span>', d:'Your savings back the best Shariah-compliant local businesses — and the strictness dial is yours: stay 100% strict, or add local UAE & Saudi champions with purification handled.',
    art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,#EDFA9B,#D7F050 55%,#9DBE17);display:flex;align-items:center;justify-content:center;color:#0B1410;box-shadow:0 30px 80px rgba(215,240,80,.35)">${ic('heart',86,'',1.4)}</div>`},
 ];
 SCREENS.welcome = () => {
-  const i = A.tmp.slide||0, s = W_SLIDES[i];
+  const i = A.tmp.slide||0;
+  const s = (A.S.lang==='ar' && window.AR_WELCOME) ? {...W_SLIDES[i], ...AR_WELCOME[i]} : W_SLIDES[i];
   return `
   <div class="scr nopad" style="display:flex;flex-direction:column;padding:70px 26px 46px">
     <div class="flex between"><span style="font:800 26px Inter,sans-serif;color:var(--lime)">noor</span>

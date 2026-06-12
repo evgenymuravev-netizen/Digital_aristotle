@@ -14,9 +14,9 @@ SCREENS.home = () => `
     </div>
 
     <div class="mt16">
-      <div class="h0">Hi, ${USER.first}.</div>
+      <div class="h0">${t('Hi, '+USER.first+'.')}</div>
       <div class="h2 mt8" style="font-weight:600;color:var(--tx2);line-height:1.45" onclick="A.go('briefing')">
-        ${BRIEFING.line.replace(/<b>/g,'<b style="color:var(--tx);font-weight:700">')}
+        ${BR().line.replace(/<b>/g,'<b style="color:var(--tx);font-weight:700">')}
       </div>
       <button class="chip mt12" onclick="A.go('briefing')">${ic('spark',15)} Morning briefing · 4 items</button>
     </div>
@@ -112,9 +112,9 @@ SCREENS.briefing = () => `
   <div class="scr">
     ${hdr('Morning briefing')}
     <div class="flex" style="gap:8px"><span class="tag lime">✦ Noor AI</span><span class="micro">Generated 07:00 from calendar, inbox receipts & accounts</span></div>
-    <div class="h1 mt12">4 things for<br>today, ${USER.first}</div>
+    <div class="h1 mt12">${A.S.lang==='ar'?'4 مهام<br>لليوم يا جون':'4 things for<br>today, '+USER.first}</div>
     <div class="mt16" style="display:flex;flex-direction:column;gap:11px">
-      ${BRIEFING.items.map((b,i)=>`
+      ${BR().items.map((b,i)=>`
         <div class="card">
           <div class="flex" style="gap:12px;align-items:flex-start">
             <span class="bigico" style="background:${b.c}1f;color:${b.c}">${ic(b.ic,21)}</span>

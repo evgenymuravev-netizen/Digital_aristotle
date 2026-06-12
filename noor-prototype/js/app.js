@@ -47,6 +47,9 @@ window.A = {
     document.getElementById('navHost').innerHTML = tab?navbar(name):'';
     document.body.classList.toggle('show-fab', tab && this.S.onboarded!==false);
     if(AFTER[name]) try{ AFTER[name](param); }catch(e){ console.warn(e); }
+    /* Arabic / RTL pass */
+    host.classList.toggle('rtl', this.S.lang==='ar');
+    if(this.S.lang==='ar'){ applyAr(host); applyAr(document.getElementById('navHost')); }
   },
   syncHash(){
     if(this._running) return;                     /* scenario sets one #s/N hash at the end instead */
@@ -62,7 +65,8 @@ window.A = {
     const host=document.getElementById('sheetHost');
     host.classList.add('on');
     host.innerHTML=`<div class="sheet-back" onclick="A.closeSheet()"></div>
-      <div class="sheet ${lt?'lt':''}"><div class="sheet-grab"></div>${html}</div>`;
+      <div class="sheet ${lt?'lt':''}" ${this.S.lang==='ar'?'style="direction:rtl"':''}><div class="sheet-grab"></div>${html}</div>`;
+    if(this.S.lang==='ar') applyAr(host);
   },
   closeSheet(){ const h=document.getElementById('sheetHost'); h.classList.remove('on'); h.innerHTML=''; },
   confirm(title, body, fn){
@@ -77,7 +81,7 @@ window.A = {
     const host=document.getElementById('screen');
     host.querySelectorAll('.toastp').forEach(t=>t.remove());
     const el=document.createElement('div'); el.className='toastp';
-    el.innerHTML=`<span style="color:var(--lime)">${ic(icon,18)}</span><span>${msg}</span>`;
+    el.innerHTML=`<span style="color:var(--lime)">${ic(icon,18)}</span><span>${t(msg)}</span>`;
     host.appendChild(el);
     setTimeout(()=>{ el.style.transition='all .35s'; el.style.opacity='0'; el.style.transform='translate(-50%,-12px)'; setTimeout(()=>el.remove(),360); },2600);
   },
@@ -154,6 +158,7 @@ function buildSidebar(){
 
 /* ---------- phone scaling ---------- */
 function fitPhone(){
+  if(document.documentElement.classList.contains('kioskroot')) return;
   if(window.innerWidth<=560) return;
   const stage=document.getElementById('stage'), phone=document.getElementById('phone'), wrap=document.getElementById('phoneWrap');
   const availH=stage.clientHeight-70, availW=stage.clientWidth-30;

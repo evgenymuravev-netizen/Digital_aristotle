@@ -374,6 +374,24 @@
 .pby{display:flex; align-items:center; justify-content:center; gap:7px; font:600 11px Inter,sans-serif; color:#9AA3AD; padding:14px 0 2px}
 .pby .pby-n{font-weight:800; color:#121517}
 
+/* ---------- RTL (Arabic) ---------- */
+#screen.rtl .scr{direction:rtl}
+#screen.rtl{font-family:'Noto Kufi Arabic',Inter,-apple-system,sans-serif}
+#screen.rtl .h0,#screen.rtl .h1,#screen.rtl .h2{letter-spacing:0}
+#screen.rtl .tnum{direction:ltr; unicode-bidi:isolate}
+#screen.rtl .row-r{text-align:left}
+#screen.rtl .kv .v{text-align:left}
+#screen.rtl .chev svg{transform:scaleX(-1)}
+#screen.rtl .apphdr > .iconbtn:first-child svg{transform:scaleX(-1)}
+#screen.rtl .hscroll, #screen.rtl .chips.scroll, #screen.rtl .ch-quick{direction:rtl}
+#screen.rtl .sheet{direction:rtl}
+#screen.rtl .lbl{letter-spacing:0}
+.kioskroot #statusbar{display:none}
+.kioskroot #homeIndicator{display:none}
+.kioskroot .scr{padding-top:calc(18px + env(safe-area-inset-top))}
+.kioskroot .navbar{bottom:calc(10px + env(safe-area-inset-bottom))}
+.kioskroot #aiFab{bottom:calc(106px + env(safe-area-inset-bottom))}
+
 /* ios notification banner mock */
 .iosnotif{
   position:absolute; top:58px; left:10px; right:10px; z-index:72; background:rgba(245,245,247,.92); color:#111; border-radius:20px;
