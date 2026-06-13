@@ -696,6 +696,67 @@ ZK.activate = function(){
     A.toast('Zakat Pot opened — saving ahead, earning halal profit','coins'); A.go('rules'); return; }
 };
 
+/* ---------------- agent approvals feed ---------------- */
+window.AP = {
+  st(){ if(!A.tmp.appv) A.tmp.appv = {limit:500, decided:{}}; return A.tmp.appv; },
+  auto(it){ const s=this.st(); return !it.big && Math.abs(it.cost) <= s.limit; },
+  pending(){ const s=this.st(); return APPROVALS.filter(it=>!s.decided[it.id] && !this.auto(it)); },
+  decide(id,v){ this.st().decided[id]=v; A.refresh();
+    A.toast(v==='ok'?'Approved — agent is acting on it now':'Declined — agent will skip it', v==='ok'?'check':'x'); },
+  approveAll(){ const s=this.st(); this.pending().forEach(it=>s.decided[it.id]='ok');
+    confetti(document.getElementById('screen')); A.toast('All caught up — agents are on it','check'); A.refresh(); },
+  setLimit(v){ this.st().limit=v; A.refresh(); },
+};
+SCREENS.approvals = () => {
+  const s = AP.st(), pend = AP.pending();
+  const row = (it) => {
+    const auto = AP.auto(it), dec = s.decided[it.id];
+    const amt = it.cost===0 ? 'No spend' : it.refund ? '+AED '+fm(Math.abs(it.cost),0)+' back' : 'AED '+fm(it.cost,0);
+    return `
+    <div class="card mt8" style="${dec==='no'?'opacity:.5':''}">
+      <div class="flex" style="gap:12px">
+        <span class="avx" style="background:rgba(215,240,80,.12);font-size:22px">${it.em}</span>
+        <div class="f1"><div class="row-t" style="font-size:14px;white-space:normal">${it.t}</div>
+          <div class="row-d">${it.agent} agent</div></div>
+        <div class="row-amt tnum" style="color:${it.refund?'var(--grn)':'var(--tx)'}">${amt}</div>
+      </div>
+      <div class="micro mt8" style="line-height:1.5">${it.why}</div>
+      ${it.big?`<div class="micro mt4" style="color:var(--gold)">⚠️ Changes a financial product — always needs your nod, whatever your limit.</div>`:''}
+      ${dec ? `<div class="flex mt8" style="gap:8px"><span class="tag ${dec==='ok'?'grn':'red'}">${dec==='ok'?'✓ Approved':'✕ Declined'}</span>
+          <button class="chip" onclick="AP.decide('${it.id}','${dec==='ok'?'no':'ok'}')">Undo</button></div>`
+        : auto ? `<div class="flex mt8" style="gap:8px"><span class="tag lime">✓ Auto-approved</span><span class="micro">under your AED ${fm(s.limit,0)} limit</span>
+          <button class="chip" onclick="AP.decide('${it.id}','no')">Stop</button></div>`
+        : `<div class="btnrow mt8">
+            <button class="btn ghost sm" onclick="AP.decide('${it.id}','no')">Decline</button>
+            <button class="btn lime sm" onclick="AP.decide('${it.id}','ok')">${ic('faceid',16)} Approve</button>
+          </div>`}
+    </div>`;
+  };
+  return `
+  <div class="scr">
+    ${hdr('Approvals',{right:`<button class="iconbtn" onclick="chatDeep('agents')">${ic('spark',18)}</button>`})}
+    <div class="card lime">
+      <div class="flex between"><b style="font-size:14px">${pend.length?pend.length+' need your nod today':'All caught up ✓'}</b>
+        <span class="tag" style="background:rgba(11,20,16,.14);color:#0B1410">${APPROVALS.length} total</span></div>
+      <div class="micro mt4">Agents act freely under your limit and ask above it. You stay in control — nothing big moves without you.</div>
+    </div>
+
+    <div class="lbl mt16 mb8">Auto-approve under ${tipi('Set your trust threshold. Agents execute anything below it on their own; anything above — or any change to a financial product — waits for your tap.')}</div>
+    <div class="chips">
+      ${[250,500,1000].map(v=>`<button class="chip ${s.limit===v?'on':''}" onclick="AP.setLimit(${v})">AED ${fm(v,0)}</button>`).join('')}
+      <button class="chip ${s.limit===0?'on':''}" onclick="AP.setLimit(0)">Ask every time</button>
+    </div>
+
+    ${pend.length?`<button class="btn lime mt16" onclick="AP.approveAll()">${ic('check',18)} Approve all ${pend.length} with Face ID</button>`:''}
+
+    <div class="lbl mt20 mb8">Today’s actions</div>
+    ${APPROVALS.map(row).join('')}
+
+    <div class="card soft mt12 flex" style="gap:10px">${ic('clock',18,'lime-t')}
+      <div class="micro">Ignore everything and the safe, under-limit actions still run at 9pm — the rest roll to tomorrow. Full audit trail in Documents.</div></div>
+  </div>`;
+};
+
 /* ---------------- agents hub — delegated purchasing ---------------- */
 SCREENS.agents = () => {
   const st = A.tmp.ag || (A.tmp.ag = {healthy:true, local:true, promo:true, risk:false, careem:'agent'});
@@ -708,6 +769,10 @@ SCREENS.agents = () => {
       <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')} — plus ${AGENTS.timeSaved}</div>
     </div>
 
+    <div class="card mt12 tap" onclick="A.go('approvals')" style="border-color:rgba(215,240,80,.4)">
+      <div class="flex between"><b style="font-size:13.5px">🔔 ${AP.pending().length} actions need your nod today</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">Review what the fleet wants to do · approve all in one tap</div>
+    </div>
     <div class="lbl mt16 mb8">Strategies — how they decide</div>
     <div class="listcard">
       <div class="row static"><span style="font-size:20px">🛡</span><div class="row-main"><div class="row-t" style="font-size:13.5px">Shariah-strict only</div><div class="row-d" style="white-space:normal">Agents never touch non-compliant products — locked on</div></div><span class="tag grn">Always</span></div>

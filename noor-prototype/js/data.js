@@ -381,6 +381,7 @@ window.CONSENTS = [
 
 /* ---------- notifications ---------- */
 window.NOTIFS = [
+  {ic:'bell', c:'#D7F050', t:'3 agent actions need your nod', d:'Disney On Ice, gift reserve, e-Saver switch', when:'Just now', act:'approvals'},
   {ic:'gift', c:'#FF8FC0', t:'Aisha’s birthday in 14 days 🎂', d:'Gift plan ready — 4 ideas from her shared signals', when:'Just now', act:'gift'},
   {ic:'spark', c:'#D7F050', t:'Your June Money Story is ready', d:'See where your money went in 30 seconds', when:'Just now', act:'story'},
   {ic:'film',  c:'#E50914', t:'Netflix debits AED 29 tomorrow', d:'FAB Cashback Visa ··4412', when:'2 h ago', act:'subs'},
@@ -439,6 +440,17 @@ window.AGENTS = {
   p2p:{exp:'9–14% expected (not guaranteed)', risk:'Capital at risk — Musharaka profit-share into vetted SMEs; the most Shariah-native risk there is',
        platforms:'Beehive · Funding Souq', alloc:[5,10,15]},
 };
+
+/* ---------- agent approvals feed — everything the fleet wants to do today ---------- */
+window.APPROVALS = [
+  {id:'ap1', em:'🛒', agent:'Grocery',  t:'This week’s basket · 23 items',          cost:312,  why:'Healthy + local swaps applied · 1 promo code (−AED 18) · Kibsons delivery tomorrow 08:00'},
+  {id:'ap2', em:'🚗', agent:'Mobility', t:'Pay tonight’s Careem with EI Skywards Visa', cost:0,  why:'1 500 bonus miles vs AED 1,15 cashback — 55× better for your August upgrade'},
+  {id:'ap3', em:'✈️', agent:'Travel',   t:'Rebook August London hotel — price dropped', cost:-230, refund:true, why:'Same room & dates, AED 230 cheaper · free cancellation kept'},
+  {id:'ap4', em:'🌿', agent:'Wellbeing',t:'Confirm dental check-up · 8 Jul 17:30',  cost:0,    why:'Covered by your Daman plan · last cleaning was 7 months ago'},
+  {id:'ap5', em:'👨‍👩‍👧', agent:'Family', t:'Disney On Ice ×4 · 28 Jun',             cost:520,  why:'From the Family pot · seats together, block B · kids’ mid-term break'},
+  {id:'ap6', em:'🎁', agent:'Gift',     t:'Reserve AED 800 for Aisha’s gift',       cost:800,  why:'Birthday 26 Jun · hidden Gift pot, masked from shared views'},
+  {id:'ap7', em:'🏦', agent:'Watchdog', t:'Move e-Saver → Liv 3,4% account',        cost:0, big:true, why:'+0,3% on AED 96 540 ≈ AED 290/yr · same liquidity · Shariah-compliant'},
+];
 
 /* products marketplace */
 window.MARKET = [

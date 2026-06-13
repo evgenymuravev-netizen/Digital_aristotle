@@ -52,6 +52,7 @@ const Chat = window.Chat = {
     if (/(credit )?card/.test(t) && /find|best|help|need|new/.test(t)) return go('findCard');
     if (/ps ?5|playstation/.test(t)) return go('ps5');
     if (/birthday|present|anniversar|gift for/.test(t)) return go('gift');
+    if (/approv|need my nod|waiting for me/.test(t)) return go('approvalsChat');
     if (/agent|delegat|fazaa|booking|promo code/.test(t)) return go('agents');
     if (/advice|advis|portfolio|allocat/.test(t)) return go('advise');
     if (/refinanc|expensive|cheaper|too much.*pay/.test(t)) return go('refi');
@@ -361,6 +362,14 @@ const SCRIPTS = {
     await c.card(chips([
       {t:'🎁 Open the gift planner', fn:"A.go('gift')"},
       {t:'Reserve AED 800 quietly', fn:"A.toast('AED 800 set aside in a hidden Gift pot 🤫','check')"},
+    ]), 250);
+  }},
+
+  approvalsChat:{ user:'What needs my approval?', async run(c){
+    await c.ai(`<b>3 actions need your nod</b> (the rest auto-approved under your AED 500 limit):\n\n👨‍👩‍👧 Disney On Ice ×4 — <b>AED 520</b> from the Family pot\n🎁 Reserve <b>AED 800</b> for Aisha’s gift\n🏦 Move e-Saver → Liv 3,4% (a product change always asks you)\n\nWant to review them?`, 1400);
+    await c.card(chips([
+      {t:'🔔 Open approvals', fn:"A.go('approvals')"},
+      {t:'Approve all', fn:"A.go('approvals');setTimeout(()=>AP.approveAll(),400)"},
     ]), 250);
   }},
 

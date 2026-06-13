@@ -238,6 +238,9 @@ window.SCN_GROUPS = [
   S('Wellbeing agent','Checkups, massage, therapy slots — and it steers the grocery agent toward omega-3 & greens',()=>A.go('agents')),
   S('Vacation agent — visas first','VFS appointment booked, checklist 6/8, hands off to the Travel agent when the visa clears',()=>A.go('agents')),
   S('Family agent','Brunch ×4, Disney On Ice for the kids, synced with the Gift planner for the 26th',()=>A.go('agents')),
+  S('Agent approvals feed','Everything the fleet wants to do today — approve all, or tap-by-tap',()=>A.go('approvals')),
+  S('Trust threshold','Agents act freely under your limit, ask above it — product changes always ask',()=>{A.tmp.appv={limit:250,decided:{}};A.go('approvals');}),
+  S('Approve all in one tap','Face-ID approve the whole day’s queue',()=>{A.tmp.appv={limit:500,decided:{}};A.go('approvals');setTimeout(()=>AP.approveAll(),500);}),
 ]},
 ];
 window.SCN_FLAT = [];
