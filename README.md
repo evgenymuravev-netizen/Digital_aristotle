@@ -1,1 +1,55 @@
-# Digital_aristotle
+# noor — Agentic Islamic Finance Platform · Clickable Prototype
+
+A deep, clickable HTML prototype of the **Noor** app from the May 2026 investor deck
+(“Banking Products in 1-Click · Agentic Islamic Finance Platform”).
+
+**Live demo (GitHub Pages):** https://evgenymuravev-netizen.github.io/Digital_aristotle/
+
+## What’s inside
+
+- **175 key scenarios**, deep-linked from the scenario explorer (left panel / ☰ button on mobile) —
+  onboarding, bank linking, payments, cards, AI agent, insights, goals, Islamic suite, consents, rewards,
+  a “Beyond banks” group (wallets/BNPL/crypto linking, Tabby-vs-Tamara-vs-Noor-Split checkout, invest upsell),
+  and a “Zakat, properly” group: dual nisab (85 g gold / 595 g silver), declared assets banks can’t see
+  (home cash, trade stock, jewellery), an AI interview citing the four schools with a scholar picker
+  (Taqi Usmani / UAE Awqaf / Ibn ‘Uthaymeen / AAOIFI SS 35), family wakāla mode, and Ramadan-eve timing.
+- **Deck moments, pixel-faithful:** “Hi, John” home with *My money AED 275 900,76*, the credit-card
+  agent (“I have selected three offers with a pre-approved limit for you”), the PS5 purchase,
+  one-click Murabaha financing activation.
+- **Onboarding modelled on the Lean Link recording (Apr 2026)** — same flow (intro sheet → bank picker →
+  credentials → OTP “From Messages” → Wio two-step → FacePass), rebuilt as **Noor Connect** on CBUAE
+  Open Finance rails and **enhanced**: bank-side auth (no credential storage), live progress steps,
+  granular account selection, AA-style consent receipts, and an automatic SMS fallback where the
+  original recording dead-ends on FacePass camera failure. Run scenario **#25 “Full Lean replica run”**.
+- **All-banks balance screen** (scenario #35): FAB + Wio + Emirates Islamic grouped with per-bank
+  subtotals, cash vs. net-worth toggle, sync state, add-bank and consent entry points.
+- **Indian-fintech “wow” features, UAE-adapted:** INDmoney-style net worth, Fi-style Rules,
+  Jar-style round-ups → gold, CRED-style card-bill pay with fee watchdog + rewards & scratch cards,
+  Moneyview-style auto expense tracking, free AECB score with simulator, Sahamati/AA-style consent centre,
+  plus a “Money Story” monthly recap.
+
+## Run locally
+
+No build step — plain HTML/CSS/JS:
+
+```bash
+cd noor-prototype && python3 -m http.server 8000
+# open http://localhost:8000
+```
+
+## Deploy
+
+GitHub Pages serves the `gh-pages` branch. `.github/workflows/deploy-pages.yml` re-syncs
+`noor-prototype/` to `gh-pages` on every push, so edits publish automatically.
+
+---
+
+*All data is fictional. Bank marks are illustrative monograms. Not affiliated with Lean Technologies —
+the flow replica exists for product-research purposes only.*
+
+## iPhone standalone demo (no explorer menu)
+
+Separate link: **https://evgenymuravev-netizen.github.io/Digital_aristotle/app.html** — loads the phone
+UI fullscreen (kiosk mode, no scenario sidebar). On iPhone: open in Safari → Share → **Add to Home
+Screen** → launches standalone with the noor icon like an installed app. Scenario deep links still
+work (`app.html#s/27`). Arabic/RTL: Profile → Language → العربية.
