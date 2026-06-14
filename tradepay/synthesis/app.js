@@ -144,6 +144,37 @@
     sections.forEach((s) => spyObs.observe(s));
   }
 
+  /* ---------- solutions tabs (accessible) ---------- */
+  const tabs = $$('.tab');
+  if (tabs.length) {
+    const panels = $$('.tabpanel');
+    const activate = (id) => {
+      tabs.forEach((t) => {
+        const on = t.dataset.tab === id;
+        t.classList.toggle('on', on);
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((p) => {
+        const on = p.dataset.panel === id;
+        p.classList.toggle('on', on);
+        p.hidden = !on;
+      });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => activate(t.dataset.tab));
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const dir = e.key === 'ArrowRight' ? 1 : -1;
+          const next = tabs[(i + dir + tabs.length) % tabs.length];
+          activate(next.dataset.tab);
+          next.focus();
+        }
+      });
+    });
+  }
+
   /* ---------- magnetic ---------- */
   if (!reduce && finePointer) {
     $$('[data-magnetic]').forEach((btn) => {
