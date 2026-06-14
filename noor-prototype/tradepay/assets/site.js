@@ -1,26 +1,28 @@
-// Tradepay marketing site — interactions
+// Tradepay marketing site — interactions (minimal edition)
 (function () {
-  // mobile nav
   var menuBtn = document.getElementById('menuBtn');
   var nav = document.getElementById('nav');
   if (menuBtn && nav) {
     menuBtn.addEventListener('click', function () { nav.classList.toggle('open'); });
-    nav.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') nav.classList.remove('open');
-    });
+    nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') nav.classList.remove('open'); });
   }
 
-  // journey tabs (merchant / distributor)
-  document.querySelectorAll('.jtabs button').forEach(function (btn) {
+  // sticky topbar hairline on scroll
+  var topbar = document.getElementById('topbar');
+  function onScroll() { if (topbar) topbar.classList.toggle('scrolled', window.scrollY > 8); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // segmented journey tabs (merchant / distributor)
+  document.querySelectorAll('#jseg button').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      document.querySelectorAll('.jtabs button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+      document.querySelectorAll('#jseg button').forEach(function (b) { b.classList.toggle('on', b === btn); });
       document.querySelectorAll('.jpanel').forEach(function (p) {
         p.classList.toggle('on', p.getAttribute('data-jp') === btn.getAttribute('data-j'));
       });
     });
   });
 
-  // evolution era tabs
+  // evolution era scrubber
   document.querySelectorAll('#evoTabs button').forEach(function (btn) {
     btn.addEventListener('click', function () {
       document.querySelectorAll('#evoTabs button').forEach(function (b) { b.classList.toggle('on', b === btn); });
@@ -33,19 +35,10 @@
   // reveal on scroll
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-      });
-    }, { threshold: 0.12 });
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
   } else {
     document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); });
   }
-
-  // narrow screens: strategy grid stacks
-  function stack() {
-    var g = document.getElementById('stratGrid');
-    if (g) g.style.gridTemplateColumns = window.innerWidth < 900 ? '1fr' : '1.2fr .8fr';
-  }
-  window.addEventListener('resize', stack); stack();
 })();

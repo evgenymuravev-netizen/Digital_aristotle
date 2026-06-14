@@ -48,8 +48,8 @@ Each chapter unlocks only when the previous one's exit criteria hold — the seq
 
 ## Tech
 
-Static HTML/CSS/JS, no build step. Published to the repository's `gh-pages` branch via the
-existing Noor-prototype sync workflow and served at `/tradepay/`.
+Static HTML/CSS/JS, no build step. Deployed by `.github/workflows/deploy-pages.yml`
+(GitHub Actions → Pages). `.nojekyll` disables Jekyll processing.
 
 ## Disclaimer
 
