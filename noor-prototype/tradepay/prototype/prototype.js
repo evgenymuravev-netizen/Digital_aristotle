@@ -16,20 +16,39 @@
   var NAV = {
     rail: [
       { id: "merchant", label: "Merchant", ic: "🛒", frame: "phone",
+        tabs: [
+          { id: "activate", label: "Home", ic: "🏠" },
+          { id: "order", label: "Buy", ic: "🛒" },
+          { id: "repay", label: "Repay", ic: "💸" },
+          { id: "statement", label: "Activity", ic: "📊" }
+        ],
         screens: [
-          { id: "onboard", label: "Onboard" },
-          { id: "limit",   label: "Limit live" },
-          { id: "order",   label: "Place order" },
-          { id: "repay",   label: "Repay" }
+          { id: "onboard",   label: "1 · Welcome" },
+          { id: "identity",  label: "2 · Nafath" },
+          { id: "business",  label: "3 · Your shop" },
+          { id: "consent",   label: "4 · Consent" },
+          { id: "terms",     label: "5 · Terms" },
+          { id: "activate",  label: "6 · Limit live" },
+          { id: "order",     label: "Place order" },
+          { id: "repay",     label: "Repay" },
+          { id: "statement", label: "Statement" }
         ] },
       { id: "rep", label: "Field rep", ic: "🚐", frame: "phone",
+        tabs: [
+          { id: "route", label: "Route", ic: "🗺️" },
+          { id: "onboard", label: "Onboard", ic: "🪪" },
+          { id: "approve", label: "Approve", ic: "✅" },
+          { id: "cashin", label: "Cash-in", ic: "🧾" }
+        ],
         screens: [
           { id: "route",   label: "Route" },
+          { id: "onboard", label: "Onboard a shop" },
           { id: "approve", label: "Approve order" },
           { id: "cashin",  label: "Cash-in" }
         ] },
       { id: "distributor", label: "Distributor", ic: "🏭", frame: "console",
         screens: [
+          { id: "golive",      label: "Go-live" },
           { id: "dashboard",   label: "Settlement" },
           { id: "collections", label: "Collections" },
           { id: "uplift",      label: "Credit uplift" }
@@ -37,9 +56,16 @@
     ],
     engine: [
       { id: "merchant", label: "Merchant app", ic: "📱", frame: "phone",
+        tabs: [
+          { id: "home", label: "Home", ic: "🏠" },
+          { id: "netting", label: "Netting", ic: "🔗" },
+          { id: "limitup", label: "Limit", ic: "📈" },
+          { id: "record", label: "Record", ic: "🗂️" }
+        ],
         screens: [
           { id: "home",    label: "Home" },
           { id: "netting", label: "Netting" },
+          { id: "limitup", label: "Limit up" },
           { id: "repay",   label: "Repay" },
           { id: "record",  label: "Record" }
         ] },
@@ -47,7 +73,8 @@
         screens: [
           { id: "frontier",   label: "Approval@loss" },
           { id: "challenger", label: "Challenger" },
-          { id: "guardrails", label: "Guardrails" }
+          { id: "guardrails", label: "Guardrails" },
+          { id: "fraud",      label: "Fraud graph" }
         ] },
       { id: "partner", label: "Partner / channel", ic: "🔌", frame: "console",
         screens: [
@@ -76,11 +103,14 @@
 
   /* narrative order for the guided tour across all five years */
   var TOUR = [
-    "rail/merchant/onboard", "rail/rep/approve", "rail/merchant/order", "rail/merchant/repay",
-    "rail/distributor/dashboard", "rail/distributor/collections", "rail/distributor/uplift",
-    "engine/merchant/home", "engine/merchant/netting", "engine/risk/frontier",
-    "engine/risk/challenger", "engine/risk/guardrails", "engine/partner/uplifttest",
-    "engine/partner/checkout",
+    "rail/merchant/onboard", "rail/merchant/identity", "rail/merchant/business",
+    "rail/merchant/consent", "rail/merchant/terms", "rail/merchant/activate",
+    "rail/merchant/order", "rail/merchant/repay", "rail/merchant/statement",
+    "rail/rep/onboard", "rail/rep/approve", "rail/rep/cashin",
+    "rail/distributor/golive", "rail/distributor/dashboard", "rail/distributor/collections", "rail/distributor/uplift",
+    "engine/merchant/home", "engine/merchant/netting", "engine/merchant/limitup", "engine/merchant/record",
+    "engine/risk/frontier", "engine/risk/challenger", "engine/risk/guardrails", "engine/risk/fraud",
+    "engine/partner/uplifttest", "engine/partner/checkout", "engine/partner/api",
     "arm/distributor/launcher", "arm/distributor/tenant", "arm/funder/warehouse",
     "arm/funder/securitization", "arm/brand/intelligence"
   ];
@@ -89,9 +119,12 @@
 
   /* ---------------- state ---------------- */
   var STATE = {
+    onb: { id: false },
+    consent: { zatca: true, bureau: true, market: false },
     order: { basket: 22000, placed: false },
     repay: { paid: false },
-    rep: { decided: null },
+    limitup: false,
+    rep: { decided: null, onbStep: 0 },
     lossBudget: 2.5,
     promoted: false,
     guards: { caps: true, breaker: true, velocity: true, concentration: false },
@@ -164,44 +197,140 @@
   var S = {};
 
   /* ---------- RAIL · MERCHANT ---------- */
+  function onbSteps(active) {
+    var labels = ["Welcome", "Nafath", "Shop", "Consent", "Terms", "Live"];
+    return '<div class="u-steps">' + labels.map(function (l, i) {
+      return '<span class="' + (i < active ? "done" : i === active ? "on" : "") + '"></span>';
+    }).join("") + "</div>";
+  }
   S["rail/merchant/onboard"] = {
-    head: { t: "Onboarding", sub: "Assisted by your rep · مع المندوب" },
+    head: { t: "Welcome", sub: "Set up by your rep · مع المندوب" },
     render: function () {
-      return '' +
-        '<div class="u-steps"><span class="done"></span><span class="done"></span><span class="on"></span><span></span></div>' +
-        '<div class="u-banner"><span class="ic">🪪</span><div>One visit. No branch, no queue. Identity by <b>Nafath</b>, terms you can read.</div></div>' +
-        '<div class="u-card"><div class="u-sec">Step 3 of 4 — confirm & consent</div>' +
-        row("Nafath identity", "Verified · " + MERCHANT.name, chip("✓ DONE", "ok")) +
-        row("Commercial reg.", "CR 1010" + "•••• · photo on file", chip("✓ DONE", "ok")) +
-        row("PDPL data consent", "ZATCA + bureau, revocable", chip("REVIEW", "amber")) +
-        "</div>" +
-        '<div class="u-card"><div class="u-sec">Your Murabaha terms — one page</div>' +
-        '<div class="u-kv"><span class="k">Structure</span><span class="v">Murabaha (cost-plus)</span></div>' +
-        '<div class="u-kv"><span class="k">Fee</span><span class="v">Flat, in riyals — shown per order</span></div>' +
-        '<div class="u-kv"><span class="k">Late fees</span><span class="v ok">None — ever</span></div>' +
-        '<div class="u-kv"><span class="k">Early settlement</span><span class="v ok">Earns a rebate</span></div>' +
-        '<div class="u-note">Connect ZATCA e-invoicing and your limit grows faster. Aggregated data may inform market insights — never your shop, identifiably.</div>' +
-        "</div>" +
-        '<button class="u-btn" onclick="TP.go(\'rail/merchant/limit\')">Accept &amp; activate my limit ▸</button>';
+      return onbSteps(0) +
+        '<div class="u-dark u-pop"><div class="lbl">بقالة النور · Al Noor Grocery</div>' +
+        '<div class="amt" style="font-size:26px">Let’s set up<br>your <span>buying limit</span></div>' +
+        '<div class="ft"><span>NO BRANCH · NO QUEUE</span><span>~3 MINUTES</span></div></div>' +
+        '<div class="u-note">Your distributor’s rep is doing this with you, on the counter, in the language you speak. Everything is earned after a relationship you already trust — not a bank assessment.</div>' +
+        '<div class="u-card"><div class="u-sec">What happens next</div>' +
+        row("Confirm who you are", "National ID via Nafath — one tap", chip("STEP 2", "dim")) +
+        row("Confirm your shop", "Pre-filled from your distributor", chip("STEP 3", "dim")) +
+        row("Choose what to share", "Honest, reversible consent", chip("STEP 4", "dim")) +
+        row("Read your terms", "Murabaha, one page, no late fees", chip("STEP 5", "dim")) + "</div>" +
+        '<button class="u-btn" onclick="TP.go(\'rail/merchant/identity\')">Start →</button>';
     }
   };
-  S["rail/merchant/limit"] = {
+  S["rail/merchant/identity"] = {
+    head: { t: "Confirm identity", sub: "الهوية · via Nafath" },
+    render: function () {
+      var done = STATE.onb.id;
+      return onbSteps(1) +
+        (done
+          ? '<div class="u-center u-pop"><div class="big">✅</div><h3>Verified with Nafath</h3><p>No password stored. Your bank-grade national identity, in one tap.</p></div>' +
+            '<div class="u-card">' +
+            '<div class="u-kv"><span class="k">Name</span><span class="v">' + MERCHANT.name + '</span></div>' +
+            '<div class="u-kv"><span class="k">National ID</span><span class="v">1•••••••842</span></div>' +
+            '<div class="u-kv"><span class="k">Method</span><span class="v ok">Nafath SSO</span></div></div>' +
+            '<button class="u-btn" onclick="TP.go(\'rail/merchant/business\')">Continue →</button>'
+          : '<div class="u-card" style="text-align:center;padding:26px 18px">' +
+            '<div style="font-size:42px">🪪</div>' +
+            '<h3 style="margin:12px 0 6px;font-size:17px">Sign in with Nafath</h3>' +
+            '<p style="font-size:12.5px;color:var(--dim);max-width:30ch;margin:0 auto 4px">The Kingdom’s national digital identity. We never see or store a password — auth happens on Nafath’s side.</p></div>' +
+            '<button class="u-btn amber" onclick="TP.onbId()">Open Nafath →</button>') ;
+    }
+  };
+  S["rail/merchant/business"] = {
+    head: { t: "Your shop", sub: "المنشأة · pre-filled" },
+    render: function () {
+      return onbSteps(2) +
+        '<div class="u-note ok">Pulled from your distributor’s records — confirm or fix. The rep already knows this shop; you’re not filling forms from scratch.</div>' +
+        '<div class="u-card"><div class="u-sec">Business details</div>' +
+        '<label class="u-sec" style="margin-top:0">Shop name</label><input class="u-input" value="Al Noor Grocery · بقالة النور" style="margin-bottom:10px">' +
+        '<label class="u-sec">Commercial registration</label><input class="u-input" value="CR 1010••••" style="margin-bottom:10px">' +
+        '<div class="u-row"><div class="l"><div class="t">Shopfront photo</div><div class="d">Geo-tagged by the rep</div></div><div class="r">' + chip("ON FILE", "ok") + '</div></div>' +
+        '<div class="u-row"><div class="l"><div class="t">Route & district</div><div class="d">Route 12 · Al Olaya</div></div><div class="r">' + chip("MATCHED", "dim") + '</div></div></div>' +
+        '<button class="u-btn" onclick="TP.go(\'rail/merchant/consent\')">Looks right — continue →</button>';
+    }
+  };
+  S["rail/merchant/consent"] = {
+    head: { t: "What you share", sub: "الموافقة · PDPL" },
+    render: function () {
+      var c = STATE.consent;
+      return onbSteps(3) +
+        '<div class="u-note">A fair trade, stated plainly: the more you connect, the faster your limit can grow. You can turn any of these off later — consent is reversible.</div>' +
+        '<div class="u-card">' +
+        consentToggle("zatca", "Connect ZATCA e-invoicing", "Your real sales — the strongest signal. Bigger limit, faster.", c.zatca) +
+        consentToggle("bureau", "SIMAH bureau — read & report", "Build a formal credit history every on-time cycle.", c.bureau) +
+        consentToggle("market", "Aggregated market insights", "Anonymous, k-anonymized — never your shop, identifiably.", c.market) +
+        "</div>" +
+        '<div class="u-card flat"><div class="u-sec">Your estimated limit with these choices</div>' +
+        '<div class="u-dark" style="margin:0"><div class="lbl">Indicative buying limit</div><div class="amt">SAR <span id="consentLimit">' + money(consentLimit()) + "</span></div>" +
+        '<div class="ft"><span>BASE 18,000</span><span id="consentBoost">' + consentBoostLbl() + "</span></div></div></div>" +
+        '<button class="u-btn" onclick="TP.go(\'rail/merchant/terms\')">Continue →</button>';
+    }
+  };
+  S["rail/merchant/terms"] = {
+    head: { t: "Your terms", sub: "مرابحة · one page" },
+    render: function () {
+      return onbSteps(4) +
+        '<div class="u-banner"><span class="ic">📜</span><div>Scholar-certified <b>Murabaha</b> — genuine cost-plus, not a wrapper. So plain it fits on one screen.</div></div>' +
+        '<div class="u-card"><div class="u-sec">The whole contract</div>' +
+        '<div class="u-kv"><span class="k">Structure</span><span class="v">Murabaha (cost-plus)</span></div>' +
+        '<div class="u-kv"><span class="k">Cost</span><span class="v">Flat fee in riyals, shown per order</span></div>' +
+        '<div class="u-kv"><span class="k">Late fees</span><span class="v ok">None — ever</span></div>' +
+        '<div class="u-kv"><span class="k">Miss a cycle</span><span class="v">A restructure offer, not a charge</span></div>' +
+        '<div class="u-kv"><span class="k">Pay early</span><span class="v ok">Earn a rebate</span></div>' +
+        '<div class="u-kv"><span class="k">Your data</span><span class="v">Yours · revocable anytime</span></div></div>' +
+        '<div class="u-row"><div class="l"><div class="t">Shariah board</div><div class="d">Certified, per product change</div></div><div class="r">' + chip("✓ CERTIFIED", "ok") + '</div></div>' +
+        '<button class="u-btn" onclick="TP.go(\'rail/merchant/activate\')">Accept &amp; activate my limit →</button>';
+    }
+  };
+  S["rail/merchant/activate"] = {
     head: { t: "Marhaba, Abu Khalid", sub: MERCHANT.shop },
     render: function () {
-      return '' +
+      return onbSteps(5) +
+        '<div class="u-center" style="padding:8px 0 4px"><div class="big u-pop">🎉</div></div>' +
         '<div class="u-dark u-pop"><div class="lbl">حد الشراء · Buying limit — now live</div>' +
         '<div class="amt">SAR <span>' + money(MERCHANT.limit) + "</span></div>" +
         '<div class="bar"><i style="width:' + (MERCHANT.used / MERCHANT.limit * 100) + '%"></i></div>' +
         '<div class="ft"><span>USED ' + money(MERCHANT.used) + "</span><span>FREE " + money(free()) + "</span></div></div>" +
-        '<div class="u-note ok">Your limit was sized from your distributor\'s sales history with this shop — the cold-start solved by the channel, not a credit file you don\'t have.</div>' +
+        '<div class="u-note ok">Sized from your distributor’s sales history with this shop — the cold-start solved by the channel, not a credit file you don’t have.</div>' +
         '<div class="u-card"><div class="u-sec">What you can do now</div>' +
         row("Stock with any connected supplier", "5 suppliers on the rail today", chip("READY", "ok")) +
         row("One due date", "Everything nets to a single weekly schedule", chip("AUTO", "dim")) +
-        row("Build credit history", "On-time repayment reports to SIMAH", chip("SIMAH", "amber")) +
+        row("Grow your limit", "On-time repayment reports to SIMAH", chip("SIMAH", "amber")) +
         "</div>" +
-        '<button class="u-btn" onclick="TP.go(\'rail/merchant/order\')">Place an order ▸</button>';
+        '<button class="u-btn" onclick="TP.go(\'rail/merchant/order\')">Place your first order →</button>';
     }
   };
+  S["rail/merchant/statement"] = {
+    head: { t: "Activity", sub: "كشف الحساب · this month" },
+    render: function () {
+      return '<div class="u-dark"><div class="lbl">This month on the rail</div><div class="amt">SAR <span>41,200</span></div>' +
+        '<div class="ft"><span>FINANCED</span><span class="amber">FEE SAR 494 · 1.2%</span></div></div>' +
+        '<div class="u-grid2" style="gap:10px">' +
+        '<div class="u-stat"><div class="lbl">ON-TIME</div><div class="num" style="font-size:22px">22</div><div class="delta up">cycles in a row</div></div>' +
+        '<div class="u-stat"><div class="lbl">LIMIT</div><div class="num" style="font-size:22px">+25%</div><div class="delta up">earned since Jan</div></div></div>' +
+        '<div class="u-chart"><div class="u-sec">Cash-flow mirror — money in vs out</div>' +
+        spark([18, 22, 19, 26, 24, 30, 28, 34, 31, 38], 600, 78, "#1e7f4f", "rgba(30,127,79,.09)") +
+        '<div class="u-legend"><span>weekly net position · safe-to-stock window highlighted in-app</span></div></div>' +
+        '<div class="u-card"><div class="u-sec">Recent</div>' +
+        row("Order · Al Noor Wholesale", "Thu · financed", "SAR 12,400") +
+        row("Repaid · netted", "5 suppliers, one date", "−SAR 4,950") +
+        row("Rebate · early settlement", "On-time bonus", "+SAR 22") + "</div>" +
+        '<div class="u-note">The statement doubles as a cash-flow mirror — given, not sold. Insight that deepens the rail and earns the merchant’s trust.</div>';
+    }
+  };
+  function consentLimit() {
+    var l = 18000; if (STATE.consent.zatca) l += 11000; if (STATE.consent.bureau) l += 3000; return l;
+  }
+  function consentBoostLbl() {
+    var b = consentLimit() - 18000;
+    return b > 0 ? "+" + money(b) + " from sharing" : "base only";
+  }
+  function consentToggle(id, t, d, on) {
+    return '<div class="u-toggle"><div>' + t + '<div class="d">' + d + '</div></div>' +
+      '<button class="sw ' + (on ? "on" : "") + '" onclick="TP.consent(\'' + id + '\')"></button></div>';
+  }
   S["rail/merchant/order"] = {
     head: { t: "New order", sub: "Al Noor Wholesale · مخزن" },
     render: function () {
@@ -333,7 +462,7 @@
         row("Nadec Direct", "22 financed orders", "SAR 40,400", "T+1") + "</div>" +
         '<div class="u-card"><div class="u-sec">Your DSO collapsed</div>' +
         ring(78, "12d", "DSO now", "#181815") +
-        '<p style="font-size:11.5px;color:var(--p-dim);text-align:center;margin-top:10px">From 54 days of informal terms to 12. The route stops being a collections agency.</p></div>' +
+        '<p style="font-size:11.5px;color:var(--dim);text-align:center;margin-top:10px">From 54 days of informal terms to 12. The route stops being a collections agency.</p></div>' +
         "</div>";
     }
   };
@@ -393,7 +522,7 @@
     render: function () {
       return '<div class="u-card"><div class="u-sec">Before — five lines, five chases</div>' +
         '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">' + chip("Almarai", "dim") + chip("Tamimi", "dim") + chip("Nadec", "dim") + chip("Sunbulah", "dim") + chip("Al Noor", "dim") + "</div>" +
-        '<p style="font-size:11.5px;color:var(--p-dim)">Five due dates, five reps, five ways to fall behind.</p></div>' +
+        '<p style="font-size:11.5px;color:var(--dim)">Five due dates, five reps, five ways to fall behind.</p></div>' +
         '<div class="u-center" style="padding:6px"><div style="font-size:22px">↓</div></div>' +
         '<div class="u-dark"><div class="lbl">After — one netted obligation</div><div class="amt">SAR <span>4,950</span></div>' +
         '<div class="ft"><span>5 SUPPLIERS</span><span class="amber">ONE THURSDAY</span></div></div>' +
@@ -510,7 +639,7 @@
         bars([62, 71, 80, 74, 58, 44], ["Q1", "Q2", "Q3", "Q4", "Q1", "Q2"], function (i) { return i === 2 ? "#b54708" : "#181815"; }, 80) +
         '<div class="u-legend"><span>% of cap used · Q3 near ceiling — new originations auto-throttle</span></div></div>' +
         '<div class="u-card"><div class="u-sec">Circuit breaker drill</div>' +
-        '<p style="font-size:11.5px;color:var(--p-dim);margin-bottom:10px">Simulate an early-warning spike in one market. Risk has authority to brake the company — and everyone knows it.</p>' +
+        '<p style="font-size:11.5px;color:var(--dim);margin-bottom:10px">Simulate an early-warning spike in one market. Risk has authority to brake the company — and everyone knows it.</p>' +
         (STATE.breakerTripped
           ? '<div class="u-note bad" style="margin:0">Originations halted in Market A. Existing book seasons; no new exposure added. Reset when signals normalize.</div><button class="u-btn ghost sm" style="margin-top:10px" onclick="TP.resetBreaker()">↺ Signals normalized — resume</button>'
           : '<button class="u-btn ok" onclick="TP.tripBreaker()">⚠ Trip the breaker (drill)</button>') +
@@ -568,9 +697,9 @@
         '<div class="u-card" style="background:#0f0f12;border-color:#222"><pre style="font-family:JetBrains Mono;font-size:11.5px;line-height:1.7;color:#8c8c8a;overflow:auto;margin:0">' +
         '<span style="color:#4a4a48">// POST /v1/decisions</span>\n{\n  <span style="color:#ffd97a">"merchant_id"</span>: <span style="color:#7ee787">"mrc_8H2KD"</span>,\n  <span style="color:#ffd97a">"channel"</span>: <span style="color:#7ee787">"marketplace"</span>,\n  <span style="color:#ffd97a">"basket"</span>: { <span style="color:#ffd97a">"total"</span>: 22000, <span style="color:#ffd97a">"currency"</span>: <span style="color:#7ee787">"SAR"</span> }\n}\n\n<span style="color:#4a4a48">// 200 OK — 212ms</span>\n{\n  <span style="color:#ffd97a">"decision"</span>: <span style="color:#7ee787">"partial"</span>,\n  <span style="color:#ffd97a">"approved_amount"</span>: 17800,\n  <span style="color:#ffd97a">"fee"</span>: { <span style="color:#ffd97a">"type"</span>: <span style="color:#7ee787">"murabaha_flat"</span>, <span style="color:#ffd97a">"amount"</span>: 214 },\n  <span style="color:#ffd97a">"due_date"</span>: <span style="color:#7ee787">"2027-03-12"</span>,\n  <span style="color:#ffd97a">"reason_codes"</span>: [<span style="color:#7ee787">"headroom_partial"</span>],\n  <span style="color:#ffd97a">"headroom_hint"</span>: <span style="color:#7ee787">"SAR 4,200 frees after Thursday"</span>\n}</pre></div>' +
         '<div class="u-grid3">' +
-        '<div class="u-card flat"><div class="u-sec">Idempotent</div><p style="font-size:11.5px;color:var(--p-dim)">Reason codes + remediation in AR/UR/EN. Safe to retry.</p></div>' +
-        '<div class="u-card flat"><div class="u-sec">Webhooks</div><p style="font-size:11.5px;color:var(--p-dim)">Settlement, repayment, limit-change, early-warning events.</p></div>' +
-        '<div class="u-card flat"><div class="u-sec">Sandbox-first</div><p style="font-size:11.5px;color:var(--p-dim)">Certify on synthetic merchants before touching the rail.</p></div></div>' +
+        '<div class="u-card flat"><div class="u-sec">Idempotent</div><p style="font-size:11.5px;color:var(--dim)">Reason codes + remediation in AR/UR/EN. Safe to retry.</p></div>' +
+        '<div class="u-card flat"><div class="u-sec">Webhooks</div><p style="font-size:11.5px;color:var(--dim)">Settlement, repayment, limit-change, early-warning events.</p></div>' +
+        '<div class="u-card flat"><div class="u-sec">Sandbox-first</div><p style="font-size:11.5px;color:var(--dim)">Certify on synthetic merchants before touching the rail.</p></div></div>' +
         '<button class="u-btn" style="max-width:380px" onclick="TP.tour(1)">Engine compounding → open Chapter 3 ▸</button>';
     }
   };
@@ -587,8 +716,8 @@
       }).join("");
       var body;
       if (st === 0) body = '<div class="u-sec">1 · Brand your arm</div>' +
-        '<label class="u-sec" style="color:var(--p-dim)">Program name</label><input class="u-input" id="armName" value="' + a.name + '" oninput="TP.armName(this.value)" style="margin-bottom:10px">' +
-        '<label class="u-sec" style="color:var(--p-dim)">Accent colour</label><div style="display:flex;gap:8px;margin-top:6px">' +
+        '<label class="u-sec" style="color:var(--dim)">Program name</label><input class="u-input" id="armName" value="' + a.name + '" oninput="TP.armName(this.value)" style="margin-bottom:10px">' +
+        '<label class="u-sec" style="color:var(--dim)">Accent colour</label><div style="display:flex;gap:8px;margin-top:6px">' +
         colorDot("#155e46", a.color) + colorDot("#3729a8", a.color) + colorDot("#b42318", a.color) + colorDot("#1f1f22", a.color) + "</div>";
       else if (st === 1) body = '<div class="u-sec">2 · Risk policy (inherits the engine)</div>' +
         '<div class="u-toggle"><div>Approval@loss frontier<div class="d">Run on Tradepay’s champion model</div></div><button class="sw on"></button></div>' +
@@ -611,7 +740,7 @@
         '<div class="u-card"><div class="u-sec">Live preview — tenant merchant app</div>' +
         '<div class="brandprev" id="brandPrev" style="background:' + a.color + '"><div class="lbl">' + a.name + '</div><div class="amt">SAR 45,000</div>' +
         '<div class="pw">POWERED BY TRADEPAY</div></div>' +
-        '<p style="font-size:11px;color:var(--p-dim);margin-top:10px">Tenant zero is our own book — two years of receipts, not a pitch. Every tenant’s consented outcomes widen the engine’s lead over any build-it-yourself attempt.</p></div></div>';
+        '<p style="font-size:11px;color:var(--dim);margin-top:10px">Tenant zero is our own book — two years of receipts, not a pitch. Every tenant’s consented outcomes widen the engine’s lead over any build-it-yourself attempt.</p></div></div>';
     },
     init: function () { /* preview wired via oninput */ }
   };
@@ -710,12 +839,129 @@
     }
   };
 
+  /* ---------- RAIL · REP · onboard ---------- */
+  S["rail/rep/onboard"] = {
+    head: { t: "Onboard a shop", sub: "Basmah Mini-market" },
+    render: function () {
+      return '<div class="u-banner"><span class="ic">🪪</span><div>One stop, on the counter. No forms — you already know this shop.</div></div>' +
+        '<div class="u-card"><div class="u-sec">Captured in one visit</div>' +
+        row("Nafath identity", "Merchant taps their own phone", chip("✓", "ok")) +
+        row("Shop & CR", "Pre-filled from your sales history", chip("✓", "ok")) +
+        row("Consent & terms", "Murabaha one-pager, read aloud", chip("✓", "ok")) + "</div>" +
+        '<div class="u-dark"><div class="lbl">Pre-scored from your route history</div><div class="amt">SAR <span>12,000</span></div>' +
+        '<div class="ft"><span>STARTER LIMIT</span><span class="amber">grows with ZATCA</span></div></div>' +
+        '<div class="u-note">First limits are sized by the anchor distributor’s sales history with the shop — the Tienda Pago mechanic. The relationship is priced in while the rail’s own data forms.</div>' +
+        '<button class="u-btn" onclick="TP.go(\'rail/rep/approve\')">Activate &amp; take first order →</button>';
+    }
+  };
+
+  /* ---------- RAIL · DISTRIBUTOR · go-live ---------- */
+  S["rail/distributor/golive"] = {
+    title: "Onboarding & go-live", url: "console.tradepay.sa/rail/onboarding",
+    render: function () {
+      return '<div class="u-h"><div><h2>Bring Al Noor Distribution onto the rail</h2><div class="sub">Two anchor distributors, one city — the wedge</div></div>' + chip("SETUP · 4 OF 5", "amber") + "</div>" +
+        '<div class="u-grid2" style="align-items:start">' +
+        '<div class="u-card"><div class="u-sec">Integration checklist</div>' +
+        row("Connect DMS / ERP", "SAP B1 · van-sales API", chip("✓ LINKED", "ok")) +
+        row("Map SKUs & price lists", "1,240 SKUs reconciled", chip("✓ DONE", "ok")) +
+        row("sarie settlement account", "T+1 payouts verified", chip("✓ DONE", "ok")) +
+        row("Pre-score merchant base", "~3,000 shops, sales history", chip("✓ DONE", "ok")) +
+        row("Train the route reps", "12 reps · tablet SDK", chip("IN PROGRESS", "amber")) + "</div>" +
+        '<div class="u-card"><div class="u-sec">Anchor terms — honest, no coercive lock</div>' +
+        '<div class="u-kv"><span class="k">Co-branding</span><span class="v">Al Noor × Tradepay</span></div>' +
+        '<div class="u-kv"><span class="k">Launch economics</span><span class="v ok">Anchor rate</span></div>' +
+        '<div class="u-kv"><span class="k">Credit risk</span><span class="v">Carried by Tradepay</span></div>' +
+        '<div class="u-kv"><span class="k">Settlement</span><span class="v">T+1 on-rail</span></div>' +
+        '<div class="u-kv"><span class="k">Exclusivity</span><span class="v">None — earned, not forced</span></div>' +
+        '<div class="u-note ok" style="margin-bottom:0">The lock that matters is settlement reliability and approval uplift — not a contract clause.</div></div></div>' +
+        '<div class="u-note">A distributor goes live in under six weeks: connect the system they already run, price in their relationship knowledge, and the rail starts capturing repayment from the first financed order.</div>' +
+        '<button class="u-btn" style="max-width:340px" onclick="TP.go(\'rail/distributor/dashboard\')">Go live → open settlement ▸</button>';
+    }
+  };
+
+  /* ---------- ENGINE · MERCHANT · limit up ---------- */
+  S["engine/merchant/limitup"] = {
+    head: { t: "Limit up", sub: "زيادة الحد" },
+    render: function () {
+      if (STATE.limitup) {
+        return '<div class="u-center u-pop"><div class="big">📈</div><h3>Limit raised to SAR 38,000</h3><p>The engine re-priced your headroom on a strong ZATCA month and 22 on-time cycles — instantly.</p></div>' +
+          '<div class="u-dark"><div class="lbl">New buying limit</div><div class="amt">SAR <span>38,000</span></div>' +
+          '<div class="ft"><span>WAS 32,000</span><span class="amber">+6,000</span></div></div>' +
+          '<button class="u-btn ghost" onclick="TP.limitReset()">↺ Replay</button>';
+      }
+      return '<div class="u-dark"><div class="lbl">Current buying limit</div><div class="amt">SAR <span>32,000</span></div>' +
+        '<div class="bar"><i style="width:44%"></i></div><div class="ft"><span>USED 14,200</span><span>FREE 17,800</span></div></div>' +
+        '<div class="u-card"><div class="u-sec">Why you qualify for more</div>' +
+        row("ZATCA sales", "Strong month, +18% vs avg", chip("+SAR 4k", "ok")) +
+        row("On-time cycles", "22 in a row", chip("+SAR 2k", "ok")) +
+        row("Settlement behaviour", "No stutters on-rail", chip("CLEAN", "dim")) + "</div>" +
+        '<div class="u-note">Limits breathe with the flow — a strong ZATCA month raises headroom, a settlement stutter trims it. Shopify Capital’s performance-scaled mechanic, applied to inventory cycles.</div>' +
+        '<button class="u-btn" onclick="TP.limitUp()">Raise my limit →</button>';
+    }
+  };
+
+  /* ---------- ENGINE · RISK · fraud graph ---------- */
+  S["engine/risk/fraud"] = {
+    title: "Fraud & risk", url: "console.tradepay.sa/engine/fraud",
+    render: function () {
+      return '<div class="u-h"><div><h2>The rail sees what bolt-on lenders can’t</h2><div class="sub">Merchant · supplier · rep network graph</div></div>' + chip("AML / TM", "dim") + "</div>" +
+        '<div class="u-grid4">' +
+        statTile("FINANCE-ON-DELIVERY", "100%", "release on confirm", "phantom orders closed", "up") +
+        statTile("BUST-OUT RINGS", "3", "flagged this week", "graph-detected", "mid") +
+        statTile("NEW-MERCHANT VELOCITY", "capped", "step-up on anomaly", "fraud magnet guarded", "up") +
+        statTile("FALSE-POSITIVE RATE", "1.2%", "honest shops ride free", "friction budget", "up") + "</div>" +
+        '<div class="u-grid2" style="align-items:start">' +
+        '<div class="u-chart"><div class="u-sec">Collusion graph — a diversion ring, isolated</div>' + fraudGraph() +
+        '<div class="u-legend"><span><i style="background:#1e7f4f"></i>normal</span><span><i style="background:#b42318"></i>flagged ring</span><span><i style="background:#FFC53D"></i>shared rep</span></div></div>' +
+        '<div class="u-card"><div class="u-sec">Signals only the rail generates</div>' +
+        row("ZATCA cross-check", "Invoice reality vs financed order", chip("MATCH", "ok")) +
+        row("Resale-pattern baskets", "SKU mix flags diversion", chip("WATCH", "amber")) +
+        row("Device & number binding", "Merchant-own OTP", chip("BOUND", "dim")) +
+        row("Delivery confirmation", "Funds release on confirm", chip("ENFORCED", "ok")) + "</div></div>" +
+        '<div class="u-note">Funds release against delivery confirmation; merchant-supplier-rep graphs expose bust-out rings a single-relationship view misses. The Capiter file is also a fraud-governance file.</div>';
+    }
+  };
+  function fraudGraph() {
+    return '<svg viewBox="0 0 300 150" style="width:100%;height:auto">' +
+      /* normal cluster edges */
+      '<line x1="70" y1="48" x2="120" y2="80" stroke="#cfcabb" stroke-width="1.5"/>' +
+      '<line x1="120" y1="80" x2="70" y2="112" stroke="#cfcabb" stroke-width="1.5"/>' +
+      '<line x1="120" y1="80" x2="40" y2="80" stroke="#cfcabb" stroke-width="1.5"/>' +
+      /* shared rep bridge */
+      '<line x1="120" y1="80" x2="190" y2="80" stroke="#FFC53D" stroke-width="2" stroke-dasharray="4 3"/>' +
+      /* flagged ring edges */
+      '<line x1="190" y1="80" x2="240" y2="50" stroke="#e7b4ad" stroke-width="1.5"/>' +
+      '<line x1="240" y1="50" x2="265" y2="95" stroke="#e7b4ad" stroke-width="1.5"/>' +
+      '<line x1="265" y1="95" x2="210" y2="115" stroke="#e7b4ad" stroke-width="1.5"/>' +
+      '<line x1="210" y1="115" x2="190" y2="80" stroke="#e7b4ad" stroke-width="1.5"/>' +
+      /* normal nodes */
+      '<circle cx="70" cy="48" r="9" fill="#1e7f4f"/><circle cx="40" cy="80" r="9" fill="#1e7f4f"/>' +
+      '<circle cx="70" cy="112" r="9" fill="#1e7f4f"/><circle cx="120" cy="80" r="11" fill="#181815"/>' +
+      /* shared rep node */
+      '<circle cx="190" cy="80" r="10" fill="#FFC53D"/>' +
+      /* flagged nodes */
+      '<circle cx="240" cy="50" r="9" fill="#b42318"/><circle cx="265" cy="95" r="9" fill="#b42318"/>' +
+      '<circle cx="210" cy="115" r="9" fill="#b42318"/>' +
+      '<text x="120" y="83" font-size="7" fill="#fff" text-anchor="middle" font-family="JetBrains Mono">D</text>' +
+      '<text x="238" y="20" font-size="7.5" fill="#b42318" text-anchor="middle" font-family="JetBrains Mono">bust-out ring</text>' +
+      "</svg>";
+  }
+
   /* ===================================================================
      CONTEXT PANELS  — what + why-now per screen
      =================================================================== */
   var CTX = {
     "rail/merchant/onboard": { title: "Dignity-first onboarding", body: "The rep introduces it on a normal route visit — Nafath, consent and one-page Murabaha terms in one assisted session. The merchant never travels, never queues, never feels assessed by a bank.", why: "Acquisition is the channel’s strength, not ours. Borrowing the distributor’s trusted relationship solves cold-start that no thin-file credit score could.", chips: ["Nafath", "PDPL", "Murabaha"] },
-    "rail/merchant/limit": { title: "A limit that lives in the flow", body: "Buying power denominated in goods and trust — sized from the distributor’s sales history with this shop, the Tienda Pago mechanic.", why: "The partner’s relationship knowledge is priced in while the rail’s own data forms.", chips: ["Cold-start solved"] },
+    "rail/merchant/identity": { title: "Identity, in one tap", body: "Nafath is the Kingdom's national digital identity. Auth happens on Nafath's side — Tradepay never sees or stores a password.", why: "Bank-grade KYC without a branch visit or paperwork theatre. The merchant uses their own phone.", chips: ["Nafath", "No password stored"] },
+    "rail/merchant/business": { title: "Your shop, pre-filled", body: "Shop name, CR and a geo-tagged shopfront photo — pulled from the distributor's records so the merchant confirms rather than fills.", why: "The channel already knows this shop. Onboarding borrows that knowledge instead of starting cold.", chips: ["Pre-filled", "Channel knowledge"] },
+    "rail/merchant/consent": { title: "Consent as a fair trade", body: "Honest, reversible choices: connect ZATCA and the limit grows faster; share aggregated data, never your identifiable shop. Toggle them to watch the indicative limit move.", why: "Informed, reciprocal, PDPL-clean — and it keeps the Year-4 data option alive without retrofitting.", chips: ["PDPL", "Reversible", "Interactive"] },
+    "rail/merchant/terms": { title: "Terms you can read", body: "The whole Murabaha contract on one screen: flat fee in riyals, no late fees, rebate for early settlement, a restructure (not a charge) on a bad month.", why: "Genuine structure is the easiest thing to be transparent about. Comprehension is the compliance.", chips: ["Murabaha", "No late fees"] },
+    "rail/merchant/activate": { title: "A limit that lives in the flow", body: "Buying power denominated in goods and trust — sized from the distributor's sales history with this shop, the Tienda Pago mechanic.", why: "The partner's relationship knowledge is priced in while the rail's own data forms. The whole setup took one visit.", chips: ["Cold-start solved", "Live"] },
+    "rail/merchant/statement": { title: "The statement is a gift", body: "A monthly activity view that doubles as a cash-flow mirror — money in vs out, safe-to-stock windows, limit growth.", why: "Operational intelligence given, not sold — it deepens the rail and earns trust. The Y1–2 free data product.", chips: ["Cash-flow mirror"] },
+    "rail/rep/onboard": { title: "One stop, no forms", body: "The rep onboards a shop on a normal route visit — Nafath, pre-filled shop, consent and a starter limit sized from sales history.", why: "Activation comp is tied to the second financed order and on-time first repayment, not signups. Quality over logos.", chips: ["Tienda Pago mechanic"] },
+    "rail/distributor/golive": { title: "Live in under six weeks", body: "A distributor connects the DMS it already runs, reconciles SKUs, verifies sarie settlement and pre-scores its base — then trains the route reps.", why: "Speed comes from meeting the distributor inside their existing system; the rail starts capturing repayment from the first financed order.", chips: ["DMS", "Anchor terms", "No coercive lock"] },
+    "engine/merchant/limitup": { title: "Limits that breathe", body: "Headroom steps with observed on-rail behaviour and live signals — a strong ZATCA month raises it; a settlement stutter trims it.", why: "Shopify Capital's performance-scaled mechanic, applied to inventory cycles. The data the rail generates re-prices risk in real time.", chips: ["Performance-scaled", "Interactive"] },
+    "engine/risk/fraud": { title: "The rail sees the network", body: "Funds release on delivery confirmation; merchant-supplier-rep graphs expose bust-out rings and diversion baskets single-relationship views miss.", why: "Fast-growing lenders are fraud magnets — the Capiter file is also a fraud-governance file. Controls fire on anomalies; honest shops ride invisibly.", chips: ["Graph", "Finance-on-delivery"] },
     "rail/merchant/order": { title: "Approve inside the order", body: "Credit is experienced as ‘the order went through.’ Partial approval is the highest-leverage UX moment in the segment — it rescues the basket instead of declining it.", why: "Drag the basket past your headroom to see the partial split and the path to more.", chips: ["<300ms", "Partial = rescue"] },
     "rail/merchant/repay": { title: "Repayment rides the cash", body: "One netted due date across all suppliers, collected where the merchant’s money already moves. No late fees — lateness triggers help, not charges.", why: "Repayment captured at the source is the structural answer to collections, the category’s true loss driver.", chips: ["sarie", "One date", "Rebates"] },
     "rail/rep/route": { title: "The field surface", body: "The rep’s route is the go-to-market. Onboarding, approvals and cash-in all happen on stops they already make.", why: "Distribution rides existing infrastructure — the cheapest channel in the segment.", chips: ["Channel-led"] },
@@ -768,7 +1014,7 @@
       '<h5>The two north stars that contain the whole strategy</h5>' +
       '<div class="chain"><span class="hot">%GMV on-rail</span><b>×</b><span class="hot">approval@loss</span></div>' +
       '<p>Position × economics. Either alone can be gamed; together they describe a company that owns the flow <b>and</b> out-underwrites the field — at every step from 2026 to 2031.</p>' +
-      '<p style="font-size:11px;color:var(--p-faint)" class="mono">Evidence: Square ($22B+, &lt;3% loss) · Tienda Pago (since 2013) · MaxAB-Wasoko (99% repayment) · Lendo / Tamara (Saudi capital depth) · Capiter (the anti-playbook). Figures are public benchmarks or modeling assumptions from the strategy brief.</p>';
+      '<p style="font-size:11px;color:var(--faint)" class="mono">Evidence: Square ($22B+, &lt;3% loss) · Tienda Pago (since 2013) · MaxAB-Wasoko (99% repayment) · Lendo / Tamara (Saudi capital depth) · Capiter (the anti-playbook). Figures are public benchmarks or modeling assumptions from the strategy brief.</p>';
   }
 
   /* ===================================================================
@@ -804,9 +1050,9 @@
     var pd = personaDef(meta.era, meta.persona);
     if (pd.frame === "phone") {
       var head = S[meta.era + "/" + meta.persona + "/" + meta.screen].head || { t: pd.label, sub: "" };
-      var tabs = pd.screens.slice(0, 5).map(function (s) {
-        var ic = ({ onboard: "🪪", limit: "💳", order: "🛒", repay: "💸", route: "🗺️", approve: "✅", cashin: "🧾", home: "🏠", netting: "🔗", record: "📈" })[s.id] || "•";
-        return '<button class="' + (s.id === meta.screen ? "on" : "") + '" onclick="TP.go(\'' + meta.era + "/" + meta.persona + "/" + s.id + '\')"><span class="ic">' + ic + "</span>" + s.label + "</button>";
+      var navItems = pd.tabs || pd.screens.slice(0, 4).map(function (s) { return { id: s.id, label: s.label, ic: "•" }; });
+      var tabs = navItems.map(function (s) {
+        return '<button class="' + (s.id === meta.screen ? "on" : "") + '" onclick="TP.go(\'' + meta.era + "/" + meta.persona + "/" + s.id + '\')"><span class="ic">' + (s.ic || "•") + "</span>" + s.label + "</button>";
       }).join("");
       return '<div class="phone"><div class="framelbl">' + pd.label + " APP · " + eraById(meta.era).y + "</div>" +
         '<div class="pscreen"><div class="p-status"><span>9:41</span><span>﷽&nbsp;&nbsp;5G ▮▮▮</span></div>' +
@@ -826,7 +1072,7 @@
     }).join("");
     return '<div class="console"><div class="c-chrome"><div class="dots"><i></i><i></i><i></i></div>' +
       '<div class="url">' + (sc.url || "console.tradepay.sa") + '</div></div>' +
-      '<div class="c-body"><aside class="c-side"><div class="c-logo"><span class="mk"></span>Tradepay<small>' + eraById(meta.era).name + " console</small></div>" +
+      '<div class="c-body"><aside class="c-side"><div class="c-logo"><span class="mk"></span><span class="tp">Tradepay</span><small>' + eraById(meta.era).name + " console</small></div>" +
       '<div class="c-nav">' + groups + "</div>" +
       '<div class="c-user"><div class="av">TP</div><div class="nm">Operator<small>' + eraById(meta.era).y + " · " + meta.persona + "</small></div></div></aside>" +
       '<main class="c-main">' + inner + "</main></div></div>";
@@ -892,6 +1138,11 @@
     repay: function () { STATE.repay.paid = true; render(); },
     repayReset: function () { STATE.repay.paid = false; render(); },
     repApprove: function () { STATE.rep.decided = true; render(); },
+    /* onboarding */
+    onbId: function () { STATE.onb.id = true; render(); },
+    consent: function (id) { STATE.consent[id] = !STATE.consent[id]; render(); },
+    limitUp: function () { STATE.limitup = true; render(); },
+    limitReset: function () { STATE.limitup = false; render(); },
     /* engine */
     frontier: function (v) { STATE.lossBudget = Number(v); var lb = el("lbVal"); if (lb) lb.textContent = Number(v).toFixed(1) + "%"; paintFrontier(); },
     promote: function () { STATE.promoted = true; render(); },
