@@ -1,10 +1,20 @@
-# TradePay — marketing site
+# TradePay — marketing site (Synthesis edition)
 
 An award-grade single-page marketing site for **TradePay**, the settlement-and-credit
 rail for traditional trade in the Gulf.
 
 > Credit that rides the flow. Finance the order, capture repayment at the source,
 > approve more merchants at the same loss.
+
+**Lives at** `/tradepay/synthesis/` so it sits **side-by-side** with the repository's
+other TradePay surfaces without disturbing them:
+
+| Surface | Path |
+| --- | --- |
+| This site (Synthesis edition) | `/tradepay/synthesis/` |
+| Product site | `/tradepay/` |
+| Clickable prototype | `/tradepay/prototype/` |
+| Strategy brief | `/tradepay/strategy/` |
 
 ## What's here
 
