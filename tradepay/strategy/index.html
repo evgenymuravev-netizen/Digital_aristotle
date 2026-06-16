@@ -1,164 +1,1167 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tradepay CPO Case — Candidate 11: The Synthesis</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Tradepay — Head of Product Strategy</title>
+<meta name="description" content="Tradepay Head-of-Product strategy, framed through Rumelt's Good Strategy / Bad Strategy: a hard diagnosis, one guiding policy — own the settlement rail and capture repayment at source — and coherent action. Embedded working capital for Saudi Arabia's traditional trade.">
+<meta property="og:title" content="Tradepay — Head of Product Strategy">
+<meta property="og:description" content="The collections company disguised as a lender. A diagnosis-led strategy for embedded working capital in Saudi traditional trade.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 32'%3E%3Crect x='18' y='1' width='15' height='15' rx='3' fill='%2300E0C0'/%3E%3Crect x='3' y='16' width='15' height='15' rx='3' fill='%2300E0C0'/%3E%3C/svg%3E">
 <style>
+  @font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:100 900;font-display:swap;src:url("assets/fonts/HankenGrotesk-Variable.woff2") format("woff2");}
   :root{
-    --bg:#0a0a0c; --bg-2:#111114; --ink:#ededec; --ink-dim:#8c8c8a; --ink-faint:#4a4a48;
-    --rule:#1f1f22; --accent:#FFC53D; --accent-soft:#FFD97A; --warn:#ff8a3d; --ok:#7ee787;
-    --grid-line:rgba(255,255,255,0.03);
+    --teal:#00E0C0; --teal-logo:#2BE3C8; --teal-tint:rgba(0,224,192,.11); --teal-deep:#007D6B;
+    --bg:#F9FAFB; --mint:#E5FCF8; --white:#fff; --indigo:#0E1117;
+    --black:#000; --text:#4B5563; --text2:#667085; --muted:rgba(0,0,0,.5);
+    --on-dark:rgba(255,255,255,.75); --div-dark:rgba(255,255,255,.12);
+    --line:#E4E7EC; --line2:#D0D5DD;
+    --display:"Hanken Grotesk",sans-serif; --body:"Hanken Grotesk",sans-serif;
+    --r:8px; --rc:16px;
+    --warn:#E07A3C; --bad:#E5483D; --ok:#12A66E;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:var(--bg);color:var(--ink);font-family:'Geist',sans-serif;font-weight:400;overflow:hidden;-webkit-font-smoothing:antialiased}
-  body{background:
-      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0/40px 40px,
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0/40px 40px,
-      radial-gradient(ellipse at 80% 0%, rgba(255,197,61,0.08), transparent 60%), var(--bg);}
-  .deck{position:relative;width:100vw;height:100vh;overflow:hidden}
-  .slide{position:absolute;inset:0;padding:64px 88px 100px;opacity:0;pointer-events:none;
-    transform:translateY(8px);transition:opacity .35s ease, transform .35s ease;display:flex;flex-direction:column;}
-  .slide.active{opacity:1;pointer-events:auto;transform:translateY(0)}
-  .slide.scrollable{overflow-y:auto;padding-bottom:120px}
-  .slide.scrollable::-webkit-scrollbar{width:6px}
-  .slide.scrollable::-webkit-scrollbar-track{background:transparent}
-  .slide.scrollable::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
-  .slide.scrollable::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-  .topbar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
-    padding:18px 32px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--ink-faint);border-bottom:1px solid var(--rule);background:rgba(10,10,12,0.7);backdrop-filter:blur(8px);z-index:10;}
-  .topbar .brand{color:var(--ink)} .topbar .brand b{color:var(--accent-soft);font-weight:500}
-  .footer{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
-    padding:16px 32px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--ink-faint);
-    border-top:1px solid var(--rule);background:rgba(10,10,12,0.7);backdrop-filter:blur(8px);z-index:10;}
-  .nav{display:flex;gap:8px;align-items:center}
-  .nav button{background:transparent;border:1px solid var(--rule);color:var(--ink-dim);font-family:inherit;font-size:11px;padding:6px 10px;cursor:pointer;transition:all .15s ease;}
-  .nav button:hover{border-color:var(--accent);color:var(--accent-soft)}
-  .progress{display:flex;gap:3px} .progress span{width:9px;height:2px;background:var(--rule);transition:background .2s ease}
-  .progress span.done{background:var(--accent)}
-  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-soft);margin-bottom:24px}
-  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:82px;line-height:.95;letter-spacing:-.02em;margin-bottom:28px}
-  h1 em{font-style:italic;color:var(--accent-soft)}
-  h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:46px;line-height:1.02;letter-spacing:-.015em;margin-bottom:26px}
-  h2 em{font-style:italic;color:var(--accent-soft)}
-  h3{font-family:'Geist',sans-serif;font-weight:500;font-size:17px;letter-spacing:-.005em;margin-bottom:8px}
-  p{font-size:15px;line-height:1.55;color:var(--ink-dim);max-width:62ch}
-  .lead{font-size:20px;line-height:1.5;color:var(--ink);max-width:70ch}
-  .mono{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-dim);letter-spacing:.02em}
-  .row{display:flex;gap:48px} .col{flex:1}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  .slide-head{margin-bottom:30px}
-  .card{background:var(--bg-2);border:1px solid var(--rule);padding:20px;position:relative;}
-  .card.accent{border-color:rgba(255,197,61,0.4)}
-  .card-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-faint);margin-bottom:10px;letter-spacing:.15em}
-  .card p{font-size:13.5px;line-height:1.5}
-  .stat{display:flex;flex-direction:column;gap:6px;padding:16px 0;border-top:1px solid var(--rule)}
-  .stat:first-child{border-top:none;padding-top:0}
-  .stat .num{font-family:'Instrument Serif',serif;font-size:42px;line-height:1;color:var(--ink)}
-  .stat .num em{font-style:italic;color:var(--accent-soft)}
-  .stat .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
-  table{width:100%;border-collapse:collapse;font-size:13.5px}
-  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
-  th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);font-weight:500;background:rgba(255,255,255,0.01)}
-  td{color:var(--ink-dim);line-height:1.5} td.col-name{color:var(--ink);font-weight:500}
-  .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;background:rgba(255,197,61,0.15);color:var(--accent-soft);letter-spacing:.05em;margin-right:4px}
-  .timeline{display:flex;flex-direction:column;gap:0;margin-top:4px}
-  .tl-item{display:grid;grid-template-columns:130px 1fr;gap:24px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:start}
-  .tl-item:last-child{border-bottom:none}
-  .tl-date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent-soft);letter-spacing:.05em}
-  .tl-body h3{margin-bottom:4px} .tl-body p{font-size:13.5px}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:var(--display);color:var(--black);letter-spacing:-.03em;line-height:1.1;margin:0}
+  p{margin:0 0 14px}
+  b,strong{color:var(--black);font-weight:600}
+  a{color:var(--teal-deep);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+
+  /* ── top nav ── */
+  nav.top{position:sticky;top:0;z-index:50;background:rgba(249,250,251,.9);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav.top .inner{max-width:1240px;margin:0 auto;padding:11px 24px;display:flex;align-items:center;gap:18px}
+  .logo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;
+    letter-spacing:-.03em;font-size:19px;color:var(--black);cursor:pointer;flex:0 0 auto}
+  .logo .mark{display:grid;place-items:center}
+  .logo .mark svg{display:block}
+  .navlinks{display:flex;gap:1px;flex-wrap:nowrap;flex:1;justify-content:center;overflow-x:auto;scrollbar-width:none}
+  .navlinks::-webkit-scrollbar{display:none}
+  .navlinks button{font-family:var(--body);font-size:11.5px;font-weight:500;color:var(--text2);
+    background:transparent;border:0;padding:7px 7px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:.12s}
+  .navlinks button:hover{color:var(--black);background:var(--white)}
+  .navlinks button.active{color:var(--teal-deep);background:var(--teal-tint);font-weight:600}
+  .navlinks button .n{color:var(--teal);font-weight:700;margin-right:3px}
+  @media(max-width:1100px){.navlinks{justify-content:flex-start}}
+
+  .progress{height:2px;background:var(--teal);width:0;transition:width .3s}
+
+  /* hero */
+  .hero{padding:62px 0 70px;border-bottom:1px solid var(--line);
+    background:radial-gradient(900px 380px at 16% 6%, rgba(0,224,192,.12), transparent 60%),
+               radial-gradient(720px 360px at 94% 28%, rgba(0,224,192,.05), transparent 62%)}
+  .herogrid{display:grid;grid-template-columns:1.25fr .9fr;gap:46px;align-items:center}
+  @media(max-width:900px){.herogrid{grid-template-columns:1fr;gap:30px}}
+  .heroleft h1.title{margin:.22em 0 .3em;font-size:clamp(36px,5.6vw,62px)}
+  .heroleft h1.title em{color:var(--teal-deep);font-style:normal}
+  .herobtns{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+  .heroright{display:flex;flex-direction:column;gap:13px}
+  .herostat{background:var(--mint);border:1px solid rgba(0,224,192,.3);border-radius:14px;padding:15px 17px}
+  .herostat .hs-num{font-family:var(--display);font-weight:700;font-size:29px;color:var(--teal-deep);line-height:1}
+  .herostat .hs-lbl{font-size:12px;color:var(--text2);line-height:1.45;margin-top:7px}
+
+  /* ── page system ── */
+  main{min-height:70vh}
+  .page{display:none;animation:fade .35s ease}
+  .page.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  section.band{padding:62px 0;border-bottom:1px solid var(--line)}
+  section.band.dark{background:var(--indigo);border-bottom:0}
+  section.band.mint{background:var(--mint)}
+
+  .eyebrow{font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-deep)}
+  .kernel{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:600;
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep);
+    background:var(--teal-tint);border:1px solid rgba(0,224,192,.3);padding:5px 12px;border-radius:999px}
+  .dark .eyebrow,.dark .kernel{color:var(--teal-logo)}
+  .dark .kernel{background:rgba(0,224,192,.1);border-color:rgba(0,224,192,.25)}
+  h1.title{font-weight:900;font-size:clamp(34px,5.4vw,60px);margin:.3em 0 .25em}
+  .dark h1.title,.dark h2,.dark h3,.dark h4{color:#fff}
+  h2.sec{font-weight:800;font-size:clamp(26px,3.6vw,38px);margin:.2em 0 .4em}
+  .lede{font-size:clamp(17px,2vw,20px);line-height:1.5;color:var(--text2);max-width:720px;margin:0 0 30px}
+  .dark .lede{color:var(--on-dark)}
+  .chno{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.18em;color:var(--teal-deep);text-transform:uppercase}
+  .dark .chno{color:var(--teal-logo)}
+
+  /* generic blocks */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:860px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--rc);padding:24px}
+  .card.mint{background:var(--mint);border-color:rgba(0,224,192,.18)}
+  .dark .card{background:rgba(255,255,255,.04);border-color:var(--div-dark)}
+  .dark .card p{color:var(--on-dark)}
+  .card h3,.card h4{margin-bottom:9px}
+  .card h4{font-weight:600;font-size:19px;letter-spacing:-.03em}
+  .card p{font-size:14.5px;line-height:1.55;color:var(--text2);margin:0}
+  .card p+p{margin-top:9px}
+  .tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 9px;border-radius:999px;margin-bottom:10px}
+  .tag.t{background:var(--teal-tint);color:var(--teal-deep)}
+  .tag.w{background:#FCF1E9;color:var(--warn)}
+  .tag.b{background:#FEECEB;color:var(--bad)}
+  .tag.i{background:#F2F4F7;color:#2A3039}
+
+  .pill{display:inline-flex;align-items:center;gap:7px;background:var(--teal-tint);color:var(--teal-deep);
+    font-weight:600;font-size:12.5px;padding:6px 13px;border-radius:999px;border:1px solid rgba(0,224,192,.3)}
+  .pill .dot{width:7px;height:7px;border-radius:50%;background:var(--teal)}
+
+  .callout{background:var(--teal-tint);border:1px solid rgba(0,224,192,.32);
+    border-radius:var(--rc);padding:18px 22px;margin:18px 0;color:var(--text)}
+  .callout strong{color:var(--teal-deep)}
+  .callout.warn{background:#FCF1E9;border-color:#F2D9BE}
+  .callout.warn strong{color:var(--warn)}
+
+  .statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:860px){.statgrid{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--mint);border-radius:var(--rc);padding:22px 20px}
+  .dark .stat{background:rgba(255,255,255,.05)}
+  .stat .num{font-family:var(--display);font-weight:700;font-size:40px;line-height:1;color:var(--teal-deep)}
+  .dark .stat .num{color:var(--teal-logo)}
+  .stat .lbl{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4}
+  .dark .stat .lbl{color:var(--on-dark)}
+
   ul.clean{list-style:none;padding:0;margin:0}
-  ul.clean li{padding:9px 0;border-bottom:1px solid var(--rule);font-size:14px;color:var(--ink-dim);line-height:1.5;display:flex;gap:14px}
-  ul.clean li:last-child{border-bottom:none}
-  ul.clean li::before{content:"▸";color:var(--accent);flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:12px;padding-top:2px}
-  ul.clean li b{color:var(--ink);font-weight:500}
-  .title-slide{justify-content:center;padding:0 88px}
-  .title-meta{display:flex;gap:32px;margin-top:44px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-faint);letter-spacing:.08em}
-  .title-meta span b{color:var(--ink);font-weight:400}
-  .crosshair{position:absolute;width:14px;height:14px;opacity:.3}
-  .crosshair::before,.crosshair::after{content:"";position:absolute;background:var(--ink-dim)}
-  .crosshair::before{top:50%;left:0;right:0;height:1px} .crosshair::after{left:50%;top:0;bottom:0;width:1px}
-  .ch-tl{top:48px;left:32px} .ch-tr{top:48px;right:32px} .ch-bl{bottom:80px;left:32px} .ch-br{bottom:80px;right:32px}
-  .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border:1px solid var(--rule);color:var(--ink-dim);letter-spacing:.12em;text-transform:uppercase;margin-right:6px}
-  .pill.hot{border-color:var(--accent);color:var(--accent-soft)} .pill.warn{border-color:var(--warn);color:var(--warn)}
-  .swot{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule)}
-  .swot > div{background:var(--bg);padding:20px}
-  .swot h3{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent-soft);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px}
-  .swot ul{list-style:none;padding:0;margin:0} .swot li{font-size:13px;color:var(--ink-dim);padding:5px 0;line-height:1.45}
-  blockquote{font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;line-height:1.4;color:var(--ink);max-width:62ch;padding-left:24px;border-left:2px solid var(--accent);margin:16px 0;}
-  blockquote cite{display:block;font-family:'JetBrains Mono',monospace;font-style:normal;font-size:11px;color:var(--ink-faint);letter-spacing:.1em;margin-top:14px;text-transform:uppercase}
-  .mark{display:inline-block;width:22px;height:22px;background:var(--accent);position:relative;vertical-align:middle;margin-right:10px}
-  .mark::after{content:"";position:absolute;inset:5px;background:var(--bg)}
-  .ob-row{display:grid;grid-template-columns:1fr 1fr;gap:32px;padding:18px 0;border-bottom:1px solid var(--rule)}
-  .ob-row:last-child{border-bottom:none}
-  .ob-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
-  .ob-lbl.atk{color:var(--warn)} .ob-lbl.reb{color:var(--ok)}
-  .ob-txt{font-size:13.5px;color:var(--ink-dim);line-height:1.55} .ob-txt b{color:var(--ink);font-weight:500}
-  .kpi-big{display:flex;align-items:baseline;gap:24px;padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:22px}
-  .kpi-big .num{font-family:'Instrument Serif',serif;font-size:74px;line-height:1;color:var(--ink)}
-  .kpi-big .num em{font-style:italic;color:var(--accent-soft)}
-  .kpi-tile .num{font-family:'Instrument Serif',serif;font-size:30px;line-height:1.05;color:var(--ink);margin-bottom:6px}
-  .kpi-tile .num em{font-style:italic;color:var(--accent-soft)}
-  .kpi-tile .lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
-  .kpi-tile p{font-size:12px;line-height:1.45}
-  .note{margin-top:auto;padding:14px 16px;background:rgba(255,197,61,0.06);border-left:2px solid var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink);line-height:1.55;letter-spacing:.01em}
-  .note b{color:var(--accent-soft);font-weight:500}
-</style></head><body>
-<div class="topbar"><div class="brand"><span class="mark"></span><b>AGENT 11 — THE SYNTHESIS</b> — TRADEPAY CPO CASE</div>
-<div style="display:flex;gap:18px;align-items:center"><a href="../index.html" style="color:var(--ink-dim);text-decoration:none">◂ WEBSITE</a><a href="../prototype/" style="color:var(--accent-soft);text-decoration:none">PROTOTYPE ▸</a></div></div>
-<div class="deck" id="deck">
-<section class="slide active title-slide" data-slide="1"><div class="crosshair ch-tl"></div><div class="crosshair ch-tr"></div><div class="crosshair ch-bl"></div><div class="crosshair ch-br"></div><div class="eyebrow">CANDIDATE 11 / TRADEPAY CPO CASE STUDY</div><h1>One company,<br>three <em>chapters</em>.</h1><p class="lead">Ten strategies were built and stress-tested against this case. Three survived — and they aren't rivals, they're chapters: the Rail is the wedge, the Risk Engine is the economics, the Infrastructure Arm is the endgame. This deck is the synthesis: one coherent strategy that sequences all three, harvests the best modules from the seven rejected options, and is validated against what actually worked — and what actually died — in Latin America, Africa, India and the Gulf.</p><div class="title-meta"><span>CANDIDATE&nbsp;&nbsp;<b>THE SYNTHESIS — FINAL RECOMMENDATION</b></span><span>SLIDES&nbsp;&nbsp;<b>30</b></span><span>FORMAT&nbsp;&nbsp;<b>ULTIMATE STRATEGY BRIEF</b></span></div></section>
-<section class="slide" data-slide="2"><div class="slide-head"><div class="eyebrow">02 / The Thesis</div><h2>Own the flow, out-underwrite everyone, then sell the <em>machine</em>.</h2></div><blockquote style="font-size:30px;max-width:74ch">Credit that rides a payment rail collects itself. An engine that approves more at the same loss wins every channel conversation. A proven machine becomes the infrastructure your threats rent. Sequence those three and the named threat becomes the customer base.<cite>THE SYNTHESIS — FINAL THESIS</cite></blockquote><div class="grid-3" style="margin-top:28px"><div class="card"><div class="card-num">CLAUSE 01</div><p>WEDGE (Y0–1): build the settlement rail between distributors and merchants — credit rides the flow, repayment is captured at the source of the merchant's cash. This is the structural answer to collections, the true loss driver, validated by Square (&lt;3% losses on $22B+ lent against owned flow) and Tienda Pago (the exact FMCG-distributor model, Peru/Mexico, since 2013).</p></div><div class="card"><div class="card-num">CLAUSE 02</div><p>ENGINE (Y1–3): approval-rate-at-constant-loss as the provable commercial weapon — '+15pp approvals at your loss rate, measured on your own book, or you don't pay.' The compounding data moat fed by ZATCA, the rail's own flow data, and every cohort's outcomes.</p></div><div class="card"><div class="card-num">CLAUSE 03</div><p>ENDGAME (Y3–5): white-label the proven stack so distributors run their financing arms ON Tradepay — converting the case's named threat into the TAM, exactly as the brief's own vision states. Sequenced last because nobody rents an unproven machine.</p></div></div></section>
-<section class="slide" data-slide="3"><div class="slide-head"><div class="eyebrow">03 / Situation Read</div><h2>The verdict of the bake-off, checked against <em>reality</em>.</h2></div><div class="row" style="gap:64px;flex:1"><div class="col" style="max-width:56ch"><p style="margin-bottom:20px">Ten distinct strategies were fully argued and judged. The losers failed for specific reasons: merchant-app-first antagonizes the channel (Y1 fatality), owning the marketplace is a capital-and-ops war the African B2B sector just spent five years losing money on, blitz-scaling is how Capiter died, capital architecture and data monetization are scaling layers, and Shariah-nativeness is a constraint, not a company.</p><p style="margin-bottom:20px">The three survivors compose across time. Critically, each one's weakness is covered by another's strength: the Rail needs an economic argument to win distributors — the Engine provides it. The Engine has no channel lock — the Rail provides it. The Infrastructure Arm needs a proven book — the first two build it.</p><p style="margin-bottom:20px">And the composite is not theoretical. It is the model that has already won elsewhere: flow-repaid embedded credit (Square, Shopify Capital, $28B+ disbursed combined), distributor-channel FMCG merchant finance (Tienda Pago, ~26K merchants), and embedded-finance-on-trade-flows as the profitable layer of B2B commerce (MaxAB-Wasoko: 9% of sales financed, 99% repayment). The synthesis imports the proven playbook into the GCC's richest data environment.</p></div><div class="col" style="max-width:340px"><div class="stat"><span class="num"><em>10→3→1</em></span><span class="lbl">STRATEGIES BUILT → SURVIVED → SYNTHESIZED</span></div><div class="stat"><span class="num"><em>&lt;3%</em></span><span class="lbl">SQUARE'S AGGREGATE LOSS ON $22B+ FLOW-REPAID LENDING</span></div><div class="stat"><span class="num"><em>99%</em></span><span class="lbl">MAXAB-WASOKO REPAYMENT RATE ON EMBEDDED MERCHANT CREDIT</span></div><div class="stat"><span class="num">SAR <em>50–500K</em></span><span class="lbl">TARGET MERCHANT MONTHLY WORKING CAPITAL (CASE)</span></div><div class="stat"><span class="num"><em>2-layer</em></span><span class="lbl">ENGINE ALREADY LIVE — THE FOUNDATION TO BUILD ON</span></div></div></div></section>
-<section class="slide scrollable" data-slide="4"><div class="slide-head"><div class="eyebrow">04 / Market Map</div><h2>The live field, and what each player <em>teaches</em>.</h2></div><table><thead><tr><th style="width:20%">Player</th><th style="width:32%">Status (verify pre-submission)</th><th style="width:48%">What the synthesis takes from it</th></tr></thead><tbody><tr><td class="col-name">Distributor in-house arms</td><td><span class='tag'>NAMED THREAT</span> Forming; 18–24mo build time each</td><td>Answered three ways: the rail makes their collections problem ours to solve better; the engine out-approves them measurably; the Arm offers to power them. Threat → prospect list.</td></tr><tr><td class="col-name">Mala</td><td><span class='tag'>DIRECT RIVAL</span> KSA's first B2B procure-now-pay-later, Shorooq-backed</td><td>Confirms the category is live and the window is real — urgency without blitz. We differentiate on rail-captured repayment + engine accuracy, not on being first.</td></tr><tr><td class="col-name">Lendo / Tameed / Erad</td><td><span class='tag'>ADJACENT</span> Lendo: $690M warehouse + $50M Murabaha (2025); Erad: $125M facility, 48h approvals</td><td>Proof Saudi capital markets fund this asset class at scale — the Y2–3 funding waterfall is bankable. They lend on invoices/revenue; none owns the traditional-trade flow.</td></tr><tr><td class="col-name">Sary / Retailo (marketplaces)</td><td><span class='tag'>WATCH</span> Own ordering surfaces, credit as attach</td><td>We don't fight for their surface — we offer the engine and rail beneath any surface, theirs included. Marketplace economics (per Africa's experience) are the harder business; the finance layer is the margin.</td></tr><tr><td class="col-name">Tamara / Tabby</td><td><span class='tag'>CAPITAL BENCHMARK</span> Tamara: $2.4B asset-backed facility (2025)</td><td>Consumer BNPL proves GCC securitization depth for fintech receivables — the Murabaha-structured exit for our book exists.</td></tr><tr><td class="col-name">Global analogues</td><td><span class='tag'>PLAYBOOK</span> Tienda Pago, Square/Shopify Capital, MaxAB-Wasoko, Rupifi/Solv (India)</td><td>Flow-repaid, distributor-channeled, data-underwritten merchant credit is a proven, profitable pattern on four continents. Capiter (Egypt, collapsed 2022) is the anti-playbook: blitz-scale + weak controls.</td></tr></tbody></table><p class="mono" style="margin-top:16px;color:var(--ink-faint)">// Statuses from public sources, mid-2026 — re-verify every named player before submission.</p></section>
-<section class="slide" data-slide="5"><div class="slide-head"><div class="eyebrow">05 / The Named Threat</div><h2>Three layers of <em>answer</em>, one per chapter.</h2></div><div class="grid-2" style="flex:1;align-content:start"><div class="card accent"><div class="card-num">LAYER 01 — THE RAIL</div><h3>Their arm still has to collect</h3><p>A distributor can replicate a credit offer; it cannot replicate a settlement rail it doesn't own. When merchant repayment flows through Tradepay's rail — netted across suppliers, captured at the source of cash — an in-house arm is a worse product on the axis that decides losses.</p></div><div class="card"><div class="card-num">LAYER 02 — THE ENGINE</div><h3>They can't match the math</h3><p>'Run our engine against your book: +15pp approvals at your loss rate, audited, or you don't pay.' A relationship-intuition credit desk cannot answer a measured test. The engine converts the arm-building impulse into an engine-licensing conversation.</p></div><div class="card"><div class="card-num">LAYER 03 — THE ARM</div><h3>Sell them the arm they wanted</h3><p>By Y3, the distributor that wants a financing arm gets one — branded theirs, running on Tradepay's rail, engine, capital access and compliance. The named threat becomes the expansion market, which is literally the vision stated in the brief.</p></div><div class="card"><div class="card-num">THE SEQUENCE IS THE DEFENSE</div><h3>Why order matters</h3><p>Lead with the Arm and you're selling an unproven machine. Lead with the Engine alone and you're a swappable vendor. Lead with the Rail and every later layer inherits a structural position. Sequencing is the strategy.</p></div></div></section>
-<section class="slide" data-slide="6"><div class="slide-head"><div class="eyebrow">06 / Diagnosis</div><h2>Collections is the boss <em>battle</em>.</h2></div><div class="grid-2" style="flex:1;align-content:start"><div class="card accent"><div class="card-num">EVIDENCE 01</div><h3>Flow-repaid books survive</h3><p>Square: $22B+ lent, aggregate losses under 3%, repaid as a percentage of daily sales through its own rail. Shopify Capital: $6B+ on the same mechanic. The pattern: when repayment rides the cash flow, thin-file lending works.</p></div><div class="card"><div class="card-num">EVIDENCE 02</div><h3>Embedded trade credit collects</h3><p>MaxAB-Wasoko reports 99% repayment on embedded merchant credit and finances 9% of platform sales — in markets harder than KSA. Tienda Pago aligned credit to the weekly inventory cycle and built a durable business on it since 2013.</p></div><div class="card"><div class="card-num">EVIDENCE 03</div><h3>Chasing repayment kills books</h3><p>Credit bolted onto someone else's transaction must chase cash after the fact — the classic loss driver in informal trade. The case's own framing (cash-dominant merchants, no formal credit) makes detached collections the single biggest risk.</p></div><div class="card"><div class="card-num">EVIDENCE 04</div><h3>Blitz without controls is fatal</h3><p>Capiter: 50,000 merchants, aggressive hiring toward a claimed $1B run-rate, collapsed in 2022 amid governance failure. Losses lag originations 6–12 months; growing faster than the book seasons is how this category's failures all died.</p></div></div><div class="note"><b>The binding constraint:</b> not demand, not data, not capital — <b>repayment capture</b>. Solve collections structurally and everything else (approval aggression, pricing, funding cost) gets easier. That is why the Rail is the wedge.</div></section>
-<section class="slide" data-slide="7"><div class="slide-head"><div class="eyebrow">07 / Defensible Niche</div><h2>The settlement-and-credit layer for GCC traditional <em>trade</em>.</h2></div><div class="row" style="gap:64px;flex:1"><div class="col" style="max-width:56ch"><p style="margin-bottom:20px">Three-year positioning claim: Tradepay is the rail on which money moves between Saudi traditional-trade merchants and their suppliers — and therefore the best-informed, best-collected, highest-approval credit provider in the segment, powering its own book and, increasingly, everyone else's.</p><p style="margin-bottom:20px">The moat is a stack: flow ownership (repayment netted at the source — structural, not contractual), compounding underwriting (every transaction on the rail is both collections and training data; approval@loss widens per cohort), and switching cost that grows into infrastructure (by Y3+, partners run their financing operations on the stack — A10's workflow lock-in achieved through the rail rather than through free software alone).</p><p style="margin-bottom:20px">Defensibility test: to displace the synthesis, a rival must simultaneously rebuild the settlement rail, match an engine trained on cohorts they don't have, and offer white-label infrastructure with a track record they haven't earned. Each layer defends the others.</p></div><div class="col" style="max-width:340px"><div class="stat"><span class="num"><em>% GMV</em></span><span class="lbl">PARTNER FLOW SETTLED ON-RAIL — THE POSITION METRIC</span></div><div class="stat"><span class="num"><em>approval@loss</em></span><span class="lbl">THE ECONOMIC METRIC THAT WINS EVERY CHANNEL</span></div><div class="stat"><span class="num"><em>+15pp</em></span><span class="lbl">TARGET APPROVAL UPLIFT AT CONSTANT LOSS</span></div><div class="stat"><span class="num"><em>3yr</em></span><span class="lbl">FROM RAIL WEDGE TO INFRASTRUCTURE ENDGAME</span></div></div></div></section>
-<section class="slide" data-slide="8"><div class="slide-head"><div class="eyebrow">08 / Strategy Architecture</div><h2>Wedge, engine, <em>endgame</em> — with parts from the losers.</h2></div><div class="grid-3" style="flex:1;align-content:start"><div class="card accent"><div class="card-num">CHAPTER 1 — THE RAIL (Y0–1)</div><h3>Own the flow</h3><p>Settlement layer between anchor distributors and their merchants: orders financed on the rail, repayments captured at the source via sarie/auto-debit/rep cash-in, netted across suppliers. Harvested modules: A10's collections-workflow software (the distributor-side AR screen), A8's Shariah-native structures from day one (no-late-fee, early-settlement rebates — Murabaha-genuine), A6's institutional-grade loan tape from origination.</p></div><div class="card"><div class="card-num">CHAPTER 2 — THE ENGINE (Y1–3)</div><h3>Win the math</h3><p>Approval-rate-at-constant-loss as the operating frontier, fed by the rail's own flow data plus ZATCA, SIMAH, open banking, graph signals. The provable test ('+15pp or don't pay') opens every distributor, marketplace and bank conversation. Harvested modules: A9's vintage-exposure caps, circuit breakers and pivot triggers — the blitz's discipline without the blitz; A3's merchant app as the Y2 surface where merchants see limits, dues and their portable record.</p></div><div class="card"><div class="card-num">CHAPTER 3 — THE ARM (Y3–5)</div><h3>Sell the machine</h3><p>White-label the proven stack — rail, engine, compliance, capital access — so distributors and marketplaces run their financing arms on Tradepay. Harvested modules: A6's funding waterfall (warehouse → Murabaha securitization; Lendo and Tamara prove the Saudi market funds this), A7's data products as the Y4 option (PDPL consent captured from day one so the option exists), A4's lesson inverted (don't own the marketplace — power every marketplace).</p></div></div></section>
-<section class="slide" data-slide="9"><div class="slide-head"><div class="eyebrow">09 / Roadmap — Year 1</div><h2>Prove the rail in one <em>city</em>.</h2></div><div class="timeline"><div class="tl-item"><div class="tl-date">Q1</div><div class="tl-body"><h3>Two anchor distributors, one city <span class="pill hot">WEDGE</span></h3><p>Rail MVP: financed orders settle through Tradepay; repayment wallet live (sarie, auto-debit, rep cash-in). Co-branded with anchors. Murabaha-native, no-late-fee structure from the first loan. PDPL data consent captured at onboarding — the Y4 data option costs nothing now and is impossible to retrofit.</p></div></div><div class="tl-item"><div class="tl-date">Q2</div><div class="tl-body"><h3>Collections-at-source proof</h3><p>Target: repayment capture rate and DPD materially better than the anchors' field baseline. This number — not GMV — is the Q2 deliverable, because it's the number that prices everything downstream. Tienda Pago's weekly-cycle alignment is the design reference.</p></div></div><div class="tl-item"><div class="tl-date">Q3</div><div class="tl-body"><h3>Engine instrumentation + alt-data v1</h3><p>Feature store consolidating rail flow data with ZATCA e-invoicing and SIMAH; champion/challenger live on real decisions. Vintage-exposure caps and market circuit breakers enforced from the start (A9's guardrails, adopted preemptively).</p></div></div><div class="tl-item"><div class="tl-date">Q4</div><div class="tl-body"><h3>The audited uplift number</h3><p>Run the engine against one anchor's historical book; produce an independently verifiable approval-at-constant-loss comparison. Clean loan tape and covenant-ready reporting from origination (A6's discipline) — the book is built fundable.</p></div></div></div><div class="note"><b>Exit criteria Y1:</b> ≥60% of anchor-merchant repayment volume captured on-rail · DPD better than field baseline · audited +Xpp approval@loss · loan tape institutional-grade. No second city until these hold.</div></section>
-<section class="slide" data-slide="10"><div class="slide-head"><div class="eyebrow">10 / Roadmap — Year 2</div><h2>Compound the engine, widen the <em>rail</em>.</h2></div><div class="timeline"><div class="tl-item"><div class="tl-date">Y2 / H1</div><div class="tl-body"><h3>Multi-distributor netting</h3><p>One merchant limit, multiple connected suppliers, one net settlement — A3's portable-line merchant value delivered through the rail rather than against the channel. Merchants get one due date; the engine gets cross-supplier signal no captive arm sees.</p></div></div><div class="tl-item"><div class="tl-date">Y2 / H1</div><div class="tl-body"><h3>Merchant app layer</h3><p>The A3 surface, correctly sequenced: limits, dues, repayment forecast, the merchant's growing portable record — in Arabic/Urdu/English, WhatsApp-nudged. Acquisition stays distributor-led; the app is the retention and transparency surface.</p></div></div><div class="tl-item"><div class="tl-date">Y2 / H2</div><div class="tl-body"><h3>First warehouse facility</h3><p>Seasoned vintages + clean tape → bank warehouse line against the book (the Lendo playbook: $690M warehouse against SME receivables proves Saudi banks fund this). Capital stops being the growth ceiling.</p></div></div><div class="tl-item"><div class="tl-date">Y2 / H2</div><div class="tl-body"><h3>Engine-as-a-service pilot</h3><p>One external book — a second-tier distributor's credit program — running on the engine with the measured-test framework. The first dress rehearsal for the Y3 Arm, priced on proven uplift.</p></div></div></div></section>
-<section class="slide" data-slide="11"><div class="slide-head"><div class="eyebrow">11 / Roadmap — Years 3–5</div><h2>Open the <em>machine</em>.</h2></div><div class="timeline"><div class="tl-item"><div class="tl-date">Y3</div><div class="tl-body"><h3>Infrastructure Arm launch</h3><p>White-label program console: a distributor launches its branded financing arm on Tradepay's rail, engine, Shariah governance and capital access in <6 weeks. Tenant zero is our own book — two years of receipts, not a pitch. The named threat becomes the sales pipeline.</p></div></div><div class="tl-item"><div class="tl-date">Y3</div><div class="tl-body"><h3>Murabaha securitization</h3><p>First Shariah-structured sale-down of seasoned receivables (the Tamara/Lendo capital-markets path, sized to our book). Originate-to-distribute begins recycling capital; cost of funds becomes a widening advantage.</p></div></div><div class="tl-item"><div class="tl-date">Y3–4</div><div class="tl-body"><h3>UAE entry, partner-led</h3><p>Sponsor-lender partnership (the Reem-style LoR model), AECB instead of SIMAH, rail + engine ported. Country-launch kit (A9's one good artifact) makes it a 1–2 quarter deployment — but only after KSA exit criteria hold. Expansion paced to proven economics, the anti-Capiter rule.</p></div></div><div class="tl-item"><div class="tl-date">Y4–5</div><div class="tl-body"><h3>Egypt + the data option</h3><p>Egypt via local sponsor (MaxAB-Wasoko's traction proves the segment monetizes there; their merger pain proves don't own the logistics). Exercise the A7 option: aggregated, PDPL-clean traditional-trade intelligence sold to FMCG brands — the high-margin layer the consent groundwork made possible.</p></div></div></div></section>
-<section class="slide" data-slide="12"><div class="slide-head"><div class="eyebrow">12 / Product Expansion</div><h2>Modules harvested, options <em>sequenced</em>.</h2></div><div class="grid-4" style="flex:1;align-content:start"><div class="card"><div class="card-num">FROM A10</div><h3>Collections workflow</h3><p>Distributor-side AR/collections software embedded in the rail console — the deepest part of A10's lock-in, shipped as a rail module in Y1–2 instead of a five-year standalone bet.</p></div><div class="card"><div class="card-num">FROM A3 + A8</div><h3>Merchant trust layer</h3><p>The merchant app (Y2) with the portable record, plus genuinely Murabaha-native, no-penalty structures from day one — trust and compliance as features of the rail, not separate companies.</p></div><div class="card"><div class="card-num">FROM A6</div><h3>Capital machine</h3><p>Fundable-by-construction loan tape → warehouse (Y2) → Murabaha securitization (Y3) → funding-as-a-service inside the Arm (Y3+). The scaling layer, deployed on schedule.</p></div><div class="card"><div class="card-num">FROM A7 + A4</div><h3>Data & surface options</h3><p>PDPL consent from day one keeps the FMCG-analytics option alive for Y4. A4 inverted: never own the marketplace — be the rail and engine under every surface, including Sary's and Retailo's if they'll have us.</p></div></div><div class="note"><b>Sequencing rule:</b> a module ships when its prerequisite chapter is proven — workflow tools with the rail, the app with retention need, capital structures with seasoned vintages, data products with density + consent. Nothing ships ahead of its evidence.</div></section>
-<section class="slide scrollable" data-slide="13"><div class="slide-head"><div class="eyebrow">13 / Differentiation</div><h2>Honest head-to-head, with the synthesis's own <em>weaknesses</em>.</h2></div><table><thead><tr><th style="width:18%">Rival</th><th style="width:41%">▲ Where the synthesis wins</th><th style="width:41%">▼ Where it loses / must watch</th></tr></thead><tbody><tr><td class="col-name">Distributor arms</td><td>Structural collections via the rail; measured engine uplift they can't answer; an Arm offer that beats building.</td><td>A giant distributor with patience and capital can refuse the rail and subsidize its own arm — we win the mid-market first and let merchant pull move the giants.</td></tr><tr><td class="col-name">Mala / B2B BNPL entrants</td><td>Repayment captured on-rail vs chased post-hoc; cross-supplier netting; compounding approval@loss.</td><td>They may be faster to sign logos in the short run; if we over-index on rail-building rigor, they take anchor relationships first. The Y1 city must be won fast.</td></tr><tr><td class="col-name">Lendo / Erad / fintech lenders</td><td>We own a flow they only observe; traditional-trade focus they don't have; eventually their infrastructure provider, not their rival.</td><td>Their funding scale (Lendo $740M in 2025) means they could buy into the segment; partnering on capital early converts the risk.</td></tr><tr><td class="col-name">Marketplaces (Sary/Retailo)</td><td>We power credit under any surface without competing for their GMV — the African lesson: the finance layer profits while the logistics layer bleeds.</td><td>If a marketplace builds a serious risk org on its own order data, the engine edge narrows on their surface; the rail and cross-supplier view stay ours.</td></tr><tr><td class="col-name">Banks</td><td>We underwrite and collect where they structurally can't; they become our funders (warehouse) and Arm customers.</td><td>Their cost of capital is permanent; the model only works if they stay funders — the relationship is managed as a strategic account, not assumed.</td></tr></tbody></table><p class="mono" style="margin-top:16px;color:var(--ink-faint)">// The synthesis's master risk is sequencing discipline: each chapter is only as strong as the proof the previous one banked.</p></section>
-<section class="slide" data-slide="14"><div class="slide-head"><div class="eyebrow">14 / Merchant UX — Onboarding</div><h2>One visit, a limit that lives in the <em>flow</em>.</h2></div><div class="row" style="gap:48px;flex:1"><div class="col" style="flex:1.25"><ul class="clean"><li><b>Distributor-led, dignity-first.</b> The rep introduces it on the normal route visit; Nafath identity, CR photo, PDPL consent and Murabaha terms in one assisted session in Arabic or Urdu. The merchant never travels, never queues, never feels assessed by a bank.</li><li><b>The limit is buying power, not paperwork.</b> 'SAR 18,000 to stock with your suppliers, on the system your distributor already uses' — denominated in goods and trust, with the no-late-fee, rebate-for-early structure stated plainly upfront (A8's mechanics as a selling point).</li><li><b>Consent as a fair trade.</b> Data consent framed honestly at signup: connect ZATCA/e-invoicing and the limit grows faster; aggregated data may inform market insights, never identifying the shop. Informed, reciprocal, PDPL-clean — and it keeps the Y4 option alive.</li><li><b>Cold-start solved by the channel.</b> First limits sized by the anchor distributor's sales history with that shop (the Tienda Pago mechanic) — the partner's relationship knowledge priced in while the rail's own data forms.</li><li><b>Y2: the app arrives after trust.</b> Once transacting, the merchant gets the app — limit, dues, one-tap repayment, their growing record. Acquisition through the channel, relationship through the surface; A3's insight at the right time.</li></ul></div><div class="col" style="flex:1;max-width:340px"><blockquote>The merchant meets us inside a relationship they already trust, with terms they can read, in a language they speak. Everything else is earned after that.<cite>THE SYNTHESIS — DESIGN PRINCIPLE</cite></blockquote></div></div></section>
-<section class="slide" data-slide="15"><div class="slide-head"><div class="eyebrow">15 / Merchant UX — The Transaction</div><h2>Approve in the order, settle on the <em>rail</em>.</h2></div><div class="grid-2" style="flex:1;align-content:start"><div class="card"><div class="card-num">MOMENT 01</div><h3>Sub-second, in-channel</h3><p>At the rep's tablet, the distributor portal or a marketplace checkout: approve / partial / decline in <300ms, identical across channels. The merchant experiences credit as 'the order went through,' not as a loan application.</p></div><div class="card"><div class="card-num">MOMENT 02</div><h3>Partials that save the order</h3><p>'SAR 9,000 on your line, SAR 3,000 cash' — the financeable split shown instantly, with the path to more headroom ('SAR 4,200 frees after Thursday'). Partial approval as basket-rescue, the highest-leverage UX moment in the segment.</p></div><div class="card"><div class="card-num">MOMENT 03</div><h3>Terms in riyals, every time</h3><p>Cost-plus fee in riyals, one due date, no late fees, rebate for early settlement — rendered at the transaction in Arabic/Urdu/English. The Murabaha structure is the transparency.</p></div><div class="card"><div class="card-num">MOMENT 04</div><h3>Settlement is the product</h3><p>The distributor is paid promptly on-rail; the merchant's obligation is netted into one schedule across all connected suppliers. Both sides feel the rail working on the first transaction — that feeling is the moat forming.</p></div></div></section>
-<section class="slide" data-slide="16"><div class="slide-head"><div class="eyebrow">16 / Merchant UX — Repayment</div><h2>Repayment that rides the <em>cash</em>.</h2></div><div class="row" style="gap:48px;flex:1"><div class="col" style="flex:1.25"><ul class="clean"><li><b>Capture at the source.</b> Repayment via sarie standing transfer, wallet auto-debit, or rep cash-in on the route — aligned to the merchant's actual cash rhythm (weekly, salary-cycle-aware, Ramadan-adjusted). The Square/Tienda Pago mechanic localized: the money is met where it already moves.</li><li><b>One due date across suppliers.</b> Multi-distributor netting collapses five obligations into one statement and one repayment — the single most-loved feature of every portable-credit analogue, delivered through the channel rather than against it.</li><li><b>Rebates, not penalties.</b> Early settlement earns a rebate; lateness triggers help, not fees (A8's structure — genuinely compliant and operationally gentler). WhatsApp nudges before the due date in the merchant's language.</li><li><b>Distress = restructure first.</b> A missed cycle triggers an in-flow restructuring offer sized by the engine's read of real capacity — before any human chase. Recovery as product, not pursuit; the relationship survives the bad month.</li><li><b>Repayment builds the record.</b> Every on-time cycle visibly grows the limit and writes to SIMAH — the merchant's first bureau-grade history, owned and displayed in the Y2 app. Repaying well is the merchant's asset, not just ours.</li></ul></div><div class="col" style="flex:1;max-width:340px"><blockquote>When repayment is a ledger event on a rail you own, collections stops being a department and becomes a property of the system.<cite>THE SYNTHESIS — OPERATING RULE</cite></blockquote></div></div></section>
-<section class="slide" data-slide="17"><div class="slide-head"><div class="eyebrow">17 / Partner Experience</div><h2>The distributor gets paid, sells more, risks <em>nothing</em>.</h2></div><div class="grid-2" style="flex:1;align-content:start"><div class="card accent"><div class="card-num">PARTNER 01</div><h3>The Y1 pitch</h3><p>'Your merchants buy more, you're settled on time, we carry the credit risk, and our engine approves measurably more of your base than your own desk would — tested on your book, or you don't pay.' Rail + engine in one sentence.</p></div><div class="card"><div class="card-num">PARTNER 02</div><h3>The console</h3><p>Distributor-side AR, collections workflow and ZATCA-ready invoicing (A10's module) plus credit-uplift analytics: which routes, reps and SKUs the financing lifts. Genuine operational software, free, that happens to deepen the rail.</p></div><div class="card"><div class="card-num">PARTNER 03</div><h3>Honest exclusivity</h3><p>No coercive locks. Anchors get launch economics and co-branding; the lock that matters is earned — settlement reliability, approval uplift, workflow dependence. (A9's co-investment idea retained for anchors, its exclusivity-at-any-cost discarded.)</p></div><div class="card"><div class="card-num">PARTNER 04</div><h3>The Y3 offer</h3><p>'Want your own financing arm? Run it on us — your brand, our rail, engine, Shariah governance and funding, live in six weeks.' The conversation every distributor-threat becomes, once the machine has two years of receipts.</p></div></div></section>
-<section class="slide" data-slide="18"><div class="slide-head"><div class="eyebrow">18 / Credit Transparency</div><h2>Clarity as a structural <em>property</em>.</h2></div><div class="row" style="gap:48px;flex:1"><div class="col" style="flex:1.25"><ul class="clean"><li><b>Riyals and dates, never APR-first.</b> Every offer states the cost-plus fee in riyals and the single due date; APR-equivalent one tap deeper for those who want it. Comprehension is the compliance.</li><li><b>Declines carry a path.</b> Every decline/partial returns a plain-language reason and a concrete remediation — 'two more on-time cycles raises your limit' — in Arabic/Urdu/English, in-channel and (Y2) in-app. The engine's precision makes the path specific, not generic.</li><li><b>No silent changes.</b> Limit or pricing changes are notified before they bind, with reasons. The merchant never learns something about their own credit from a rep that the system didn't tell them first.</li><li><b>The record is the merchant's.</b> Their repayment history is visible, portable, and SIMAH-reported — transparency that doubles as the retention asset.</li><li><b>Compliance you can read.</b> The Murabaha contract is scholar-certified and summarized on one page; no late fees to hide because there are none. Genuine structure is the easiest thing in the world to be transparent about (A8's deepest point).</li></ul></div><div class="col" style="flex:1;max-width:340px"><blockquote>In a segment burned by opacity, radical clarity isn't a regulatory cost — it's the cheapest trust we will ever buy.<cite>THE SYNTHESIS — DESIGN PRINCIPLE</cite></blockquote></div></div></section>
-<section class="slide" data-slide="19"><div class="slide-head"><div class="eyebrow">19 / Localization — KSA</div><h2>Built on the Kingdom's <em>grain</em>.</h2></div><div class="grid-4" style="flex:1;align-content:start"><div class="card"><div class="card-num">LOC 01</div><h3>Identity & bureau</h3><p>Nafath login and consent; SIMAH read-and-report from day one — every merchant builds formal credit identity. AECB swaps in for UAE later.</p></div><div class="card"><div class="card-num">LOC 02</div><h3>ZATCA & sarie</h3><p>ZATCA e-invoicing is both compliance and the engine's richest alternative-data feed — regulation as feedstock. sarie instant payments are the rail's settlement spine.</p></div><div class="card"><div class="card-num">LOC 03</div><h3>Language & season</h3><p>Arabic-first, Urdu and English first-class (the South Asian operator reality). Ramadan/Hajj stock-up as proactive headroom; Friday-aware due dates; WhatsApp as the nudge channel.</p></div><div class="card"><div class="card-num">LOC 04</div><h3>Shariah & SAMA</h3><p>Murabaha/Tawarruq-native with a respected Shariah board (the structure, not a wrapper); SAMA-perimeter licensing strategy and examiner-ready governance from the first loan.</p></div></div><div class="note"><b>The local edge stack:</b> nowhere else combines mandated structured sales data (ZATCA), instant payments (sarie), national digital identity (Nafath) and deep Islamic capital. KSA isn't just the home market — it's the best-instrumented market on earth for exactly this model.</div></section>
-<section class="slide" data-slide="20"><div class="slide-head"><div class="eyebrow">20 / Engine — Policy & Guardrails</div><h2>Maximum approvals inside a loss budget, inside hard <em>caps</em>.</h2></div><div class="row" style="gap:48px;flex:1"><div class="col" style="flex:1.25"><ul class="clean"><li><b>Approval@loss is the operating frontier.</b> Risk and Finance set the quarterly loss budget; the engine's sole job is to push approvals to the frontier inside it. Every policy change must beat champion on both approval and loss in the same vintage — challenger or it didn't ship.</li><li><b>Two layers, flow-fed.</b> Pre-scoring (tiers, ceilings) from distributor history, ZATCA, SIMAH, graph signals; real-time decisioning (<300ms) spending ceilings per transaction with velocity, concentration and basket-sanity rules. The rail's own settlement data is the feature no competitor has.</li><li><b>A9's guardrails, adopted in peacetime.</b> Hard vintage-exposure caps, per-market circuit breakers, pre-defined pivot triggers, and a Risk function with authority to brake — installed before growth pressure exists, because retrofitting discipline during a growth phase is how Capiters happen.</li><li><b>Limits that breathe with the flow.</b> Headroom steps with observed on-rail behavior and live signals (a strong ZATCA month raises it; a settlement stutter trims it) — Shopify Capital's performance-scaled mechanic, applied to inventory cycles.</li><li><b>Friction-default designed out.</b> One netted due date and source-captured repayment distinguish 'can't pay' from 'forgot to pay' — and remove the latter as a category rather than monetizing it.</li><li><b>Fundability as a policy constraint.</b> Eligibility, concentration and documentation standards keep every vintage warehouse- and securitization-ready (A6) — underwriting and capital strategy designed as one system.</li></ul></div><div class="col" style="flex:1;max-width:340px"><blockquote>Risk owns the budget. The engine owns the frontier. The caps own the company's survival. Three owners, never confused.<cite>THE SYNTHESIS — OPERATING RULE</cite></blockquote></div></div></section>
-<section class="slide" data-slide="21"><div class="slide-head"><div class="eyebrow">21 / Engine — Explainability</div><h2>Every decision survives three <em>audiences</em>.</h2></div><div class="grid-2" style="flex:1;align-content:start"><div class="card"><div class="card-num">EXPL 01</div><h3>For the merchant</h3><p>A finite plain-language reason-code library (Arabic/Urdu/English) mapped to real drivers, with concrete remediation. Adverse action framed as 'how your limit grows,' SIMAH-aligned where bureau data is used.</p></div><div class="card"><div class="card-num">EXPL 02</div><h3>For the partner</h3><p>Distributors and (Y3) Arm tenants see decision distributions, approval@loss tracking and uplift-vs-baseline — never raw features or weights. Proof of value without a blueprint for cloning.</p></div><div class="card"><div class="card-num">EXPL 03</div><h3>For the regulator</h3><p>Auto-generated model cards per version: features, exclusions (no nationality, no protected proxies), validation, override rules, fairness testing. Full decision lineage exportable — SAMA-examiner-ready by construction.</p></div><div class="card"><div class="card-num">EXPL 04</div><h3>For the Shariah board</h3><p>Structure compliance documented and certified per product change — the governance that keeps Islamic capital open and the 'genuine, not wrapper' claim true.</p></div></div></section>
-<section class="slide" data-slide="22"><div class="slide-head"><div class="eyebrow">22 / Engine — Feedback Loops</div><h2>The rail makes the engine <em>unfair</em>.</h2></div><div class="timeline"><div class="tl-item"><div class="tl-date">REAL-TIME</div><div class="tl-body"><h3>Flow → features</h3><p>Every on-rail order, settlement and repayment event streams into the feature store alongside ZATCA and open-banking feeds — the engine decisions on data it generated itself, a loop no off-rail lender can enter.</p></div></div><div class="tl-item"><div class="tl-date">DAILY</div><div class="tl-body"><h3>Outcomes → labels + early warning</h3><p>Repayments and delinquencies write back as training labels; the same signals (a settlement stutter, a sales dip in e-invoicing) trigger proactive outreach before a missed payment. Underwriting and collections share one nervous system.</p></div></div><div class="tl-item"><div class="tl-date">WEEKLY</div><div class="tl-body"><h3>Limits, caps, challengers</h3><p>Limit re-pricing on observed behavior; vintage exposure vs caps reviewed; challenger policies evaluated on live shadow decisions. Promotion only on measured wins.</p></div></div><div class="tl-item"><div class="tl-date">MONTHLY/QTR</div><div class="tl-body"><h3>Governance + merchant voice</h3><p>Model governance with Risk; decline-complaint and support-theme synthesis into the policy backlog; quarterly Shariah review. Each loop has one named Risk-Product owner pair.</p></div></div></div><div class="note"><b>The compounding claim, stated precisely:</b> every transaction on the rail improves collections (captured), underwriting (labeled), and the Arm's future sales pitch (track record) simultaneously. One event, three assets.</div></section>
-<section class="slide" data-slide="23"><div class="slide-head"><div class="eyebrow">23 / Fraud & Risk Safeguards</div><h2>The rail sees what bolt-on lenders <em>can't</em>.</h2></div><div class="grid-4" style="flex:1;align-content:start"><div class="card"><div class="card-num">FR 01</div><h3>Identity & account</h3><p>Nafath-anchored onboarding, device binding, merchant-own-number OTP; rep-assisted flows designed so the relationship forms with the merchant, not the rep's device.</p></div><div class="card"><div class="card-num">FR 02</div><h3>Finance-on-delivery</h3><p>Funds release against delivery confirmation on the rail — the phantom-order and fake-invoice vector closed structurally; ZATCA cross-checks invoice reality.</p></div><div class="card"><div class="card-num">FR 03</div><h3>Graph & collusion</h3><p>Merchant-supplier-rep network graphs expose bust-out rings, collusive ordering and diversion baskets (resale-pattern SKU mixes) that single-relationship views miss.</p></div><div class="card"><div class="card-num">FR 04</div><h3>Velocity & seasoning</h3><p>New-merchant velocity limits, anomaly-triggered step-up only, heightened vigilance in any growth push — fast-growing lenders are fraud magnets (the Capiter file is also a fraud-governance file).</p></div></div><div class="note"><b>Friction budget:</b> honest merchants ride the rail invisibly; controls fire on anomalies. AML/TM scenario coverage mapped to the data the rail actually generates — computable monitoring, not checkbox monitoring.</div></section>
-<section class="slide" data-slide="24"><div class="slide-head"><div class="eyebrow">24 / Metrics</div><h2>Two numbers that contain the whole <em>strategy</em>.</h2></div><div class="kpi-big"><span class="num"><em>%GMV</em> × appr@loss</span><div><div class="mono" style="color:var(--accent-soft);letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px">NORTH STAR — SHARE OF PARTNER GMV SETTLED ON-RAIL × APPROVAL RATE AT CONSTANT LOSS</div><p style="max-width:58ch">The pair is the strategy: %GMV-on-rail measures the position (the wedge and the future Arm's addressable base); approval@loss measures the economics (the engine's compounding edge). Either alone can be gamed; together they describe a company that owns the flow and out-underwrites the field.</p></div></div><div class="grid-4"><div class="card kpi-tile"><div class="num"><em>≥60%</em></div><div class="lbl">REPAYMENT CAPTURED ON-RAIL</div><p>Y1 exit criterion — the collections proof.</p></div><div class="card kpi-tile"><div class="num"><em>+15pp</em></div><div class="lbl">APPROVAL UPLIFT @ LOSS</div><p>Audited vs partner baseline — the engine's pitch.</p></div><div class="card kpi-tile"><div class="num"><em>&lt;2.5%</em></div><div class="lbl">NPL 90+ (BUDGET BAND)</div><p>Square's &lt;3% on flow-repaid is the benchmark.</p></div><div class="card kpi-tile"><div class="num"><em>&lt;300ms</em></div><div class="lbl">DECISION LATENCY</div><p>Credit at the speed of the order.</p></div><div class="card kpi-tile"><div class="num"><em>vintage</em></div><div class="lbl">EXPOSURE VS CAPS</div><p>The survival guardrail, reviewed weekly.</p></div><div class="card kpi-tile"><div class="num"><em>DPD Δ</em></div><div class="lbl">VS FIELD BASELINE</div><p>Rail collections vs the rep's notebook.</p></div><div class="card kpi-tile"><div class="num"><em>CoF</em></div><div class="lbl">BLENDED COST OF FUNDS</div><p>Falls as warehouse → securitization lands (Y2–3).</p></div><div class="card kpi-tile"><div class="num"><em>tenants</em></div><div class="lbl">ARM PROGRAMS LIVE (Y3+)</div><p>The endgame metric — threats converted to customers.</p></div></div></section>
-<section class="slide" data-slide="25"><div class="slide-head"><div class="eyebrow">25 / Data Products</div><h2>Consent now, monetization when it's <em>earned</em>.</h2></div><div class="grid-2" style="flex:1;align-content:start"><div class="card"><div class="card-num">NOW (Y1)</div><h3>Consent & lineage infrastructure</h3><p>PDPL-compliant consent at onboarding, data-rights clauses in every partner agreement, k-threshold anonymization built into the platform. Costs little now; impossible to retrofit; keeps every option below alive.</p></div><div class="card"><div class="card-num">Y1–2</div><h3>Operational intelligence (free)</h3><p>Distributors: credit-uplift, route and SKU analytics. Merchants: cash-flow mirror, safe-to-stock, reorder timing. Insight that deepens the rail and the app — given, not sold.</p></div><div class="card"><div class="card-num">Y3</div><h3>Arm-tenant analytics</h3><p>Portfolio monitoring, vintage benchmarking and early-warning tooling for programs running on the stack — the risk cockpit as part of the infrastructure subscription.</p></div><div class="card"><div class="card-num">Y4 (THE OPTION)</div><h3>Traditional-trade intelligence for FMCG brands</h3><p>Aggregated, anonymized SKU-velocity, district-demand and pricing visibility into a channel brands plan blind on — exercised only at density, on rights-cleared data. Never individual-shop data; the franchise is trust.</p></div></div><div class="note"><b>Data culture:</b> one governed source of truth; every number in every memo reconciles to it; receipts over claims. The loan tape, the feature store and the consent ledger are the company's three crown jewels.</div></section>
-<section class="slide" data-slide="26"><div class="slide-head"><div class="eyebrow">26 / GTM — First 1,000</div><h2>Two anchors, one city, one undeniable <em>number</em>.</h2></div><div class="timeline"><div class="tl-item"><div class="tl-date">PHASE 1</div><div class="tl-body"><h3>Anchor selection <span class="pill hot">DENSITY FIRST</span></h3><p>Two mid-tier distributors with dense routes in one city — merchant-hungry enough to integrate fast, big enough to matter (~3,000 pre-scorable merchants combined). Mid-tier first: the giants follow proof, not pitches.</p></div></div><div class="tl-item"><div class="tl-date">PHASE 2</div><div class="tl-body"><h3>Rep-led activation</h3><p>Reps activate merchants on normal route visits — Nafath, consent, Murabaha terms, limit live in one stop. Activation comp tied to second financed order and on-time first repayment, not signups.</p></div></div><div class="tl-item"><div class="tl-date">PHASE 3</div><div class="tl-body"><h3>The math</h3><p>3,000 pre-scored × ~60% rep reach × ~55% activation ≈ 1,000 transacting merchants in two quarters (modeling assumption — Tienda Pago's distributor-channel conversion is the reference class). Every one repaying on-rail.</p></div></div><div class="tl-item"><div class="tl-date">PHASE 4</div><div class="tl-body"><h3>Referral inside the souk</h3><p>Both shops earn limit growth on a referee's first on-time repayment — trust networks as the cheapest channel. But the Q4 deliverable is the audited collections + uplift numbers; the first 1,000 merchants are the proof that sells the next 100,000.</p></div></div></div><div class="note"><b>Anti-goals:</b> a financed order without on-rail repayment (a loan we'll lose); a second city before Y1 exit criteria (the Capiter rule); a logo-count race with Mala at the cost of rail integrity (locked logos without flow are rented, not owned).</div></section>
-<section class="slide" data-slide="27"><div class="slide-head"><div class="eyebrow">27 / Regional Expansion</div><h2>Export the rail, rent the <em>license</em>.</h2></div><table><thead><tr><th style="width:14%">Market</th><th style="width:40%">Entry mode</th><th style="width:46%">Discipline</th></tr></thead><tbody><tr><td class="col-name">KSA (Y0–3)</td><td>Home market: SAMA perimeter, two anchors → multi-distributor netting → Arm launch.</td><td>No expansion until exit criteria hold. The home book is the Arm's sales collateral; protect its quality above growth.</td></tr><tr><td class="col-name">UAE (Y3–4)</td><td>Sponsor-lender (LoR) partnership; AECB for bureau; rail + engine ported via country-launch kit; existing GCC distributor groups as first anchors.</td><td>Familiar regulatory texture (the Tabby Capital/Reem pattern); smaller traditional-trade base means unit economics must carry earlier — partner-heavy, asset-light.</td></tr><tr><td class="col-name">Egypt (Y4–5)</td><td>Local sponsor under FRA/CBE; the region's largest baqala base. MaxAB-Wasoko's embedded-finance traction proves the segment monetizes; their logistics pain proves the asset-light rule.</td><td>FX and inflation inside limit logic; possibly partner with (not against) the surviving platforms — be their credit rail. Capiter is the standing reminder of what speed without controls costs here.</td></tr><tr><td class="col-name">Sequencing rule</td><td>One market's full loop proven before the next opens; the kit makes launches fast, the criteria make them safe.</td><td>Speed comes from the kit (A9's artifact); safety comes from the gates (everyone else's lesson). Both, always.</td></tr></tbody></table><p class="mono" style="margin-top:16px;color:var(--ink-faint)">// Expansion is a consequence of proof, never a substitute for it.</p></section>
-<section class="slide" data-slide="28"><div class="slide-head"><div class="eyebrow">28 / Organization</div><h2>Built for three chapters, hired for the <em>first</em>.</h2></div><div class="grid-2" style="flex:1;align-content:start"><div class="card"><div class="card-num">STRUCTURE</div><h3>Four pods + empowered Risk</h3><p>Rail & Settlement (the wedge) · Credit Engine (paired with an independent Risk function holding brake authority) · Partner Platform & Workflow (distributor console, future Arm) · Merchant Experience (Y2 app, lifecycle). Treasury stands up in Y2 as a strategic function, not back-office. One shared data spine under all four.</p></div><div class="card"><div class="card-num">FIRST HIRES — 0–12 MO</div><h3>Five seats that decide everything</h3><p>Head of Credit Risk/Modeling (the defining hire), Head of Partnerships (distributor-fluent, Arabic-speaking), Rail/Payments PM (sarie + settlement depth), Risk-Product lead (owns the guardrails), Shariah-structuring counsel + board relationships. Y2 adds Treasury/Capital Markets (the Lendo-playbook hire) and a consumer-caliber mobile PM.</p></div><div class="card"><div class="card-num">STAKEHOLDERS</div><h3>Managed as strategic accounts</h3><p>CEO/board: monthly memo led by the two north-star numbers and vintage-vs-cap status — the risk appetite is board-owned and written down. SAMA: proactive governance briefings. Shariah board: certification cadence. Banks: cultivated as Y2 funders, not future rivals. Anchors: honest co-brand economics; the Y3 Arm offer seeded early.</p></div><div class="card"><div class="card-num">CULTURE</div><h3>Receipts over claims</h3><p>Every memo names its metric and check date. Challenger or it didn't happen. Risk can brake the company and everyone knows it. PMs walk the route monthly — the user is a person behind a counter. And the founding honesty: we publish our loss numbers to ourselves weekly, because the lenders that died all stopped looking.</p></div></div></section>
-<section class="slide" data-slide="29"><div class="slide-head"><div class="eyebrow">29 / The Case Against</div><h2>Steel-manned, then <em>answered</em>.</h2></div><div style="flex:1"><div class="ob-row"><div><div class="ob-lbl atk">▼ THE ATTACK</div><div class="ob-txt"><b>'A synthesis is a euphemism for lack of focus.'</b> You've taken three strategies and stapled them together — a payments company, a risk-tech company and a SaaS infrastructure company. Each is a full company to build. You'll do all three at C-grade while a focused rival does one at A-grade.</div></div><div><div class="ob-lbl reb">▲ THE REBUTTAL</div><div class="ob-txt">The synthesis is sequenced, not parallel — at any moment the company is building exactly one thing. Y0–1 is only the rail in one city with two anchors; the engine work in that window is instrumentation of decisions the rail already forces; the Arm doesn't exist until Y3 and is then a packaging of assets that already run in production. The test is the exit criteria: nothing starts until its predecessor's numbers hold. And the composite is the proven shape — Square didn't choose between payments and lending, Tienda Pago didn't choose between settlement and credit; the flow business and the credit business are one business in this segment. The focus is the flow; the chapters are how one company compounds it.</div></div></div><div class="ob-row"><div><div class="ob-lbl atk">▼ THE ATTACK</div><div class="ob-txt"><b>'Mala or a funded rival takes the anchors while you're perfecting plumbing.'</b> B2B PNPL is live in KSA now. Your rail-first discipline reads as slowness; in 18 months the good distributors are signed and your beautiful rail has no flow on it.</div></div><div><div class="ob-lbl reb">▲ THE REBUTTAL</div><div class="ob-txt">The window argument is real — it's why the Y1 plan is two anchors in one city fast, not a national platform slowly, and why the engine's measured test exists: it converts pitches into provable economics that a logo-collecting rival can't match. But the deeper answer is what a 'signed' anchor means: a credit attach without flow capture is a contract, not a position — switchable the day a better offer arrives, and exposed on collections exactly where this segment's losses live. We'd rather arrive second with repayment captured at source and an audited +15pp than first with a logo and a chase-collections book. Mala's existence also cuts our way in Y3: every B2B lender in the market is a future Arm tenant or engine customer. Urgency yes — we lock the two right anchors this year; blitz no — Capiter already ran that experiment.</div></div></div><div class="ob-row"><div><div class="ob-lbl atk">▼ THE ATTACK</div><div class="ob-txt"><b>'The Y3 Arm cannibalizes your own book and arms your competitors.'</b> White-labeling the stack hands distributors the tools to disintermediate you, compresses your lending margin into a SaaS fee, and teaches the market to build without you.</div></div><div><div class="ob-lbl reb">▲ THE REBUTTAL</div><div class="ob-txt">The Arm sells the parts of the machine that compound with tenants and withholds the parts that don't: tenants get decisions, rails and governance; they never see features, weights or the pooled cohort data — and every tenant's consented outcomes widen the engine's lead over any build-it-yourself attempt. Economically, infrastructure revenue is additive, not substitutive: the own book keeps the highest-margin merchant relationships and keeps seasoning the engine, while the Arm monetizes flow we would never originate directly (the giants who'd otherwise build alone). MaxAB-Wasoko's trajectory shows the finance layer is where B2B trade margin lives; the Arm is how we take that margin on flow far beyond our own salesforce. And strategically, the alternative is worse: the arms get built either way — the only question is whether they're built on us. The brief's own vision says infrastructure; the Arm is that vision with a two-year track record under it.</div></div></div></div></section>
-<section class="slide" data-slide="30"><div class="slide-head"><div class="eyebrow">30 / So What</div><h2>What this <em>actually</em> means.</h2></div><div class="grid-3" style="flex:1;align-content:start"><div class="card accent"><div class="card-num">FOR THE CEO & BOARD</div><h3>Fund a sequence, not a bet</h3><p>One company, three chapters: own the flow (Y0–1, the collections answer), out-underwrite the field (Y1–3, the economics), sell the machine (Y3–5, the brief's own vision with receipts). Each chapter is gated by exit criteria; the guardrails (vintage caps, brake-empowered Risk) are installed before growth pressure exists. The model is the one that won on four continents — Square, Tienda Pago, MaxAB-Wasoko — imported into the best-instrumented market on earth for it, with Capiter as the standing reminder of the one way to lose.</p></div><div class="card accent"><div class="card-num">FOR PARTNERS</div><h3>Paid on time now, your own arm later</h3><p>Y1: your merchants buy more, you're settled on-rail, we carry the risk, and our engine provably approves more of your base — tested on your book or you don't pay. Y3: if you still want a financing arm, run it on us — your brand, our machine, live in six weeks. The threat the case names is the relationship we're building toward.</p></div><div class="card accent"><div class="card-num">FOR THE PRODUCT ORG</div><h3>One flow, three assets per transaction</h3><p>Every on-rail order improves collections (captured), the engine (labeled) and the Arm's track record (banked) simultaneously. Ship against the two north stars — %GMV-on-rail × approval@loss — behind hard caps, with receipts over claims, walking the route monthly. The strategy is long; the discipline is daily.</p></div></div><div style="margin-top:40px;padding-top:22px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:end"><div><div class="mono" style="margin-bottom:6px">END OF BRIEF — CANDIDATE 11 / THE SYNTHESIS</div><div class="mono" style="color:var(--ink-faint)">Sources: Tradepay case brief (2026) · 10-strategy bake-off (Agents 01–10, this exercise) · public sources mid-2026: Square/Block shareholder letters ($22B+ lent, <3% loss), Shopify Capital ($6B+ disbursed), Tienda Pago (IFC/World Bank case, Accion), MaxAB-Wasoko (9% of sales financed, 99% repayment; Fatura acquisition 2025), Capiter collapse (2022), Lendo ($690M warehouse + $50M Murabaha, 2025), Tamara ($2.4B ABS facility, 2025), Mala (Shorooq-backed B2B PNPL). Figures marked 'target' or 'modeling assumption' are illustrative; verify all named players before submission.</div></div><div class="mono" style="color:var(--accent-soft)">// 030 / 030</div></div></section>
+  ul.clean li{position:relative;padding:7px 0 7px 22px;font-size:14.5px;color:var(--text2);line-height:1.5;border-top:1px solid var(--line)}
+  ul.clean li:first-child{border-top:0}
+  ul.clean li::before{content:"";position:absolute;left:2px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--teal)}
+  .dark ul.clean li{color:var(--on-dark);border-color:var(--div-dark)}
+  ul.clean li b{color:var(--black)}
+  .dark ul.clean li b{color:#fff}
+
+  table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.t th,table.t td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.t th{font-family:var(--body);font-weight:600;color:var(--black);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+  table.t td{color:var(--text2);line-height:1.45}
+  table.t tr:hover td{background:var(--mint)}
+  table.t td b{color:var(--black)}
+  .num-cell{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+
+  /* prev-next */
+  .pn{max-width:1080px;margin:0 auto;padding:28px;display:flex;justify-content:space-between;gap:14px}
+  .pn button{font-family:var(--body);font-weight:500;font-size:14px;background:var(--white);border:1px solid var(--line2);
+    border-radius:var(--r);padding:12px 20px;cursor:pointer;color:var(--text);transition:.12s;max-width:48%;text-align:left}
+  .pn button:hover{border-color:var(--teal);color:var(--teal-deep)}
+  .pn button .k{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+  .pn button.next{text-align:right}
+  .pn button:disabled{opacity:.35;cursor:default}
+
+  footer.foot{background:var(--indigo);color:var(--on-dark);padding:40px 0;font-size:13px}
+  footer.foot b{color:#fff}
+  footer.foot a{color:var(--teal-logo)}
+
+  /* roadmap / timeline */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--rc);overflow:hidden;background:var(--white)}
+  @media(max-width:860px){.road{grid-template-columns:1fr}}
+  .road .col{padding:22px;border-right:1px solid var(--line)}
+  .road .col:last-child{border-right:0}
+  .road .yr{font-family:var(--display);font-weight:700;font-size:22px;color:var(--black)}
+  .road .ph{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-deep);margin:3px 0 12px}
+  .road .col ul.clean li{font-size:13.5px}
+
+  /* SWOT */
+  .swot{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.swot{grid-template-columns:1fr}}
+  .swot .q{border-radius:var(--rc);padding:18px 20px;border:1px solid var(--line)}
+  .swot .q h4{font-size:15px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;font-family:var(--body);font-weight:700}
+  .swot .s{background:var(--teal-tint);border-color:rgba(0,224,192,.3)} .swot .s h4{color:var(--teal-deep)}
+  .swot .w{background:#FCF1E9;border-color:#F2D9BE} .swot .w h4{color:var(--warn)}
+
+  /* phone prototype */
+  .proto{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start}
+  .phone{width:300px;flex:0 0 300px;background:#0E1117;border-radius:34px;padding:11px;box-shadow:none;border:1px solid var(--line2)}
+  .phone .screen{background:var(--bg);border-radius:25px;height:580px;overflow:hidden;position:relative}
+  .phscreen{display:none;height:100%;flex-direction:column}
+  .phscreen.on{display:flex}
+  .phtop{background:var(--indigo);color:#fff;padding:16px 18px 14px}
+  .phtop .brand{display:flex;align-items:center;gap:7px;font-family:var(--display);font-weight:700;font-size:15px}
+  .phtop .mk{width:20px;height:20px;border-radius:5px;background:var(--teal);display:grid;place-items:center;color:#0E1117;font-size:11px;font-weight:700}
+  .phbody{padding:18px;flex:1;overflow-y:auto}
+  .phbody h5{font-family:var(--display);font-weight:700;font-size:20px;color:var(--black);margin:0 0 4px;letter-spacing:-.03em}
+  .phbody .sub{font-size:12.5px;color:var(--text2);margin-bottom:16px;line-height:1.45}
+  .phrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--text)}
+  .phrow b{color:var(--black)}
+  .phbtn{display:block;width:100%;background:var(--teal);color:var(--black);border:0;border-radius:var(--r);
+    padding:14px;font-family:var(--body);font-weight:600;font-size:14px;cursor:pointer;margin-top:18px;text-align:center}
+  .phbtn:hover{background:#00C4A8}
+  .phbtn.dark{background:var(--indigo);color:#fff}
+  .phbtn.ghost{background:transparent;border:1px solid var(--line2);color:var(--text)}
+  .phbtn.ghost:hover{background:var(--white);border-color:var(--teal)}
+  .phgauge{background:var(--mint);border-radius:var(--rc);padding:18px;text-align:center;margin-bottom:14px}
+  .phgauge .big{font-family:var(--display);font-weight:700;font-size:34px;color:var(--teal-deep);line-height:1}
+  .phgauge .cap{font-size:11.5px;color:var(--text2);margin-top:5px}
+  .phbadge{display:inline-block;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--teal-tint);color:var(--teal-deep);letter-spacing:.04em}
+  .phdots{display:flex;gap:6px;justify-content:center;padding:10px 0}
+  .phdots .d{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+  .phdots .d.on{background:var(--teal);width:18px;border-radius:4px}
+  .protoside{flex:1;min-width:260px}
+  .stepnav{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .stepnav button{font-family:var(--body);font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;
+    border:1px solid var(--line2);background:var(--white);color:var(--text2);cursor:pointer}
+  .stepnav button.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+
+  /* org chart */
+  .orgtabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .orgtab{font-family:var(--body);font-weight:600;font-size:14px;padding:9px 18px;border-radius:var(--r);
+    border:1px solid var(--line2);background:var(--white);color:var(--text);cursor:pointer}
+  .orgtab.active{background:var(--teal);color:#0E1117;border-color:var(--teal)}
+  .orgview{display:none} .orgview.on{display:block}
+  .orglayer{margin-bottom:14px}
+  .orglayer .lname{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .roles{display:flex;gap:10px;flex-wrap:wrap}
+  .role{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;min-width:120px}
+  .role b{display:block;color:var(--black);font-size:13.5px}
+  .role span{font-size:11.5px;color:var(--muted)}
+  .role.agent{background:var(--indigo);border-color:var(--indigo)}
+  .role.agent b{color:var(--teal-logo)} .role.agent span{color:var(--on-dark)}
+  .role.lead{border-color:var(--teal);border-width:1.5px;background:var(--teal-tint)}
+
+  /* quadrant */
+  .quadwrap{background:var(--white);border:1px solid var(--line);border-radius:var(--rc);padding:14px}
+  svg{display:block;width:100%;height:auto}
+  .qlabel{font-family:var(--body);font-size:11px;letter-spacing:.12em;fill:var(--muted);text-transform:uppercase;font-weight:600}
+  .qax{font-family:var(--body);font-size:11px;letter-spacing:.1em;fill:var(--text2);text-transform:uppercase;font-weight:600}
+  .qname{font-family:var(--body);font-size:12px;fill:var(--black);font-weight:600}
+
+  .discl{font-size:12px;color:var(--muted);line-height:1.6}
+  .discl b{color:var(--text)}
+  hr.sp{border:0;height:1px;background:var(--line);margin:34px 0}
+  .lead-in{font-size:15.5px;color:var(--text);line-height:1.6;max-width:760px}
+  .lead-in b{color:var(--black)}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="inner">
+    <div class="logo" onclick="go(0)"><span class="mark"><svg viewBox="0 0 36 32" width="25" height="22" aria-hidden="true"><rect x="18" y="1" width="15" height="15" rx="3" fill="#00E0C0"/><rect x="3" y="16" width="15" height="15" rx="3" fill="#00E0C0"/></svg></span>Tradepay</div>
+    <div class="navlinks" id="navlinks"></div>
+  </div>
+  <div class="progress" id="prog"></div>
+</nav>
+
+<main id="app">
+
+<!-- ══════════ 0 · COVER ══════════ -->
+<section class="page on" data-page="0">
+  <section class="band hero">
+    <div class="wrap herogrid">
+      <div class="heroleft">
+        <div class="kernel">Head of Product · Case Study Submission</div>
+        <h1 class="title">The collections company<br>disguised as a <em>lender</em>.</h1>
+        <p class="lede" style="margin-bottom:0">Embedded working capital for Saudi Arabia's traditional trade — structured through <em style="color:var(--teal-deep);font-style:italic">Good Strategy / Bad Strategy</em>: a hard diagnosis, one guiding policy, coherent action. Not a list of hopes.</p>
+        <div class="herobtns">
+          <button class="phbtn" style="width:auto;display:inline-block;padding:13px 26px" onclick="go(1)">Read the strategy →</button>
+          <button class="phbtn ghost" style="width:auto;display:inline-block;padding:13px 26px" onclick="go(10)">Jump to debrief</button>
+        </div>
+      </div>
+      <div class="heroright">
+        <div class="herostat"><div class="hs-num">85%</div><div class="hs-lbl">of KSA consumer retail is already cashless — the rails the moat needs now exist</div></div>
+        <div class="herostat"><div class="hs-num">Mar 2026</div><div class="hs-lbl">open-banking payment initiation went live — the collection rail is only months old</div></div>
+        <div class="herostat"><div class="hs-num">1 city</div><div class="hs-lbl">to prove on-rail repayment beats the field baseline — before anything scales</div></div>
+      </div>
+    </div>
+  </section>
+  <section class="band">
+    <div class="wrap">
+      <div class="eyebrow">The kernel in one breath</div>
+      <h2 class="sec" style="max-width:880px">SME lending in a cash economy doesn't die on demand or data. It dies on collections. Tradepay wins by capturing repayment at the source — and nothing else is the strategy.</h2>
+      <div class="grid3" style="margin-top:8px">
+        <div class="card"><div class="tag t">Diagnosis</div><p>The binding constraint is repayment capture, not approval volume. Every rival is strong exactly where we're weak — capital, live product, distribution. Our one structural edge is collections-at-source, and it is the only thing that must be proven first.</p></div>
+        <div class="card"><div class="tag t">Guiding policy</div><p>Own the settlement rail. Credit rides the payment flow; repayment is taken before the merchant can divert it. The rail is the wedge, the decision engine its brain, the white-label Arm its endgame.</p></div>
+        <div class="card"><div class="tag t">Coherent action</div><p>One city, two anchor distributors, a measured test, an AI-agentic org, and a rep-incentive layer that pays only on repaying flow. Gated expansion. Proof before scale.</p></div>
+      </div>
+      <div class="callout" style="margin-top:26px"><strong>On the brief — and reality.</strong> Tradepay is already live: a B2B FMCG trading platform with <b>700+ merchants</b> and <b>95% on-time invoice settlement</b>, embedded in existing distributor ordering and SFA tools. This is not a greenfield design. The strategy below takes the operating business as its starting point and asks the one question that decides its next 10×: <b>can the collection that hustle achieves at 700 merchants be made structural — automated at the source — so it holds at 45,000 and at a fraction of the cost?</b></div>
+      <div class="callout" style="margin-top:14px"><strong>AI-use disclosure.</strong> Per the brief's terms, this submission was produced with AI assistance (Claude) for research, competitor verification, financial modelling, copywriting, and building this interactive site. All market figures were verified against mid-2026 public sources; projections are labelled as such. Judgement, sequencing, and trade-offs are the candidate's.</div>
+    </div>
+  </section>
+</section>
+
+<!-- ══════════ 1 · DIAGNOSIS ══════════ -->
+<section class="page" data-page="1">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 01</div>
+      <div style="margin:14px 0"><span class="kernel">Kernel · Diagnosis</span></div>
+      <h1 class="title" style="max-width:840px">Name the real challenge.</h1>
+      <p class="lede">A good strategy starts by honestly diagnosing the obstacle — not by listing ambitions. Tradepay is already live, with <b>700+ merchants and 95% on-time invoice settlement</b>, so the obstacle is no longer proving merchants want the product. It is whether collection — today achieved by hustle at small scale — can be made <b>structural</b> enough to hold that 95% at 60× the merchants, profitably, before a better-capitalised rival gets there.</p>
+
+      <div class="grid2" style="margin-top:10px">
+        <div class="card mint">
+          <h4>Who we serve</h4>
+          <p>Micro and small traditional retail in Saudi Arabia: baqalas (40–100m²), mini-markets (100–500m²), and small HoReCa. They run SAR 50k–500k monthly working capital, buy from several FMCG suppliers, operate <b>largely in cash</b>, and have little or no access to formal credit because they lack the documents and collateral banks require.</p>
+        </div>
+        <div class="card mint">
+          <h4>Why banks can't</h4>
+          <p>No invoices, no statements, no collateral, no formal credit history. A bank cannot underwrite a shop that keeps its books in its owner's head — and cannot collect from one without a field presence it will never build. The segment is structurally abandoned, which is the opportunity and the trap.</p>
+        </div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">The diagnosis</div>
+      <h2 class="sec" style="max-width:840px">Three facts that decide everything</h2>
+      <div class="grid3">
+        <div class="card">
+          <div class="tag t">Fact 01 · the killer</div>
+          <h4>Repayment, not approval</h4>
+          <p>In a cash economy the loan is easy to give and hard to get back. Today's 95% on-time settlement is real — but it is earned by high-touch, manual follow-up that does not scale to tens of thousands of shops. Loss is driven by collection failure, not by saying "yes" too often. The only proven way to lend here at scale — Square, Tienda Pago, MaxAB — is to repay from the payment flow itself, not to chase it afterward.</p>
+        </div>
+        <div class="card">
+          <div class="tag w">Fact 02 · the clock</div>
+          <h4>The corner is crowding</h4>
+          <p>Erad already runs live embedded credit and is moving into distribution. Sary already runs POS BNPL with its own baqala salesforce. Tamara has a B2B product and a $2.4B facility. The "Leaders" corner is filling <b>before</b> Tradepay arrives. We are last to market.</p>
+        </div>
+        <div class="card">
+          <div class="tag b">Fact 03 · the asymmetry</div>
+          <h4>We are weak where they're strong</h4>
+          <p>Rivals lead on capital (Tamara, Lendo), live product (Erad, Sary), and distribution (Sary). Our single structural advantage is collections-at-source — and it is the one thing not yet proven. The strategy must serve proving that one number before anything else.</p>
+        </div>
+      </div>
+
+      <div class="callout warn"><strong>The bad-strategy trap we refuse.</strong> The easy answer is "build a great app and acquire a million merchants." That mistakes a goal for a strategy. It ignores the binding constraint (collection), picks a fight on the axis where we're weakest (acquisition spend), and assumes growth is the same as a healthy book. In a cash economy, blitzscaling a loan book is how it dies — losses lag growth by 6–12 months, so the dashboard lies until the book seasons.
+      </div>
+
+      <div class="lead-in" style="margin-top:24px"><b>So the challenge, stated plainly:</b> become the one player whose repayment is captured structurally rather than chased — fast enough, and cheaply enough, to be lower-loss than every rival before they out-capitalise us. Everything that follows is in service of that, or it is fluff.</div>
+    </div>
+  </section>
+</section>
+
+<!-- ══════════ 2 · VISION ══════════ -->
+<section class="page" data-page="2">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 02</div>
+      <div style="margin:14px 0"><span class="kernel">The destination</span></div>
+      <h1 class="title" style="max-width:840px">Become the embedded credit infrastructure for MENA trade.</h1>
+      <p class="lede">Vision is not strategy — but strategy needs a destination it is coherent toward. Tradepay's three-to-five-year arc is one company moving through three chapters, each earning the right to the next.</p>
+
+      <div class="road">
+        <div class="col">
+          <div class="yr">Year 0–1</div>
+          <div class="ph">The Rail · the wedge</div>
+          <ul class="clean">
+            <li>Two anchor distributors, one city, ~1,000 merchants</li>
+            <li>Repayment captured at source via SARIE auto-debit + rep cash-in</li>
+            <li>Murabaha-native, no-late-fee structure from day one</li>
+            <li><b>Exit gate:</b> on-rail repayment beats the field baseline, audited</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="yr">Year 1–3</div>
+          <div class="ph">The Engine · the advantage</div>
+          <ul class="clean">
+            <li>Approval-at-constant-loss as the commercial weapon</li>
+            <li>Warehouse facility lands against the seasoned tape</li>
+            <li>Merchant app becomes the retention surface</li>
+            <li>Second market (UAE) under a lender-of-record model</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="yr">Year 3–5</div>
+          <div class="ph">The Arm · the endgame</div>
+          <ul class="clean">
+            <li>White-label the stack: distributors run their financing on us</li>
+            <li>Murabaha securitisation; programmatic issuance</li>
+            <li>Data products for FMCG brands (consent-gated)</li>
+            <li>Egypt entry; the named threat becomes the customer base</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band mint">
+    <div class="wrap">
+      <div class="eyebrow">Product expansion · beyond inventory financing</div>
+      <h2 class="sec">What the rail makes possible</h2>
+      <div class="grid4">
+        <div class="card"><div class="tag t">Adjacent</div><h4>Multi-supplier line</h4><p>One portable revolving limit the merchant carries across every supplier — share-of-wallet and stickiness.</p></div>
+        <div class="card"><div class="tag t">Adjacent</div><h4>The Arm</h4><p>White-label decisioning + capital + servicing, so a distributor's financing program runs on Tradepay.</p></div>
+        <div class="card"><div class="tag t">Layer</div><h4>Insights & data</h4><p>SKU-level demand signals sold to FMCG brands — the "Nielsen of baqalas," consent-gated under PDPL.</p></div>
+        <div class="card"><div class="tag t">Layer</div><h4>Merchant tools</h4><p>Cash-flow view, reorder financing, credit-building history that raises limits over time.</p></div>
+      </div>
+      <div class="callout" style="margin-top:24px"><strong>Why this sequence and not a leap.</strong> Each chapter funds and de-risks the next. You cannot credibly sell "run your lender on us" (the Arm) without a proven own-book (the Rail + Engine). Selling the endgame first is the most common bad-strategy error in embedded finance — vision mistaken for a plan.</div>
+    </div>
+  </section>
+</section>
+
+<!-- ══════════ 3 · MOAT ══════════ -->
+<section class="page" data-page="3">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 03</div>
+      <div style="margin:14px 0"><span class="kernel">Kernel · Guiding policy</span></div>
+      <h1 class="title" style="max-width:840px">Own the rail. Everything else rides on it.</h1>
+      <p class="lede">The guiding policy is a single, focused choice that channels action: <b>capture repayment at the source of the merchant's cash flow.</b> Credit rides the payment rail; the loan is repaid before the merchant can divert the money. This is the defensible niche — not a feature, a structural position.</p>
+
+      <div class="grid3">
+        <div class="card mint"><div class="tag t">Wedge</div><h4>The Rail</h4><p>A closed-loop settlement + auto-debit layer. Repayment is taken at source via SARIE and rep cash-in — so we know within seconds, not 30 days, whether a payment landed. This is the one thing structurally solving collections.</p></div>
+        <div class="card mint"><div class="tag t">Brain</div><h4>The Engine</h4><p>Two-layer decisioning (pre-score + real-time) that approves more of a distributor's merchants at the same loss. The commercial argument that opens every channel: "+15pp on your book at your loss rate — audited, or you don't pay."</p></div>
+        <div class="card mint"><div class="tag t">Endgame</div><h4>The Arm</h4><p>White-label the proven stack so distributors run their own financing on Tradepay — converting the named competitive threat (in-house arms) into the customer base and the TAM.</p></div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">The MOAT · why this compounds and can't be copied</div>
+      <h2 class="sec">Four moats that deepen with every cohort</h2>
+      <div class="grid2">
+        <div class="card"><h4>1 · Collections moat</h4><p>Auto-debit at source means lower DPD, lower loss, cheaper credit, which wins the distributor's next deal. A rival chasing repayment after the fact cannot match the loss curve — and loss is the whole game.</p></div>
+        <div class="card"><h4>2 · Data moat</h4><p>Every transaction is a labelled outcome (repaid / defaulted). A two-year-old engine beats a zero-year-old one by multiples on the hard 40th-percentile merchants. Time-based; uncompressible.</p></div>
+        <div class="card"><h4>3 · Distribution moat</h4><p>The distributor's existing reps activate credit at near-zero marginal cost. Switching means retraining the field force and losing the data edge we earned them. The rep network is a channel no pure-play can build.</p></div>
+        <div class="card"><h4>4 · Capital moat</h4><p>A seasoned tape funds at warehouse-then-securitisation rates a new entrant can't touch. A 300+bps funding-cost edge on a growing book compounds into pricing power.</p></div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">Differentiation · the collateral question, answered honestly</div>
+      <h2 class="sec" style="max-width:840px">Flow-secured at the shop, asset-secured at the warehouse</h2>
+      <p class="lead-in">Shop stock is bad collateral: it is self-liquidating (sold to repay — that's the model), commingled, low-value, and KSA's movable-pledge law lets the merchant sell it in the ordinary course anyway. Seizing a leased baqala and re-selling it turns a credit rail into a distressed-SME operator — the opposite of lean. So the collateral that's actually worth having is the <b>future flow</b> (captured by the rail) plus the <b>distributor's supply-cutoff lever</b> ("no repay, no stock") and bureau reporting. Real asset-collateral only earns its keep at the larger wholesale tier — a registered floating charge over receivables, the Erad/Lendo pattern. Tradepay is the only player designing <b>both</b> origination tiers under one funding structure.</p>
+      <div class="callout"><strong>Defensible vs each rival type.</strong> Vs traditional lenders — we collect where they can't reach. Vs fintech startups — we own a rail and a channel, not just an app. Vs distributor in-house arms — they can extend relationship credit but can't underwrite or fund at scale, so we white-label them. The moat is the composition, not any single layer.</div>
+    </div>
+  </section>
+</section>
+
+<!-- ══════════ 4 · COMPETITION ══════════ -->
+<section class="page" data-page="4">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 04</div>
+      <div style="margin:14px 0"><span class="kernel">Facing the challenge</span></div>
+      <h1 class="title" style="max-width:840px">The field, verified — and where it splits.</h1>
+      <p class="lede">Bad strategy waves at "the competitive landscape." Good strategy names each player, what's real, and the one structural line that divides them. All figures verified against mid-2026 public sources.</p>
+
+      <table class="t">
+        <thead><tr><th>Player</th><th>Strength</th><th>Weakness</th><th>Threat</th></tr></thead>
+        <tbody>
+          <tr><td><b>Erad</b></td><td>Live embedded credit at POS (F&B, healthcare), moving into distribution; full stack — CMA fund + $125M Jefferies ABS</td><td>Built for formal suppliers, not baqalas; API model doesn't own collections-at-source</td><td><span class="tag b" style="margin:0">Highest</span></td></tr>
+          <tr><td><b>Sary / Silq</b></td><td>Owns ordering + POS BNPL + a direct baqala salesforce; $110M Silq merger, ~25k shops, 500+ distributors</td><td>Capital-light on the stack (equity-funded book, no warehouse/ABS); lending is a bolt-on</td><td><span class="tag b" style="margin:0">High</span></td></tr>
+          <tr><td><b>Tamara</b></td><td>$2.4B facility, full SAMA license, 87k merchants; launched a B2B payment-terms product</td><td>Consumer DNA; B2B nascent and uncommitted; no baqala distribution</td><td><span class="tag w" style="margin:0">Latent</span></td></tr>
+          <tr><td><b>Lendo</b></td><td>Deepest warehouse ($690M JPM + $50M Jadwa); SAR 3.5B+ facilitated; published 4.5% default</td><td>Invoice/formal-SME lane — needs documents the baqala lacks; no field channel or rail</td><td><span class="tag t" style="margin:0">Adjacent</span></td></tr>
+          <tr><td><b>Tameed</b></td><td>SAMA-licensed, strong collateral (gov-PO obligor), embedded AJEL product</td><td>Very narrow (government POs), small scale, no warehouse/securitisation</td><td><span class="tag t" style="margin:0">Niche</span></td></tr>
+          <tr><td><b>Mala</b></td><td>Purest vision-match (B2B PNPL), ~18-month head start on live merchants</td><td>$7M pre-seed, no funding stack — can't fund a meaningful book</td><td><span class="tag w" style="margin:0">Watch</span></td></tr>
+          <tr><td><b>Retailo</b></td><td>Established B2B distribution marketplace, multi-market (KSA + UAE)</td><td>Lending-light, no credit funding stack</td><td><span class="tag t" style="margin:0">Partner</span></td></tr>
+          <tr><td><b>Banks</b></td><td>Unlimited capital, licenses, brand</td><td>No baqala distribution or collections; structurally unwilling</td><td><span class="tag t" style="margin:0">Acquirer</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn" style="margin-top:24px"><strong>The split that matters.</strong> The field divides into <b>capital-deep</b> (Erad, Lendo, Tamara) and <b>origination-rich, capital-thin</b> (Sary, Mala). Every rival is strong exactly where we are weak — live product (Erad, Sary), capital (Tamara, Lendo), distribution (Sary). Our only structural edge is collections-at-source, and it is unproven. That makes the honest claim narrow and defensible: we don't win on capital, brand, or head-start — we win if, and only if, the rail captures repayment at a materially lower loss than anyone chasing it.</div>
+
+      <hr class="sp">
+      <div class="eyebrow">Tradepay · honest self-SWOT</div>
+      <div class="swot">
+        <div class="q s"><h4>Strengths</h4><ul class="clean">
+          <li><b>Collections-at-source</b> — the one structural edge no rival has designed for</li>
+          <li><b>Both origination tiers</b> under one funding stack</li>
+          <li><b>The Arm</b> converts the named threat into TAM</li>
+          <li><b>LoR structure</b> inherits regulatory alignment without a banking license</li>
+        </ul></div>
+        <div class="q w"><h4>Weaknesses</h4><ul class="clean">
+          <li><b>Zero execution today</b> — pre-revenue, no live book, last to market</li>
+          <li><b>Capital-thin</b> vs Tamara, Lendo, Erad — funding is a plan, not a facility</li>
+          <li><b>The moat is unproven</b> — everything rests on auto-debit working at baqala scale</li>
+          <li><b>Rep-incentive layer unbuilt</b>; "no field force" edge weakened by Sary</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ══════════ 5 · TRAJECTORY ══════════ -->
+<section class="page" data-page="5">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 05</div>
+      <div style="margin:14px 0"><span class="kernel">Facing the challenge</span></div>
+      <h1 class="title" style="max-width:840px">Where the field moves, 2026 → 2031.</h1>
+      <p class="lede">Strategy must account for where rivals are going, not where they sit. Hollow dot = today; solid dot = projected 2031; arrow = the move. The Leaders corner crowds before we arrive — that is the strategic clock.</p>
+
+      <div class="quadwrap">
+        <svg viewBox="0 0 780 580" role="img" aria-label="Competitive trajectory quadrant">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="context-stroke"/>
+            </marker>
+          </defs>
+          <!-- quadrant fills -->
+          <rect x="64" y="28" width="338" height="240" fill="#F9FAFB"/>
+          <rect x="402" y="28" width="338" height="240" fill="#E5FCF8"/>
+          <rect x="64" y="268" width="338" height="240" fill="#ffffff"/>
+          <rect x="402" y="268" width="338" height="240" fill="#F9FAFB"/>
+          <rect x="64" y="28" width="676" height="480" fill="none" stroke="#D0D5DD"/>
+          <line x1="402" y1="28" x2="402" y2="508" stroke="#E4E7EC" stroke-dasharray="3 4"/>
+          <line x1="64" y1="268" x2="740" y2="268" stroke="#E4E7EC" stroke-dasharray="3 4"/>
+          <text class="qlabel" x="74" y="48">Challengers</text>
+          <text class="qlabel" x="730" y="48" text-anchor="end">Leaders</text>
+          <text class="qlabel" x="74" y="500">Niche players</text>
+          <text class="qlabel" x="730" y="500" text-anchor="end">Visionaries</text>
+          <text class="qax" x="402" y="544" text-anchor="middle">Completeness of vision →</text>
+          <text class="qax" x="30" y="268" text-anchor="middle" transform="rotate(-90 30 268)">Ability to execute →</text>
+
+          <!-- players -->
+          <g stroke-width="2">
+            <line x1="510.2" y1="239.2" x2="618.3" y2="114.4" stroke="#E07A3C" marker-end="url(#ah)"/>
+            <line x1="469.6" y1="220.0" x2="550.7" y2="133.6" stroke="#E07A3C" marker-end="url(#ah)"/>
+            <line x1="361.4" y1="172.0" x2="510.2" y2="95.2" stroke="#0E1117" marker-end="url(#ah)"/>
+            <line x1="334.4" y1="152.8" x2="429.0" y2="114.4" stroke="#98A2B3" marker-end="url(#ah)"/>
+            <line x1="293.8" y1="296.8" x2="388.5" y2="239.2" stroke="#98A2B3" marker-end="url(#ah)"/>
+            <line x1="429.0" y1="402.4" x2="469.6" y2="287.2" stroke="#98A2B3" marker-end="url(#ah)"/>
+            <line x1="375.0" y1="268.0" x2="442.6" y2="210.4" stroke="#98A2B3" marker-end="url(#ah)"/>
+            <line x1="253.3" y1="220.0" x2="375.0" y2="152.8" stroke="#0E1117" marker-end="url(#ah)"/>
+            <line x1="550.7" y1="392.8" x2="645.4" y2="124.0" stroke="#00E0C0" marker-end="url(#ah)"/>
+          </g>
+          <!-- hollow 2026 -->
+          <g fill="#fff" stroke-width="1.6">
+            <circle cx="510.2" cy="239.2" r="6.5" stroke="#E07A3C"/><circle cx="469.6" cy="220.0" r="5.9" stroke="#E07A3C"/>
+            <circle cx="361.4" cy="172.0" r="14.5" stroke="#0E1117"/><circle cx="334.4" cy="152.8" r="9.7" stroke="#98A2B3"/>
+            <circle cx="293.8" cy="296.8" r="5.8" stroke="#98A2B3"/><circle cx="429.0" cy="402.4" r="4.1" stroke="#98A2B3"/>
+            <circle cx="375.0" cy="268.0" r="5.1" stroke="#98A2B3"/><circle cx="253.3" cy="220.0" r="8.5" stroke="#0E1117"/>
+            <circle cx="550.7" cy="392.8" r="4.3" stroke="#00E0C0"/>
+          </g>
+          <!-- solid 2031 -->
+          <circle cx="618.3" cy="114.4" r="6.5" fill="#E07A3C"/><circle cx="550.7" cy="133.6" r="5.9" fill="#E07A3C"/>
+          <circle cx="510.2" cy="95.2" r="14.5" fill="#0E1117"/><circle cx="429.0" cy="114.4" r="9.7" fill="#98A2B3"/>
+          <circle cx="388.5" cy="239.2" r="5.8" fill="#98A2B3"/><circle cx="469.6" cy="287.2" r="4.1" fill="#98A2B3"/>
+          <circle cx="442.6" cy="210.4" r="5.1" fill="#98A2B3"/><circle cx="375.0" cy="152.8" r="8.5" fill="#0E1117"/>
+          <circle cx="645.4" cy="124.0" r="9.2" fill="none" stroke="#00E0C0" stroke-width="1.8"/><circle cx="645.4" cy="124.0" r="4.3" fill="#00E0C0"/>
+          <!-- labels -->
+          <g class="qname">
+            <text x="630.3" y="118.4">Erad</text>
+            <text x="562.7" y="137.6">Sary / Silq</text>
+            <text x="510.2" y="74" text-anchor="middle">Tamara</text>
+            <text x="417.0" y="118.4" text-anchor="end">Lendo</text>
+            <text x="400.5" y="243.2">Tameed</text>
+            <text x="481.6" y="291.2">Mala</text>
+            <text x="454.6" y="214.4">Retailo</text>
+            <text x="363.0" y="156.8" text-anchor="end">Banks</text>
+            <text x="660.4" y="128" fill="#007D6B" font-weight="700">Tradepay</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="grid3" style="margin-top:24px">
+        <div class="card"><div class="tag b">The squeeze</div><p><b>Erad & Sary</b> converge on Leaders from a live-product head start; <b>Tamara</b> looms from above with $2.4B. Three players reach the corner before us.</p></div>
+        <div class="card"><div class="tag w">The gap</div><p><b>Mala & Sary</b> are origination-rich but capital-thin — exposed if funding freezes. <b>Lendo & Tamara</b> are capital-deep but not baqala-native.</p></div>
+        <div class="card"><div class="tag t">Our move</div><p>Vision is strongest but execution is zero today. The race is <b>collections-proof speed</b>, not vision. Win the loss curve, then the corner is ours.</p></div>
+      </div>
+      <p class="discl" style="margin-top:18px">Dot size encodes <b>credit firepower</b> (√-scaled committed/addressable capital): Tamara's ~$2.4B looms largest; Lendo and the banks carry weight; Mala and Tradepay are deliberately capital-thin — our edge is the rail, not the balance sheet. Positions are analytical estimates, not vendor scores. Sary granular figures are directional (single low-authority source); all others verified to mid-2026.</p>
+    </div>
+  </section>
+</section>
+
+<!-- ══════════ 6 · PROTOTYPE ══════════ -->
+<section class="page" data-page="6">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 06</div>
+      <div style="margin:14px 0"><span class="kernel">Coherent action · the experience</span></div>
+      <h1 class="title" style="max-width:840px">90 seconds at the counter.</h1>
+      <p class="lede">The merchant journey, clickable. Designed for low digital literacy: acquisition happens offline through a trusted rep; the app arrives only after the first repayment, when trust exists. Tap through the five moments that matter.</p>
+
+      <div class="proto">
+        <div class="phone">
+          <div class="screen">
+            <!-- screen 1 -->
+            <div class="phscreen on" data-ph="0">
+              <div class="phtop"><div class="brand"><span class="mk">t</span>Tradepay</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Rep-assisted onboarding</div></div>
+              <div class="phbody">
+                <h5>Activate credit</h5>
+                <div class="sub">Your distributor's rep starts this with you at the counter. One page, one fingerprint.</div>
+                <div class="phrow"><span>Shop</span><b>Baqala Al Noor</b></div>
+                <div class="phrow"><span>Identity</span><b>Nafath verified</b></div>
+                <div class="phrow"><span>Bank account</span><b>•••• 4471</b></div>
+                <div class="phrow"><span>Direct-debit mandate</span><b>One-time consent</b></div>
+                <button class="phbtn" onclick="phGo(1)">Verify with Nafath →</button>
+                <div class="sub" style="margin-top:12px;text-align:center">Arabic-first · no app download required yet</div>
+              </div>
+            </div>
+            <!-- screen 2 -->
+            <div class="phscreen" data-ph="1">
+              <div class="phtop"><div class="brand"><span class="mk">t</span>Tradepay</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Decision · real time</div></div>
+              <div class="phbody">
+                <h5>You're approved</h5>
+                <div class="sub">Decided in under a second from your distributor purchase history — no statements needed.</div>
+                <div class="phgauge"><div class="big">SAR 25,000</div><div class="cap">Revolving limit · Tier B</div></div>
+                <div class="phrow"><span>Fee</span><b>2% / 30 days</b></div>
+                <div class="phrow"><span>Late fee</span><b>None (Murabaha)</b></div>
+                <div class="phrow"><span>Decision basis</span><b>Order history, SKU mix</b></div>
+                <button class="phbtn" onclick="phGo(2)">Use my line →</button>
+              </div>
+            </div>
+            <!-- screen 3 -->
+            <div class="phscreen" data-ph="2">
+              <div class="phtop"><div class="brand"><span class="mk">t</span>Tradepay</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Order · this week</div></div>
+              <div class="phbody">
+                <h5>Buy more stock</h5>
+                <div class="sub">Take SAR 30,000 of goods now; pay part cash, part on your line. Everything shown before you confirm.</div>
+                <div class="phrow"><span>Order total</span><b>SAR 30,000</b></div>
+                <div class="phrow"><span>Cash now</span><b>SAR 18,000</b></div>
+                <div class="phrow"><span>On Tradepay line</span><b>SAR 12,000</b></div>
+                <div class="phrow"><span>Fee (transparent)</span><b>SAR 240</b></div>
+                <div class="phrow"><span>Due</span><b>30 days · 14 Jul</b></div>
+                <button class="phbtn" onclick="phGo(3)">Confirm — SAR 12,000 →</button>
+              </div>
+            </div>
+            <!-- screen 4 -->
+            <div class="phscreen" data-ph="3">
+              <div class="phtop"><div class="brand"><span class="mk">t</span>Tradepay</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Repayment · automatic</div></div>
+              <div class="phbody">
+                <h5>Repaid at source</h5>
+                <div class="sub">On the due date we collect via SARIE auto-debit. If you're short, we know the same day — not in three weeks.</div>
+                <div class="phgauge" style="background:#fbf1e8"><div class="big" style="color:#E07A3C">Short SAR 5,000?</div><div class="cap">We reschedule instantly — no penalty</div></div>
+                <div class="phrow"><span>Pay now</span><b>SAR 7,000</b></div>
+                <div class="phrow"><span>Next week</span><b>SAR 5,000</b></div>
+                <div class="phrow"><span>WhatsApp</span><b>Arabic nudge sent</b></div>
+                <button class="phbtn" onclick="phGo(4)">Confirm plan →</button>
+              </div>
+            </div>
+            <!-- screen 5 -->
+            <div class="phscreen" data-ph="4">
+              <div class="phtop"><div class="brand"><span class="mk">t</span>Tradepay</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:6px">Credit-building</div></div>
+              <div class="phbody">
+                <h5>Paid on time ✓</h5>
+                <div class="sub">Every on-time repayment builds a history that travels — and raises your limit.</div>
+                <span class="phbadge">Limit raised → SAR 30,000</span>
+                <div class="phrow" style="margin-top:14px"><span>On-time streak</span><b>3 cycles</b></div>
+                <div class="phrow"><span>Reported to</span><b>SIMAH bureau</b></div>
+                <div class="phrow"><span>Next reorder</span><b>One-tap finance</b></div>
+                <button class="phbtn dark" onclick="phGo(0)">↺ Replay journey</button>
+              </div>
+            </div>
+            <div class="phdots" id="phdots"></div>
+          </div>
+        </div>
+
+        <div class="protoside">
+          <div class="stepnav" id="stepnav"></div>
+          <hr class="sp" style="margin:20px 0">
+          <div class="eyebrow">Partner experience</div>
+          <h3 style="font-size:22px;margin:6px 0 10px">The distributor console</h3>
+          <p class="lead-in" style="font-size:14.5px">A free web console for distributors: same-day settlement reporting, live order + credit volumes, ZATCA-ready records, and a rep activation leaderboard. The integration rides existing SFA/DMS systems, not a rip-and-replace.</p>
+          <div class="grid2" style="margin-top:16px">
+            <div class="card"><div class="tag t">Transparency</div><p>Every fee, limit, and due date shown before confirm. Declines return a plain-language reason ("limit reached this cycle"), never a silent "no" — the foundation of trust and of regulatory explainability.</p></div>
+            <div class="card"><div class="tag t">Localization</div><p>Arabic-first UI, Hijri-aware due dates, Ramadan/Hajj seasonality in limits, WhatsApp as the primary channel, and Nafath identity. Built for a 5-year-old Android on patchy 3G.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    (function(){
+      const dots=document.getElementById('phdots'), nav=document.getElementById('stepnav');
+      const names=['Onboard','Approve','Order','Repay','Build'];
+      for(let i=0;i<5;i++){const d=document.createElement('div');d.className='d'+(i===0?' on':'');dots.appendChild(d);
+        const b=document.createElement('button');b.textContent=(i+1)+' · '+names[i];if(i===0)b.classList.add('active');
+        b.onclick=()=>window.phGo(i);nav.appendChild(b);}
+      window.phGo=function(i){
+        document.querySelectorAll('.phscreen').forEach(s=>s.classList.toggle('on',+s.dataset.ph===i));
+        [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===i));
+        [...nav.children].forEach((b,j)=>b.classList.toggle('active',j===i));
+      };
+    })();
+  </script>
+</section>
+
+<!-- ══════════ 7 · THE REP ══════════ -->
+<section class="page" data-page="7">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 07</div>
+      <div style="margin:14px 0"><span class="kernel">Coherent action · the lever</span></div>
+      <h1 class="title" style="max-width:840px">The whole strategy rests on one person.</h1>
+      <p class="lede">Tradepay never hires a merchant salesforce. The distributor's existing route rep is the channel — already trusted, already visiting weekly. The model lives or dies on whether he activates credit. So we design for him, not around him.</p>
+
+      <div class="grid2">
+        <div class="card mint">
+          <div class="tag t">Persona</div>
+          <h4>Faisal — the route rep</h4>
+          <p>Drives a stocked van down a fixed beat, visits 20–30 baqalas a day, knows every owner by name, and already carries an SFA app (FieldAssist / Bizom). He isn't selling credit — he's selling more Pepsi. Credit is just the tool that lets the shop buy more this week. He's paid on volume he moves and trusts what he can explain in one line.</p>
+        </div>
+        <div class="card">
+          <div class="tag w">The risk we design against</div>
+          <h4>The agent moral-hazard trap</h4>
+          <p>Paying reps per activation is exactly the incentive that has burned agent-network lenders worldwide — reps push loans onto bad borrowers to earn the bonus, and adverse selection poisons the book. So the bonus must <b>vest on repayment, with clawback on early default</b>. This isn't a detail; it's the difference between a healthy book and a dead one.</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:22px"><strong>The pattern is proven — it just lives in a different stack.</strong> FieldAssist already ties FMCG rep incentives to <em>collections</em>, not just orders, with leaderboards and real-time payout tracking; Bizom runs the tiered discount-calculator pattern. None of the named credit rivals build for the rep. The whitespace is real, the mechanics are validated, and the right move is to embed inside the rep's existing SFA app — not to ship a rival app.</div>
+
+      <hr class="sp">
+      <div class="eyebrow">The activation tool · live</div>
+      <h2 class="sec">The 90-second affordability calculator</h2>
+      <p class="lead-in" style="margin-bottom:18px">What the rep opens at the counter. Enter the order and the cash on hand; it shows the credit to extend, the transparent fee, and — crucially — the rep's repayment-vested bonus. Try it.</p>
+
+      <div class="grid2" style="align-items:start">
+        <div class="card">
+          <div style="margin-bottom:16px">
+            <label style="font-size:13px;font-weight:600;color:var(--black);display:block;margin-bottom:6px">Order value (SAR)</label>
+            <input id="calcOrder" type="range" min="5000" max="60000" step="1000" value="30000" style="width:100%;accent-color:#00E0C0" oninput="calcRep()">
+            <div style="font-family:var(--display);font-weight:700;font-size:24px;color:var(--black)" id="calcOrderV">30,000</div>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;color:var(--black);display:block;margin-bottom:6px">Cash the shop has now (SAR)</label>
+            <input id="calcCash" type="range" min="0" max="40000" step="1000" value="18000" style="width:100%;accent-color:#00E0C0" oninput="calcRep()">
+            <div style="font-family:var(--display);font-weight:700;font-size:24px;color:var(--black)" id="calcCashV">18,000</div>
+          </div>
+        </div>
+        <div class="card mint">
+          <div class="phrow"><span>Credit to extend</span><b id="calcCredit" style="font-size:18px">SAR 12,000</b></div>
+          <div class="phrow"><span>Fee (2% / 30 days, shown to shop)</span><b id="calcFee">SAR 240</b></div>
+          <div class="phrow"><span>Extra stock unlocked this week</span><b id="calcExtra">SAR 12,000</b></div>
+          <div class="phrow" style="border-bottom:0"><span>Faisal's bonus <span style="color:var(--muted);font-weight:400">(vests on repayment)</span></span><b id="calcBonus" style="color:var(--teal-deep);font-size:18px">SAR 50</b></div>
+          <div id="calcNote" class="discl" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">The gamification layer · embedded in the rep's SFA app</div>
+      <h2 class="sec">Six mechanics, one rule: pay on repaying flow</h2>
+      <div class="grid3">
+        <div class="card"><div class="tag t">01</div><h4>Retro / slab bonuses</h4><p>Escalating tiers — activate more shops that repay on time, earn a bigger per-shop bonus. Rewards quality at volume.</p></div>
+        <div class="card"><div class="tag t">02</div><h4>Repayment-vested payout</h4><p>Bonus accrues at activation but only pays when the shop repays; clawed back on early default. The moral-hazard control, built in.</p></div>
+        <div class="card"><div class="tag t">03</div><h4>Affordability calculator</h4><p>The counter tool above — credit, fee, and "extra stock unlocked" in one screen. The credit analogue of Bizom's discount calculator.</p></div>
+        <div class="card"><div class="tag t">04</div><h4>Leaderboards & missions</h4><p>Rep-vs-rep and route-vs-route, on repaying activations — not signatures. Real-time earnings dashboard ("earned vs pending").</p></div>
+        <div class="card"><div class="tag t">05</div><h4>Loyalty the rep can sell</h4><p>A progress bar the shop sees: "repay on time 3× → limit rises." The rep closes with a concrete, visible win.</p></div>
+        <div class="card"><div class="tag t">06</div><h4>Beat-plan integration</h4><p>Activation slots into the existing route — geo-tagged, no extra visit. Zero added friction because it rides the trip he's already making.</p></div>
+      </div>
+    </div>
+  </section>
+  <script>
+    window.calcRep=function(){
+      const o=+document.getElementById('calcOrder').value, c=+document.getElementById('calcCash').value;
+      const credit=Math.max(0,o-c), fee=Math.round(credit*0.02), bonus=credit>0?50:0;
+      const f=n=>n.toLocaleString('en-US');
+      document.getElementById('calcOrderV').textContent=f(o);
+      document.getElementById('calcCashV').textContent=f(c);
+      document.getElementById('calcCredit').textContent='SAR '+f(credit);
+      document.getElementById('calcFee').textContent='SAR '+f(fee);
+      document.getElementById('calcExtra').textContent='SAR '+f(credit);
+      document.getElementById('calcBonus').textContent='SAR '+f(bonus);
+      const note=document.getElementById('calcNote');
+      if(credit===0)note.innerHTML='<b>No credit needed</b> — the shop can pay cash. No bonus; the rep simply moves stock.';
+      else note.innerHTML='Bonus is <b>not</b> paid yet — it vests only when this SAR '+f(credit)+' is repaid on time. Early default claws it back.';
+    };
+    calcRep();
+  </script>
+</section>
+
+<!-- ══════════ 8 · ENGINE & RISK ══════════ -->
+<section class="page" data-page="8">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 08</div>
+      <div style="margin:14px 0"><span class="kernel">Coherent action · source of advantage</span></div>
+      <h1 class="title" style="max-width:840px">The engine is the argument. Risk is the discipline.</h1>
+      <p class="lede">The decision engine is what lets us approve more of a distributor's merchants at the same loss — the line that opens every channel. But the engine only earns trust if risk is modelled with the rigour of a regulated lender. Both, or neither.</p>
+
+      <div class="grid2">
+        <div class="card mint"><div class="tag t">Layer 1 · pre-score</div><h4>Cold-start from partner data</h4><p>Before a merchant ever applies, we pre-score from distributor history — purchase frequency, invoice values, SKU diversity, supplier relationships — and assign a risk tier and revolving limit. The merchant is approved at the counter because the work happened beforehand.</p></div>
+        <div class="card mint"><div class="tag t">Layer 2 · real-time</div><h4>Transaction-level decisioning</h4><p>At order time the engine approves, declines, or partially finances in under a second, checking the transaction against the merchant's exposure, velocity, and risk profile. SKU-level dynamic limits; partial approvals instead of hard noes.</p></div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">Credit policy · the guardrails I'd advocate</div>
+      <h2 class="sec">Approval rate vs portfolio risk — managed, not maximised</h2>
+      <table class="t">
+        <thead><tr><th>Guardrail</th><th>Rule</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><b>Vintage caps</b></td><td>Cap exposure per monthly cohort until it seasons</td><td>Losses lag growth 6–12 months; this is how you avoid blitzscaling a book to death</td></tr>
+          <tr><td><b>Circuit breakers</b></td><td>Auto-tighten when a cohort's early DPD breaches threshold</td><td>Stops a bad model or fraud ring before it compounds</td></tr>
+          <tr><td><b>Risk brake authority</b></td><td>Risk can override growth, in peacetime, by policy</td><td>Removes the org incentive to chase approvals into losses</td></tr>
+          <tr><td><b>Loss-budget routing</b></td><td>Each channel has a loss budget; approvals priced to it</td><td>"+15pp at your loss rate" is a promise only if the budget is enforced</td></tr>
+          <tr><td><b>Concentration limits</b></td><td>Per-merchant, per-SKU, per-distributor caps</td><td>No single failure can sink a cohort</td></tr>
+        </tbody>
+      </table>
+
+      <hr class="sp">
+      <div class="eyebrow">Risk modelling · how we actually build the models</div>
+      <h2 class="sec">A regulated-lender stack, not a startup score</h2>
+      <div class="grid3">
+        <div class="card"><div class="tag i">Provisioning</div><h4>IFRS 9 / ECL</h4><p>Expected-credit-loss provisioning with 3-stage staging from origination. PD × LGD × EAD, forward-looking macro overlays (Ramadan/Hajj seasonality, oil-cycle). The provisioning the warehouse and auditors require.</p></div>
+        <div class="card"><div class="tag i">Monitoring</div><h4>DPD buckets & roll rates</h4><p>Days-past-due buckets with roll-rate transition matrices — the early-warning system. Same-day knowledge from the rail means roll rates are observed in real time, not reconstructed monthly.</p></div>
+        <div class="card"><div class="tag i">Validation</div><h4>Vintage & champion/challenger</h4><p>Cohort vintage curves prove (or disprove) the "losses fall as cohorts season" thesis. New models run as challengers against the champion on live traffic before promotion.</p></div>
+      </div>
+
+      <div class="grid2" style="margin-top:18px">
+        <div class="card"><div class="tag t">Explainability</div><h4>Decisions a merchant, partner, and regulator can read</h4><p>Every decline returns a plain-language adverse-action reason ("limit reached this cycle," not "model said no"). Reason codes are logged, auditable, and surfaced in the merchant app and partner console. Model governance keeps the engine examinable — a SAMA and AECB requirement, and a trust feature.</p></div>
+        <div class="card"><div class="tag t">Feedback loops</div><h4>Every repayment improves the next decision</h4><p>Repayment outcomes, merchant feedback, and portfolio performance flow back as labelled training data nightly. The data flywheel is the moat: a seasoned engine beats a cold one by multiples on the hard 40th-percentile merchant.</p></div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">Fraud & financial crime · product-level safeguards</div>
+      <div class="grid3">
+        <div class="card"><div class="tag b">Document fraud</div><p>AI-forged bank statements are now a live threat (the CBA case). Upload-path safeguards: liveness, source-verification, and tamper detection — friction only where risk spikes, never blanket.</p></div>
+        <div class="card"><div class="tag b">AML / monitoring</div><p>Transaction-monitoring scenario library run with the lender-of-record bank; velocity and structuring checks on the rail. Nafath identity anchors KYB.</p></div>
+        <div class="card"><div class="tag b">Collusion</div><p>Rep-merchant collusion is the channel's native risk; repayment-vested bonuses + geo-tagged activation + cohort anomaly detection contain it.</p></div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">Data & insights strategy</div>
+      <h2 class="sec">From transactions to value — and a data-informed culture</h2>
+      <div class="grid4">
+        <div class="card"><div class="tag t">Product analytics</div><p>North-star: repaying active merchants. KPIs: approval rate at constant loss, on-rail repayment %, DPD roll rates, attach (avg outstanding), cohort retention, revenue/FTE.</p></div>
+        <div class="card"><div class="tag t">Merchant insights</div><p>Cash-flow view, reorder timing, SKU-mix benchmarks vs similar shops — turning their own data into better purchasing.</p></div>
+        <div class="card"><div class="tag t">Partner insights</div><p>Settlement reporting, merchant-health scores, credit-uplift dashboards — the stickiness layer for distributors.</p></div>
+        <div class="card"><div class="tag t">Data culture</div><p>Weekly metric review, every PRD ships with its measurement plan, decisions cite the tape. Receipts over claims.</p></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ══════════ 9 · OPERATING MODEL ══════════ -->
+<section class="page" data-page="9">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 09</div>
+      <div style="margin:14px 0"><span class="kernel">Coherent action · proximate objectives</span></div>
+      <h1 class="title" style="max-width:840px">A lean machine, gated on proof.</h1>
+      <p class="lede">The business case and the org are one argument: delete the departments that kill lenders (field salesforce, collections army, marketing funnel), run the rest on AI agents, and let headcount follow proof — never plan. Crucially, this re-shapes an <b>operating business — 700+ merchants already live</b> — not a launch from zero.</p>
+
+      <div class="statgrid">
+        <div class="stat"><div class="num">SAR 278M</div><div class="lbl">Year-5 revenue (lending + rail + Arm + data)</div></div>
+        <div class="stat"><div class="num">~SAR 128M</div><div class="lbl">Year-5 EBITDA · breakeven in Year 3</div></div>
+        <div class="stat"><div class="num">45,000</div><div class="lbl">Active merchants, Year 5 · SAR 900M book</div></div>
+        <div class="stat"><div class="num">~20</div><div class="lbl">Human FTE at Year 5 · agents do the ops</div></div>
+      </div>
+
+      <h3 style="font-size:20px;margin:30px 0 12px">Five-year shape</h3>
+      <table class="t">
+        <thead><tr><th></th><th class="num-cell">Y1</th><th class="num-cell">Y2</th><th class="num-cell">Y3</th><th class="num-cell">Y4</th><th class="num-cell">Y5</th></tr></thead>
+        <tbody>
+          <tr><td><b>Revenue (SAR M)</b></td><td class="num-cell">3</td><td class="num-cell">21</td><td class="num-cell">64</td><td class="num-cell">153</td><td class="num-cell">278</td></tr>
+          <tr><td><b>EBITDA (SAR M)</b></td><td class="num-cell">(8)</td><td class="num-cell">(8)</td><td class="num-cell">+6</td><td class="num-cell">+52</td><td class="num-cell">+128</td></tr>
+          <tr><td>Active merchants</td><td class="num-cell">1,000</td><td class="num-cell">5,000</td><td class="num-cell">14,000</td><td class="num-cell">28,000</td><td class="num-cell">45,000</td></tr>
+          <tr><td>Avg book (SAR M)</td><td class="num-cell">11</td><td class="num-cell">75</td><td class="num-cell">225</td><td class="num-cell">525</td><td class="num-cell">900</td></tr>
+          <tr><td>Human FTE</td><td class="num-cell">8</td><td class="num-cell">12</td><td class="num-cell">16</td><td class="num-cell">18</td><td class="num-cell">20</td></tr>
+          <tr><td>Agent fleet</td><td class="num-cell">5</td><td class="num-cell">8</td><td class="num-cell">12</td><td class="num-cell">14</td><td class="num-cell">16</td></tr>
+          <tr><td><b>Revenue / human (SAR M)</b></td><td class="num-cell">0.4</td><td class="num-cell">1.8</td><td class="num-cell">4.0</td><td class="num-cell">8.5</td><td class="num-cell">13.9</td></tr>
+        </tbody>
+      </table>
+      <p class="discl" style="margin-top:10px">Illustrative model for stress-testing. Year-1 merchants build on the existing <b>~700-merchant live base</b>; the model's job is to prove the automated rail holds today's 95% on-time settlement as the book scales. EBITDA improves on the earlier 75-FTE plan because the agentic org removes most operating headcount. Reference classes: Square, Tienda Pago, MaxAB-Wasoko, Lendo, Tamara. Equity need ~SAR 70–85M, one round; the book is debt-funded from Year 2 (warehouse → securitisation).</p>
+
+      <div class="callout"><strong>The sales doctrine (special focus).</strong> (1) We never sell to merchants — the distributor's reps activate them. (2) We never pitch what we can't prove — every distributor routes to the measured test on their own book ("+15pp at your loss rate, audited, or you don't pay"). (3) The market is a named list of ~40 ICP-fit distributors, not a funnel — the CEO closes the first six. (4) Comp pays only on repaying flow. That's how the existing 700 merchants become the first few thousand — without building a salesforce.</div>
+    </div>
+  </section>
+
+  <section class="band mint">
+    <div class="wrap">
+      <div class="eyebrow">Organizational design · AI-agentic by default</div>
+      <h2 class="sec">Hire humans only for the moats. Run the rest on agents.</h2>
+      <p class="lead-in" style="margin-bottom:18px">A traditional lender at this scale is 300+ people. Tradepay deletes the four departments that don't compound — merchant salesforce (the channel does it), collections (the rail does it), marketing (receipts do it), enterprise sales (the measured test does it) — and assigns their work to an <b>agent fleet</b> supervised by a thin human layer. Headcount maps to a shipped proof point or a regulatory requirement, never to a plan.</p>
+
+      <div class="orgtabs">
+        <button class="orgtab active" onclick="orgGo(0)">Year 1 · prove it</button>
+        <button class="orgtab" onclick="orgGo(1)">Year 3 · scale it</button>
+        <button class="orgtab" onclick="orgGo(2)">Year 5 · compound it</button>
+      </div>
+
+      <!-- Y1 -->
+      <div class="orgview on" data-org="0">
+        <div class="orglayer"><div class="lname">Leadership · 2</div><div class="roles">
+          <div class="role lead"><b>CEO</b><span>Anchors, capital, board</span></div>
+          <div class="role lead"><b>CPO</b><span>Product, rail &amp; engine — hands-on from Day 1</span></div></div></div>
+        <div class="orglayer"><div class="lname">Human moat-owners · 6</div><div class="roles">
+          <div class="role"><b>Head of Credit Risk</b><span>Owns the loss curve</span></div>
+          <div class="role"><b>Rail lead</b><span>SARIE + settlement ledger</span></div>
+          <div class="role"><b>Engine / ML lead</b><span>Decisioning IP</span></div>
+          <div class="role"><b>Partnerships</b><span>Anchor distributors</span></div>
+          <div class="role"><b>Ops &amp; Compliance</b><span>SAMA · PDPL · Shariah</span></div>
+          <div class="role"><b>Data</b><span>Feature store, the tape</span></div></div></div>
+        <div class="orglayer"><div class="lname">Agent fleet · 5</div><div class="roles">
+          <div class="role agent"><b>Collections Agent</b><span>Auto-debit, retries, restructure</span></div>
+          <div class="role agent"><b>Underwriting-Ops Agent</b><span>Doc checks, KYB</span></div>
+          <div class="role agent"><b>Support Agent</b><span>Arabic WhatsApp</span></div>
+          <div class="role agent"><b>Reconciliation Agent</b><span>Bank ↔ ledger</span></div>
+          <div class="role agent"><b>Analytics Agent</b><span>Cohort & DPD reporting</span></div></div></div>
+      </div>
+
+      <!-- Y3 -->
+      <div class="orgview" data-org="1">
+        <div class="orglayer"><div class="lname">Leadership · 4</div><div class="roles">
+          <div class="role lead"><b>CEO</b><span>Capital, board</span></div>
+          <div class="role lead"><b>CPO</b><span>Product, rail, engine, Arm platform</span></div>
+          <div class="role lead"><b>Head of Risk</b><span>Brake authority</span></div>
+          <div class="role lead"><b>Head of Commercial</b><span>Channel + distributor GTM</span></div></div></div>
+        <div class="orglayer"><div class="lname">Human moat-owners · 12</div><div class="roles">
+          <div class="role"><b>Eng × 4</b><span>Rail, engine, platform</span></div>
+          <div class="role"><b>Data science × 2</b><span>Champion/challenger</span></div>
+          <div class="role"><b>Partnerships × 2</b><span>Anchors + Arm</span></div>
+          <div class="role"><b>Arm PM</b><span>White-label tenants</span></div>
+          <div class="role"><b>UAE country lead</b><span>Market 2</span></div>
+          <div class="role"><b>Compliance / Shariah</b><span>Two regulators</span></div>
+          <div class="role"><b>Tape / Finance</b><span>Warehouse, securitisation</span></div></div></div>
+        <div class="orglayer"><div class="lname">Agent fleet · 12 (Y1 five, plus)</div><div class="roles">
+          <div class="role agent"><b>Document-Fraud Agent</b><span>Tamper detection</span></div>
+          <div class="role agent"><b>AML-Monitoring Agent</b><span>Scenario library</span></div>
+          <div class="role agent"><b>Merchant-Insights Agent</b><span>Cash-flow reports</span></div>
+          <div class="role agent"><b>Distributor-QBR Agent</b><span>Scorecards</span></div>
+          <div class="role agent"><b>Rep-Coaching Agent</b><span>Activation nudges</span></div>
+          <div class="role agent"><b>Model-Monitoring Agent</b><span>Drift, vintage alerts</span></div></div></div>
+      </div>
+
+      <!-- Y5 -->
+      <div class="orgview" data-org="2">
+        <div class="orglayer"><div class="lname">Leadership · 4 (3 markets)</div><div class="roles">
+          <div class="role lead"><b>CEO</b></div><div class="role lead"><b>CPO</b></div>
+          <div class="role lead"><b>Head of Risk</b></div><div class="role lead"><b>Head of Capital</b></div></div></div>
+        <div class="orglayer"><div class="lname">Human moat-owners · ~16</div><div class="roles">
+          <div class="role"><b>Eng / ML × 6</b></div><div class="role"><b>Country leads × 3</b><span>KSA · UAE · Egypt</span></div>
+          <div class="role"><b>Arm / platform × 2</b></div><div class="role"><b>Compliance × 2</b></div>
+          <div class="role"><b>Capital markets × 2</b></div><div class="role"><b>Design / data × 1</b></div></div></div>
+        <div class="orglayer"><div class="lname">Agent fleet · ~16 — the operating workforce</div><div class="roles">
+          <div class="role agent"><b>Collections</b></div><div class="role agent"><b>Underwriting-Ops</b></div>
+          <div class="role agent"><b>Support (multi-lingual)</b></div><div class="role agent"><b>Reconciliation</b></div>
+          <div class="role agent"><b>Fraud</b></div><div class="role agent"><b>AML</b></div>
+          <div class="role agent"><b>Insights</b></div><div class="role agent"><b>QBR</b></div>
+          <div class="role agent"><b>Model-Monitoring</b></div><div class="role agent"><b>+ per-market replicas</b></div></div></div>
+        <div class="callout" style="margin-top:18px"><strong>The bet, stated plainly.</strong> ~20 humans run a SAR 900M book and SAR 278M revenue because the agent fleet does the operational work that a 300-person lender hires for. Revenue per human ≈ SAR 14M — several times top-decile fintech. If agents can't reliably run collections-ops, support, recon, fraud, and analytics at this quality, the org reverts toward the heavier 75-FTE plan. That is the explicit, falsifiable assumption.</div>
+      </div>
+    </div>
+  </section>
+  <script>
+    window.orgGo=function(i){
+      document.querySelectorAll('.orgview').forEach(v=>v.classList.toggle('on',+v.dataset.org===i));
+      document.querySelectorAll('.orgtab').forEach((t,j)=>t.classList.toggle('active',j===i));
+    };
+  </script>
+</section>
+
+<!-- ══════════ 10 · DEBRIEF ══════════ -->
+<section class="page" data-page="10">
+  <section class="band dark">
+    <div class="wrap">
+      <div class="chno">Chapter 10</div>
+      <div style="margin:14px 0"><span class="kernel">Kernel · coherent action + self-audit</span></div>
+      <h1 class="title" style="max-width:840px">Why this is a strategy, not a wish list.</h1>
+      <p class="lede">A debrief that holds itself to Rumelt's own test. The kernel, the options we rejected, the risks we own, and a frank audit against the four signatures of bad strategy.</p>
+
+      <div class="grid3">
+        <div class="card"><div class="tag t">Diagnosis</div><p>Collections, not approval, is the binding constraint — and we're last to a crowding market, weak where rivals are strong.</p></div>
+        <div class="card"><div class="tag t">Guiding policy</div><p>Own the rail. Capture repayment at source so we're structurally lower-loss. Rail → Engine → Arm, in sequence.</p></div>
+        <div class="card"><div class="tag t">Coherent action</div><p>One city, two anchors, a measured test, an agentic org, repayment-vested rep incentives, gated expansion.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="eyebrow">Options considered and rejected</div>
+      <h2 class="sec">The most senior signal is what we said no to</h2>
+      <table class="t">
+        <thead><tr><th>Strategy</th><th>Why it's tempting</th><th>Why we rejected it</th></tr></thead>
+        <tbody>
+          <tr><td><b>Merchant-app-first</b></td><td>Own the demand side, cross-sell</td><td>Antagonises the channel we need; baqala-level CAC is brutal; mis-sequenced</td></tr>
+          <tr><td><b>Own the marketplace</b></td><td>Maximum data + take-rate</td><td>Declares war on Sary/Retailo and our own partners; capex-heavy; abandons the embedded premise</td></tr>
+          <tr><td><b>Land grab (blitz 3 markets)</b></td><td>Category leadership before banks scale</td><td>Losses lag growth 6–12 months — how loan books die (see Capiter)</td></tr>
+          <tr><td><b>Pure risk engine</b></td><td>Best model wins every channel deal</td><td>A capability, not a strategy — no channel lock, collections unsolved alone</td></tr>
+          <tr><td><b>Capital architect</b></td><td>Funding is the real bottleneck</td><td>A CFO strategy in a CPO chair — answers nothing on positioning or UX. Absorbed as a constraint</td></tr>
+          <tr><td><b>Data monetiser</b></td><td>Brand budgets dwarf lending margin</td><td>A Year-4 option gated on scale + PDPL consent we don't have yet</td></tr>
+          <tr><td><b>Shariah-native as the moat</b></td><td>Trust + Islamic capital</td><td>Table stakes — every serious KSA player structures this way. A requirement, not a moat</td></tr>
+        </tbody>
+      </table>
+      <p class="lead-in" style="margin-top:16px">The three winners aren't rivals — they compose across time: <b>Rail (wedge) → Engine (advantage) → Arm (endgame)</b>. That sequencing is what makes the answer feel inevitable rather than arbitrary.</p>
+
+      <hr class="sp">
+      <div class="eyebrow">Risks we own</div>
+      <div class="grid2">
+        <div class="card"><div class="tag b">Loss-rate overshoot</div><p>If losses sit at 5%+ instead of trending to 2.5%, EBITDA compresses hard. Mitigation: the 12-month pilot, vintage caps, and risk brake authority. Lendo's real 4.5% is the benchmark we model against, not 2.5%.</p></div>
+        <div class="card"><div class="tag b">The anchor race</div><p>If Erad or Sary lock the best distributors first, we lose the channels. Mitigation: the CEO closes the first two anchors personally with the measured test; founder credibility, not spend.</p></div>
+        <div class="card"><div class="tag b">Funding freeze</div><p>If Islamic capital markets tighten, cost of funds jumps. Mitigation: warehouse extends; securitisation defers a year; growth gates to capital availability.</p></div>
+        <div class="card"><div class="tag b">The moat is unproven</div><p>Everything rests on auto-debit collections at baqala scale. Mitigation: prove that one number in one city before any expansion. If it fails, there is no fallback — so we test it first, cheaply.</p></div>
+      </div>
+
+      <hr class="sp">
+      <div class="eyebrow">Bad-strategy self-audit</div>
+      <h2 class="sec">Held against Rumelt's four signatures</h2>
+      <table class="t">
+        <thead><tr><th>Bad-strategy tell</th><th>Our check</th></tr></thead>
+        <tbody>
+          <tr><td><b>Fluff</b> — abstraction posing as insight</td><td>The thesis is one falsifiable claim: collections-at-source produces a lower loss curve. Measurable, or it's nothing.</td></tr>
+          <tr><td><b>Failure to face the challenge</b></td><td>We name that we're last to market and weak on capital, product, and distribution — and build the plan around the one edge we have.</td></tr>
+          <tr><td><b>Mistaking goals for strategy</b></td><td>"45,000 merchants" is an outcome, not the plan. The plan is the rail, the measured test, and gated proof.</td></tr>
+          <tr><td><b>Bad strategic objectives</b></td><td>Proximate objectives are concrete and sequenced: Y1 exit gate = on-rail repayment beats field baseline, audited, in one city — before anything scales.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="margin-top:24px"><strong>AI-use disclosure (full).</strong> This submission used Claude (Anthropic) for: competitor verification against mid-2026 public sources; financial modelling and the interactive calculators; multi-agent strategy generation and arbitration; copywriting; and building this single-file website in the provided Tradepay design system. Every market figure was checked against public sources and labelled where directional (e.g. Sary's granular numbers). Projections are explicitly marked. The diagnosis, guiding policy, sequencing, trade-offs, and the decision to reject six of ten candidate strategies are the candidate's judgement.</div>
+      <p class="discl" style="margin-top:16px">Time: within the brief's 5–8 hour expectation. Not investment, legal, or tax advice. Enforcement, licensing, and collateral specifics require KSA counsel before implementation.</p>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
+        <button class="phbtn" style="width:auto;display:inline-block;padding:13px 26px" onclick="go(1)">↺ Back to the diagnosis</button>
+        <button class="phbtn ghost" style="width:auto;display:inline-block;padding:13px 26px" onclick="go(0)">Return to cover</button>
+      </div>
+    </div>
+  </section>
+</section>
+<!-- ══════════ 11 · METRICS ══════════ -->
+<section class="page" data-page="11">
+  <section class="band">
+    <div class="wrap">
+      <div class="chno">Chapter 11</div>
+      <div style="margin:14px 0"><span class="kernel">Coherent action · the scorecard</span></div>
+      <h1 class="title" style="max-width:840px">If the rail works, these numbers move.</h1>
+      <p class="lede">A moat you can't measure isn't a moat — it's a claim. This is the measurement system: one north-star, one gating number, the tree of drivers beneath them, and the dashboards each audience actually needs.</p>
+
+      <div class="statgrid">
+        <div class="stat"><div class="num">★</div><div class="lbl"><b>North-star:</b> repaying active merchants on the rail</div></div>
+        <div class="stat"><div class="num">≥60%</div><div class="lbl">Y1 gate: on-rail repayment must beat the field baseline, audited</div></div>
+        <div class="stat"><div class="num">&lt;4.5%</div><div class="lbl">Loss vs budget — the guardrail that prices every channel</div></div>
+        <div class="stat"><div class="num">+15pp</div><div class="lbl">Approval uplift at constant loss — the commercial promise</div></div>
+      </div>
+
+      <div class="callout" style="margin-top:24px"><strong>One north-star, deliberately chosen.</strong> Not GMV. Not merchant count. Not approvals. <b>Repaying active merchants on the rail</b> is the only metric that contains the whole thesis — a merchant who repays through the rail is acquired, underwritten correctly, engaged, and collected from. Everything else is a driver of it or a vanity number.</div>
+    </div>
+  </section>
+
+  <section class="band mint">
+    <div class="wrap">
+      <div class="eyebrow">The Year-1 exit-gate scorecard</div>
+      <h2 class="sec">The four numbers that decide whether we scale</h2>
+      <p class="lead-in" style="margin-bottom:22px">Before city two, before the warehouse, before any hire that isn't load-bearing — these must clear, on one city's seasoned book. Illustrative targets shown against the gate.</p>
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px"><b>On-rail repayment capture</b><span style="color:var(--teal-deep);font-weight:600">72% · gate ≥60% ✓</span></div>
+            <div style="height:11px;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;position:relative"><div style="width:60%;position:absolute;top:-3px;bottom:-3px;border-right:2px dashed var(--muted)"></div><div style="width:72%;height:100%;background:var(--teal)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px"><b>DPD 30+ vs distributor's field baseline</b><span style="color:var(--teal-deep);font-weight:600">−38% ✓</span></div>
+            <div style="height:11px;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden"><div style="width:62%;height:100%;background:var(--teal)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px"><b>Approval uplift at the distributor's own loss rate</b><span style="color:var(--teal-deep);font-weight:600">+12pp · gate +10pp ✓</span></div>
+            <div style="height:11px;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;position:relative"><div style="width:55%;position:absolute;top:-3px;bottom:-3px;border-right:2px dashed var(--muted)"></div><div style="width:66%;height:100%;background:var(--teal)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px"><b>Activation CAC payback (rep bonus, vested)</b><span style="color:var(--warn);font-weight:600">1.8 months · gate &lt;2 ✓</span></div>
+            <div style="height:11px;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden"><div style="width:42%;height:100%;background:var(--teal)"></div></div>
+          </div>
+        </div>
+        <p class="discl" style="margin-top:16px">Dashed line = the gate. Bars are illustrative pilot readings. Any single bar failing the gate halts expansion — the org grows on proof, not plan. <b>Note:</b> on-rail capture measures repayment taken through the <b>automated</b> rail — distinct from today's live 95% on-time settlement, which is achieved by manual follow-up. The whole bet is to move that settlement onto the rail so it holds at scale and at low cost.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="eyebrow">The KPI tree · drivers beneath the north-star</div>
+      <h2 class="sec">Four families, one of them privileged</h2>
+      <div class="grid2">
+        <div class="card"><div class="tag t">Growth & activation</div><ul class="clean">
+          <li><b>Activated repaying merchants</b> — the north-star input</li>
+          <li>Activation rate per rep visit · anchor distributors live</li>
+          <li>CAC (vested rep bonus) · CAC payback &lt; 2 months</li>
+        </ul></div>
+        <div class="card"><div class="tag t">Engagement & attach</div><ul class="clean">
+          <li>Orders per merchant / month · reorder rate</li>
+          <li><b>Average outstanding (attach)</b> — the biggest EBITDA lever</li>
+          <li>Limit utilization · app adoption after first repayment</li>
+        </ul></div>
+        <div class="card" style="border-color:var(--teal);border-width:1.5px"><div class="tag t">Risk & collections — the moat</div><ul class="clean">
+          <li><b>On-rail capture %</b> · first-payment default</li>
+          <li>DPD buckets (1–30 / 31–60 / 60+) · roll rates</li>
+          <li><b>Loss rate vs loss budget</b> · approval-uplift at constant loss</li>
+        </ul></div>
+        <div class="card"><div class="tag t">Unit economics & capital</div><ul class="clean">
+          <li>Contribution margin & revenue per merchant · LTV/CAC</li>
+          <li>Book size · cost of funds · advance rate · securitisation spread</li>
+          <li>Revenue per human · % of ops handled by agents</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band mint">
+    <div class="wrap">
+      <div class="eyebrow">Targets by phase</div>
+      <h2 class="sec">Where each number needs to be</h2>
+      <table class="t">
+        <thead><tr><th>Metric</th><th class="num-cell">Year 1</th><th class="num-cell">Year 3</th><th class="num-cell">Year 5</th></tr></thead>
+        <tbody>
+          <tr><td><b>On-rail repayment</b></td><td class="num-cell">≥60%</td><td class="num-cell">≥85%</td><td class="num-cell">≥92%</td></tr>
+          <tr><td><b>Loss rate</b></td><td class="num-cell">&lt;4.5%</td><td class="num-cell">&lt;3.5%</td><td class="num-cell">~2.5%</td></tr>
+          <tr><td>Active repaying merchants</td><td class="num-cell">1,000</td><td class="num-cell">14,000</td><td class="num-cell">45,000</td></tr>
+          <tr><td>Avg outstanding (attach)</td><td class="num-cell">SAR 11k</td><td class="num-cell">SAR 16k</td><td class="num-cell">SAR 20k</td></tr>
+          <tr><td>Approval uplift vs baseline</td><td class="num-cell">+10pp</td><td class="num-cell">+15pp</td><td class="num-cell">+18pp</td></tr>
+          <tr><td>Cost of funds</td><td class="num-cell">equity</td><td class="num-cell">~9%</td><td class="num-cell">~7.5%</td></tr>
+          <tr><td><b>Revenue / human</b></td><td class="num-cell">SAR 0.4M</td><td class="num-cell">SAR 4.0M</td><td class="num-cell">SAR 13.9M</td></tr>
+        </tbody>
+      </table>
+      <p class="discl" style="margin-top:10px">Targets are model assumptions for stress-testing, not forecasts. Year-1 loss target is benchmarked to Lendo's published 4.5%, not an optimistic 2.5%.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="eyebrow">Dashboards · the same truth, four lenses</div>
+      <h2 class="sec">Each audience sees the metric that drives their decision</h2>
+      <div class="grid4">
+        <div class="card"><div class="tag i">Board / exec</div><p>North-star, EBITDA path, book size, loss vs budget, cost of funds, revenue per human. One screen, monthly.</p></div>
+        <div class="card"><div class="tag i">Distributor (partner)</div><p>Credit-uplift on their book, settlement timeliness, merchant-health scores, and the rep activation leaderboard. The stickiness layer.</p></div>
+        <div class="card"><div class="tag i">Merchant</div><p>Limit, utilization, upcoming due dates, on-time streak, and the progress bar to the next limit raise. Trust through transparency.</p></div>
+        <div class="card"><div class="tag i">Risk console</div><p>DPD buckets, vintage curves, roll-rate matrices, circuit-breaker status, and model-drift alerts — observed live off the rail.</p></div>
+      </div>
+
+      <hr class="sp">
+      <div class="grid2">
+        <div class="card mint"><div class="tag t">Data-informed culture</div><p>Every PRD ships with its measurement plan; the weekly review opens on the north-star and the loss curve; decisions cite the tape, not opinion. Agents generate the dashboards; humans interrogate them.</p></div>
+        <div class="card mint"><div class="tag w">Anti-vanity stance</div><p>GMV and merchant count are reported as <b>diagnostics</b>, never as success. Two numbers sit on the wall: repaying flow on the rail, and loss vs budget. If a metric can rise while the book quietly rots, it doesn't get to define winning.</p></div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
+        <button class="phbtn" style="width:auto;display:inline-block;padding:13px 26px" onclick="go(8)">← Back to Engine &amp; Risk</button>
+        <button class="phbtn ghost" style="width:auto;display:inline-block;padding:13px 26px" onclick="go(0)">Return to cover</button>
+      </div>
+    </div>
+  </section>
+</section>
+
+</main>
+
+<div class="pn">
+  <button id="prevBtn" onclick="go(cur-1)"><span class="k">Previous</span><span id="prevT">Cover</span></button>
+  <button id="nextBtn" class="next" onclick="go(cur+1)"><span class="k">Next</span><span id="nextT">Diagnosis</span></button>
 </div>
-<div class="footer"><div class="progress" id="progress"></div>
-<div class="nav"><button id="prev">◂ PREV</button><span id="counter" style="padding:0 14px;color:var(--ink-dim)">01 / 30</span><button id="next">NEXT ▸</button></div></div>
+
+<footer class="foot">
+  <div class="wrap">
+    <p style="margin:0"><b>Tradepay — Head of Product Case Study.</b> Built in the Tradepay design system (teal accent, Hanken Grotesk). Strategy framed via Rumelt's <em>Good Strategy / Bad Strategy</em>. Produced with AI assistance and disclosed per the brief. Market figures verified to mid-2026; projections labelled. Not investment advice.</p>
+  </div>
+</footer>
+
 <script>
-const slides=document.querySelectorAll('.slide');const total=slides.length;
-const progress=document.getElementById('progress');const counter=document.getElementById('counter');let current=0;
-for(let i=0;i<total;i++){progress.appendChild(document.createElement('span'));}
-const dots=progress.querySelectorAll('span');
-function render(){slides.forEach((s,i)=>s.classList.toggle('active',i===current));
-dots.forEach((d,i)=>d.classList.toggle('done',i<=current));
-counter.textContent=String(current+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');}
-function next(){if(current<total-1){current++;render();}}
-function prev(){if(current>0){current--;render();}}
-document.getElementById('next').addEventListener('click',next);
-document.getElementById('prev').addEventListener('click',prev);
-document.addEventListener('keydown',(e)=>{
-if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}
-if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}
-if(e.key==='Home'){current=0;render();} if(e.key==='End'){current=total-1;render();}});
-render();
-</script></body></html>
+const PAGES=[
+ {t:"Cover",s:"Home"},{t:"Diagnosis",s:"The real challenge"},{t:"Product Vision",s:"The destination"},
+ {t:"Moat & Niche",s:"Guiding policy"},{t:"Competition",s:"The field"},{t:"Trajectory",s:"Gartner matrix"},
+ {t:"Prototype",s:"Merchant & partner UX"},{t:"The Rep",s:"Persona & gamification"},
+ {t:"Engine & Risk",s:"Decisioning & models"},{t:"Operating Model",s:"Business case & org"},{t:"Debrief",s:"Coherent action"},{t:"Metrics",s:"Scorecard & KPIs"}
+];
+let cur=0;
+const nl=document.getElementById('navlinks');
+PAGES.forEach((p,i)=>{const b=document.createElement('button');
+  b.innerHTML=(i>0?`<span class="n">${String(i).padStart(2,'0')}</span>`:'')+p.t;
+  b.onclick=()=>go(i); nl.appendChild(b);});
+function go(i){
+  if(i<0||i>=PAGES.length)return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const el=document.querySelector(`.page[data-page="${i}"]`);
+  if(el)el.classList.add('on');
+  cur=i;
+  [...nl.children].forEach((b,j)=>b.classList.toggle('active',j===i));
+  document.getElementById('prog').style.width=(i/(PAGES.length-1)*100)+'%';
+  const pb=document.getElementById('prevBtn'),nb=document.getElementById('nextBtn');
+  pb.disabled=i===0; nb.disabled=i===PAGES.length-1;
+  document.getElementById('prevT').textContent=i>0?PAGES[i-1].t:'';
+  document.getElementById('nextT').textContent=i<PAGES.length-1?PAGES[i+1].t:'';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);
+});
+go(0);
+</script>
+</body>
+</html>

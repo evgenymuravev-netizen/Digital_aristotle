@@ -11,7 +11,7 @@ the settlement-and-credit rail for GCC traditional trade (Tradepay CPO case stud
 | --- | --- | --- |
 | **Website** | [`/`](index.html) | The product story: problem, three chapters, mobile, integrations & distribution, trust. |
 | **Prototype** | [`/prototype/`](prototype/) | A clickable walkthrough across three eras with the rationale for each evolution. |
-| **Strategy brief** | [`/strategy/`](strategy/) | The 30-slide CPO strategy deck the product is built from. |
+| **Strategy site** | [`/strategy/`](strategy/) | The Head-of-Product strategy in twelve interactive chapters, framed via Rumelt's *Good Strategy / Bad Strategy* — diagnosis, guiding policy, coherent action — in the on-brand Tradepay design system. |
 
 ## The product in one line
 
