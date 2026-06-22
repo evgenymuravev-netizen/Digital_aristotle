@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="A McQuaig-style Mental Agility (MMAT) practice test — ten timed forms of verbal, numerical and logical reasoning, 15 minutes each." />
+  <meta name="color-scheme" content="dark" />
+  <title>Mental Agility Test — 10 timed practice forms</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar" id="topbar">
+    <button class="brand" id="brand" type="button" aria-label="Back to test list">
+      <span class="brand-mark" aria-hidden="true">⚡</span>
+      <span class="brand-text">
+        <strong>Mental Agility Test</strong>
+        <small>MMAT-style practice · 10 forms</small>
+      </span>
+    </button>
+    <a class="home-link" href="../index.html">← Digital Aristotle</a>
+  </header>
+
+  <main id="main">
+
+    <!-- ===================== HOME ===================== -->
+    <section id="screen-home" class="screen container" aria-labelledby="home-h">
+      <h1 id="home-h">McQuaig-style Mental Agility Test</h1>
+      <p class="lede">
+        A timed measure of <em>mental agility</em> — how quickly and accurately you reason
+        across <strong>verbal</strong>, <strong>numerical</strong> and <strong>logical</strong>
+        problems. Pick any of the ten forms below. Each is a fresh set of questions with its own
+        <strong>15-minute</strong> clock.
+      </p>
+
+      <div class="panel" style="margin-top:22px">
+        <h2 style="margin-top:0">How it works</h2>
+        <ul class="tight dim">
+          <li><b>15 minutes per form.</b> The clock starts when you begin and the form submits automatically when it runs out.</li>
+          <li><b>Work fast but accurately.</b> Every question is worth one mark; there is no penalty for guessing, so never leave a blank.</li>
+          <li><b>Jump around freely.</b> Use the number palette to revisit or flag questions before time is up.</li>
+          <li><b>Keyboard friendly:</b> press <span class="mono">1–5</span> to answer, <span class="mono">←/→</span> to move, <span class="mono">F</span> to flag.</li>
+        </ul>
+        <p class="muted" style="margin:8px 0 0">
+          Original practice items written in the spirit of the McQuaig Mental Agility Test.
+          Not affiliated with, or endorsed by, The McQuaig Institute®. For self-practice only — not a clinical or hiring instrument.
+        </p>
+      </div>
+
+      <h2 class="section-title">Choose a test</h2>
+      <p class="section-sub">Ten independent forms of increasing-difficulty items. Your best score per form is saved on this device.</p>
+      <div class="test-grid" id="test-grid"><!-- filled by JS --></div>
+    </section>
+
+    <!-- ===================== INTRO (pre-test) ===================== -->
+    <section id="screen-intro" class="screen container" aria-labelledby="intro-h">
+      <div id="intro-body"><!-- filled by JS --></div>
+    </section>
+
+    <!-- ===================== EXAM (running) ===================== -->
+    <section id="screen-exam" class="screen" aria-labelledby="exam-h">
+      <div class="exam-bar">
+        <div class="eb-title" id="exam-h">
+          <span id="exam-title">Test</span>
+          <small id="exam-subtitle">Mental Agility</small>
+        </div>
+        <div class="eb-right">
+          <span class="eb-answered" id="exam-answered" aria-hidden="true">0 / 0</span>
+          <span class="timer" id="exam-timer" role="timer" aria-label="Time remaining">15:00</span>
+          <button class="btn btn-primary btn-sm" id="exam-submit" type="button">Submit</button>
+        </div>
+      </div>
+      <div class="exam-wrap">
+        <div id="exam-question" aria-live="polite"></div>
+        <div class="palette">
+          <h3>Question navigator</h3>
+          <div class="palette-grid" id="exam-palette" role="group" aria-label="Jump to question"></div>
+          <div class="pal-legend">
+            <span><i class="answered"></i> Answered</span>
+            <span><i class="unanswered"></i> Not answered</span>
+            <span><i class="flagged"></i> Flagged for review</span>
+          </div>
+          <div class="cta-row" style="margin-top:18px">
+            <button class="btn btn-ghost btn-sm" id="exam-quit" type="button">✕ Quit without scoring</button>
+          </div>
+        </div>
+      </div>
+      <span class="sr-only" id="exam-timer-sr" role="status" aria-live="polite"></span>
+    </section>
+
+    <!-- ===================== RESULTS ===================== -->
+    <section id="screen-results" class="screen container" aria-labelledby="results-h">
+      <h1 id="results-h" class="sr-only">Results</h1>
+      <div id="results-body"><!-- filled by JS --></div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    A McQuaig-style Mental Agility practice test, part of the Digital Aristotle project.
+    All questions are original and all results stay in your browser.
+    “McQuaig” and “MMAT” are referenced for description only; this tool is independent and unaffiliated.
+  </footer>
+
+  <script src="./questions.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
