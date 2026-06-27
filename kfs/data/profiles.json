@@ -1,0 +1,86 @@
+{
+  "$comment": "Archetypal UAE cardholder profiles. Each is a monthly spend vector over the canonical categories plus behaviour. `international_share` is the fraction of TOTAL monthly spend that is non-AED. `revolves`=true means the customer carries a balance (pays interest); this flips which card is 'best' because APR then dwarfs cashback. These profiles are inputs to the value engine, and the web demo lets a user tune them.",
+  "version": "2026-06",
+  "profiles": [
+    {
+      "profile_id": "young-professional-foodie",
+      "label": "Young Professional — Foodie",
+      "description": "Single, eats out constantly, orders delivery, some travel. Pays the card in full every month.",
+      "monthly_income_aed": 12000,
+      "monthly_spend_by_category": { "dining": 2500, "entertainment": 700, "groceries": 800, "online": 700, "transport": 400, "telecom": 300, "other": 600 },
+      "international_share": 0.12,
+      "behavior": { "revolves": false, "revolving_balance_aed": 0, "lounge_visits_per_year": 2, "values_travel_insurance": false },
+      "preferences": { "islamic_only": false }
+    },
+    {
+      "profile_id": "family-grocery-school",
+      "label": "Family — Groceries & School Fees",
+      "description": "Dual-income family, big grocery basket, school fees, fuel, utilities. Disciplined: pays in full.",
+      "monthly_income_aed": 28000,
+      "monthly_spend_by_category": { "groceries": 3500, "education": 3000, "fuel": 900, "utilities": 800, "dining": 900, "health": 400, "other": 1200 },
+      "international_share": 0.05,
+      "behavior": { "revolves": false, "revolving_balance_aed": 0, "lounge_visits_per_year": 1, "values_travel_insurance": false },
+      "preferences": { "islamic_only": false }
+    },
+    {
+      "profile_id": "frequent-traveler",
+      "label": "Frequent Traveler — Premium",
+      "description": "High earner, flies monthly, big FX and travel spend, values lounges and travel insurance. Pays in full.",
+      "monthly_income_aed": 45000,
+      "monthly_spend_by_category": { "travel": 4000, "dining": 2500, "groceries": 1500, "online": 1500, "entertainment": 800, "other": 2000 },
+      "international_share": 0.40,
+      "behavior": { "revolves": false, "revolving_balance_aed": 0, "lounge_visits_per_year": 18, "values_travel_insurance": true },
+      "preferences": { "islamic_only": false }
+    },
+    {
+      "profile_id": "digital-online-shopper",
+      "label": "Digital Native — Online & Mobile Wallet",
+      "description": "Younger user, shops online, taps Apple/Google Pay for almost everything, modest income. Pays in full.",
+      "monthly_income_aed": 9000,
+      "monthly_spend_by_category": { "mobile_wallet": 1800, "online": 1200, "dining": 800, "groceries": 600, "entertainment": 400, "transport": 300 },
+      "international_share": 0.18,
+      "behavior": { "revolves": false, "revolving_balance_aed": 0, "lounge_visits_per_year": 0, "values_travel_insurance": false },
+      "preferences": { "islamic_only": false }
+    },
+    {
+      "profile_id": "household-bill-payer",
+      "label": "Household — Bills & Utilities",
+      "description": "Pays the household: DEWA, du/Etisalat, Salik, school fees. Moderate discretionary spend. Pays in full.",
+      "monthly_income_aed": 16000,
+      "monthly_spend_by_category": { "utilities": 1200, "telecom": 600, "education": 1800, "transport": 700, "groceries": 1600, "fuel": 700, "other": 800 },
+      "international_share": 0.03,
+      "behavior": { "revolves": false, "revolving_balance_aed": 0, "lounge_visits_per_year": 0, "values_travel_insurance": false },
+      "preferences": { "islamic_only": false }
+    },
+    {
+      "profile_id": "revolver-carries-balance",
+      "label": "Revolver — Carries a Balance",
+      "description": "Spends moderately but does NOT clear the statement; carries ~AED 9,000 month to month. For this person APR, not cashback, decides everything.",
+      "monthly_income_aed": 11000,
+      "monthly_spend_by_category": { "groceries": 1500, "dining": 800, "fuel": 500, "online": 600, "transport": 300, "other": 800 },
+      "international_share": 0.06,
+      "behavior": { "revolves": true, "revolving_balance_aed": 9000, "lounge_visits_per_year": 0, "values_travel_insurance": false },
+      "preferences": { "islamic_only": false }
+    },
+    {
+      "profile_id": "new-to-credit",
+      "label": "New to Credit — Low Income",
+      "description": "First card, salary just above entry thresholds, needs no/low fee and an easy approval. Pays in full.",
+      "monthly_income_aed": 5500,
+      "monthly_spend_by_category": { "groceries": 900, "dining": 500, "transport": 300, "telecom": 250, "online": 350, "other": 400 },
+      "international_share": 0.04,
+      "behavior": { "revolves": false, "revolving_balance_aed": 0, "lounge_visits_per_year": 0, "values_travel_insurance": false },
+      "preferences": { "islamic_only": false }
+    },
+    {
+      "profile_id": "high-spender-maximizer",
+      "label": "High Spender — Maximizer",
+      "description": "Routes everything through one card, >AED 20k/month, optimizes hard. Pays in full. Unlocks top spend-tier bands.",
+      "monthly_income_aed": 55000,
+      "monthly_spend_by_category": { "groceries": 4000, "utilities": 2000, "transport": 1500, "dining": 3000, "travel": 3000, "education": 4000, "online": 2000, "other": 3000 },
+      "international_share": 0.15,
+      "behavior": { "revolves": false, "revolving_balance_aed": 0, "lounge_visits_per_year": 8, "values_travel_insurance": true },
+      "preferences": { "islamic_only": false }
+    }
+  ]
+}

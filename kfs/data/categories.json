@@ -1,0 +1,24 @@
+{
+  "$comment": "Canonical UAE spend-category taxonomy. This is the shared vocabulary that links a card's reward tiers to a customer's spend vector. Every reward tier and every profile spend bucket MUST use one of these keys. 'international' is NOT a category here: foreign-currency spend is modelled as a separate scalar (international_share) because it cross-cuts every category (you can dine, shop, or fuel abroad). Keeping FX orthogonal avoids double-counting.",
+  "version": "2026-06",
+  "categories": [
+    { "key": "groceries",    "label": "Groceries & supermarkets", "examples": "Carrefour, Lulu, Spinneys, online grocery", "typical_mccs": ["5411", "5499"] },
+    { "key": "dining",       "label": "Dining & restaurants",     "examples": "restaurants, cafes, food delivery (Talabat, Deliveroo)", "typical_mccs": ["5812", "5814"] },
+    { "key": "fuel",         "label": "Fuel & petrol",            "examples": "ENOC, ADNOC, EPPCO", "typical_mccs": ["5541", "5542"] },
+    { "key": "education",    "label": "Education & school fees",   "examples": "school fees, universities, nurseries", "typical_mccs": ["8211", "8220", "8299"] },
+    { "key": "utilities",    "label": "Utilities",                "examples": "DEWA, SEWA, FEWA, AADC", "typical_mccs": ["4900"] },
+    { "key": "telecom",      "label": "Telecom",                  "examples": "Etisalat, du, mobile & internet bills", "typical_mccs": ["4814", "4899"] },
+    { "key": "transport",    "label": "Transport & toll",         "examples": "Salik, RTA, Nol, taxis, parking, metro", "typical_mccs": ["4111", "4121", "4784"] },
+    { "key": "travel",       "label": "Travel (air & hotels)",    "examples": "airlines, hotels, travel agencies", "typical_mccs": ["3000-3999", "4511", "7011"] },
+    { "key": "online",       "label": "Online & e-commerce",      "examples": "Amazon, Noon, marketplaces (non-grocery)", "typical_mccs": ["5999", "5310"] },
+    { "key": "entertainment","label": "Entertainment",            "examples": "cinema, streaming, events, theme parks", "typical_mccs": ["7832", "7996", "7922"] },
+    { "key": "mobile_wallet","label": "Mobile wallet",            "examples": "Apple Pay, Google Pay, Samsung Pay tokenised spend", "typical_mccs": ["any tokenised"] },
+    { "key": "health",       "label": "Health & pharmacy",        "examples": "clinics, pharmacies, opticians", "typical_mccs": ["5912", "8011", "8062"] },
+    { "key": "government",   "label": "Government & charity",      "examples": "govt fees, fines, charity, RTA fines", "typical_mccs": ["9211", "9222", "9399", "8398"] },
+    { "key": "other",        "label": "Everything else",          "examples": "general retail, fashion, electronics, base spend", "typical_mccs": ["*"] }
+  ],
+  "notes": [
+    "mobile_wallet overlaps other categories (a wallet grocery tap is both). When a card rewards mobile_wallet specifically (e.g. Standard Chartered X), the profile should carry a mobile_wallet bucket for the share of spend the customer actually tokenises; the engine treats it as its own bucket to avoid double counting.",
+    "international / non-AED spend is the profile field `international_share` (0..1 of total spend), applied on top of the category split."
+  ]
+}
