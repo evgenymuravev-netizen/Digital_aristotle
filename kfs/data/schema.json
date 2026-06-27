@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://digital-aristotle/kfs/card.schema.json",
+  "title": "Normalized UAE Credit Card record (from Key Facts Statement)",
+  "description": "The single contract produced by every KFS extractor and consumed by the value engine and the web demo. All monetary values are AED unless suffixed otherwise. All rates are stored as percentages (5.0 == 5%), never as fractions.",
+  "type": "object",
+  "required": ["card_id", "bank", "card_name", "card_type", "fees", "rewards", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "card_id": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Stable slug, e.g. 'fab-cashback'." },
+    "bank": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["national", "foreign", "wholesale", "digital"] }
+      }
+    },
+    "card_name": { "type": "string" },
+    "network": { "type": "string", "enum": ["Visa", "Mastercard", "Amex", "UnionPay", "Diners", "other"] },
+    "card_type": { "type": "string", "enum": ["cashback", "rewards", "travel", "lifestyle", "premium", "islamic", "secured", "business", "other"] },
+    "islamic": { "type": "boolean", "default": false },
+    "segment": { "type": "string", "enum": ["core", "premium", "super_premium"], "description": "Rough tier; drives expected fee/benefit envelope." },
+    "currency": { "type": "string", "default": "AED" },
+
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min_monthly_income_aed": { "type": ["number", "null"] },
+        "min_age": { "type": ["number", "null"] },
+        "uae_national_only": { "type": "boolean", "default": false },
+        "notes": { "type": "string" }
+      }
+    },
+
+    "fees": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "annual_fee_aed": { "type": ["number", "null"], "description": "Standard primary-card annual/membership fee." },
+        "annual_fee_waiver": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "type": "string", "enum": ["none", "free_for_life", "first_year", "spend", "income", "conditional"] },
+            "min_annual_spend_aed": { "type": ["number", "null"], "description": "Annual spend that waives the fee (for type=spend)." },
+            "notes": { "type": "string" }
+          }
+        },
+        "interest": {
+          "type": "object",
+          "description": "Conventional retail-purchase interest, or Islamic profit rate. Stored monthly and as APR where available.",
+          "additionalProperties": false,
+          "properties": {
+            "monthly_rate_pct": { "type": ["number", "null"] },
+            "apr_pct": { "type": ["number", "null"] },
+            "basis": { "type": "string", "enum": ["conventional", "profit", "fee_based"], "default": "conventional" }
+          }
+        },
+        "fx_markup_pct": { "type": ["number", "null"], "description": "Foreign-currency / non-AED markup over the scheme rate." },
+        "cash_advance_fee_pct": { "type": ["number", "null"] },
+        "cash_advance_fee_min_aed": { "type": ["number", "null"] },
+        "late_payment_fee_aed": { "type": ["number", "null"] },
+        "over_limit_fee_aed": { "type": ["number", "null"] },
+        "min_payment_pct": { "type": ["number", "null"], "description": "Minimum monthly payment as % of outstanding." }
+      }
+    },
+
+    "rewards": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["cashback", "points", "miles", "hybrid", "none"] },
+        "value_per_point_aed": { "type": ["number", "null"], "description": "AED value of one point/mile, for points/miles cards. Used to convert points programs to an effective cashback %." },
+        "min_spend_to_earn_aed": { "type": ["number", "null"], "description": "Monthly spend gate below which NO reward is earned that cycle." },
+        "monthly_cashback_cap_aed": { "type": ["number", "null"], "description": "Overall monthly reward ceiling across all categories." },
+        "base_rate_pct": { "type": "number", "default": 0, "description": "Catch-all reward rate applied to any category without its own tier." },
+        "tiers": {
+          "type": "array",
+          "description": "Category-specific reward rates. Each tier matches one canonical category key.",
+          "items": {
+            "type": "object",
+            "required": ["category", "rate_pct"],
+            "additionalProperties": false,
+            "properties": {
+              "category": { "type": "string", "description": "Canonical category key, or 'international' for the non-AED bonus rate." },
+              "rate_pct": { "type": "number" },
+              "monthly_cap_aed": { "type": ["number", "null"], "description": "Per-category monthly reward cap." },
+              "min_monthly_spend_aed": { "type": ["number", "null"] },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "spend_tiers": {
+          "type": ["array", "null"],
+          "description": "Whole-card tiering by TOTAL monthly spend (e.g. CBD Super Saver: 3%/5%/10% bands). When present, the rate is selected by total monthly spend and applied to the categories in `applies_to`.",
+          "items": {
+            "type": "object",
+            "required": ["min_total_monthly_spend_aed", "rate_pct"],
+            "additionalProperties": false,
+            "properties": {
+              "min_total_monthly_spend_aed": { "type": "number" },
+              "max_total_monthly_spend_aed": { "type": ["number", "null"] },
+              "rate_pct": { "type": "number" },
+              "applies_to": { "type": "array", "items": { "type": "string" } },
+              "monthly_cap_aed": { "type": ["number", "null"] }
+            }
+          }
+        }
+      }
+    },
+
+    "benefits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lounge": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "access": { "type": "string", "enum": ["none", "limited", "unlimited"], "default": "none" },
+            "visits_per_year": { "type": ["number", "null"] },
+            "guest_allowed": { "type": "boolean", "default": false },
+            "program": { "type": "string" }
+          }
+        },
+        "travel_insurance": { "type": "boolean", "default": false },
+        "installment_0pct": { "type": "boolean", "default": false },
+        "buy_one_get_one": { "type": "boolean", "default": false, "description": "BOGO dining/cinema (e.g. via apps like 'the Entertainer')." },
+        "valet_or_golf": { "type": "boolean", "default": false },
+        "concierge": { "type": "boolean", "default": false },
+        "other": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "source": {
+      "type": "object",
+      "required": ["source_type", "as_of", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "kfs_url": { "type": "string" },
+        "source_type": { "type": "string", "enum": ["kfs_pdf", "kfs_html", "bank_page", "aggregator", "research", "fixture"] },
+        "as_of": { "type": "string", "description": "YYYY-MM the data was captured." },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+        "provenance_notes": { "type": "string", "description": "Which fields are authoritative vs illustrative, and where they came from." }
+      }
+    }
+  }
+}
