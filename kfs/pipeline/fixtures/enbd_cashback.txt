@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Emirates NBD — Key Facts Statement — Cashback Credit Card</title>
+  <style>.legal{color:#666}</style>
+  <script>/* analytics noise that must NOT leak into extracted text */ var x=48.07;</script>
+</head>
+<body>
+  <header><nav>Home &gt; Cards &gt; Key Facts Statement</nav></header>
+  <main>
+    <h1>Product Name: Emirates NBD Cashback Credit Card</h1>
+    <p>Card Network: Visa. This Key Facts Statement is provided under the CBUAE Consumer
+       Protection Regulation. Effective May 2025. All amounts in AED.</p>
+
+    <section>
+      <h2>Eligibility</h2>
+      <ul>
+        <li>Minimum monthly income: AED 5,000</li>
+        <li>Minimum age: 21 years</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Interest</h2>
+      <ul>
+        <li>Monthly interest rate: 3.45% per month</li>
+        <li>Annual Percentage Rate (APR): up to 48.07% per annum</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Fees and Charges</h2>
+      <table>
+        <tr><th>Fee</th><th>Amount</th></tr>
+        <tr><td>Annual membership fee (primary card)</td><td>AED 200 + VAT</td></tr>
+        <tr><td>Foreign currency transaction fee (non-AED markup)</td><td>2.99%</td></tr>
+        <tr><td>Cash advance fee</td><td>3% or AED 99, whichever is higher</td></tr>
+        <tr><td>Late payment fee</td><td>AED 230</td></tr>
+        <tr><td>Over-limit fee</td><td>AED 273.50</td></tr>
+        <tr><td>Minimum amount due</td><td>5% of outstanding balance</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Cashback</h2>
+      <ul>
+        <li>Earn 5% cashback on dining and restaurants (up to AED 200 per month).</li>
+        <li>Earn 1% cashback on non-AED (international) spends.</li>
+        <li>Earn 1% cashback on all other spends.</li>
+        <li>Minimum monthly spend of AED 5,000 is required to earn cashback.</li>
+        <li>Total maximum cashback AED 500 per month.</li>
+      </ul>
+    </section>
+
+    <section class="legal">
+      <h2>Full document</h2>
+      <p>For complete terms, download the
+        <a href="/content/dam/enbd/kfs/emirates-nbd-cashback-card-kfs.pdf">full Key Facts Statement (PDF)</a>
+        or view the <a href="/en/help/terms-and-conditions">Cardholder Terms</a>.
+      </p>
+    </section>
+  </main>
+  <footer><p class="legal">Emirates NBD Bank (P.J.S.C.) is licensed by the Central Bank of the UAE.</p></footer>
+</body>
+</html>
