@@ -1,0 +1,71 @@
+{
+  "company": "Al-Futtaim Automotive",
+  "market": "UAE",
+  "_notes": [
+    "Al-Futtaim Automotive sells/services these brands in the UAE via two main",
+    "operating companies: Al-Futtaim Motors (Toyota, Lexus, Hino) and Trading",
+    "Enterprises (Honda, Volvo, Jeep, Chrysler, Dodge, RAM), plus Al-Futtaim",
+    "Automall (used) and BYD.",
+    "",
+    "Reported network size (verify when collecting): Toyota ~14 showrooms +",
+    "service centres across all 7 emirates; Trading Enterprises ~31 locations.",
+    "",
+    "The 'locations' list below is a HAND-VERIFIED SEED of recognizable sites.",
+    "Run src/enumerate_places.py to expand it to the full network by parsing the",
+    "official 'our-locations' pages in 'official_location_sources'. Collectors",
+    "resolve each location to a Google place_id from 'google_maps_query' (or use",
+    "'place_id' directly when present)."
+  ],
+  "official_location_sources": {
+    "Toyota": "https://www.toyota.ae/en/our-locations/",
+    "Lexus": "https://www.lexus.ae/en/our-locations/",
+    "Honda/Volvo/Jeep (Trading Enterprises)": "https://www.tradingenterprises.ae/locations/",
+    "Automall": "https://www.alfuttaim.com/our-brands/al-futtaim-automall/",
+    "Group (all brands)": "https://www.alfuttaim.com/divisions/automotive/"
+  },
+  "reddit_targets": {
+    "subreddits": ["dubai", "UAE", "abudhabi", "sharjah", "DubaiPetrolHeads", "CarsUAE"],
+    "queries": [
+      "Al-Futtaim", "Al Futtaim Motors", "Trading Enterprises",
+      "Toyota service Dubai", "Lexus Al Futtaim", "Honda Al Futtaim UAE",
+      "Toyota Al Futtaim service", "Al Futtaim Automall", "BYD Al Futtaim"
+    ]
+  },
+  "locations": [
+    {"brand": "Toyota", "name": "Toyota Dubai Festival City Showroom & Service", "emirate": "Dubai", "area": "Dubai Festival City", "google_maps_query": "Al-Futtaim Motors Toyota Showroom Dubai Festival City", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Port Saeed (Deira)", "emirate": "Dubai", "area": "Port Saeed, Deira", "google_maps_query": "Al Futtaim Motors Toyota Port Saeed Deira Dubai", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Al Badia Service Centre", "emirate": "Dubai", "area": "Al Badia Boulevard", "google_maps_query": "Al Futtaim Toyota service center Al Badia Boulevard Dubai", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Sheikh Zayed Road", "emirate": "Dubai", "area": "Sheikh Zayed Road", "google_maps_query": "Al Futtaim Toyota showroom Sheikh Zayed Road Dubai", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Abu Dhabi Airport Road", "emirate": "Abu Dhabi", "area": "Airport Road", "google_maps_query": "Al Futtaim Toyota Airport Road Abu Dhabi", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Madinat Zayed", "emirate": "Abu Dhabi", "area": "Madinat Zayed", "google_maps_query": "Al Futtaim Toyota Madinat Zayed showroom Abu Dhabi", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Musaffah (The Wave)", "emirate": "Abu Dhabi", "area": "Musaffah", "google_maps_query": "Al Futtaim Toyota Musaffah The Wave showroom Abu Dhabi", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Sharjah Industrial Area", "emirate": "Sharjah", "area": "Industrial Area 4", "google_maps_query": "Al Futtaim Toyota showroom Sharjah Industrial Area", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Al Ain", "emirate": "Al Ain", "area": "Al Ain", "google_maps_query": "Al Futtaim Toyota showroom Al Ain", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Ras Al Khaimah", "emirate": "Ras Al Khaimah", "area": "RAK", "google_maps_query": "Al Futtaim Toyota service centre Ras Al Khaimah", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Fujairah", "emirate": "Fujairah", "area": "Fujairah", "google_maps_query": "Al Futtaim Toyota service centre Fujairah", "place_id": ""},
+    {"brand": "Toyota", "name": "Toyota Ajman", "emirate": "Ajman", "area": "Ajman", "google_maps_query": "Al Futtaim Toyota showroom Ajman", "place_id": ""},
+
+    {"brand": "Lexus", "name": "Lexus Sheikh Zayed Road", "emirate": "Dubai", "area": "Sheikh Zayed Road", "google_maps_query": "Al Futtaim Lexus showroom Sheikh Zayed Road Dubai", "place_id": ""},
+    {"brand": "Lexus", "name": "Lexus Dubai Festival City", "emirate": "Dubai", "area": "Dubai Festival City", "google_maps_query": "Lexus showroom Dubai Festival City Al Futtaim", "place_id": ""},
+    {"brand": "Lexus", "name": "Lexus Abu Dhabi Old Airport Road", "emirate": "Abu Dhabi", "area": "Old Airport Road", "google_maps_query": "Al Futtaim Lexus showroom Old Airport Road Abu Dhabi", "place_id": ""},
+    {"brand": "Lexus", "name": "Lexus Sharjah Industrial Area 12", "emirate": "Sharjah", "area": "Industrial Area 12", "google_maps_query": "Al Futtaim Lexus showroom Sharjah Industrial Area 12", "place_id": ""},
+    {"brand": "Lexus", "name": "Lexus Ras Al Khaimah", "emirate": "Ras Al Khaimah", "area": "RAK", "google_maps_query": "Al Futtaim Lexus Ras Al Khaimah", "place_id": ""},
+
+    {"brand": "Honda", "name": "Honda Airport Road (Trading Enterprises)", "emirate": "Dubai", "area": "Airport Road, Deira", "google_maps_query": "Trading Enterprises Honda showroom Airport Road Dubai", "place_id": ""},
+    {"brand": "Honda", "name": "Honda Abu Dhabi (Trading Enterprises)", "emirate": "Abu Dhabi", "area": "Abu Dhabi", "google_maps_query": "Trading Enterprises Honda showroom Abu Dhabi", "place_id": ""},
+    {"brand": "Honda", "name": "Honda Sharjah (Trading Enterprises)", "emirate": "Sharjah", "area": "Sharjah", "google_maps_query": "Trading Enterprises Honda showroom Sharjah", "place_id": ""},
+    {"brand": "Honda", "name": "Honda Al Ain (Trading Enterprises)", "emirate": "Al Ain", "area": "Al Ain", "google_maps_query": "Trading Enterprises Honda showroom Al Ain", "place_id": ""},
+
+    {"brand": "Volvo", "name": "Volvo Dubai Festival City (Trading Enterprises)", "emirate": "Dubai", "area": "Al Rebat, Ras Al Khor", "google_maps_query": "Trading Enterprises Volvo showroom Dubai Festival City", "place_id": ""},
+    {"brand": "Volvo", "name": "Volvo Musaffah (Trading Enterprises)", "emirate": "Abu Dhabi", "area": "Musaffah, Al Bayli 5", "google_maps_query": "Trading Enterprises Volvo showroom Musaffah Abu Dhabi", "place_id": ""},
+
+    {"brand": "Jeep/Dodge/RAM", "name": "Trading Enterprises Jeep Dubai", "emirate": "Dubai", "area": "Dubai Festival City", "google_maps_query": "Trading Enterprises Jeep showroom Dubai Festival City", "place_id": ""},
+    {"brand": "Jeep/Dodge/RAM", "name": "Trading Enterprises RAK Multi-brand", "emirate": "Ras Al Khaimah", "area": "RAK", "google_maps_query": "Trading Enterprises showroom Ras Al Khaimah", "place_id": ""},
+
+    {"brand": "BYD", "name": "BYD Al-Futtaim Dubai", "emirate": "Dubai", "area": "Dubai", "google_maps_query": "Al Futtaim BYD showroom Dubai", "place_id": ""},
+    {"brand": "BYD", "name": "BYD Al-Futtaim Abu Dhabi", "emirate": "Abu Dhabi", "area": "Abu Dhabi", "google_maps_query": "Al Futtaim BYD showroom Abu Dhabi", "place_id": ""},
+
+    {"brand": "Automall", "name": "Al-Futtaim Automall Sheikh Zayed Road", "emirate": "Dubai", "area": "Sheikh Zayed Road", "google_maps_query": "Al-Futtaim Automall Sheikh Zayed Road Dubai", "place_id": ""},
+    {"brand": "Automall", "name": "Al-Futtaim Automall Abu Dhabi", "emirate": "Abu Dhabi", "area": "Abu Dhabi", "google_maps_query": "Al-Futtaim Automall Abu Dhabi", "place_id": ""}
+  ]
+}

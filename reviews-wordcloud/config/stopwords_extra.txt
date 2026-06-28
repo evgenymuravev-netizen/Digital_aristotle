@@ -1,0 +1,28 @@
+# Extra English stopwords: ONLY review meta-noise, not content words.
+# One lowercase token per line. Whole-line # comments only (no inline).
+# Layered on top of wordcloud.STOPWORDS. Content words like service, staff,
+# waiting, delivery, price, manager, warranty are INTENTIONALLY kept -- they
+# are the signal of a reviews cloud.
+review
+reviews
+star
+stars
+rating
+ratings
+rated
+mr
+mrs
+sir
+madam
+ok
+okay
+yeah
+yes
+nope
+lol
+edit
+update
+pls
+plz
+amp
+nbsp
