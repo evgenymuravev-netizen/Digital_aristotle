@@ -1,0 +1,11 @@
+# Word-cloud engine
+wordcloud>=1.9
+matplotlib>=3.7
+pillow>=9
+# Arabic rendering (engine handles Arabic frequencies even without these,
+# but they are needed to RENDER Arabic glyphs in the PNG)
+arabic_reshaper>=3.0
+python-bidi>=0.4
+# Collectors
+requests>=2.31      # Google providers (Apify / Outscraper / SerpApi REST)
+praw>=7.7           # Reddit
