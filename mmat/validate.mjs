@@ -1,41 +1,31 @@
 /* Structural validation of the MMAT question bank.
    Run with:  node mmat/validate.mjs
-   Checks every form/question for a well-formed, single, in-range answer
-   key and flags duplicate or empty options. Pure Node, no dependencies. */
+   Verifies the free taster + all 10 forms: well-formed schema, a single
+   in-range answer key, valid category/difficulty, no duplicate/blank
+   options. Pure Node, no dependencies. */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const src = readFileSync(join(here, "questions.js"), "utf8");
-
-// Execute the bank with a stand-in `window`.
 const sandbox = { window: {} };
-new Function("window", src)(sandbox.window);
+new Function("window", readFileSync(join(here, "questions.js"), "utf8"))(sandbox.window);
 const MMAT = sandbox.window.MMAT;
 
 const CATS = Object.keys(MMAT.categories);
 let errors = 0;
 const err = (m) => { errors++; console.error("  ✗ " + m); };
 
-if (!Array.isArray(MMAT.tests) || MMAT.tests.length !== 10)
-  err(`expected 10 tests, found ${MMAT.tests && MMAT.tests.length}`);
-
-const ids = new Set();
-const totals = {};
-
-MMAT.tests.forEach((t, ti) => {
-  const where = `Test ${ti + 1} (${t.id})`;
-  if (!t.id || ids.has(t.id)) err(`${where}: missing or duplicate id`);
-  ids.add(t.id);
+function checkForm(t, where) {
+  if (!t.id) err(`${where}: missing id`);
   if (!t.name) err(`${where}: missing name`);
-  if (!Array.isArray(t.questions) || !t.questions.length) { err(`${where}: no questions`); return; }
-
-  const perCat = {};
+  if (!Array.isArray(t.questions) || !t.questions.length) { err(`${where}: no questions`); return {}; }
+  const perCat = {}, perTopic = {};
   t.questions.forEach((q, qi) => {
     const w = `${where} Q${qi + 1}`;
     if (!CATS.includes(q.cat)) err(`${w}: bad category "${q.cat}"`);
     if (!q.topic) err(`${w}: missing topic`);
+    if (![1, 2, 3].includes(q.diff)) err(`${w}: diff must be 1–3 (found ${q.diff})`);
     if (!q.prompt || !q.prompt.trim()) err(`${w}: empty prompt`);
     if (!Array.isArray(q.options) || q.options.length < 3 || q.options.length > 5)
       err(`${w}: options must number 3–5 (found ${q.options && q.options.length})`);
@@ -50,15 +40,36 @@ MMAT.tests.forEach((t, ti) => {
     });
     if (!q.explain || !q.explain.trim()) err(`${w}: missing explanation`);
     perCat[q.cat] = (perCat[q.cat] || 0) + 1;
-    totals[q.cat] = (totals[q.cat] || 0) + 1;
+    perTopic[q.topic] = (perTopic[q.topic] || 0) + 1;
   });
+  return perCat;
+}
 
-  const mix = CATS.map((c) => `${c}:${perCat[c] || 0}`).join("  ");
-  console.log(`  ✓ ${where.padEnd(22)} ${t.questions.length} Qs   ${mix}`);
+// free taster
+const free = MMAT.freeTest;
+if (!free) err("missing freeTest");
+else {
+  const pc = checkForm(free, "Free taster");
+  console.log(`  ✓ ${"Free taster".padEnd(22)} ${free.questions.length} Qs   ${CATS.map((c) => `${c}:${pc[c] || 0}`).join("  ")}`);
+}
+
+// full forms
+if (!Array.isArray(MMAT.tests) || MMAT.tests.length !== 10)
+  err(`expected 10 tests, found ${MMAT.tests && MMAT.tests.length}`);
+
+const ids = new Set();
+const totals = {};
+MMAT.tests.forEach((t, ti) => {
+  const where = `Test ${ti + 1} (${t.id})`;
+  if (ids.has(t.id)) err(`${where}: duplicate id`);
+  ids.add(t.id);
+  const pc = checkForm(t, where);
+  CATS.forEach((c) => (totals[c] = (totals[c] || 0) + (pc[c] || 0)));
+  console.log(`  ✓ ${where.padEnd(22)} ${t.questions.length} Qs   ${CATS.map((c) => `${c}:${pc[c] || 0}`).join("  ")}`);
 });
 
 const grand = Object.values(totals).reduce((a, b) => a + b, 0);
-console.log(`\n  Totals: ${grand} questions   ${CATS.map((c) => `${c}:${totals[c] || 0}`).join("  ")}`);
+console.log(`\n  Forms total: ${grand} questions   ${CATS.map((c) => `${c}:${totals[c] || 0}`).join("  ")}`);
 
 if (errors) { console.error(`\n✗ ${errors} problem(s) found.`); process.exit(1); }
 console.log("\n✓ All forms valid.");

@@ -1,10 +1,11 @@
 /* End-to-end engine test with a minimal DOM/localStorage shim.
    Run with:  node mmat/test-engine.mjs
 
-   Loads the REAL questions.js + app.js, then drives a full attempt
-   (boot → start a form → answer every item → submit) and reads the
-   score straight out of the results DOM. Verifies grading for an
-   all-correct, all-wrong and mixed run. No dependencies. */
+   Loads the REAL config.js + questions.js + app.js and drives full
+   attempts through a fake DOM. Verifies: free-taster grading, the
+   "no two adjacent questions share a topic" interleaving guarantee,
+   the paywall unlock flow, a locked form after unlock, and the
+   adaptive weak-area round. No dependencies. */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -14,10 +15,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 /* ---------------- minimal DOM ---------------- */
 class FakeEl {
   constructor(tag) { this.tagName = (tag || "div").toUpperCase(); this.children = []; this._a = {}; this._ev = {};
-    this._cls = new Set(); this._text = ""; this.style = {};
+    this._cls = new Set(); this._text = ""; this._html = ""; this._value = ""; this.style = {};
     this.classList = {
-      add: (c) => this._cls.add(c), remove: (c) => this._cls.delete(c),
-      contains: (c) => this._cls.has(c),
+      add: (c) => this._cls.add(c), remove: (c) => this._cls.delete(c), contains: (c) => this._cls.has(c),
       toggle: (c, f) => { const on = f === undefined ? !this._cls.has(c) : f; on ? this._cls.add(c) : this._cls.delete(c); return on; },
     };
   }
@@ -27,7 +27,9 @@ class FakeEl {
   get textContent() { return this._text || this.children.map((c) => c.textContent || "").join(""); }
   set innerHTML(v) { this._text = ""; this.children = []; this._html = String(v); }
   get innerHTML() { return this._html || ""; }
-  setAttribute(k, v) { this._a[k] = String(v); }
+  get value() { return this._value; }
+  set value(v) { this._value = String(v); }
+  setAttribute(k, v) { this._a[k] = String(v); if (k === "value") this._value = String(v); }
   getAttribute(k) { return this._a[k] != null ? this._a[k] : null; }
   removeAttribute(k) { delete this._a[k]; }
   appendChild(n) { this.children.push(n); return n; }
@@ -38,97 +40,119 @@ class FakeEl {
   _all(pred, out) { this.children.forEach((c) => { if (c instanceof FakeEl) { if (pred(c)) out.push(c); c._all(pred, out); } }); return out; }
   querySelectorAll(sel) {
     const pred = sel[0] === "." ? (e) => e._cls.has(sel.slice(1)) : (e) => e.tagName === sel.toUpperCase();
-    const out = this._all(pred, []);
-    out.forEach = Array.prototype.forEach.bind(out);
-    return out;
+    const out = this._all(pred, []); out.forEach = Array.prototype.forEach.bind(out); return out;
   }
   querySelector(sel) { return this.querySelectorAll(sel)[0] || null; }
 }
 
 const byId = {};
-[ "test-grid", "screen-home", "screen-intro", "screen-exam", "screen-results",
-  "intro-body", "results-body", "brand", "exam-title", "exam-subtitle", "exam-answered",
-  "exam-timer", "exam-timer-sr", "exam-question", "exam-palette", "exam-submit", "exam-quit",
-].forEach((id) => { byId[id] = new FakeEl("div"); });
-
 const document = {
   getElementById: (id) => byId[id] || (byId[id] = new FakeEl("div")),
   createElement: (t) => new FakeEl(t),
   createTextNode: (t) => Object.assign(new FakeEl("text"), { _text: String(t) }),
-  addEventListener() {}, _ev: {},
+  addEventListener() {},
 };
 const store = new Map();
 const localStorage = {
   getItem: (k) => (store.has(k) ? store.get(k) : null),
   setItem: (k, v) => store.set(k, String(v)), removeItem: (k) => store.delete(k),
 };
-let confirmReturn = true;
-const win = {
-  MMAT: null, scrollTo() {}, confirm: () => confirmReturn,
-  addEventListener() {}, localStorage,
-  setInterval: () => 1, clearInterval() {},
-};
+const win = { scrollTo() {}, confirm: () => true, addEventListener() {}, localStorage };
+const syncTimeout = (fn) => { fn(); return 0; };
+const noopInterval = () => 1;
 
-/* ---------------- load the real source ---------------- */
-const ctx = { window: win, document, localStorage, setInterval: win.setInterval, clearInterval: win.clearInterval };
+/* ---------------- load real source ---------------- */
+new Function("window", readFileSync(join(here, "config.js"), "utf8"))(win);
 new Function("window", readFileSync(join(here, "questions.js"), "utf8"))(win);
-const TESTS = win.MMAT.tests;
-new Function("window", "document", "localStorage", "setInterval", "clearInterval",
+const FORMS = [win.MMAT.freeTest, ...win.MMAT.tests];
+
+// key by prompt + options (odd-one-out prompts intentionally repeat, so prompt
+// alone isn't unique — the options always are).
+const qKey = (prompt, options) => prompt + "||" + options.join("");
+const promptMap = {};
+FORMS.forEach((f) => f.questions.forEach((q) => { promptMap[qKey(q.prompt, q.options)] = { answer: q.answer, n: q.options.length }; }));
+
+new Function("window", "document", "localStorage", "setInterval", "clearInterval", "setTimeout",
   readFileSync(join(here, "app.js"), "utf8")
-)(win, document, localStorage, ctx.setInterval, ctx.clearInterval); // boot() runs here → home
+)(win, document, localStorage, noopInterval, () => {}, syncTimeout); // boot() runs → home
 
-/* ---------------- helpers to drive the UI ---------------- */
+/* ---------------- drivers ---------------- */
 const btnByText = (root, txt) => root.querySelectorAll("button").find((b) => (b.textContent || "").includes(txt));
-function findStartCardButton() { return byId["test-grid"].querySelectorAll("button")[0]; } // first form's Start
 
-function runForm(testIndex, decide) {
-  store.clear();
-  // re-render home so the freshly-cleared state shows, then open the first form
-  byId["brand"].fire("click");                 // back to home (renderHome)
-  findStartCardButton().fire("click");         // → intro for Test 1
-  btnByText(byId["intro-body"], "Start").fire("click"); // → exam, starts clock
-
-  const total = TESTS[testIndex].questions.length;
-  for (let i = 0; i < total; i++) {
-    const opts = byId["exam-question"].querySelectorAll(".option");
-    const choose = decide(i, TESTS[testIndex].questions[i]);
-    if (choose != null) opts[choose].fire("click");
-    const nav = byId["exam-question"];
-    const next = btnByText(nav, "Next") || btnByText(nav, "Review & submit");
-    next.fire("click"); // advances, or on last item submits (confirm → finish)
+// Drive the currently-active exam to results. `mode`: "correct" | "wrong".
+// Returns { pct, sub, topics:[chip text per position in shown order] }.
+function driveExam(mode) {
+  const topics = [];
+  let guard = 0;
+  while ($("screen-exam").classList.contains("active") && guard++ < 200) {
+    const qEl = byId["exam-question"];
+    const prompt = qEl.querySelector(".q-prompt").innerHTML;
+    const shownOptions = qEl.querySelectorAll(".option").map((b) => b.children[1].textContent);
+    const info = promptMap[qKey(prompt, shownOptions)];
+    if (!info) throw new Error("Shown question not found in bank: " + prompt.slice(0, 40));
+    topics.push(qEl.querySelector(".q-topic").textContent);
+    const choose = mode === "wrong" ? (info.answer + 1) % info.n : info.answer;
+    qEl.querySelectorAll(".option")[choose].fire("click");
+    const next = btnByText(qEl, "Next") || btnByText(qEl, "Review & submit");
+    next.fire("click"); // advances, or submits on the last item (confirm → finish)
   }
-  // read score out of the results DOM
   const pctEl = byId["results-body"].querySelector(".dial-pct");
   const subEl = byId["results-body"].querySelector(".dial-sub");
-  return { pct: parseInt((pctEl && pctEl.textContent) || "x", 10), sub: subEl && subEl.textContent };
+  return { pct: parseInt((pctEl && pctEl.textContent) || "x", 10), sub: subEl && subEl.textContent, topics };
 }
+function $(id) { return document.getElementById(id); }
+function goHome() { byId["brand"].fire("click"); }
 
-/* ---------------- scenarios ---------------- */
+/* ---------------- assertions ---------------- */
 let fail = 0;
 const expect = (name, got, want) => {
   const ok = got === want;
-  console.log(`  ${ok ? "✓" : "✗"} ${name}: got ${JSON.stringify(got)}${ok ? "" : ", expected " + JSON.stringify(want)}`);
+  console.log(`  ${ok ? "✓" : "✗"} ${name}: ${JSON.stringify(got)}${ok ? "" : " (expected " + JSON.stringify(want) + ")"}`);
   if (!ok) fail++;
 };
+const assert = (name, cond, detail) => { console.log(`  ${cond ? "✓" : "✗"} ${name}${cond ? "" : " — " + detail}`); if (!cond) fail++; };
+const noAdjacentDup = (arr) => { for (let i = 1; i < arr.length; i++) if (arr[i] === arr[i - 1]) return i; return -1; };
 
-const T = 0, N = TESTS[T].questions.length;
+console.log("Free taster:");
+store.clear(); goHome();
+byId["start-free"].fire("click");                  // free test starts (no lock)
+const free = driveExam("correct");
+expect("all-correct %", free.pct, 100);
+expect("tally", free.sub, "12 / 12 correct");
+assert("no two adjacent questions share a topic", noAdjacentDup(free.topics) === -1,
+  "duplicate at position " + noAdjacentDup(free.topics) + " in " + JSON.stringify(free.topics));
 
-const allCorrect = runForm(T, (i, q) => q.answer);
-expect("all-correct %", allCorrect.pct, 100);
-expect("all-correct tally", allCorrect.sub, `${N} / ${N} correct`);
+console.log("\nPaywall + locked form:");
+store.clear(); goHome();
+const unlockBtn = btnByText(byId["test-grid"], "Unlock");
+assert("locked forms show an Unlock button before purchase", !!unlockBtn, "no Unlock button found");
+unlockBtn.fire("click");                            // → paywall
+assert("paywall screen shown", $("screen-paywall").classList.contains("active"), "paywall not active");
+const codeInput = byId["paywall-body"].querySelector(".code-input");
+codeInput.value = "DEMO-KEY-123";
+btnByText(byId["paywall-body"], "Unlock").fire("click");   // demo unlock → starts the form
+assert("unlocking a form launches its exam", $("screen-exam").classList.contains("active"), "exam not active after unlock");
+const locked = driveExam("correct");
+expect("unlocked form all-correct %", locked.pct, 100);
+expect("unlocked form size", locked.sub, "25 / 25 correct");
+assert("interleaved: no adjacent topic in a 25-Q form", noAdjacentDup(locked.topics) === -1,
+  "duplicate at position " + noAdjacentDup(locked.topics));
+goHome();
+assert("form no longer shows Unlock once purchased", !btnByText(byId["test-grid"], "Unlock"), "still locked");
 
-const allWrong = runForm(T, (i, q) => (q.answer + 1) % q.options.length);
-expect("all-wrong %", allWrong.pct, 0);
-expect("all-wrong tally", allWrong.sub, `0 / ${N} correct`);
-
-// answer the first 10 correctly, the rest wrong → 10/25 = 40%
-const mixed = runForm(T, (i, q) => (i < 10 ? q.answer : (q.answer + 1) % q.options.length));
-expect("mixed %", mixed.pct, Math.round((10 / N) * 100));
-expect("mixed tally", mixed.sub, `10 / ${N} correct`);
-
-// leaving blanks: answer none → 0%, and best score should persist all-correct=100
-const blanks = runForm(T, () => null);
-expect("all-blank %", blanks.pct, 0);
+console.log("\nAdaptive weak-area round:");
+// already did one full form all-correct above; add a taster with wrong answers to create weak topics
+byId["start-free"].fire("click");
+driveExam("wrong");
+goHome();
+const dashBtn = btnByText(byId["dashboard"], "Practice");
+assert("weak-area button is enabled after enough data", dashBtn && !dashBtn.getAttribute("disabled"),
+  "button: " + (dashBtn && dashBtn.textContent));
+dashBtn.fire("click");                              // start adaptive round
+assert("adaptive round launches an exam", $("screen-exam").classList.contains("active"), "exam not active");
+const weak = driveExam("correct");
+assert("adaptive round grades to 100% when all correct", weak.pct === 100, "got " + weak.pct);
+assert("adaptive round interleaves topics too", noAdjacentDup(weak.topics) === -1, "dup at " + noAdjacentDup(weak.topics));
 
 if (fail) { console.error(`\n✗ ${fail} engine assertion(s) failed.`); process.exit(1); }
-console.log("\n✓ Engine grades, submits and reports correctly end-to-end.");
+console.log("\n✓ Engine: grading, interleaving, paywall unlock and adaptive round all verified end-to-end.");

@@ -1,0 +1,39 @@
+# robots.txt for the Mental Agility Test practice site
+# Goal: maximum visibility in AI answers (ChatGPT, Claude, Gemini, Perplexity)
+# AND classic search. We allow everything; the explicit blocks below are
+# examples you can uncomment if you ever want to opt out of model TRAINING
+# (that does NOT reduce your chance of being cited in AI search answers).
+
+# --- Retrieval / citation crawlers (these get you cited — keep allowed) ---
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+User-agent: Googlebot
+Allow: /
+User-agent: Bingbot
+Allow: /
+
+# --- Optional training opt-out (leave commented to allow training too) ---
+# User-agent: GPTBot
+# Disallow: /
+# User-agent: ClaudeBot
+# Disallow: /
+# User-agent: Google-Extended
+# Disallow: /
+# User-agent: CCBot
+# Disallow: /
+
+User-agent: *
+Allow: /
+
+# Replace YOURDOMAIN with your real domain once you've registered it.
+Sitemap: https://YOURDOMAIN.com/sitemap.xml

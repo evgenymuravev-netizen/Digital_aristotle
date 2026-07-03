@@ -3,11 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="A McQuaig-style Mental Agility (MMAT) practice test — ten timed forms of verbal, numerical and logical reasoning, 15 minutes each." />
+  <meta name="description" content="Free McQuaig-style Mental Agility Test (MMAT) practice: a 5-minute free test plus ten timed 15-minute forms of verbal, numerical and logical reasoning, with worked answers and strategy guides." />
   <meta name="color-scheme" content="dark" />
-  <title>Mental Agility Test — 10 timed practice forms</title>
+  <title>Mental Agility Test (MMAT) Practice — Free 5-Minute Test + 10 Timed Forms</title>
+  <link rel="canonical" href="./index.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Mental Agility Test (MMAT) Practice — Free 5-Minute Test" />
+  <meta property="og:description" content="Practise the McQuaig-style Mental Agility Test: a free 5-minute test plus ten timed 15-minute forms with worked answers, an adaptive weak-areas round, and a strategy guide." />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="./styles.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebSite", "name": "Mental Agility Test — MMAT practice", "url": "./",
+        "potentialAction": { "@type": "SearchAction" } },
+      { "@type": "WebApplication",
+        "name": "McQuaig-style Mental Agility Test (MMAT) Practice",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any (web browser)",
+        "browserRequirements": "Requires JavaScript",
+        "description": "Practise the McQuaig-style Mental Agility Test online: a free 5-minute test plus ten timed 15-minute forms of verbal, numerical and logical reasoning, with worked answers and an adaptive weak-areas round.",
+        "offers": [
+          { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free 5-minute practice test" },
+          { "@type": "Offer", "price": "15.99", "priceCurrency": "USD", "name": "Full Access — all 10 tests + strategy guides" }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -17,49 +42,60 @@
       <span class="brand-mark" aria-hidden="true">⚡</span>
       <span class="brand-text">
         <strong>Mental Agility Test</strong>
-        <small>MMAT-style practice · 10 forms</small>
+        <small>MMAT-style practice</small>
       </span>
     </button>
-    <a class="home-link" href="../index.html">← Digital Aristotle</a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="./guide.html">Strategy guide</a>
+      <a class="home-link" href="../index.html">Digital Aristotle</a>
+    </nav>
   </header>
 
   <main id="main">
 
     <!-- ===================== HOME ===================== -->
     <section id="screen-home" class="screen container" aria-labelledby="home-h">
-      <h1 id="home-h">McQuaig-style Mental Agility Test</h1>
+      <h1 id="home-h">McQuaig-style Mental Agility Test — practice online</h1>
       <p class="lede">
-        A timed measure of <em>mental agility</em> — how quickly and accurately you reason
-        across <strong>verbal</strong>, <strong>numerical</strong> and <strong>logical</strong>
-        problems. Pick any of the ten forms below. Each is a fresh set of questions with its own
-        <strong>15-minute</strong> clock.
+        The Mental Agility Test measures how <em>quickly and accurately</em> you reason across
+        <strong>verbal</strong>, <strong>numerical</strong> and <strong>logical</strong> problems.
+        Start with a free 5-minute test, see exactly where you're strong and weak, then drill the
+        ten full 15-minute forms.
       </p>
+
+      <div class="cta-row">
+        <button class="btn btn-primary btn-lg" id="start-free" type="button">▶ Start the free 5-minute test</button>
+        <a class="btn btn-lg" href="./guide.html">📘 How to pass — strategy guide</a>
+      </div>
+
+      <div id="dashboard"><!-- skills snapshot, filled by JS --></div>
 
       <div class="panel" style="margin-top:22px">
         <h2 style="margin-top:0">How it works</h2>
         <ul class="tight dim">
-          <li><b>15 minutes per form.</b> The clock starts when you begin and the form submits automatically when it runs out.</li>
-          <li><b>Work fast but accurately.</b> Every question is worth one mark; there is no penalty for guessing, so never leave a blank.</li>
-          <li><b>Jump around freely.</b> Use the number palette to revisit or flag questions before time is up.</li>
-          <li><b>Keyboard friendly:</b> press <span class="mono">1–5</span> to answer, <span class="mono">←/→</span> to move, <span class="mono">F</span> to flag.</li>
+          <li><b>Free taster:</b> 12 mixed questions in 5 minutes — no sign-up.</li>
+          <li><b>Ten full forms:</b> 25 harder questions in 15 minutes each, graded easy → hard.</li>
+          <li><b>Interleaved:</b> question types are mixed so no two similar questions run back-to-back.</li>
+          <li><b>Adaptive:</b> your results build a custom round from the topics you miss most.</li>
         </ul>
         <p class="muted" style="margin:8px 0 0">
           Original practice items written in the spirit of the McQuaig Mental Agility Test.
-          Not affiliated with, or endorsed by, The McQuaig Institute®. For self-practice only — not a clinical or hiring instrument.
+          Not affiliated with, or endorsed by, The McQuaig Institute®. For self-practice only.
         </p>
       </div>
 
-      <h2 class="section-title">Choose a test</h2>
-      <p class="section-sub">Ten independent forms of increasing-difficulty items. Your best score per form is saved on this device.</p>
+      <h2 class="section-title">The ten full forms</h2>
+      <p class="section-sub">Each is an independent 15-minute form of increasing-difficulty items. Your best score per form is saved on this device.</p>
       <div class="test-grid" id="test-grid"><!-- filled by JS --></div>
+      <div id="unlock-status"><!-- filled by JS --></div>
     </section>
 
-    <!-- ===================== INTRO (pre-test) ===================== -->
+    <!-- ===================== INTRO ===================== -->
     <section id="screen-intro" class="screen container" aria-labelledby="intro-h">
-      <div id="intro-body"><!-- filled by JS --></div>
+      <div id="intro-body"></div>
     </section>
 
-    <!-- ===================== EXAM (running) ===================== -->
+    <!-- ===================== EXAM ===================== -->
     <section id="screen-exam" class="screen" aria-labelledby="exam-h">
       <div class="exam-bar">
         <div class="eb-title" id="exam-h">
@@ -93,7 +129,13 @@
     <!-- ===================== RESULTS ===================== -->
     <section id="screen-results" class="screen container" aria-labelledby="results-h">
       <h1 id="results-h" class="sr-only">Results</h1>
-      <div id="results-body"><!-- filled by JS --></div>
+      <div id="results-body"></div>
+    </section>
+
+    <!-- ===================== PAYWALL ===================== -->
+    <section id="screen-paywall" class="screen container" aria-labelledby="paywall-h">
+      <h1 id="paywall-h" class="sr-only">Unlock full access</h1>
+      <div id="paywall-body"></div>
     </section>
 
   </main>
@@ -104,6 +146,7 @@
     “McQuaig” and “MMAT” are referenced for description only; this tool is independent and unaffiliated.
   </footer>
 
+  <script src="./config.js"></script>
   <script src="./questions.js"></script>
   <script src="./app.js"></script>
 </body>

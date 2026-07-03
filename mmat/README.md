@@ -1,47 +1,48 @@
-# ⚡ Mental Agility Test (MMAT-style)
+# ⚡ Mental Agility Test (MMAT-style practice)
 
 A self-contained, browser-based **Mental Agility Test** in the spirit of the
-McQuaig Mental Agility Test (MMAT): ten independent **forms**, each a fresh
-**15-minute** sprint of verbal, numerical and logical reasoning.
+McQuaig Mental Agility Test (MMAT): a **free 5-minute taster** plus **ten timed
+15-minute forms** of verbal, numerical and logical reasoning — with worked
+answers, a skills dashboard, an adaptive weak-areas round, and a strategy guide.
 
-It is fully client-side — no build step, no dependencies, no network — and
-results stay in your browser's `localStorage`.
+Fully client-side — no build step, no dependencies, no network needed to run.
+Results stay in the browser's `localStorage`.
 
-> **Original content.** Every question was written for this project. This tool
-> is not affiliated with, endorsed by, or derived from The McQuaig Institute®;
-> “McQuaig” and “MMAT” are used only to describe the style of test. It is for
-> self-practice and is **not** a clinical or hiring instrument.
+> **Original content.** Every question and guide was written for this project.
+> It is not affiliated with, endorsed by, or derived from The McQuaig Institute®;
+> “McQuaig” and “MMAT” describe the *style* of test. For self-practice only.
 
-## What's here
+## What's inside
 
-| Form | Questions | Time | Mix (Verbal / Numerical / Logical) |
-| --- | --- | --- | --- |
-| Test 1 – Test 10 | 25 each (250 total) | 15:00 each | 10 / 9 / 6 |
+- **Free 5-minute taster** — 12 mixed questions, no sign-up.
+- **Ten full forms** — 25 harder questions in 15 minutes each (250 total), graded
+  easy → hard, mixing synonyms, antonyms, analogies, odd-one-out, number series,
+  arithmetic & word problems, percentages, ratios, letter series, syllogisms,
+  logical deduction, coding, directions and blood relations.
+- **Interleaving** — the engine reorders each form so **no two adjacent questions
+  share a topic**, matching the gear-shifting feel of the real test.
+- **Skills dashboard + adaptive round** — your results build a per-topic snapshot
+  and a custom practice round from the topics you miss most.
+- **Serverless paywall** — a free taster with the ten forms behind a one-time
+  unlock; license-key validation runs client-side (Lemon Squeezy / Gumroad) with a
+  demo mode for testing. See `STRATEGY.md`.
+- **Strategy guide** (`guide.html`) — overall tactics plus step-by-step methods for
+  every question type, structured for search + AI-answer visibility.
 
-Item types: synonyms, antonyms, verbal analogies, odd-one-out, number series,
-arithmetic & word problems, letter series, syllogisms / deductions and
-number classification — graded **easy → hard** within each form.
+## Features (engine)
 
-## Features
-
-- **15-minute countdown** per form that starts on *Start*, warns under 2:00,
-  turns red under 1:00, and **auto-submits** at zero.
-- **Question navigator** — jump to any item, see answered/flagged at a glance,
-  and flag items for review.
-- **Resume on refresh** — closing or reloading the tab keeps your answers and
-  the *time that remains*; an expired form is graded automatically.
-- **Keyboard:** `1`–`5` to answer, `←` / `→` to move, `F` to flag.
-- **Results** — overall score, a banded interpretation, a per-category
-  breakdown and a full worked-answer **review** with filters.
-- **Best score per form** is remembered on the device.
+- 15-minute / 5-minute countdowns that warn, turn red, and **auto-submit** at zero.
+- Question navigator with flags; **resume on refresh** (keeps answers + remaining time).
+- Keyboard: `1`–`5` answer, `←/→` move, `F` flag.
+- Results: banded score, per-category breakdown, weak-area focus, full worked-answer review with filters.
+- Best score per form saved on the device.
 
 ## Run it
 
-It uses plain (non-module) scripts, so you can simply open `index.html` in a
-browser — or serve it with the rest of the site:
+Plain (non-module) scripts, so you can open `index.html` directly — or serve the site:
 
 ```bash
-python3 -m http.server 8000      # from the repo root
+python3 -m http.server 8000     # from the repo root
 # then visit http://localhost:8000/mmat/
 ```
 
@@ -49,39 +50,45 @@ python3 -m http.server 8000      # from the repo root
 
 ```
 mmat/
-  index.html        # shell & screens
-  styles.css        # theming (matches Digital Aristotle) + components
-  app.js            # engine: timer, navigation, grading, review, resume
-  questions.js      # the 10 forms (window.MMAT) — all original items
+  index.html        # app shell (home, exam, results, paywall) + structured data
+  guide.html        # strategy guide (original) with Article/FAQ/Breadcrumb schema
+  styles.css        # theming + components
+  app.js            # engine: timer, interleaving, gating, dashboard, adaptive round, unlock
+  questions.js      # free taster + 10 forms (window.MMAT) — all original items
+  config.js         # merchant/paywall config (price, buy URL, provider) — edit this
+  robots.txt        # allows AI retrieval crawlers (edit domain)
+  sitemap.xml       # edit YOURDOMAIN before use
+  llms.txt          # minimal AI hint file
+  STRATEGY.md       # pricing, paywall wiring, domain, deployment, AI-search plan
   validate.mjs      # structural checks for the question bank
   check-answers.mjs # independent re-computation of every numerical key
-  test-engine.mjs   # end-to-end grading test via a tiny DOM shim
+  test-engine.mjs   # end-to-end engine test via a tiny DOM shim
 ```
 
-## Tests
-
-Pure Node, no dependencies:
+## Tests (pure Node, no dependencies)
 
 ```bash
 node mmat/validate.mjs        # schema / answer-index / duplicate-option checks
-node mmat/check-answers.mjs   # recompute every numerical answer independently
-node mmat/test-engine.mjs     # boot the real engine, answer a form, check the score
+node mmat/check-answers.mjs   # recompute all 94 numerical answers independently
+node mmat/test-engine.mjs     # boot the real engine: grading, interleaving, paywall, adaptive round
 ```
 
-## Adding or editing questions
+## Going live
 
-Each form lives in `questions.js` under `window.MMAT.tests`. A question is:
+Set your price/checkout/provider in `config.js`, deploy `mmat/` as the site root,
+point a domain at it, and fill in the real URL in `robots.txt`, `sitemap.xml` and
+the `canonical`/`og:` tags. Full playbook (pricing, paywall, domain, AI-search) is
+in **`STRATEGY.md`**.
+
+## Editing questions
+
+Each item in `questions.js`:
 
 ```js
-{
-  cat: "verbal",            // "verbal" | "numerical" | "logical"
-  topic: "Synonym",         // shown as a chip
-  prompt: "…",              // may contain inline HTML
-  options: ["…", "…", "…"], // 3–5 choices
-  answer: 0,                // index of the correct option
-  explain: "…"              // one-line worked answer shown in review
-}
+{ cat: "verbal", topic: "Synonyms", diff: 2,
+  prompt: "…", options: ["…","…","…"], answer: 0, explain: "…" }
 ```
 
-Change `window.MMAT.config.durationSec` to adjust the per-form time limit
-(default `900` = 15 minutes). After any edit, run the three checks above.
+`cat` is `verbal | numerical | logical`; `topic` drives interleaving + weak-area
+analysis; `diff` is 1–3. Change `config.durationSec` / `freeDurationSec` for the
+timers. Re-run the three checks above after any edit.
