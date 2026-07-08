@@ -4,11 +4,11 @@
 /* ---------------- cards wallet ---------------- */
 const cardVisual = (a, mini=false) => `
   <div class="ccvisual ${A.S.frozen?'frozen':''}" style="background:${a.art};${mini?'height:150px':''}" onclick="A.go('card/${a.id}')">
-    <div class="flex between"><span style="font:800 15px Inter,sans-serif">${BANKS[a.bank].name}</span><span class="cc-small">${a.name}</span></div>
+    <div class="flex between"><span style="font:600 15px Inter,sans-serif">${BANKS[a.bank].name}</span><span class="cc-small">${a.name}</span></div>
     <div class="cc-chip"></div>
     <div>
       <div class="cc-num">•••• •••• •••• ${a.mask}</div>
-      <div class="flex between mt8"><span class="cc-small">${USER.first} ${USER.last}</span><span style="font:800 14px Inter,sans-serif;font-style:italic">VISA</span></div>
+      <div class="flex between mt8"><span class="cc-small">${USER.first} ${USER.last}</span><span style="font:600 14px Inter,sans-serif;font-style:italic">VISA</span></div>
     </div>
   </div>`;
 SCREENS.cards = () => {
@@ -63,10 +63,10 @@ SCREENS.vcard = () => `
   <div class="scr">
     ${hdr('Virtual card')}
     <div class="ccvisual" style="background:linear-gradient(130deg,#4a3a10,#1c1504 70%)">
-      <div class="flex between"><span style="font:800 17px Inter,sans-serif;color:var(--lime)">mal</span><span class="cc-small">Virtual · disposable</span></div>
+      <div class="flex between"><span style="font:600 17px Onest,Inter,sans-serif;letter-spacing:-.02em;color:#fff">Mal</span><span class="cc-small">Virtual · disposable</span></div>
       <div class="cc-chip"></div>
       <div><div class="cc-num">5311 88•• •••• 4092</div>
-      <div class="flex between mt8"><span class="cc-small">Exp 06/29 · CVV •••</span><span style="font:800 14px Inter,sans-serif">VISA</span></div></div>
+      <div class="flex between mt8"><span class="cc-small">Exp 06/29 · CVV •••</span><span style="font:600 14px Inter,sans-serif">VISA</span></div></div>
     </div>
     <div class="listcard mt16">
       <div class="row static"><div class="row-main"><div class="row-t">Single-use mode</div><div class="row-d">Number burns after one payment</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
@@ -162,10 +162,10 @@ SCREENS['apply-done'] = (id) => {
     <div class="sub mt8">AED ${fm(o.limit,0)} limit · virtual card is live now,<br>plastic arrives in 2 days.</div>
     <div class="mt16" style="width:100%">${`
       <div class="ccvisual" style="background:linear-gradient(130deg,#0A2E5C,#06182F 70%)">
-        <div class="flex between"><span style="font:800 15px Inter,sans-serif">${BANKS[o.bank].name}</span><span class="cc-small">just issued</span></div>
+        <div class="flex between"><span style="font:600 15px Inter,sans-serif">${BANKS[o.bank].name}</span><span class="cc-small">just issued</span></div>
         <div class="cc-chip"></div>
         <div><div class="cc-num">5402 33•• •••• 9018</div>
-        <div class="flex between mt8"><span class="cc-small">${USER.first} ${USER.last}</span><span style="font:800 14px Inter,sans-serif;font-style:italic">VISA</span></div></div>
+        <div class="flex between mt8"><span class="cc-small">${USER.first} ${USER.last}</span><span style="font:600 14px Inter,sans-serif;font-style:italic">VISA</span></div></div>
       </div>`}</div>
     <div class="btnrow mt16" style="width:100%">
       <button class="btn ghost" onclick="A.toast('Added to Apple Pay','check')"> Apple Pay</button>
@@ -258,7 +258,7 @@ SCREENS.invest = () => `
     ${hdr('Invest')}
     <div class="card">
       <span class="lbl">Portfolio</span>
-      <div class="flex between mt8"><span style="font:800 30px Inter,sans-serif" class="tnum">AED ${fm(INVEST.total,0)}</span><span class="tag grn">▲ ${INVEST.day}% today</span></div>
+      <div class="flex between mt8"><span style="font:600 30px Inter,sans-serif" class="tnum">AED ${fm(INVEST.total,0)}</span><span class="tag grn">▲ ${INVEST.day}% today</span></div>
       <div class="mt12">${spark([31,32.4,31.8,33.5,34.1,35.2,36.4,37.1,38.5],330,70,'#1f8a5b')}</div>
     </div>
     <div class="listcard mt12">
@@ -313,7 +313,7 @@ SCREENS.gold = () => `
     ${hdr('Mal Gold')}
     <div class="card" style="text-align:center;background:linear-gradient(150deg,rgba(200,132,31,.16),var(--glass))">
       <div style="font-size:44px">🪙</div>
-      <div style="font:800 32px Inter,sans-serif" class="tnum mt8">${INVEST.gold.grams} g</div>
+      <div style="font:600 32px Inter,sans-serif" class="tnum mt8">${INVEST.gold.grams} g</div>
       <div class="micro mt4">≈ AED ${fm(INVEST.gold.val)} · 999.9 vaulted in DMCC · Shariah-certified</div>
       <div class="mt12">${spark([440,452,448,461,458,470,479,486],300,60,'#c8841f')}</div>
       <div class="micro">AED ${fm(INVEST.gold.perGram)} / g · ▲${INVEST.gold.mo}% this month</div>
@@ -333,7 +333,7 @@ SCREENS.score = () => `
   <div class="scr">
     ${hdr('AECB score')}
     <div class="card" style="display:flex;flex-direction:column;align-items:center">
-      ${gaugeSemi(SCORE.v/SCORE.max, 230, '#1f8a5b', `<div style="font:800 44px Inter,sans-serif" class="tnum">${SCORE.v}</div><div class="micro">${SCORE.band} · ▲${SCORE.delta} this month</div>`)}
+      ${gaugeSemi(SCORE.v/SCORE.max, 230, '#1f8a5b', `<div style="font:600 44px Inter,sans-serif" class="tnum">${SCORE.v}</div><div class="micro">${SCORE.band} · ▲${SCORE.delta} this month</div>`)}
       <div class="mt12" style="width:100%">${spark(SCORE.hist,330,54,'#1f8a5b')}</div>
       <div class="micro mt4">Free forever · soft-pull · refreshed monthly</div>
     </div>
@@ -371,7 +371,7 @@ SCREENS.rewards = () => `
     ${hdr('Rewards')}
     <div class="card lime">
       <div class="flex between"><span class="lbl" style="color:rgba(14,14,16,.55)">Mal points</span><span class="tag" style="background:rgba(14,14,16,.14);color:#0e0e10">${REWARDS.tier} tier</span></div>
-      <div style="font:800 36px Inter,sans-serif" class="tnum mt8">${fm(REWARDS.pts,0)}</div>
+      <div style="font:600 36px Inter,sans-serif" class="tnum mt8">${fm(REWARDS.pts,0)}</div>
       <div class="micro mt4">≈ AED ${fm(REWARDS.pts/20,0)} · redeem on fees, gold or charity</div>
     </div>
     <div class="card mt12">
@@ -574,7 +574,7 @@ SCREENS.zakat = () => {
   const allEqual = allDues.every(x=>Math.abs(x.t-allDues[0].t)<0.01);
   return `
   <div class="scr">
-    ${hdr('Zakat · 1447H',{right:`<button class="iconbtn" onclick="chatDeep('zakatFull')" title="Ask Mal">${ic('spark',18)}</button>`})}
+    ${hdr('Zakat · 1447H',{right:`<button class="ai-orb" style="width:40px;height:40px;min-width:40px;border:none;cursor:pointer" onclick="chatDeep('zakatFull')" title="Ask Mal">${ic('spark',19)}</button>`})}
     ${stepper}
     <div class="card lime">
       <div class="flex between"><b style="font-size:14px">🌙 ${z.hijri}</b></div>
@@ -672,7 +672,7 @@ SCREENS.zakat = () => {
 
     <div class="card mt16" style="background:linear-gradient(150deg,rgba(200,132,31,.16),var(--glass))">
       <div class="flex between"><span class="tag gold">☪ Total zakat due · ${m.n} method</span><span class="micro">2.5% (lunar year)</span></div>
-      <div style="font:800 38px Inter,sans-serif" class="tnum mt8">AED ${fm(due)}</div>
+      <div style="font:600 38px Inter,sans-serif" class="tnum mt8">AED ${fm(due)}</div>
       <div class="kv mt8"><span class="k">${USER.first} — on AED ${fm(john)}</span><span class="v tnum">${fm(D.j)}</span></div>
       ${z.family.filter(f=>s.rel[f.id]).map(f=>{
         const dueF=ZK.relDue(f.id,s.method);
@@ -734,7 +734,7 @@ SCREENS.approvals = () => {
   };
   return `
   <div class="scr">
-    ${hdr('Approvals',{right:`<button class="iconbtn" onclick="chatDeep('agents')">${ic('spark',18)}</button>`})}
+    ${hdr('Approvals',{right:`<button class="ai-orb" style="width:40px;height:40px;min-width:40px;border:none;cursor:pointer" onclick="chatDeep('agents')">${ic('spark',19)}</button>`})}
     <div class="card lime">
       <div class="flex between"><b style="font-size:14px">${pend.length?pend.length+' need your nod today':'All caught up ✓'}</b>
         <span class="tag" style="background:rgba(14,14,16,.14);color:#0e0e10">${APPROVALS.length} total</span></div>
@@ -762,10 +762,10 @@ SCREENS.agents = () => {
   const st = A.tmp.ag || (A.tmp.ag = {healthy:true, local:true, promo:true, risk:false, careem:'agent'});
   return `
   <div class="scr">
-    ${hdr('Your agents',{right:`<button class="iconbtn" onclick="chatDeep('agents')">${ic('spark',18)}</button>`})}
+    ${hdr('Your agents',{right:`<button class="ai-orb" style="width:40px;height:40px;min-width:40px;border:none;cursor:pointer" onclick="chatDeep('agents')">${ic('spark',19)}</button>`})}
     <div class="card lime">
       <div class="flex between"><span class="lbl" style="color:rgba(14,14,16,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, profit bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(14,14,16,.14);color:#0e0e10">${AGENTS.period}</span></div>
-      <div style="font:800 36px Inter,sans-serif" class="tnum mt8">AED ${fm(AGENTS.earned,0)}</div>
+      <div style="font:600 36px Inter,sans-serif" class="tnum mt8">AED ${fm(AGENTS.earned,0)}</div>
       <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')} — plus ${AGENTS.timeSaved}</div>
     </div>
 
@@ -938,7 +938,7 @@ SCREENS.debts = () => {
     ${hdr('Financing check-up')}
     <div class="card">
       <span class="lbl">All financing & obligations</span>
-      <div style="font:800 32px Inter,sans-serif" class="tnum mt8">AED ${fm(totOut,0)}</div>
+      <div style="font:600 32px Inter,sans-serif" class="tnum mt8">AED ${fm(totOut,0)}</div>
       <div class="micro mt4">9 facilities across 4 providers · auto-detected via Mal Connect</div>
       <div class="hr"></div>
       <div class="kv"><span class="k">Profit charges you pay per year</span><span class="v tnum red-t">AED ${fm(totCost,0)}</span></div>

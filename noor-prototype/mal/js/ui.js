@@ -103,7 +103,7 @@ window.catIc = (cat, s=44) => {
 /* ---- transaction row ---- */
 window.rowTxn = t => `
   <div class="row" onclick="A.go('txn/${t.id}')">
-    ${catIc(t.cat)}
+    ${merchIc(t.m, catIc(t.cat))}
     <div class="row-main"><div class="row-t">${t.m}</div><div class="row-d">${t.d}${t.note?' · '+t.note:''}</div></div>
     <div class="row-r"><div class="row-amt ${t.amt>0?'grn-t':''}">${aedS(t.amt)}</div>
     ${t.sub?'<div class="row-sub">Subscription</div>':t.rule?'<div class="row-sub lime-t">Rule</div>':''}</div>
