@@ -64,3 +64,15 @@ The same prototype re-branded for **mal.ai** (radiant gold on midnight indigo, �
 Canonical source lives on branch `claude/mal-ai-prototype` (`mal-prototype/`, PR #8);
 `noor-prototype/mal/` is a vendored publish copy — re-vendor it when that branch changes.
 Unofficial concept, not affiliated with or endorsed by mal.ai.
+
+## Also on this Pages site
+
+- **/tradepay/** — Tradepay site, deployed live from `main:tradepay` (canonical; the
+  `noor-prototype/tradepay/` copy is only a stale local-preview snapshot).
+- **/aristotle/** — the Digital Aristotle site (this repo's original project), deployed
+  live from `main`'s root.
+
+Deploys go through `.github/workflows/deploy-pages.yml` (Actions-mode Pages): it assembles
+the composite site, deploys it, and mirrors the artifact to `gh-pages`. Note: `deploy.yml`
+on `main` still deploys main's root over the whole site on every push to `main` — remove or
+adjust it on `main` to keep the composite layout.

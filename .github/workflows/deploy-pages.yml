@@ -1,7 +1,16 @@
 name: Publish Noor prototype to GitHub Pages
 
-# Pages serves the gh-pages branch (legacy branch mode — enabled automatically).
-# This workflow keeps gh-pages in sync with noor-prototype/ on every push.
+# GitHub Pages runs in "GitHub Actions" source mode (switched 14 Jun 2026 by
+# deploy.yml on main, which deployed the Digital Aristotle root and displaced
+# the gh-pages branch site). This workflow deploys the composite site:
+#   /            noor prototype (this branch, noor-prototype/)
+#   /mal/        mal.ai-branded twin (vendored copy in noor-prototype/mal/)
+#   /tradepay/   Tradepay site — taken live from main:tradepay (canonical)
+#   /aristotle/  Digital Aristotle site — taken live from main root
+# It also mirrors the exact deployed artifact to the gh-pages branch.
+#
+# NOTE: deploy.yml on main still deploys main's root on every push to main,
+# which replaces this composite site until it is changed/removed on main.
 
 on:
   push:
@@ -15,24 +24,58 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
-  group: pages-sync
+  group: pages
   cancel-in-progress: true
 
 jobs:
-  sync-gh-pages:
+  build-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout prototype branch
         uses: actions/checkout@v4
 
-      - name: Push site to gh-pages
+      - name: Checkout main (aristotle + tradepay)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: _main
+
+      - name: Assemble composite site
         run: |
-          cd noor-prototype
+          mkdir -p _site
+          cp -r noor-prototype/. _site/
+          rm -rf _site/tradepay
+          cp -r _main/tradepay _site/tradepay
+          mkdir -p _site/aristotle
+          cp -r _main/. _site/aristotle/
+          rm -rf _site/aristotle/.git _site/aristotle/.github
+          touch _site/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Mirror deployed artifact to gh-pages branch
+        run: |
+          cd _site
           git init -b gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Publish Noor prototype (${GITHUB_SHA::7})"
+          git commit -m "Publish composite site (${GITHUB_SHA::7})"
           git push --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" gh-pages:gh-pages
