@@ -25,6 +25,11 @@ window.ACCOUNTS = [
   {id:'binance-c',bank:'binance',kind:'crypto', name:'Binance · BTC, ETH', mask:'', bal:9840.00},
 ];
 window.LIQUID_TOTAL = 275900.76;
+/* the home: bought 810k in 2023, market 665k today, Ijarah outstanding 920k → net worth ~27.7k */
+ACCOUNTS.push(
+  {id:'home-val', bank:'dib', kind:'property', name:'Home · market value',    bal:665000.00},
+  {id:'home-fin', bank:'dib', kind:'finance',  name:'Home finance · Ijarah',  bal:-920000.00, left:'AED 6,350/mo · 3.99% · 141 months left'}
+);
 /* business side — same numbers as the zakat estate (Wio Business 22 400) and the debt book */
 ACCOUNTS.push(
   {id:'wb-cur', bank:'wio',     biz:true, kind:'current', name:'Business current', mask:'7741', bal:22400.00},
@@ -93,6 +98,8 @@ window.TXNS = [
 
 /* ---------- subscriptions (auto-detected) ---------- */
 window.SUBS = [
+  {m:'Adobe Creative Cloud', amt:0, day:'—', next:'Trial converts in 3 days → AED 99/mo', ic:'doc', c:'#d1483f', acc:'fab-cc',
+   used:'Found by the inbox watchdog — trial started 12 Jun', flag:'Cancel before it converts?', trial:true},
   {m:'Netflix',        amt:29.00, day:'12th', next:'Tomorrow', ic:'film',  c:'#E50914', acc:'fab-cc', used:'Watched 14 h in May'},
   {m:'Fitness First',  amt:350.00,day:'7th',  next:'7 Jul',    ic:'heart', c:'#d1483f', acc:'fab-sal',used:'Visited 11× in May'},
   {m:'du Home Internet',amt:389.00,day:'3rd', next:'3 Jul',    ic:'zap',   c:'#4a63d8', acc:'fab-cc', used:'Essential'},
@@ -226,6 +233,72 @@ window.BILLERS = [
   {n:'Salik', d:'Toll · 2 tags', ic:'car', c:'#c8841f', due:0, autopay:true},
   {n:'Nol card', d:'Transport top-up', ic:'card', c:'#c85a8e', due:0, autopay:false},
   {n:'Dubai Police', d:'Traffic fines', ic:'alert', c:'#d1483f', due:0, autopay:false},
+];
+
+/* ---------- cashflow forecast ---------- */
+window.FORECAST = { zeroDay:'21 Jun', short:2140, salaryDay:'25 Jun',
+  advance:{max:8125, fee:0, note:'Earned-wage access: wages for days you already worked, released early. Not financing — nothing to repay; the 25th salary simply arrives lighter.'} };
+
+/* ---------- the financial plan (goals) ---------- */
+window.PLAN = {
+  headline:'From AED 27,713 net worth to +150,000 in 24 months',
+  steps:[
+    {id:'hs-dining', t:'Hard stop: dining & cafés on the Agentic card', d:'Card declines the category past AED 1,400/mo — a safe word unlocks one hour. Friction converts reflexes into decisions.', impact:'+AED 530/mo', on:true, kind:'hardstop'},
+    {id:'inv-close', t:'Close invoice financing (14.5%)',   d:'Settle from idle e-Saver cash — your most expensive dirham.', impact:'+AED 3,190/yr', on:true, kind:'refi'},
+    {id:'refi-biz',  t:'Move Murabaha + PO to deposit-secured', d:'9.2% and 11% → 4.95% against your pledged deposit.', impact:'+AED 2,424/yr', on:true, kind:'refi'},
+    {id:'ijara-over',t:'Overpay the Ijarah AED 2,000/mo',   d:'The freed cash attacks the −255,000 home gap while the market recovers.', impact:'gap closes ~2029 → 2027', on:false, kind:'save'},
+    {id:'advance',   t:'Salary advance when the forecast dips', d:'Zero-day 21 Jun: bridge AED 2,140 at AED 0 fee instead of touching goals.', impact:'no red days', on:true, kind:'cash'},
+  ]};
+
+/* ---------- June money calendar ---------- */
+window.CAL = { month:'June 2026', startDow:1, days:30, today:11, salaryDay:25,
+  flow:{1:-780,2:-455,3:-1622,4:-390,5:-968,6:-1105,7:-430,8:-395,9:-540,10:-462,11:-505,12:-449,13:-1010,14:-660,15:-833,16:-410,17:-388,18:-455,19:-702,20:-882,21:-350,22:-410,23:-395,24:-372,25:30438,26:-1305,27:-980,28:-10250,29:-430,30:-415},
+  events:{3:'IKEA — the sofa (1,244.75)',12:'Netflix debits',15:'DEWA autopay',20:'FAB card min due',21:'Zero-day without action — short AED 2,140',25:'Salary AED 32,500 − auto-moves',26:'Omar’s birthday — gift reserve 800',28:'Team payroll 9,800'},
+  planned:[
+    {d:'26 Jun', t:'Omar’s birthday', v:800,  note:'Gift reserved from safe-to-spend'},
+    {d:'1 Sep',  t:'School fees — Rashid', v:12400, note:'Reminder + auto-reserve starts 1 Aug'},
+    {d:'18 Aug', t:'Umrah trip window', v:6500, note:'Flights watched by the Vacation agent'},
+  ]};
+
+/* ---------- halal index investing ---------- */
+window.HALAL_FUNDS = [
+  {t:'Halal S&P 500',            tick:'SPUS', d:'S&P 500 Shariah — AAOIFI-screened US large caps', ytd:11.2, ter:0.45, purif:0.06},
+  {t:'Wahed FTSE USA Shariah',   tick:'HLAL', d:'US equities · Wahed methodology',                 ytd:9.8,  ter:0.50, purif:0.05},
+  {t:'MSCI World Islamic',       tick:'ISWD', d:'Developed markets, ex-conventional-financials',   ytd:7.4,  ter:0.60, purif:0.08},
+  {t:'Global Sukuk ETF',         tick:'SPSK', d:'Investment-grade sukuk — the calm sleeve',        ytd:3.1,  ter:0.59, purif:0},
+];
+
+/* ---------- cashflow forecast ---------- */
+window.FORECAST = { zeroDay:'21 Jun', short:2140, salaryDay:'25 Jun',
+  advance:{max:8125, fee:0, note:'Earned-wage access: wages for days you already worked, released early. Not financing — nothing to repay; the 25th salary simply arrives lighter.'} };
+
+/* ---------- the financial plan (goals) ---------- */
+window.PLAN = {
+  headline:'From AED 27,713 net worth to +150,000 in 24 months',
+  steps:[
+    {id:'hs-dining', t:'Hard stop: dining & cafés on the Agentic card', d:'Card declines the category past AED 1,400/mo — a safe word unlocks one hour. Friction converts reflexes into decisions.', impact:'+AED 530/mo', on:true, kind:'hardstop'},
+    {id:'inv-close', t:'Close invoice financing (14.5%)',   d:'Settle from idle e-Saver cash — your most expensive dirham.', impact:'+AED 3,190/yr', on:true, kind:'refi'},
+    {id:'refi-biz',  t:'Move Murabaha + PO to deposit-secured', d:'9.2% and 11% → 4.95% against your pledged deposit.', impact:'+AED 2,424/yr', on:true, kind:'refi'},
+    {id:'ijara-over',t:'Overpay the Ijarah AED 2,000/mo',   d:'The freed cash attacks the −255,000 home gap while the market recovers.', impact:'gap closes ~2029 → 2027', on:false, kind:'save'},
+    {id:'advance',   t:'Salary advance when the forecast dips', d:'Zero-day 21 Jun: bridge AED 2,140 at AED 0 fee instead of touching goals.', impact:'no red days', on:true, kind:'cash'},
+  ]};
+
+/* ---------- June money calendar ---------- */
+window.CAL = { month:'June 2026', startDow:1, days:30, today:11, salaryDay:25,
+  flow:{1:-780,2:-455,3:-1622,4:-390,5:-968,6:-1105,7:-430,8:-395,9:-540,10:-462,11:-505,12:-449,13:-1010,14:-660,15:-833,16:-410,17:-388,18:-455,19:-702,20:-882,21:-350,22:-410,23:-395,24:-372,25:30438,26:-1305,27:-980,28:-10250,29:-430,30:-415},
+  events:{3:'IKEA — the sofa (1,244.75)',12:'Netflix debits',15:'DEWA autopay',20:'FAB card min due',21:'Zero-day without action — short AED 2,140',25:'Salary AED 32,500 − auto-moves',26:'Omar’s birthday — gift reserve 800',28:'Team payroll 9,800'},
+  planned:[
+    {d:'26 Jun', t:'Omar’s birthday', v:800,  note:'Gift reserved from safe-to-spend'},
+    {d:'1 Sep',  t:'School fees — Rashid', v:12400, note:'Reminder + auto-reserve starts 1 Aug'},
+    {d:'18 Aug', t:'Umrah trip window', v:6500, note:'Flights watched by the Vacation agent'},
+  ]};
+
+/* ---------- halal index investing ---------- */
+window.HALAL_FUNDS = [
+  {t:'Halal S&P 500',            tick:'SPUS', d:'S&P 500 Shariah — AAOIFI-screened US large caps', ytd:11.2, ter:0.45, purif:0.06},
+  {t:'Wahed FTSE USA Shariah',   tick:'HLAL', d:'US equities · Wahed methodology',                 ytd:9.8,  ter:0.50, purif:0.05},
+  {t:'MSCI World Islamic',       tick:'ISWD', d:'Developed markets, ex-conventional-financials',   ytd:7.4,  ter:0.60, purif:0.08},
+  {t:'Global Sukuk ETF',         tick:'SPSK', d:'Investment-grade sukuk — the calm sleeve',        ytd:3.1,  ter:0.59, purif:0},
 ];
 
 /* ---------- AECB score ---------- */
@@ -400,7 +473,7 @@ window.NOTIFS = [
   {ic:'spark', c:'#0e0e10', t:'Your June Money Story is ready', d:'See where your money went in 30 seconds', when:'Just now', act:'story'},
   {ic:'film',  c:'#E50914', t:'Netflix debits AED 29 tomorrow', d:'FAB Cashback Visa ··4412', when:'2 h ago', act:'subs'},
   {ic:'card',  c:'#c8841f', t:'Pre-approved: FAB card, AED 20,000 limit', d:'3.99% · 55 days grace · expires in 6 days', when:'5 h ago', act:'chat-card'},
-  {ic:'trendUp',c:'#1f8a5b',t:'AECB score up 7 points → 745', d:'On-time FAB card payment reported', when:'Yesterday', act:'score'},
+  {ic:'trendUp',c:'#1f8a5b',t:'Score up → your rate came down', d:'AECB 745 (+7). Agentic card rate drops 3.99% → 3.49% from 1 Jul. You pay on time — borrowing gets cheaper.', when:'Yesterday', act:'score'},
   {ic:'gift',  c:'#7c6bd6', t:'You earned a scratch card', d:'5-day saving streak — keep it up!', when:'Yesterday', act:'rewards'},
   {ic:'shieldCheck', c:'#2f8f83', t:'DIB consent expires in 14 days', d:'Renew to keep your financing synced', when:'2 d ago', act:'consents'},
 ];

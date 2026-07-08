@@ -29,7 +29,10 @@ SCREENS.home = () => `
       <div class="flex between mt8">
         <div style="font:600 32px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">${hideable('AED '+fm(LIQUID_TOTAL))}</div>
       </div>
-      <div class="micro mt6 tnum">Net worth ${hideable('AED '+fm(NETW()))} · <span style="color:var(--grn)">▲ 2.4% this month</span></div>
+      <div class="flex mt6" style="gap:6px">
+        <span class="micro tnum">Net worth ${hideable('AED '+fm(NETW(),0))} — 10× below your balance</span>
+        <button class="chip" style="padding:3px 10px;font-size:10px" onclick="event.stopPropagation();chatDeep('networth')">Why? ${aiIc(9)}</button>
+      </div>
       <div class="flex between mt12">
         <span class="logo-stack">${blg('fab','sm')}${blg('wio','sm')}${blg('ei','sm')}</span>
         ${spark([24.1,24.6,24.2,25.1,25.6,25.2,26.4,27.0,26.8,27.59],110,30)}
@@ -240,6 +243,11 @@ SCREENS.money = () => {
         <span class="micro">${scope==='business'?'2 banks · '+visibleAccs.length+' accounts':nSources+' banks & sources · '+visibleAccs.length+' accounts'} · synced <b id="syncTime">2 min ago</b></span>
       </div>
     </div>
+    ${mode==='net' && scope==='personal' ? `
+    <div class="card lime mt12 tap" onclick="chatDeep('networth')">
+      <div class="flex between"><b style="font-size:13.5px">Why only ${fm(NETW(),0)} when you hold ${fm(LIQUID_TOTAL,0)} in cash?</b>${aiIc(13)}</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.6)">The home gap is the story. One tap — the why, then the plan.</div>
+    </div>`:''}
     ${mode==='net' ? `
     <div class="card mt16">
       <div class="kv"><span class="k">Assets</span><span class="v tnum grn-t">${hideable(aed(assets))}</span></div>
@@ -247,7 +255,7 @@ SCREENS.money = () => {
         <i style="flex:${assets};background:var(--grn)"></i><i style="flex:${liab};background:var(--red)"></i>
       </div>
       <div class="kv"><span class="k">Liabilities</span><span class="v tnum red-t">−${hideable(fm(liab))}</span></div>
-      <div class="micro">${scope==='business'?'Invoice −22,000 · Murabaha −45,000 · PO −12,500 · B2B BNPL −8,400':`Cards −10,094.80 · Auto finance −36,200.00${extra('tabby')?' · BNPL plans −1,575.00':''}`}</div>
+      <div class="micro">${scope==='business'?'Invoice −22,000 · Murabaha −45,000 · PO −12,500 · B2B BNPL −8,400':`Home Ijarah −920,000 vs value +665,000 · Cards −10,094.80 · Auto −36,200${extra('tabby')?' · BNPL −1,575':''}`}</div>
     </div>`:''}
 
     ${scope==='business'?`
@@ -267,10 +275,10 @@ SCREENS.money = () => {
       <div class="listcard">
         ${visible.map(a=>`
           <div class="row" onclick="A.go('account/${a.id}')">
-            <span class="bigico">${ic(a.kind==='card'?'card':a.kind==='invest'?'trendUp':a.kind==='gold'?'coins':a.kind==='finance'?'car':a.kind==='bnpl'?'bag':a.kind==='crypto'?'trendUp':'wallet',21)}</span>
+            <span class="bigico">${ic(a.kind==='card'?'card':a.kind==='invest'?'trendUp':a.kind==='gold'?'coins':a.kind==='property'?'home':a.kind==='finance'?(a.id==='home-fin'?'home':'car'):a.kind==='bnpl'?'bag':a.kind==='crypto'?'trendUp':'wallet',21)}</span>
             <div class="row-main">
               <div class="row-t">${a.name}${a.mask?' ··'+a.mask:''}</div>
-              <div class="row-d">${a.kind==='card'?`Due ${a.due} · min AED ${fm(a.min)}`:a.kind==='finance'?a.left:a.kind==='gold'?'486.32 / g · ▲3.6% this month':a.kind==='invest'?'Sukuk · halal ETFs · ▲1.24% today':a.kind==='bnpl'?`Next: ${a.next} · limit left AED ${fm(a.limit-Math.abs(a.bal),0)}`:a.kind==='crypto'?'BTC 0.061 · ETH 0.80 · ▲2.1% today':a.kind==='wallet'?'Wallet · top up from any bank':'Available balance'}</div>
+              <div class="row-d">${a.kind==='card'?`Due ${a.due} · min AED ${fm(a.min)}`:a.kind==='property'?'Bought 810,000 in 2023 · revalued monthly':a.kind==='finance'?a.left:a.kind==='gold'?'486.32 / g · ▲3.6% this month':a.kind==='invest'?'Sukuk · halal ETFs · ▲1.24% today':a.kind==='bnpl'?`Next: ${a.next} · limit left AED ${fm(a.limit-Math.abs(a.bal),0)}`:a.kind==='crypto'?'BTC 0.061 · ETH 0.80 · ▲2.1% today':a.kind==='wallet'?'Wallet · top up from any bank':'Available balance'}</div>
             </div>
             <div class="row-r">
               <div class="row-amt tnum" style="color:${a.bal<0?'var(--red)':'var(--tx)'}">${hideable(aed(a.bal))}</div>
