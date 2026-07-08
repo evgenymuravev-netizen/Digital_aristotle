@@ -286,8 +286,8 @@ SCREENS.insights = () => {
         <div class="f1">
           <div class="flex" style="gap:6px">${over.length?'<span class="tag red">● Over budget</span>':'<span class="tag grn">● On track</span>'}
             ${tipi('Each ring closes as a spending group reaches its monthly plan — like Activity rings. A red ring with the warning sign has already passed 100% of plan (fact vs planned).')}</div>
-          <div class="mt8">
-            ${R.map(r=>`<div class="lg-i" style="margin-top:5px"><span class="lg-dot" style="background:${r.d.a>r.d.b?'var(--red)':r.c}"></span>
+          <div class="mt8 legend" style="gap:5px">
+            ${R.map(r=>`<div class="lg-i"><span class="lg-dot" style="background:${r.d.a>r.d.b?'var(--red)':r.c}"></span>
               <span class="f1" style="font-size:12px">${r.n}</span><b class="tnum" style="font-size:12px;color:${r.d.a>r.d.b?'var(--red)':'var(--tx)'}">${Math.round(r.d.a/r.d.b*100)}%</b></div>`).join('')}
           </div>
         </div>
