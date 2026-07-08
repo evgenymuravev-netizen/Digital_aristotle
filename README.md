@@ -53,3 +53,14 @@ Separate link: **https://evgenymuravev-netizen.github.io/Digital_aristotle/app.h
 UI fullscreen (kiosk mode, no scenario sidebar). On iPhone: open in Safari → Share → **Add to Home
 Screen** → launches standalone with the noor icon like an installed app. Scenario deep links still
 work (`app.html#s/27`). Arabic/RTL: Profile → Language → العربية.
+
+## mal.ai-branded twin (unofficial concept)
+
+The same prototype re-branded for **mal.ai** (radiant gold on midnight indigo, «مال» wordmark):
+
+- Explorer: **https://evgenymuravev-netizen.github.io/Digital_aristotle/mal/**
+- iPhone standalone: **https://evgenymuravev-netizen.github.io/Digital_aristotle/mal/app.html**
+
+Canonical source lives on branch `claude/mal-ai-prototype` (`mal-prototype/`, PR #8);
+`noor-prototype/mal/` is a vendored publish copy — re-vendor it when that branch changes.
+Unofficial concept, not affiliated with or endorsed by mal.ai.
