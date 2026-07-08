@@ -65,7 +65,7 @@ SCREENS.home = () => `
     <div class="lbl mt20 mb8">For you</div>
     <div class="hscroll">
       <div class="card lime tap" style="min-width:218px" onclick="A.go('chat-card')">
-        <span class="tag" style="background:rgba(14.14.16,.14);color:#0e0e10">⚡ Pre-approved</span>
+        <span class="tag" style="background:rgba(14,14,16,.14);color:#0e0e10">⚡ Pre-approved</span>
         <div class="h3 mt8">Mal Agentic card · AED 20,000</div>
         <div class="micro mt4">0 annual fee · 55 days grace · 1-click</div>
       </div>

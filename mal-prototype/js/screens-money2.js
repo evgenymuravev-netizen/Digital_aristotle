@@ -299,7 +299,7 @@ SCREENS.insights = () => {
         <button class="chip" onclick="chatDeep('spend')">Ask why ✦</button>
       </div>
     </div>`;})()}
-    ${over.length?`<div class="card mt12" style="border-color:rgba(255,176.80,.4)">
+    ${over.length?`<div class="card mt12" style="border-color:rgba(255,176,80,.4)">
       <b style="font-size:13.5px">⚠️ Over budget: ${over.map(c=>CATS[c.cat].n).join(', ')}</b>
       <div class="micro mt4">Dining is +38% vs May — mostly delivery. Want a cap?</div>
       <button class="chip mt8" onclick="A.go('rule-new')">Set a smart cap</button></div>`:''}
@@ -405,13 +405,13 @@ window.Subs = {
         ${meter(s.usage.gb[0]/s.usage.gb[1], '#3FA9F5')}
         <div class="kv mt8"><span class="k">Minutes</span><span class="v">${s.usage.min}</span></div>
       </div>
-      <div class="card mt8" style="border-color:rgba(31,138.91,.45)">
+      <div class="card mt8" style="border-color:rgba(31,138,91,.45)">
         <div class="flex between"><b style="font-size:13.5px">Cheaper plan fits: ${s.usage.rec.plan}</b><span class="tag grn">−AED ${fm(s.usage.rec.save,0)}/yr</span></div>
         <div class="micro mt4">AED ${fm(s.usage.rec.price,0)}/mo instead of ${fm(s.amt,0)} — ${s.usage.rec.why}.</div>
         <button class="btn pri sm mt8" style="width:100%" onclick="A.closeSheet();A.toast('Plan switch requested with du — active next cycle','check')">Switch to ${s.usage.rec.plan}</button>
       </div>` : '';
     const share = s.share ? `
-      <div class="card mt8" style="border-color:rgba(31,138.91,.45)">
+      <div class="card mt8" style="border-color:rgba(31,138,91,.45)">
         <div class="flex between"><b style="font-size:13.5px">👨‍👩‍👧 One plan covers the family</b><span class="tag grn">−AED ${fm(s.share.save,0)}/yr</span></div>
         <div class="micro mt4">${s.share.why} ${s.share.who}’s separate AED ${fm(s.share.herCost)} becomes unnecessary.</div>
         <div class="btnrow mt8">
@@ -527,7 +527,7 @@ SCREENS.goals = () => `
         </div>`).join('')}
     </div>
     <div class="card mt16 flex between tap" onclick="A.go('roundups')">
-      <div class="flex" style="gap:12px"><span class="bigico" style="background:rgba(200,132.31,.16);color:var(--gold)">${ic('coins',22)}</span>
+      <div class="flex" style="gap:12px"><span class="bigico" style="background:rgba(200,132,31,.16);color:var(--gold)">${ic('coins',22)}</span>
       <div><div class="row-t">Round-ups → Gold</div><div class="row-d">Every spend rounds to AED 5 · ×2 boost on</div></div></div>
       <button class="switch lime on" onclick="event.stopPropagation();this.classList.toggle('on')"></button>
     </div>
