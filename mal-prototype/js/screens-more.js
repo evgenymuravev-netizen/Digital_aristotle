@@ -332,6 +332,11 @@ SCREENS.gold = () => `
 SCREENS.score = () => `
   <div class="scr">
     ${hdr('AECB score')}
+    <div class="card lime mt12">
+      <span class="tag solid">Loyalty, priced in</span>
+      <div class="h3 mt8">745 (+7) — your rate came down</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.6)">Agentic card: 3.99% → <b>3.49% from 1 Jul</b>. Thank you for paying on time — the price of money follows your score. Every +25 points ≈ −0.25%; next stop 770 → 3.24%.</div>
+    </div>
     <div class="card" style="display:flex;flex-direction:column;align-items:center">
       ${gaugeSemi(SCORE.v/SCORE.max, 230, '#1f8a5b', `<div style="font:600 44px Inter,sans-serif" class="tnum">${SCORE.v}</div><div class="micro">${SCORE.band} · ▲${SCORE.delta} this month</div>`)}
       <div class="mt12" style="width:100%">${spark(SCORE.hist,330,54,'#1f8a5b')}</div>

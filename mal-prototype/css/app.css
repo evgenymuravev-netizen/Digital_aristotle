@@ -477,3 +477,13 @@
   box-shadow:0 4px 14px rgba(166,168,253,.4);
 }
 button.ai-orb:active{transform:scale(.94)}
+
+/* ---- money calendar ---- */
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-dow{font:600 9px Onest,Inter,sans-serif;color:var(--tx3);text-align:center;letter-spacing:.08em}
+.cal-d{position:relative;aspect-ratio:1;border:none;border-radius:12px;background:rgba(255,255,255,.5);font:500 12px Onest,Inter,sans-serif;color:var(--tx);cursor:pointer}
+.cal-d.hot{background:#fbe9e7;color:var(--red);font-weight:600}
+.cal-d.salary{background:#e4f4ec;color:var(--grn);font-weight:700}
+.cal-d.today{outline:2px solid #0e0e10}
+.cal-d:active{transform:scale(.94)}
+.cal-dot{position:absolute;left:50%;transform:translateX(-50%);bottom:4px;width:4px;height:4px;border-radius:50%;background:#4a63d8}

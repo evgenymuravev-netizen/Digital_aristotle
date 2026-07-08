@@ -381,6 +381,15 @@ const SCRIPTS = {
     ]), 250);
   }},
 
+  networth:{ user:'Why is my net worth so low when I hold AED 275,900 in cash?', async run(c){
+    await c.ai(`Because wealth is what remains after everything you owe.\n\nYours +AED 995,584:\n· Cash across banks <b>275,900.76</b>\n· Investments 38,500 · gold 6,030 · crypto 9,840 · wallet 312\n· Home at today’s market <b>+665,000</b>\n\nOwed −AED 967,870:\n· Home Ijarah outstanding <b>−920,000</b>\n· Auto 36,200 · cards 10,095 · BNPL 1,575\n\nNet: <b>AED 27,714</b>. The home is the story — bought at 810,000 in 2023, worth 665,000 today. The financing hasn’t caught down yet: a paper gap of <b>−255,000</b>.`, 2300);
+    await c.ai(`Normal, fixable, and mostly maths — not misfortune. The plan attacks it from three sides: stop the leaks (a real hard stop on dining), cut financing cost (refi saves 6,889/yr), and overpay the Ijarah while the market recovers.`, 1500);
+    await c.card(chips([
+      {t:'Open the financial plan', fn:"A.go('plan')"},
+      {t:'See the cashflow forecast', fn:"A.go('forecast')"},
+    ]), 250);
+  }},
+
   fallback:{ async run(c){
     await c.ai(`I can act on anything money-related across your <b>3 linked banks</b> — try one of these:`);
     await c.card(chips([

@@ -395,6 +395,11 @@ SCREENS.subs = () => {
           <div class="row-amt tnum">${fm(s.amt)}</div>
         </div>`).join('')}
     </div>
+    <div class="card mt12" style="border-color:rgba(74,99,216,.35)">
+      <b style="font-size:13.5px">Route subscriptions through the Agentic card</b>
+      <div class="micro mt4">Then one command blocks any charge: the next debit simply declines — cancellation by decline, even when the merchant hides the cancel button. The inbox watchdog reads trial emails so nothing converts silently.</div>
+      <button class="btn pri sm mt8" style="width:100%" onclick="A.toast('Netflix charge will be declined on the Agentic card — confirmation by SMS','check')">Try it: block the next Netflix debit</button>
+    </div>
   </div>`;
 };
 window.Subs = {
@@ -450,7 +455,16 @@ SCREENS.forecast = () => `
       <span class="lbl">Safe to spend until salary (25 Jun)</span>
       <div style="font:600 36px Inter,sans-serif;color:var(--lime)" class="tnum mt8">AED 9,540</div>
       <div class="mt12">${spark([27.5,26.9,26.1,25.8,24.9,24.2,23.6,25.1,24.4,23.8,56.3,54.9],330,84,'#1f8a5b')}</div>
-      <div class="micro mt8">Balance projection across all banks — the jump is salary day. Floor never drops below AED 8,000 ✓</div>
+      <div class="micro mt8">Balance projection across all banks — the jump is salary day.</div>
+    </div>
+    <div class="card mt12" style="border-color:rgba(209,72,63,.4)">
+      <div class="flex between"><b style="font-size:13.5px">Zero-day: ${FORECAST.zeroDay}</b><span class="tag red">−AED ${fm(FORECAST.short,0)}</span></div>
+      <div class="micro mt4">With Omar’s gift reserve and the payroll run, you go AED ${fm(FORECAST.short,0)} short four days before salary.</div>
+      <div class="btnrow mt12">
+        <button class="btn sm lime" onclick="A.toast('AED ${fm(FORECAST.short,0)} earned-wage advance scheduled for 20 Jun — AED 0 fee','check')">Salary advance · 0 fee</button>
+        <button class="btn sm ghost" onclick="A.go('plan')">Cut expenses</button>
+      </div>
+      <div class="micro mt8">${FORECAST.advance.note}</div>
     </div>
     <div class="lbl mt16 mb8">Already accounted for</div>
     <div class="listcard">
@@ -479,6 +493,87 @@ SCREENS.health = () => `
     </div>
     <button class="btn lime mt16" onclick="chatDeep('save')">✦ Make me a plan</button>
   </div>`;
+
+/* ---------------- the financial plan ---------------- */
+SCREENS.plan = () => `
+  <div class="scr">
+    ${hdr('Financial plan')}
+    <div class="card lime">
+      <span class="tag solid">Reviewed weekly</span>
+      <div class="h2 mt8">${PLAN.headline}</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.6)">Balance is fine — net worth is the patient. Three levers: stop the leaks, cut financing cost, close the home gap.</div>
+    </div>
+    <div class="lbl mt16 mb8">The steps</div>
+    <div class="listcard">
+      ${PLAN.steps.map(st=>`
+        <div class="row static">
+          <span class="bigico" style="color:${st.kind==='hardstop'?'var(--red)':st.kind==='refi'?'var(--blu)':'var(--grn)'}">${ic(st.kind==='hardstop'?'lock':st.kind==='refi'?'swap':st.kind==='cash'?'recv':'trendUp',20)}</span>
+          <div class="row-main"><div class="row-t" style="white-space:normal">${st.t}</div>
+            <div class="row-d" style="white-space:normal">${st.d} · <b>${st.impact}</b></div></div>
+          <button class="switch lime ${st.on?'on':''}" onclick="this.classList.toggle('on');A.toast(this.classList.contains('on')?'Step armed':'Step paused','check')"></button>
+        </div>`).join('')}
+    </div>
+    <div class="card soft mt12"><div class="micro">The hard stop really declines the card — try it: <button class="chip" style="padding:3px 10px;font-size:10px" onclick="HardStop.demo()">simulate a blocked coffee</button> A safe word (<b>green light</b>) unlocks one hour.</div></div>
+    <div class="micro mt12" style="text-align:center">Mal earns on the two refinancing steps (≈ AED 950/yr) and nothing on the rest. Shown because trust compounds.</div>
+  </div>`;
+
+/* ---------------- money calendar ---------------- */
+SCREENS.calendar = () => {
+  const F = CAL;
+  const cells = Array.from({length:F.startDow-1},()=>null).concat(Array.from({length:F.days},(_,i)=>i+1));
+  return `
+  <div class="scr">
+    ${hdr(F.month)}
+    <div class="card">
+      <div class="flex between"><span class="lbl">Money calendar</span><span class="micro tnum">June: +32,500 in · −14,213 out</span></div>
+      <div class="calgrid mt12">
+        ${['M','T','W','T','F','S','S'].map(d=>`<span class="cal-dow">${d}</span>`).join('')}
+        ${cells.map(d=>{
+          if(!d) return '<span></span>';
+          const v=F.flow[d]||0, ev=F.events[d];
+          const cls = d===F.today?'today':d===F.salaryDay?'salary':(v<-900?'hot':'');
+          return `<button class="cal-d ${cls}" onclick="Cal.day(${d})">${d}${ev?'<i class="cal-dot"></i>':''}</button>`;
+        }).join('')}
+      </div>
+      <div class="micro mt8">Deeper colour = heavier day · dot = something planned · tap any day.</div>
+    </div>
+    <div class="lbl mt16 mb8">Planned ahead — family included</div>
+    <div class="listcard">
+      ${F.planned.map(p=>`
+        <div class="row static"><span class="bigico">${ic(p.t.includes('birthday')?'gift':p.t.includes('School')?'book':'plane',20)}</span>
+          <div class="row-main"><div class="row-t">${p.t}</div><div class="row-d" style="white-space:normal">${p.d} · ${p.note}</div></div>
+          <div class="row-amt tnum">−${fm(p.v,0)}</div></div>`).join('')}
+    </div>
+    <div class="card soft mt12 flex" style="gap:10px">${aiIc(13)}<div class="micro">Big spends get planned into the months that can afford them — presents for family and school fees included, reminders on time.</div></div>
+  </div>`;
+};
+window.Cal = {
+  day(d){
+    const v=CAL.flow[d]||0, ev=CAL.events[d];
+    A.sheet(`<div class="h2">${d} June</div>
+      <div class="kv mt8"><span class="k">Net for the day</span><span class="v tnum" style="color:${v>0?'var(--grn)':'var(--tx)'}">${v>0?'+':''}${fm(v)}</span></div>
+      ${ev?`<div class="card soft mt8"><div class="micro">${ev}</div></div>`:''}
+      <button class="btn ghost mt12" onclick="A.closeSheet()">Close</button>`);
+  }
+};
+
+/* ---------------- hard-stop decline demo ---------------- */
+window.HardStop = {
+  demo(){
+    if(A.route!=='home') A.go('home');
+    setTimeout(()=>{ A.sheet(`
+      <div class="h2">Payment declined — by your plan</div>
+      <div class="card soft mt12"><div class="kv"><span class="k">Arabica Coffee · DIFC</span><span class="v tnum">AED 68.00</span></div><div class="micro">Mal Agentic card · 21:14 · Dining & cafés</div></div>
+      <div class="sub mt12">Your plan hard-stops dining past <b>AED 1,400/mo</b> — you are at 1,933. The blocked ~AED 530/mo goes to the Ijarah overpayment instead.</div>
+      <div class="sub mt8">Still want it? Type the safe word — <b>green light</b>.</div>
+      <input class="input mt8" id="swInp" placeholder="Safe word">
+      <div class="btnrow mt12">
+        <button class="btn ghost" onclick="A.closeSheet();A.toast('Good call — AED 68 stays on plan','check')">Skip the coffee</button>
+        <button class="btn lime" onclick="if((document.getElementById('swInp')||{}).value&&document.getElementById('swInp').value.trim().toLowerCase()==='green light'){A.closeSheet();A.toast('Unlocked for 1 hour — enjoy it consciously','check')}else{A.tip('Safe word doesn’t match — this pause is the feature, not a bug.')}">Pay anyway</button>
+      </div>
+      <div class="micro mt8">Why a safe word: friction turns a reflex into a decision. It held 9 of 11 times this month.</div>`); }, 500);
+  }
+};
 
 /* ---------------- Money Story (stories UX) ---------------- */
 const STORY_SLIDES = [
@@ -512,6 +607,11 @@ window.Story = {
 SCREENS.goals = () => `
   <div class="scr" style="padding-bottom:170px">
     <div class="flex between"><div class="h1">Goals</div><button class="chip" onclick="A.go('goal-new')">${ic('plus',15)} New</button></div>
+    <div class="card lime mt12 tap" onclick="A.go('plan')">
+      <span class="tag solid">Financial plan</span>
+      <div class="h3 mt8">${PLAN.headline}</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.6)">5 steps · 1 hard stop live · reviewed weekly by your agents</div>
+    </div>
     <div class="card mt12 flex" style="gap:14px">
       ${donut([{v:57700,c:'#c8841f'},{v:138300,c:'rgba(255,255,255,.1)'}],86,10,`<div style="font:600 14px Inter,sans-serif">29%</div>`)}
       <div class="f1"><div class="h3">AED 57,700 saved</div><div class="micro mt4">across 4 goals · AED 3,184/mo on autopilot</div>
