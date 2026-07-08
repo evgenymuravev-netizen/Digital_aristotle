@@ -18,7 +18,7 @@ SCREENS.home = () => `
       <div class="h2 mt8" style="font-weight:600;color:var(--tx2);line-height:1.45" onclick="A.go('briefing')">
         ${BR().line.replace(/<b>/g,'<b style="color:var(--tx);font-weight:700">')}
       </div>
-      <button class="chip mt12" onclick="A.go('briefing')">${ic('spark',15)} Morning briefing · ${BR().items.length} items</button>
+      <button class="chip mt12" onclick="A.go('briefing')">${aiIc(11)} Morning briefing · ${BR().items.length} items</button>
     </div>
 
     <div class="card mt16 tap" onclick="A.go('money')">
@@ -27,7 +27,7 @@ SCREENS.home = () => `
         <button class="iconbtn" style="width:30px;height:30px;min-width:30px;border:none" onclick="event.stopPropagation();A.S.hideBal=!A.S.hideBal;A.persist();A.refresh()">${ic(A.S.hideBal?'eyeOff':'eye',17)}</button>
       </div>
       <div class="flex between mt8">
-        <div style="font:800 32px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">${hideable('AED '+fm(LIQUID_TOTAL))}</div>
+        <div style="font:600 32px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">${hideable('AED '+fm(LIQUID_TOTAL))}</div>
       </div>
       <div class="micro mt6 tnum">Net worth ${hideable('AED '+fm(NETW()))} · <span style="color:var(--grn)">▲ 2.4% this month</span></div>
       <div class="flex between mt12">
@@ -115,7 +115,7 @@ SCREENS.home = () => `
     <div class="listcard">
       ${UPCOMING.slice(0,3).map(u=>`
         <div class="row" onclick="A.go('upcoming')">
-          <span class="bigico" style="background:${u.c}1f;color:${u.c}">${ic(u.ic,21)}</span>
+          ${merchIc(u.t, `<span class="bigico" style="background:${u.c}1f;color:${u.c}">${ic(u.ic,21)}</span>`)}
           <div class="row-main"><div class="row-t">${u.t}</div><div class="row-d">${u.d} · ${u.acc}</div></div>
           <div class="row-amt tnum ${u.inc?'grn-t':''}">${u.inc?'+':''}${fm(u.amt,2)}</div>
         </div>`).join('')}
@@ -141,7 +141,7 @@ SCREENS.briefing = () => `
           </div>
         </div>`).join('')}
     </div>
-    <button class="btn ghost mt16" onclick="A.go('chat')">${ic('spark',18)} Ask Mal anything</button>
+    <button class="btn ghost mt16" onclick="A.go('chat')">${aiIc(13)} Ask Mal anything</button>
   </div>`;
 
 /* ---------------- notifications ---------------- */
@@ -234,7 +234,7 @@ SCREENS.money = () => {
       <button class="${mode==='net'?'on':''}" onclick="A.tmp.moneyMode='net';A.refresh()">Net worth</button>
     </div>
     <div class="mt16">
-      <div style="font:800 38px/1 Inter,sans-serif;letter-spacing:-.035em" class="tnum">${hideable('AED '+fm(big))}</div>
+      <div style="font:600 38px/1 Inter,sans-serif;letter-spacing:-.035em" class="tnum">${hideable('AED '+fm(big))}</div>
       <div class="flex mt8" style="gap:8px">
         ${scope==='business'?'<span class="tag gold">Sole establishment</span>':'<span class="tag grn">▲ 2.4% this month</span>'}
         <span class="micro">${scope==='business'?'2 banks · '+visibleAccs.length+' accounts':nSources+' banks & sources · '+visibleAccs.length+' accounts'} · synced <b id="syncTime">2 min ago</b></span>
@@ -309,7 +309,7 @@ SCREENS.account = (id) => {
     <div class="card" style="text-align:center">
       <div class="flex" style="justify-content:center">${blg(a.bank,'sm')}</div>
       <div class="lbl mt8">${a.name}${a.mask?' ··'+a.mask:''}</div>
-      <div style="font:800 34px/1.1 Inter,sans-serif;letter-spacing:-.03em;color:${a.bal<0?'var(--red)':'var(--tx)'}" class="tnum mt8">${hideable(aed(a.bal))}</div>
+      <div style="font:600 34px/1.1 Inter,sans-serif;letter-spacing:-.03em;color:${a.bal<0?'var(--red)':'var(--tx)'}" class="tnum mt8">${hideable(aed(a.bal))}</div>
       ${isCard?`<div class="micro mt8">of AED ${fm(a.limit,0)} limit · statement due ${a.due}</div>${meter(Math.abs(a.bal)/a.limit,'#c8841f')}`:''}
       <div class="grid4 mt16">
         ${[['swap','Move','between'],['doc','Statement','statement'],['qr','Details','accounts-iban'],[isCard?'card':'refresh',isCard?'Pay':'Sync', isCard?('paybill/'+a.id):'money']]
@@ -337,7 +337,7 @@ SCREENS.txn = (id) => {
     <div class="card" style="text-align:center">
       ${catIc(t.cat,56)}
       <div class="h2 mt12">${t.m}</div>
-      <div style="font:800 32px Inter,sans-serif;letter-spacing:-.03em" class="tnum mt8 ${t.amt>0?'grn-t':''}">${aedS(t.amt)}</div>
+      <div style="font:600 32px Inter,sans-serif;letter-spacing:-.03em" class="tnum mt8 ${t.amt>0?'grn-t':''}">${aedS(t.amt)}</div>
       <div class="micro mt4">${t.d} · ${a?BANKS[a.bank].name+' ··'+a.mask:''} · Completed ✓</div>
     </div>
     <div class="lbl mt16 mb8">Category</div>
@@ -397,7 +397,7 @@ SCREENS.chat = () => `
     <div class="apphdr">
       <button class="iconbtn" onclick="A.back()">${ic('back',20)}</button>
       <div style="flex:1;text-align:center">
-        <div class="h3 flex" style="justify-content:center;gap:7px"><span style="color:var(--lime)">${ic('spark',18)}</span>Mal AI</div>
+        <div class="h3 flex" style="justify-content:center;gap:7px">${aiIc(13)}Mal AI</div>
         <div class="micro" style="color:var(--grn)">● agent online · acts with your approval</div>
       </div>
       <button class="iconbtn" onclick="Chat.reset();A.refresh()">${ic('edit',18)}</button>

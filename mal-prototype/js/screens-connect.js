@@ -13,9 +13,9 @@ SCREENS['connect-intro'] = () => {
   const linked = A.S.linked;
   return `
   <div class="scr">
-    <div class="glowblob" style="background:#0e0e10;top:-60px;right:-100px;opacity:.22"></div>
+    <div class="glowblob" style="background:#a6a8fd;top:-60px;right:-100px;opacity:.22"></div>
     ${hdr('', {right:`<button class="chip" onclick="A.demoSkip()">Skip →</button>`})}
-    <div style="color:var(--lime)">${ic('spark',40)}</div>
+    ${aiIc(34)}
     <div class="h1 mt12">Connect your accounts to track your entire budget in one place</div>
     <div class="sub mt12">Read-only access over <b style="color:var(--tx)">CBUAE Open Finance</b>. We can’t move money and never see your passwords. Unlink anytime.</div>
     <div class="listcard mt20">
@@ -255,7 +255,7 @@ SCREENS['connect-fallback'] = () => `
     ${hdr('',{right:'<button class="chip" onclick="A.go(\'connect-intro\')">Close</button>'})}
     ${replicaBar()}
     <div class="card" style="background:rgba(166,168,253,.2);border:1px solid #dfa92e;border-radius:18px">
-      <div class="flex" style="gap:10px">${ic('spark',22)}<b style="font-size:14px">Mal enhancement — no dead-ends</b></div>
+      <div class="flex" style="gap:10px">${aiIc(15)}<b style="font-size:14px">Mal enhancement — no dead-ends</b></div>
       <div class="micro mt8" style="color:#45454d">Camera failed, so Mal Connect <b>automatically fell back to SMS verification</b>. The user never sees an error wall — the recording ended on “Wio couldn’t verify your identity”; we recover instead.</div>
     </div>
     <div class="h1 mt20" style="font-size:24px">Verify by SMS instead</div>
@@ -390,10 +390,10 @@ AFTER['connect-success'] = () => confetti(document.getElementById('screen'));
 CN.finale = () => { A.S.onboarded = true; A.persist(); A.go('connect-finale'); };
 SCREENS['connect-finale'] = () => `
   <div class="scr center">
-    <div class="glowblob" style="background:#0e0e10;top:-70px;left:-80px;opacity:.2"></div>
+    <div class="glowblob" style="background:#a6a8fd;top:-70px;left:-80px;opacity:.2"></div>
     <span class="tag lime">${A.S.linked.length} sources connected — banks · wallet · BNPL · crypto</span>
     <div class="h1 mt16">One number,<br>${USER.first}.</div>
-    <div class="mt16" style="font:800 46px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED <span id="finTotal">0</span></div>
+    <div class="mt16" style="font:600 46px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED <span id="finTotal">0</span></div>
     <div class="sub mt8">Everything you own, live — banks, Careem Pay, Tabby plans and crypto in one place.</div>
     <div style="position:absolute;bottom:60px;left:26px;right:26px">
       <button class="btn lime" onclick="A.go('home')">Open my dashboard</button>

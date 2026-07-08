@@ -6,34 +6,34 @@ const S = () => A.S;
 
 /* ---------- splash ---------- */
 SCREENS.splash = () => `
-  <div class="scr center nopad" style="padding:40px">
-    <div class="glowblob" style="background:#0e0e10;top:-80px;right:-90px;opacity:.25"></div>
-    <div style="font:800 64px/1 Inter,sans-serif;letter-spacing:-.03em;color:var(--lime)" class="logo-pop">mal</div>
-    <div class="sub mt12">Agentic Islamic Finance Platform</div>
-    <div class="spinner lm" style="position:absolute;bottom:90px"></div>
+  <div class="scr center nopad" style="padding:40px;background:#cad7ea">
+    <video autoplay muted playsinline src="assets/logo-anim.mp4" style="width:290px;height:290px;object-fit:cover;border-radius:36px"></video>
+    <div class="logo-pop" style="font:600 54px/1 Onest,Inter,sans-serif;letter-spacing:-.03em;color:#0e0e10;margin-top:4px">Mal</div>
+    <div class="sub mt8" style="color:rgba(14,14,16,.55)">AI Powered banking</div>
+    <div class="micro" style="position:absolute;bottom:56px;left:0;right:0;text-align:center;color:rgba(14,14,16,.45)">Mal is a technology company and not a bank.</div>
   </div>`;
-AFTER.splash = () => setTimeout(()=>A.go('welcome', true), 1400);
+AFTER.splash = () => setTimeout(()=>A.go('welcome', true), 3400);
 
 /* ---------- welcome carousel ---------- */
 const W_SLIDES = [
   {h:'Be in control<br>of <span class="lime-t">your finances</span>', d:'Every bank, wallet, BNPL plan, debt and dirham — one live picture, one number you can trust.',
    art:`<div style="display:flex;flex-direction:column;gap:14px;align-items:center">
         <div class="logo-stack" style="transform:scale(1.6)">${blg('fab')}${blg('wio')}${blg('ei')}${blg('tabby')}</div>
-        <div style="margin-top:26px;font:800 44px Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">,76</span></div>
+        <div style="margin-top:26px;font:600 44px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">.76</span></div>
         <span class="tag lime">Live · banks, wallets, BNPL & crypto</span></div>`},
   {h:'100% compliant.<br><span class="lime-t">Always.</span>', d:'Every product is tracked by AI and confirmed by leading scholars — you will never violate Shariah without knowing. No interest, anywhere, ever.',
-   art:`<div style="width:200px;height:200px;border-radius:60px;background:rgba(255,255,255,.06);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--lime)">${ic('shieldCheck',92,'',1.2)}</div>`},
+   art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('shieldCheck',92,'',1.6)}</div>`},
   {h:'The most accurate<br><span class="lime-t">Zakat, ever.</span>', d:'Every asset and every debt — even trade stock and payroll — calculated to the dirham, by your scholar’s method. This is our craft.',
-   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,rgba(200,132,31,.35),rgba(200,132,31,.08));border:1px solid rgba(200,132,31,.35);display:flex;align-items:center;justify-content:center;color:var(--gold)">${ic('moon',88,'',1.2)}</div>`},
+   art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-warm-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('moon',92,'',1.6)}</div>`},
   {h:'Support your<br><span class="lime-t">local community</span>', d:'Your savings back the best Shariah-compliant local businesses — and the strictness dial is yours: stay 100% strict, or add local UAE & Saudi champions with purification handled.',
-   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,#d7ccfd,#0e0e10 55%,#b98614);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 30px 80px rgba(166,168,253,.35)">${ic('heart',86,'',1.4)}</div>`},
+   art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('heart',92,'',1.6)}</div>`},
 ];
 SCREENS.welcome = () => {
   const i = A.tmp.slide||0;
   const s = (A.S.lang==='ar' && window.AR_WELCOME) ? {...W_SLIDES[i], ...AR_WELCOME[i]} : W_SLIDES[i];
   return `
   <div class="scr nopad" style="display:flex;flex-direction:column;padding:70px 26px 46px">
-    <div class="flex between"><span style="font:800 26px Inter,sans-serif;color:var(--lime)">mal</span>
+    <div class="flex between"><span class="flex" style="gap:8px"><img src="assets/mal-mark.png" style="width:26px;height:26px" alt=""><b style="font:600 24px Onest,Inter,sans-serif;letter-spacing:-.02em;color:#0e0e10">Mal</b></span>
       <button class="chip" onclick="A.demoSkip()">Skip demo →</button></div>
     <div class="f1" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:30px">
       ${s.art}

@@ -111,6 +111,18 @@ window.BANKS = {
   etoro:   {name:'eToro',            full:'eToro brokerage',           bg:'#59C12A', fg:'#FFFFFF', accent:'#fff',    short:'eT'},
 };
 window.blg = (id, size='') => {
+  if (window.BRAND_SVG && (BRAND_SVG[id] || (window.BRAND_WORD && BRAND_WORD[id]))) {
+    const px = size==='xs'?24:size==='sm'?30:44;
+    if (BRAND_SVG[id]) return `<span class="blg ${size}" style="background:#fff;border:1px solid rgba(14,14,16,.08)"><svg viewBox="0 0 24 24" width="${Math.round(px*0.55)}" height="${Math.round(px*0.55)}"><path fill="${BRAND_SVG[id].h}" d="${BRAND_SVG[id].p}"/></svg></span>`;
+    const w = BRAND_WORD[id];
+    return `<span class="blg ${size}" style="background:#fff;border:1px solid rgba(14,14,16,.08);color:${w.h};font:700 ${Math.max(6,Math.round(w.fs*px/44))}px Onest,Inter,sans-serif;letter-spacing:-.02em">${w.t}</span>`;
+  }
+  if (window.BRAND_SVG && (BRAND_SVG[id] || (window.BRAND_WORD && BRAND_WORD[id]))) {
+    const px = size==='xs'?24:size==='sm'?30:44;
+    if (BRAND_SVG[id]) return `<span class="blg ${size}" style="background:#fff;border:1px solid rgba(14,14,16,.08)"><svg viewBox="0 0 24 24" width="${Math.round(px*0.55)}" height="${Math.round(px*0.55)}"><path fill="${BRAND_SVG[id].h}" d="${BRAND_SVG[id].p}"/></svg></span>`;
+    const w = BRAND_WORD[id];
+    return `<span class="blg ${size}" style="background:#fff;border:1px solid rgba(14,14,16,.08);color:${w.h};font:700 ${Math.max(6,Math.round(w.fs*px/44))}px Onest,Inter,sans-serif;letter-spacing:-.02em">${w.t}</span>`;
+  }
   const b = BANKS[id] || {bg:'#444', fg:'#fff', short:'?'};
   return `<span class="blg ${size}" style="background:${b.bg};color:${b.fg}">${b.short}</span>`;
 };

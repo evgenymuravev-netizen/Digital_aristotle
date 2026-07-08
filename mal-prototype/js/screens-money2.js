@@ -20,7 +20,7 @@ SCREENS.pay = () => `
     <div class="listcard">
       ${TXNS.filter(t=>t.cat==='transfer'&&t.d.includes('Today')).map(rowTxn).join('')}
     </div>
-    <div class="card soft mt12 flex" style="gap:12px">${ic('spark',20,'lime-t')}
+    <div class="card soft mt12 flex" style="gap:12px">${aiIc(14)}
       <div class="micro">“Send 200 to Sara every Friday” — just tell Mal AI, it becomes a rule.</div></div>
   </div>`;
 
@@ -46,7 +46,7 @@ SCREENS.send = (name) => {
     ${hdr('Send to '+name.split(' ')[0])}
     <div style="text-align:center">${avx(name,'lg')}
       <div class="h3 mt8">${name}</div><div class="micro">Aani · arrives instantly · free</div></div>
-    <div style="text-align:center;font:800 52px/1 Inter,sans-serif;letter-spacing:-.04em;margin-top:22px" class="tnum">
+    <div style="text-align:center;font:600 52px/1 Inter,sans-serif;letter-spacing:-.04em;margin-top:22px" class="tnum">
       <span style="font-size:24px;color:var(--tx3)">AED</span> ${fm(parseFloat(amt)||0,0)}</div>
     <div class="chips mt16" style="justify-content:center">
       ${[50,100,250,500].map(v=>`<button class="chip" onclick="A.tmp.payAmt='${v}';A.refresh()">AED ${v}</button>`).join('')}
@@ -226,7 +226,7 @@ SCREENS.bills = () => `
     <div class="listcard mt12">
       ${BILLERS.map((b,i)=>`
         <div class="row" onclick="A.sheet(Bills.sheet(${i}))">
-          <span class="bigico" style="background:${b.c}1f;color:${b.c}">${ic(b.ic,21)}</span>
+          ${merchIc(b.n, `<span class="bigico" style="background:${b.c}1f;color:${b.c}">${ic(b.ic,21)}</span>`)}
           <div class="row-main"><div class="row-t">${b.n}</div><div class="row-d">${b.d}</div></div>
           <div class="row-r">${b.due?`<div class="row-amt tnum">AED ${fm(b.due)}</div>`:'<span class="tag grn">Paid ✓</span>'}
             <div class="row-sub">${b.autopay?'Autopay on':'Manual'}</div></div>
@@ -252,10 +252,10 @@ SCREENS.intl = () => {
     <div class="chips scroll">${FX.map((f,i)=>`<button class="chip ${i===(A.tmp.fxI||0)?'on':''}" onclick="A.tmp.fxI=${i};A.refresh()">${f.flag} ${f.c}</button>`).join('')}</div>
     <div class="card mt16">
       <div class="lbl">You send</div>
-      <div class="flex between mt8"><span style="font:800 30px Inter,sans-serif" class="tnum">AED ${fm(amt,0)}</span><span class="tag gray">FAB ··5689</span></div>
+      <div class="flex between mt8"><span style="font:600 30px Inter,sans-serif" class="tnum">AED ${fm(amt,0)}</span><span class="tag gray">FAB ··5689</span></div>
       <div class="hr"></div>
       <div class="lbl">${fx.n} — they receive</div>
-      <div class="flex between mt8"><span style="font:800 30px Inter,sans-serif;color:var(--lime)" class="tnum">${fx.flag} ${fm(amt*fx.rate,0)} ${fx.c}</span></div>
+      <div class="flex between mt8"><span style="font:600 30px Inter,sans-serif;color:var(--lime)" class="tnum">${fx.flag} ${fm(amt*fx.rate,0)} ${fx.c}</span></div>
     </div>
     <div class="listcard mt12">
       <div class="kv" style="padding:11px 2px"><span class="k">Rate (mid-market, locked 30 min)</span><span class="v tnum">1 AED = ${fx.rate} ${fx.c}</span></div>
@@ -318,7 +318,7 @@ SCREENS.insights = () => {
     <div class="listcard">
       ${MERCHANTS_TOP.slice(0,4).map(m=>`
         <div class="row" onclick="A.toast('${esc(m.m)}: ${m.n} purchases in June','info')">
-          <span class="bigico">${ic(CATS[m.cat].ic,19)}</span>
+          ${merchIc(m.m, `<span class="bigico">${ic(CATS[m.cat].ic,19)}</span>`, 38)}
           <div class="row-main"><div class="row-t">${m.m}</div><div class="row-d">${m.n} purchase${m.n>1?'s':''}</div></div>
           <div class="row-amt tnum">${fm(m.amt)}</div>
         </div>`).join('')}
@@ -344,7 +344,7 @@ SCREENS.cat = (id) => {
     ${hdr(CATS[id].n)}
     <div class="card" style="text-align:center">
       ${catIc(id,56)}
-      <div style="font:800 32px Inter,sans-serif" class="tnum mt12">AED ${fm(c.amt)}</div>
+      <div style="font:600 32px Inter,sans-serif" class="tnum mt12">AED ${fm(c.amt)}</div>
       <div class="micro mt4">June · budget AED ${fm(c.bud,0)} ${c.amt>c.bud?'· <b style="color:var(--red)">over by '+fm(c.amt-c.bud,0)+'</b>':''}</div>
       <div class="barrow mt16">
         ${[0.5,0.7,0.62,0.9,1].map((v,i)=>`<div class="bcol"><div class="b ${i===4?'hot':''}" style="height:${v*70}px"></div><span>${['Feb','Mar','Apr','May','Jun'][i]}</span></div>`).join('')}
@@ -367,7 +367,7 @@ SCREENS.subs = () => {
     ${hdr('Subscriptions')}
     <div class="card">
       <div class="flex between"><span class="lbl">Detected automatically</span><span class="tag lime">${SUBS.length} active</span></div>
-      <div style="font:800 30px Inter,sans-serif" class="tnum mt8">AED ${fm(total)} <span style="font-size:15px;color:var(--tx2)">/ month</span></div>
+      <div style="font:600 30px Inter,sans-serif" class="tnum mt8">AED ${fm(total)} <span style="font-size:15px;color:var(--tx2)">/ month</span></div>
       <div class="micro mt4">≈ AED ${fm(total*12,0)} a year · across 3 banks</div>
     </div>
     <div class="card mt12" style="border-color:rgba(166,168,253,.45)">
@@ -380,7 +380,7 @@ SCREENS.subs = () => {
       <div class="mt8">
         ${SUBS.filter(x=>x.music).map(x=>`
           <div class="kv" style="padding:6px 0"><span class="k">${x.m}</span>
-            <span class="v tnum" style="color:${x.trend>0?'var(--grn)':'var(--red)'}">${String(x.hours).replace('.',',')} h ${x.trend>0?'▲':'▼'} ${Math.abs(x.trend)}%</span></div>
+            <span class="v tnum" style="color:${x.trend>0?'var(--grn)':'var(--red)'}">${x.hours} h ${x.trend>0?'▲':'▼'} ${Math.abs(x.trend)}%</span></div>
           ${meter(Math.min(x.hours/31,1), x.trend>0?'#1f8a5b':'#d1483f')}`).join('')}
       </div>
       <div class="micro mt8">You actually listen on <b>Anghami</b> — rising, best Arabic catalogue. The other two are muscle memory.</div>
@@ -390,7 +390,7 @@ SCREENS.subs = () => {
     <div class="listcard mt12 wrapd">
       ${SUBS.map((s,i)=>`
         <div class="row" onclick="A.sheet(Subs.sheet(${i}))">
-          <span class="bigico" style="background:${s.c}1f;color:${s.c}">${ic(s.ic,21)}</span>
+          ${merchIc(s.m, `<span class="bigico" style="background:${s.c}1f;color:${s.c}">${ic(s.ic,21)}</span>`)}
           <div class="row-main"><div class="row-t">${s.m}</div><div class="row-d" style="white-space:normal">${s.next} · ${s.used}${s.flag?' · <b style="color:var(--gold)">'+s.flag+'</b>':''}</div></div>
           <div class="row-amt tnum">${fm(s.amt)}</div>
         </div>`).join('')}
@@ -401,7 +401,7 @@ window.Subs = {
   sheet(i){ const s=SUBS[i];
     const usage = s.usage ? `
       <div class="card soft mt12">
-        <div class="kv"><span class="k">Data used (avg 6 mo)</span><span class="v tnum">${String(s.usage.gb[0]).replace('.',',')} GB of ${s.usage.gb[1]} GB</span></div>
+        <div class="kv"><span class="k">Data used (avg 6 mo)</span><span class="v tnum">${s.usage.gb[0]} GB of ${s.usage.gb[1]} GB</span></div>
         ${meter(s.usage.gb[0]/s.usage.gb[1], '#3FA9F5')}
         <div class="kv mt8"><span class="k">Minutes</span><span class="v">${s.usage.min}</span></div>
       </div>
@@ -448,7 +448,7 @@ SCREENS.forecast = () => `
     ${hdr('Cashflow forecast')}
     <div class="card">
       <span class="lbl">Safe to spend until salary (25 Jun)</span>
-      <div style="font:800 36px Inter,sans-serif;color:var(--lime)" class="tnum mt8">AED 9,540</div>
+      <div style="font:600 36px Inter,sans-serif;color:var(--lime)" class="tnum mt8">AED 9,540</div>
       <div class="mt12">${spark([27.5,26.9,26.1,25.8,24.9,24.2,23.6,25.1,24.4,23.8,56.3,54.9],330,84,'#1f8a5b')}</div>
       <div class="micro mt8">Balance projection across all banks — the jump is salary day. Floor never drops below AED 8,000 ✓</div>
     </div>
@@ -458,14 +458,14 @@ SCREENS.forecast = () => `
         <div class="row static"><span class="bigico" style="background:${u.c}1f;color:${u.c}">${ic(u.ic,20)}</span>
         <div class="row-main"><div class="row-t">${u.t}</div><div class="row-d">${u.d}</div></div><div class="row-amt tnum">−${fm(u.amt)}</div></div>`).join('')}
     </div>
-    <div class="card soft mt12 flex" style="gap:10px">${ic('spark',18,'lime-t')}<div class="micro">Forecast learns your burn-rate per weekday — accuracy currently 94%.</div></div>
+    <div class="card soft mt12 flex" style="gap:10px">${aiIc(13)}<div class="micro">Forecast learns your burn-rate per weekday — accuracy currently 94%.</div></div>
   </div>`;
 
 SCREENS.health = () => `
   <div class="scr">
     ${hdr('Financial health')}
     <div class="card" style="display:flex;flex-direction:column;align-items:center">
-      ${gaugeSemi(0.78, 220, '#0e0e10', `<div style="font:800 40px Inter,sans-serif" class="tnum">78</div><div class="micro">of 100 · ▲4</div>`)}
+      ${gaugeSemi(0.78, 220, '#0e0e10', `<div style="font:600 40px Inter,sans-serif" class="tnum">78</div><div class="micro">of 100 · ▲4</div>`)}
       <div class="sub mt8">Better than <b style="color:var(--lime)">81%</b> of Mal users your age</div>
     </div>
     <div class="listcard mt12">
@@ -497,7 +497,7 @@ window.Story = {
       <div class="story" onclick="Story.next()">
         <div class="story-bars">${STORY_SLIDES.map((_,k)=>`<i class="${k<Story.i?'done':k===Story.i?'act':''}"></i>`).join('')}</div>
         <button class="story-x" onclick="event.stopPropagation();Story.close()">✕</button>
-        <div class="glowblob" style="background:#0e0e10;bottom:-90px;right:-90px;opacity:.18"></div>
+        <div class="glowblob" style="background:#a6a8fd;bottom:-90px;right:-90px;opacity:.18"></div>
         <div style="margin-top:40px">${STORY_SLIDES[this.i]()}</div>
         <div class="micro" style="margin-top:auto;text-align:center">tap to continue · ${this.i+1}/${STORY_SLIDES.length}</div>
       </div>`;
@@ -513,7 +513,7 @@ SCREENS.goals = () => `
   <div class="scr" style="padding-bottom:170px">
     <div class="flex between"><div class="h1">Goals</div><button class="chip" onclick="A.go('goal-new')">${ic('plus',15)} New</button></div>
     <div class="card mt12 flex" style="gap:14px">
-      ${donut([{v:57700,c:'#c8841f'},{v:138300,c:'rgba(255,255,255,.1)'}],86,10,`<div style="font:800 14px Inter,sans-serif">29%</div>`)}
+      ${donut([{v:57700,c:'#c8841f'},{v:138300,c:'rgba(255,255,255,.1)'}],86,10,`<div style="font:600 14px Inter,sans-serif">29%</div>`)}
       <div class="f1"><div class="h3">AED 57,700 saved</div><div class="micro mt4">across 4 goals · AED 3,184/mo on autopilot</div>
       <div class="micro mt4" style="color:var(--lime)">✦ Profit on goal balances: 3.1% p.a. (Mudarabah)</div></div>
     </div>
@@ -542,7 +542,7 @@ SCREENS.goal = (id) => {
     <div class="card" style="text-align:center">
       <div style="font-size:52px">${g.em}</div>
       ${donut([{v:g.cur,c:g.c},{v:g.tgt-g.cur,c:'rgba(255,255,255,.1)'}],150,13,
-        `<div style="font:800 24px Inter,sans-serif" class="tnum">${Math.round(pct*100)}%</div><div class="micro">funded</div>`)}
+        `<div style="font:600 24px Inter,sans-serif" class="tnum">${Math.round(pct*100)}%</div><div class="micro">funded</div>`)}
       <div class="h3 mt12 tnum">AED ${fm(g.cur,0)} <span style="color:var(--tx3)">of ${fm(g.tgt,0)}</span></div>
       <div class="micro mt4">Target: ${g.by} · on pace ${pct>0.4?'✓':'· tight'}</div>
     </div>
@@ -551,7 +551,7 @@ SCREENS.goal = (id) => {
       <div class="row" onclick="A.toast('Boosted +AED 500 from FAB ··5689','check')"><span class="bigico">${ic('plus',20)}</span><div class="row-main"><div class="row-t">Boost now</div><div class="row-d">One-off top-up</div></div><span class="chev">${ic('chevR',16)}</span></div>
       <div class="row" onclick="A.toast('Goal balance earns 3.1% p.a. — Mudarabah pool','info')"><span class="bigico">${ic('moon',20)}</span><div class="row-main"><div class="row-t">Earning profit</div><div class="row-d">3.1% p.a. expected · Shariah-compliant</div></div></div>
     </div>
-    ${id==='hajj'?`<div class="card soft mt12 flex" style="gap:10px">${ic('spark',18,'lime-t')}<div class="micro">At AED 1,000/salary you’ll reach AED 60,000 by <b>Sep 2027</b> — 3 months early. Nusuk package prices tracked weekly.</div></div>`:''}
+    ${id==='hajj'?`<div class="card soft mt12 flex" style="gap:10px">${aiIc(13)}<div class="micro">At AED 1,000/salary you’ll reach AED 60,000 by <b>Sep 2027</b> — 3 months early. Nusuk package prices tracked weekly.</div></div>`:''}
   </div>`;
 };
 
