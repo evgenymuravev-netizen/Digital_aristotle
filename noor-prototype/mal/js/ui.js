@@ -1,12 +1,12 @@
 /* ============ shared UI helpers ============ */
 (function(){
 
-/* ---- money formatting: "AED 275 900,76" (deck style) ---- */
+/* ---- money formatting: "AED 275,900.76" (Mal DS style) ---- */
 window.fm = (n, dec=2) => {
   const neg = n < 0; n = Math.abs(n);
   const [i, f] = n.toFixed(dec).split('.');
-  const ii = i.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-  return (neg?'−':'') + ii + (dec>0 ? ','+f : '');
+  const ii = i.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return (neg?'−':'') + ii + (dec>0 ? '.'+f : '');
 };
 window.aed  = (n, dec=2) => (n<0?'−':'') + 'AED ' + fm(Math.abs(n), dec);
 window.aedS = (n, dec=2) => (n>0?'+':n<0?'−':'') + 'AED ' + fm(Math.abs(n), dec);
@@ -53,7 +53,7 @@ window.donut = (segs, size=130, thick=14, center='') => {
     <div class="donut-c">${center}</div></div>`;
 };
 
-window.spark = (arr, w=120, h=36, color='#f5c542', fill=true) => {
+window.spark = (arr, w=120, h=36, color='#0e0e10', fill=true) => {
   const mn=Math.min(...arr), mx=Math.max(...arr), sp=mx-mn||1;
   const pts = arr.map((v,i)=>`${(i/(arr.length-1)*w).toFixed(1)},${(h-3-(v-mn)/sp*(h-8)).toFixed(1)}`);
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
@@ -62,7 +62,7 @@ window.spark = (arr, w=120, h=36, color='#f5c542', fill=true) => {
     <circle cx="${w}" cy="${pts[pts.length-1].split(',')[1]}" r="3" fill="${color}"/></svg>`;
 };
 
-window.gaugeSemi = (pct, size=210, color='#f5c542', center='') => {
+window.gaugeSemi = (pct, size=210, color='#0e0e10', center='') => {
   const th=16, r=(size-th)/2, half=Math.PI*r;
   return `<div class="gauge-wrap" style="width:${size}px;height:${size/2+10}px;overflow:hidden">
     <svg width="${size}" height="${size/2+10}" viewBox="0 0 ${size} ${size/2+10}">
@@ -91,7 +91,7 @@ window.rings = (defs, size=140, th=13, gap=5) => {
 /* tap-tooltip: small ⓘ that explains a concept */
 window.tipi = (msg) => `<span class="tipi" onclick="event.stopPropagation();A.tip('${esc(msg)}')">ⓘ</span>`;
 
-window.meter = (pct, color='#f5c542') =>
+window.meter = (pct, color='#0e0e10') =>
   `<div class="meter"><i style="width:${Math.min(pct*100,100)}%;background:${color}"></i></div>`;
 
 /* ---- category icon chip ---- */
@@ -126,7 +126,7 @@ window.confetti = (host, n=70) => {
   const r = host.getBoundingClientRect(); cv.width=r.width; cv.height=r.height;
   host.appendChild(cv);
   const ctx = cv.getContext('2d');
-  const cols=['#f5c542','#53DE8E','#E8C268','#6FB6FF','#FFFFFF','#B89CFF'];
+  const cols=['#0e0e10','#1f8a5b','#c8841f','#4a63d8','#FFFFFF','#7c6bd6'];
   const ps = Array.from({length:n},()=>({x:cv.width/2+(Math.random()-.5)*120, y:cv.height*0.38,
     vx:(Math.random()-.5)*7, vy:-(4+Math.random()*7), g:.22+Math.random()*.1,
     s:4+Math.random()*5, c:cols[Math.random()*cols.length|0], a:Math.random()*Math.PI, va:(Math.random()-.5)*.3}));

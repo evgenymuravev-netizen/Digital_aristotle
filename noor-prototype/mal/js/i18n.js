@@ -4,15 +4,15 @@ const D = {
 /* navigation */
 'Overview':'نظرة عامة','Money':'أموالي','Insights':'الرؤى','Goals':'الأهداف',
 /* home */
-'Hi, John.':'أهلاً يا جون.','Morning briefing · 4 items':'الإحاطة الصباحية · 4 مهام','Morning briefing · 5 items':'الإحاطة الصباحية · 5 مهام',
-'My money':'أموالي','Budget':'الميزانية','Trends for June':'اتجاهات شهر يونيو',
+'Hi, Khadeeja.':'أهلاً يا خديجة.','Morning briefing · 4 items':'الإحاطة الصباحية · 4 مهام','Morning briefing · 5 items':'الإحاطة الصباحية · 5 مهام',
+'My money':'أموالي','Balance':'الرصيد','Personal':'شخصي','Business':'أعمال','Black & white mode':'الوضع الأبيض والأسود','Budget':'الميزانية','Trends for June':'اتجاهات شهر يونيو',
 'Payments':'المدفوعات','Transfers':'التحويلات','For you':'لك خصيصاً','Upcoming':'القادم','All':'الكل',
 'will be debited tomorrow':'سيُخصم غداً',
 'Send':'إرسال','Request':'طلب','Scan':'مسح','Between':'تحويل بيني',
 'Netflix':'نتفليكس','DEWA · autopay':'ديوا · دفع تلقائي','FAB card · min due':'بطاقة FAB · الحد الأدنى',
 'Salary expected':'الراتب المتوقع','Auto finance · DIB':'تمويل السيارة · DIB',
-'⚡ Pre-approved':'⚡ موافقة مسبقة','FAB card · AED 20 000 limit':'بطاقة FAB · حد 20 000 د.إ',
-'3.99% · 55 days grace · 1-click':'3,99% · سماح 55 يوماً · بنقرة واحدة',
+'⚡ Pre-approved':'⚡ موافقة مسبقة','Mal Agentic card · AED 20,000':'بطاقة «مال» الوكيلة · 20,000 د.إ',
+'3.99% · 55 days grace · 1-click':'3.99% · سماح 55 يوماً · بنقرة واحدة',
 '✦ New':'✦ جديد','June Money Story':'قصة أموالك · يونيو','Your month in 30 seconds':'شهرك في 30 ثانية',
 '🌙 Ramadan tomorrow':'🌙 رمضان غداً','Zakat — pay on day 1':'الزكاة — ادفع في اليوم الأول',
 'Nisab checked · scholar-matched · family mode':'نصاب مُتحقق · بحسب مذهبك · وضع العائلة',
@@ -24,7 +24,7 @@ const D = {
 'Salary account':'حساب الراتب','Current account':'الحساب الجاري','Saving spaces':'مساحات الادخار',
 'Available balance':'الرصيد المتاح','Held with Mal':'لدى «مال»','DIB · financing':'DIB · التمويل',
 'Careem Pay · wallet':'محفظة كريم باي','Tabby · pay later':'تابي · ادفع لاحقاً','Binance · crypto':'بينانس · عملات رقمية',
-'Add source':'إضافة مصدر','Consents':'الموافقات','▲ 2,4% this month':'▲ 2,4% هذا الشهر',
+'Add source':'إضافة مصدر','Consents':'الموافقات','▲ 2.4% this month':'▲ 2.4% هذا الشهر',
 '📈 Complete the picture — link investments':'📈 أكمل الصورة — اربط استثماراتك',
 'IBKR, Sarwa, eToro — read-only, counts into net worth & zakat':'قراءة فقط — تُحتسب في صافي الثروة والزكاة',
 'Banks, wallets, BNPL and crypto — aggregated read-only via Mal Connect (CBUAE Open Finance).':'البنوك والمحافظ والشراء الآن والدفع لاحقاً والعملات الرقمية — مجمّعة للقراءة فقط عبر «مال كونكت» (التمويل المفتوح، المصرف المركزي).',
@@ -51,7 +51,7 @@ const D = {
 'Declared by you':'ما صرّحت به أنت','things no bank can see':'ما لا يراه أي بنك',
 'Family zakat':'زكاة العائلة','Give to':'تصدّق إلى','Cash across 3 banks':'النقد في 3 بنوك',
 'Careem Pay wallet':'محفظة كريم باي','Crypto — Binance spot':'عملات رقمية — بينانس','Halal investments':'استثمارات حلال',
-'Mal Gold · 12,4 g':'ذهب «مال» · 12,4 غ','Cash at home':'نقد في المنزل','Trade goods in stock':'بضاعة معدّة للبيع',
+'Mal Gold · 12.4 g':'ذهب «مال» · 12.4 غ','Cash at home':'نقد في المنزل','Trade goods in stock':'بضاعة معدّة للبيع',
 'Gold jewellery (personal use)':'مصوغات ذهبية (استعمال شخصي)','Silver':'الفضة','Money owed to me (strong debts)':'ديون لي (مرجوّة السداد)',
 'Personal':'شخصي','Business — incl. your team’s payroll':'تجاري — يشمل رواتب فريقك',
 'zakat is individual — but you can pay as wakīl':'الزكاة فردية — ويمكنك الدفع وكيلاً',
@@ -92,11 +92,11 @@ window.applyAr = (root) => {
 const AR_BRIEFING = {
   line:`اليوم عليك <b>إرسال مستندات الرحلة</b>، ولديك <b>موعد طبيب</b> <b>غداً</b>.`,
   items:[
-    {ic:'gift', c:'#FF8FC0', t:'عيد ميلاد عائشة — بعد 14 يوماً', d:'الخميس 26 يونيو · خطة الهدية جاهزة من إشاراتها المشتركة', cta:'خطط لهديتها', act:'gift'},
-    {ic:'doc',  c:'#6FB6FF', t:'أرسل مستندات الرحلة', d:'حجز طيران الإمارات RF8Q2P · نسخ التأشيرة مطلوبة اليوم 18:00', cta:'افتح القائمة'},
-    {ic:'heart',c:'#FF7A6B', t:'موعد الطبيب', d:'د. منصور · مركز الداس الطبي · غداً 09:30 — آخر زيارة 390 د.إ', cta:'أضف للتقويم'},
+    {ic:'gift', c:'#c85a8e', t:'عيد ميلاد عائشة — بعد 14 يوماً', d:'الخميس 26 يونيو · خطة الهدية جاهزة من إشاراتها المشتركة', cta:'خطط لهديتها', act:'gift'},
+    {ic:'doc',  c:'#4a63d8', t:'أرسل مستندات الرحلة', d:'حجز طيران الإمارات RF8Q2P · نسخ التأشيرة مطلوبة اليوم 18:00', cta:'افتح القائمة'},
+    {ic:'heart',c:'#d1483f', t:'موعد الطبيب', d:'د. منصور · مركز الداس الطبي · غداً 09:30 — آخر زيارة 390 د.إ', cta:'أضف للتقويم'},
     {ic:'film', c:'#E50914', t:'نتفليكس سيخصم 29 د.إ غداً', d:'من بطاقة FAB كاش باك ··4412', cta:'إدارة'},
-    {ic:'card', c:'#FFB050', t:'استحقاق بطاقة FAB بعد 9 أيام', d:'كشف بـ 8 240,50 د.إ · ادفع كاملاً لتبقى بلا رسوم', cta:'ادفع الآن'},
+    {ic:'card', c:'#c8841f', t:'استحقاق بطاقة FAB بعد 9 أيام', d:'كشف بـ 8,240.50 د.إ · ادفع كاملاً لتبقى بلا رسوم', cta:'ادفع الآن'},
   ]
 };
 window.BR = () => (window.A && A.S && A.S.lang==='ar') ? AR_BRIEFING : BRIEFING;

@@ -23,12 +23,13 @@ SCREENS.home = () => `
 
     <div class="card mt16 tap" onclick="A.go('money')">
       <div class="flex between">
-        <span class="lbl">My money</span>
+        <span class="lbl">Balance</span>
         <button class="iconbtn" style="width:30px;height:30px;min-width:30px;border:none" onclick="event.stopPropagation();A.S.hideBal=!A.S.hideBal;A.persist();A.refresh()">${ic(A.S.hideBal?'eyeOff':'eye',17)}</button>
       </div>
       <div class="flex between mt8">
         <div style="font:800 32px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">${hideable('AED '+fm(LIQUID_TOTAL))}</div>
       </div>
+      <div class="micro mt6 tnum">Net worth ${hideable('AED '+fm(NETW()))} · <span style="color:var(--grn)">▲ 2.4% this month</span></div>
       <div class="flex between mt12">
         <span class="logo-stack">${blg('fab','sm')}${blg('wio','sm')}${blg('ei','sm')}</span>
         ${spark([24.1,24.6,24.2,25.1,25.6,25.2,26.4,27.0,26.8,27.59],110,30)}
@@ -40,7 +41,7 @@ SCREENS.home = () => `
         <span class="lbl">Budget</span>
         <div class="micro mt4">Trends for June</div>
         <div class="mt8" style="display:flex;justify-content:center">
-          ${rings([{p:6660/7500,c:'#53DE8E'},{p:5967.95/5100,c:'#FFB050'},{p:1586.6/2400,c:'#5EE6D0'}],88,9,3)}
+          ${rings([{p:6660/7500,c:'#1f8a5b'},{p:5967.95/5100,c:'#c8841f'},{p:1586.6/2400,c:'#2f8f83'}],88,9,3)}
         </div>
         <div class="flex mt8" style="justify-content:center;gap:6px">
           <span class="tag red" style="font-size:9.5px">● Over budget</span>
@@ -55,7 +56,7 @@ SCREENS.home = () => `
         </div>
         <div class="card tap f1" onclick="A.go('pay')">
           <span class="lbl">Transfers</span>
-          <div class="row-t mt8 tnum" style="font-size:13.5px">${hideable('AED 567,08')} today</div>
+          <div class="row-t mt8 tnum" style="font-size:13.5px">${hideable('AED 567.08')} today</div>
           <div class="flex mt8" style="gap:4px">${avx('Sara AlBlooshi','sm')}${avx('Ahmed Hassan','sm')}<span class="avx sm" style="background:var(--glass2)">${ic('plus',15)}</span></div>
         </div>
       </div>
@@ -64,9 +65,9 @@ SCREENS.home = () => `
     <div class="lbl mt20 mb8">For you</div>
     <div class="hscroll">
       <div class="card lime tap" style="min-width:218px" onclick="A.go('chat-card')">
-        <span class="tag" style="background:rgba(26,18,4,.14);color:#1a1204">⚡ Pre-approved</span>
-        <div class="h3 mt8">FAB card · AED 20 000 limit</div>
-        <div class="micro mt4">3.99% · 55 days grace · 1-click</div>
+        <span class="tag" style="background:rgba(14.14.16,.14);color:#0e0e10">⚡ Pre-approved</span>
+        <div class="h3 mt8">Mal Agentic card · AED 20,000</div>
+        <div class="micro mt4">0 annual fee · 55 days grace · 1-click</div>
       </div>
       <div class="card tap" style="min-width:215px" onclick="A.go('approvals')">
         <span class="tag solid">🔔 3 to approve</span>
@@ -75,8 +76,8 @@ SCREENS.home = () => `
       </div>
       <div class="card tap" style="min-width:215px" onclick="A.go('agents')">
         <span class="tag lime">🤖 Agents</span>
-        <div class="h3 mt8">They earned AED 1 643</div>
-        <div class="micro mt4">Groceries · Careem · promo codes · yield</div>
+        <div class="h3 mt8">They earned AED 1,643</div>
+        <div class="micro mt4">Groceries · Careem · promo codes · profit</div>
       </div>
       <div class="card tap" style="min-width:190px" onclick="Story.open()">
         <span class="tag lime">✦ New</span>
@@ -126,7 +127,7 @@ SCREENS.briefing = () => `
   <div class="scr">
     ${hdr('Morning briefing')}
     <div class="flex" style="gap:8px"><span class="tag lime">✦ Mal AI</span><span class="micro">Generated 07:00 from calendar, inbox receipts & accounts</span></div>
-    <div class="h1 mt12">${A.S.lang==='ar'?BR().items.length+' مهام<br>لليوم يا جون':BR().items.length+' things for<br>today, '+USER.first}</div>
+    <div class="h1 mt12">${A.S.lang==='ar'?BR().items.length+' مهام<br>لليوم يا خديجة':BR().items.length+' things for<br>today, '+USER.first}</div>
     <div class="mt16" style="display:flex;flex-direction:column;gap:11px">
       ${BR().items.map((b,i)=>`
         <div class="card">
@@ -191,22 +192,29 @@ SCREENS['accounts-iban'] = () => `
 /* ---------------- MONEY — all balances across banks ---------------- */
 SCREENS.money = () => {
   const mode = A.tmp.moneyMode || 'cash';
+  const scope = A.tmp.moneyScope || 'personal';
   const extra = b => A.S.linked.includes(b);   /* wallets/BNPL/crypto appear once linked */
   const groups = [
-    {bank:'fab', accs:ACCOUNTS.filter(a=>a.bank==='fab')},
-    {bank:'wio', accs:ACCOUNTS.filter(a=>a.bank==='wio')},
-    {bank:'ei',  accs:ACCOUNTS.filter(a=>a.bank==='ei')},
+    {bank:'fab', accs:ACCOUNTS.filter(a=>a.bank==='fab'&&!a.biz)},
+    {bank:'wio', accs:ACCOUNTS.filter(a=>a.bank==='wio'&&!a.biz)},
+    {bank:'ei',  accs:ACCOUNTS.filter(a=>a.bank==='ei'&&!a.biz)},
     {bank:'careem', accs:extra('careem')?ACCOUNTS.filter(a=>a.bank==='careem'):[], label:'Careem Pay · wallet'},
     {bank:'tabby',  accs:extra('tabby')?ACCOUNTS.filter(a=>a.bank==='tabby'):[],   label:'Tabby · pay later'},
     {bank:'binance',accs:extra('binance')?ACCOUNTS.filter(a=>a.bank==='binance'):[],label:'Binance · crypto'},
-    {bank:'noor',accs:ACCOUNTS.filter(a=>a.bank==='noor'), label:'Held with Mal'},
-    {bank:'dib', accs:ACCOUNTS.filter(a=>a.bank==='dib'), label:'DIB · financing'},
+    {bank:'noor',accs:ACCOUNTS.filter(a=>a.bank==='noor'&&!a.biz), label:'Held with Mal'},
+    {bank:'dib', accs:ACCOUNTS.filter(a=>a.bank==='dib'&&!a.biz), label:'DIB · financing'},
   ];
-  const visibleAccs = groups.flatMap(g=>g.accs);
+  const bizGroups = [
+    {bank:'wio',     accs:ACCOUNTS.filter(a=>a.biz&&a.bank==='wio'),     label:'Wio Business'},
+    {bank:'mashreq', accs:ACCOUNTS.filter(a=>a.biz&&a.bank==='mashreq'), label:'Mashreq · facilities'},
+    {bank:'cashew',  accs:ACCOUNTS.filter(a=>a.biz&&a.bank==='cashew'),  label:'Cashew · B2B BNPL'},
+  ];
+  const G = scope==='business' ? bizGroups : groups;
+  const visibleAccs = G.flatMap(g=>g.accs);
   const assets = visibleAccs.filter(a=>a.bal>0).reduce((s,a)=>s+a.bal,0);
   const liab   = -visibleAccs.filter(a=>a.bal<0).reduce((s,a)=>s+a.bal,0);
   const net = assets - liab;
-  const big = mode==='cash' ? LIQUID_TOTAL : net;
+  const big = mode==='cash' ? (scope==='business' ? assets : LIQUID_TOTAL) : net;
   const nSources = 3 + ['careem','tabby','binance'].filter(extra).length;
   return `
   <div class="scr" style="padding-bottom:170px">
@@ -218,14 +226,18 @@ SCREENS.money = () => {
       </div>
     </div>
     <div class="seg mt12" style="max-width:240px">
+      <button class="${scope==='personal'?'on':''}" onclick="A.tmp.moneyScope='personal';A.refresh()">Personal</button>
+      <button class="${scope==='business'?'on':''}" onclick="A.tmp.moneyScope='business';A.refresh()">Business</button>
+    </div>
+    <div class="seg mt8" style="max-width:240px">
       <button class="${mode==='cash'?'on':''}" onclick="A.tmp.moneyMode='cash';A.refresh()">Cash</button>
       <button class="${mode==='net'?'on':''}" onclick="A.tmp.moneyMode='net';A.refresh()">Net worth</button>
     </div>
     <div class="mt16">
       <div style="font:800 38px/1 Inter,sans-serif;letter-spacing:-.035em" class="tnum">${hideable('AED '+fm(big))}</div>
       <div class="flex mt8" style="gap:8px">
-        <span class="tag grn">▲ 2,4% this month</span>
-        <span class="micro">${nSources} banks & sources · ${visibleAccs.length} accounts · synced <b id="syncTime">2 min ago</b></span>
+        ${scope==='business'?'<span class="tag gold">Sole establishment</span>':'<span class="tag grn">▲ 2.4% this month</span>'}
+        <span class="micro">${scope==='business'?'2 banks · '+visibleAccs.length+' accounts':nSources+' banks & sources · '+visibleAccs.length+' accounts'} · synced <b id="syncTime">2 min ago</b></span>
       </div>
     </div>
     ${mode==='net' ? `
@@ -235,10 +247,15 @@ SCREENS.money = () => {
         <i style="flex:${assets};background:var(--grn)"></i><i style="flex:${liab};background:var(--red)"></i>
       </div>
       <div class="kv"><span class="k">Liabilities</span><span class="v tnum red-t">−${hideable(fm(liab))}</span></div>
-      <div class="micro">Cards −10 094,80 · Auto finance −36 200,00${extra('tabby')?' · BNPL plans −1 575,00':''}</div>
+      <div class="micro">${scope==='business'?'Invoice −22,000 · Murabaha −45,000 · PO −12,500 · B2B BNPL −8,400':`Cards −10,094.80 · Auto finance −36,200.00${extra('tabby')?' · BNPL plans −1,575.00':''}`}</div>
     </div>`:''}
 
-    ${groups.map(g=>{
+    ${scope==='business'?`
+    <div class="card lime mt16 tap" onclick="A.go('debts')">
+      <div class="flex between"><b style="font-size:14px">⚡ Facilities cost ≈ AED 8,705/yr — refinancing saves 5,614</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">Close the 14.5% invoice line · move Murabaha & PO to Mal deposit-secured — full read in Debts</div>
+    </div>`:''}
+    ${G.map(g=>{
       const visible = g.accs;
       if(!visible.length) return '';
       const sum = visible.reduce((s,a)=>s+a.bal,0);
@@ -253,7 +270,7 @@ SCREENS.money = () => {
             <span class="bigico">${ic(a.kind==='card'?'card':a.kind==='invest'?'trendUp':a.kind==='gold'?'coins':a.kind==='finance'?'car':a.kind==='bnpl'?'bag':a.kind==='crypto'?'trendUp':'wallet',21)}</span>
             <div class="row-main">
               <div class="row-t">${a.name}${a.mask?' ··'+a.mask:''}</div>
-              <div class="row-d">${a.kind==='card'?`Due ${a.due} · min AED ${fm(a.min)}`:a.kind==='finance'?a.left:a.kind==='gold'?'486,32 / g · ▲3,6% this month':a.kind==='invest'?'Sukuk · halal ETFs · ▲1,24% today':a.kind==='bnpl'?`Next: ${a.next} · limit left AED ${fm(a.limit-Math.abs(a.bal),0)}`:a.kind==='crypto'?'BTC 0,061 · ETH 0,80 · ▲2,1% today':a.kind==='wallet'?'Wallet · top up from any bank':'Available balance'}</div>
+              <div class="row-d">${a.kind==='card'?`Due ${a.due} · min AED ${fm(a.min)}`:a.kind==='finance'?a.left:a.kind==='gold'?'486.32 / g · ▲3.6% this month':a.kind==='invest'?'Sukuk · halal ETFs · ▲1.24% today':a.kind==='bnpl'?`Next: ${a.next} · limit left AED ${fm(a.limit-Math.abs(a.bal),0)}`:a.kind==='crypto'?'BTC 0.061 · ETH 0.80 · ▲2.1% today':a.kind==='wallet'?'Wallet · top up from any bank':'Available balance'}</div>
             </div>
             <div class="row-r">
               <div class="row-amt tnum" style="color:${a.bal<0?'var(--red)':'var(--tx)'}">${hideable(aed(a.bal))}</div>
@@ -293,7 +310,7 @@ SCREENS.account = (id) => {
       <div class="flex" style="justify-content:center">${blg(a.bank,'sm')}</div>
       <div class="lbl mt8">${a.name}${a.mask?' ··'+a.mask:''}</div>
       <div style="font:800 34px/1.1 Inter,sans-serif;letter-spacing:-.03em;color:${a.bal<0?'var(--red)':'var(--tx)'}" class="tnum mt8">${hideable(aed(a.bal))}</div>
-      ${isCard?`<div class="micro mt8">of AED ${fm(a.limit,0)} limit · statement due ${a.due}</div>${meter(Math.abs(a.bal)/a.limit,'#FFB050')}`:''}
+      ${isCard?`<div class="micro mt8">of AED ${fm(a.limit,0)} limit · statement due ${a.due}</div>${meter(Math.abs(a.bal)/a.limit,'#c8841f')}`:''}
       <div class="grid4 mt16">
         ${[['swap','Move','between'],['doc','Statement','statement'],['qr','Details','accounts-iban'],[isCard?'card':'refresh',isCard?'Pay':'Sync', isCard?('paybill/'+a.id):'money']]
           .map(([i,t,r])=>`<button class="qa" onclick="${r==='money'?'Money.sync()':`A.go('${r}')`}"><span class="qa-ic" style="width:46px;height:46px">${ic(i,20)}</span><span>${t}</span></button>`).join('')}
@@ -334,7 +351,7 @@ SCREENS.txn = (id) => {
       <div><div class="row-t" style="font-size:13.5px">Exclude from analytics</div><div class="row-d">Won’t count in budgets</div></div>
       <button class="switch" onclick="this.classList.toggle('on')"></button>
     </div>
-    ${t.m.includes('Carrefour')?`<div class="micro mt12" style="text-align:center">You’ve spent AED 1 240,30 at Carrefour this month (9 visits).</div>`:''}
+    ${t.m.includes('Carrefour')?`<div class="micro mt12" style="text-align:center">You’ve spent AED 1,240.30 at Carrefour this month (9 visits).</div>`:''}
   </div>`;
 };
 
@@ -361,7 +378,7 @@ SCREENS.upcoming = () => `
     ${hdr('Upcoming')}
     <div class="card lime">
       <b style="font-size:14px">Forecast: all bills covered ✓</b>
-      <div class="micro mt4">AED 2 523,23 leaves before salary day (25th). Buffer stays above AED 8 000.</div>
+      <div class="micro mt4">AED 2,523.23 leaves before salary day (25th). Buffer stays above AED 8,000.</div>
     </div>
     <div class="listcard mt12">
       ${UPCOMING.map(u=>`
@@ -392,7 +409,7 @@ SCREENS.chat = () => `
          ['🏦 Best financing','Get me the best financing with one-click activation'],
          ['📉 My spending','Why did I spend so much in June?'],
          ['☪ Zakat','How much zakat do I owe?'],
-         ['✈️ Afford a trip?','Can I afford a AED 6 500 trip in August?']]
+         ['✈️ Afford a trip?','Can I afford a AED 6,500 trip in August?']]
         .map(([c,q])=>`<button class="chip" onclick="Chat.send('${esc(q)}')">${c}</button>`).join('')}
     </div>
     <div class="ch-input">

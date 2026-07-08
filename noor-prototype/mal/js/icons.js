@@ -73,7 +73,7 @@ window.ic = (n, s=22, cls='', sw=1.8) =>
 window.BANKS = {
   fab:     {name:'FAB',              full:'First Abu Dhabi Bank',      bg:'#FFFFFF', fg:'#012169', accent:'#E10600', short:'FAB'},
   wio:     {name:'Wio',              full:'Wio Bank',                  bg:'#1B1A4A', fg:'#FFFFFF', accent:'#8B7BFF', short:'WIO'},
-  ei:      {name:'Emirates Islamic', full:'Emirates Islamic',          bg:'#0D5640', fg:'#E8C268', accent:'#E8C268', short:'EI'},
+  ei:      {name:'Emirates Islamic', full:'Emirates Islamic',          bg:'#0D5640', fg:'#c8841f', accent:'#c8841f', short:'EI'},
   enbd:    {name:'Emirates NBD',     full:'Emirates NBD',              bg:'#00337F', fg:'#FFFFFF', accent:'#7AC143', short:'NBD'},
   adcb:    {name:'ADCB',             full:'Abu Dhabi Commercial Bank', bg:'#C8102E', fg:'#FFFFFF', accent:'#fff',    short:'ADCB'},
   adib:    {name:'ADIB',             full:'Abu Dhabi Islamic Bank',    bg:'#143C8C', fg:'#FFFFFF', accent:'#3DAE2B', short:'ADIB'},
@@ -83,16 +83,16 @@ window.BANKS = {
   rak:     {name:'RAKBANK',          full:'The National Bank of RAK',  bg:'#D72A2F', fg:'#FFFFFF', accent:'#fff',    short:'RAK'},
   hsbc:    {name:'HSBC',             full:'HSBC UAE',                  bg:'#FFFFFF', fg:'#DB0011', accent:'#DB0011', short:'HSBC'},
   liv:     {name:'Liv',              full:'Liv by Emirates NBD',       bg:'#0E1B2C', fg:'#A4F44A', accent:'#A4F44A', short:'Liv'},
-  sib:     {name:'Sharjah Islamic',  full:'Sharjah Islamic Bank',      bg:'#0E6B5C', fg:'#FFFFFF', accent:'#E8C268', short:'SIB'},
-  ajman:   {name:'Ajman Bank',       full:'Ajman Bank',                bg:'#7A1E3C', fg:'#FFFFFF', accent:'#E8C268', short:'AJ'},
-  noor:    {name:'Mal',             full:'Mal Wallet',               bg:'#f5c542', fg:'#1a1204', accent:'#1a1204', short:'m'},
+  sib:     {name:'Sharjah Islamic',  full:'Sharjah Islamic Bank',      bg:'#0E6B5C', fg:'#FFFFFF', accent:'#c8841f', short:'SIB'},
+  ajman:   {name:'Ajman Bank',       full:'Ajman Bank',                bg:'#7A1E3C', fg:'#FFFFFF', accent:'#c8841f', short:'AJ'},
+  noor:    {name:'Mal',             full:'Mal Wallet',               bg:'#0e0e10', fg:'#0e0e10', accent:'#0e0e10', short:'m'},
   /* digital wallets */
   careem:  {name:'Careem Pay',       full:'Careem Pay wallet',         bg:'#37B44E', fg:'#FFFFFF', accent:'#fff',    short:'C'},
   payit:   {name:'payit',            full:'payit by FAB',              bg:'#00B5AD', fg:'#FFFFFF', accent:'#fff',    short:'pi'},
   emoney:  {name:'e& money',         full:'e& money wallet',           bg:'#E0001B', fg:'#FFFFFF', accent:'#fff',    short:'e&'},
   botim:   {name:'Botim Pay',        full:'Botim Pay wallet',          bg:'#2F6BFF', fg:'#FFFFFF', accent:'#fff',    short:'B'},
   /* BNPL */
-  tabby:   {name:'Tabby',            full:'Tabby · buy now, pay later',bg:'#3EE5B5', fg:'#1a1204', accent:'#1a1204', short:'tabby'},
+  tabby:   {name:'Tabby',            full:'Tabby · buy now, pay later',bg:'#3EE5B5', fg:'#0e0e10', accent:'#0e0e10', short:'tabby'},
   tamara:  {name:'Tamara',           full:'Tamara · split & pay later',bg:'#1E2A26', fg:'#C7F4D4', accent:'#C7F4D4', short:'tamara'},
   postpay: {name:'Postpay',          full:'Postpay · pay later',       bg:'#16161A', fg:'#FFFFFF', accent:'#fff',    short:'pp'},
   cashew:  {name:'Cashew',           full:'Cashew payments',           bg:'#5B3DF5', fg:'#FFFFFF', accent:'#fff',    short:'cw'},
@@ -117,21 +117,21 @@ window.blg = (id, size='') => {
 
 /* ---------- category meta ---------- */
 window.CATS = {
-  groceries:{n:'Groceries', ic:'bag',  c:'#53DE8E'},
-  dining:   {n:'Dining out',ic:'food', c:'#FFB050'},
-  transport:{n:'Transport', ic:'car',  c:'#6FB6FF'},
-  shopping: {n:'Shopping',  ic:'gift', c:'#B89CFF'},
-  bills:    {n:'Bills & utilities', ic:'zap', c:'#f5c542'},
-  health:   {n:'Health',    ic:'heart',c:'#FF7A6B'},
-  travel:   {n:'Travel',    ic:'plane',c:'#5EE6D0'},
-  entertainment:{n:'Entertainment', ic:'film', c:'#FF8FC0'},
-  income:   {n:'Income',    ic:'recv', c:'#53DE8E'},
-  transfer: {n:'Transfers', ic:'swap', c:'#9ba4c4'},
-  other:    {n:'Other',     ic:'grid', c:'#9ba4c4'},
+  groceries:{n:'Groceries', ic:'bag',  c:'#1f8a5b'},
+  dining:   {n:'Dining out',ic:'food', c:'#c8841f'},
+  transport:{n:'Transport', ic:'car',  c:'#4a63d8'},
+  shopping: {n:'Shopping',  ic:'gift', c:'#7c6bd6'},
+  bills:    {n:'Bills & utilities', ic:'zap', c:'#0e0e10'},
+  health:   {n:'Health',    ic:'heart',c:'#d1483f'},
+  travel:   {n:'Travel',    ic:'plane',c:'#2f8f83'},
+  entertainment:{n:'Entertainment', ic:'film', c:'#c85a8e'},
+  income:   {n:'Income',    ic:'recv', c:'#1f8a5b'},
+  transfer: {n:'Transfers', ic:'swap', c:'#9a9aa2'},
+  other:    {n:'Other',     ic:'grid', c:'#9a9aa2'},
 };
 
 /* ---------- avatar palette ---------- */
-window.AVC = ['#6FB6FF','#B89CFF','#FF8FC0','#53DE8E','#FFB050','#5EE6D0','#FF7A6B'];
+window.AVC = ['#4a63d8','#7c6bd6','#c85a8e','#1f8a5b','#c8841f','#2f8f83','#d1483f'];
 window.avx = (name, size='', emoji=null) => {
   const i = (name||'?').charCodeAt(0) % AVC.length;
   const init = (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('');
@@ -150,8 +150,8 @@ window.ART = {
 
 /* shield illustration for connect */
 window.ILL = {
-  shieldBig: `<div style="width:92px;height:92px;border-radius:30px;background:linear-gradient(135deg,#ffd977,#f5c542 60%,#d69f22);display:flex;align-items:center;justify-content:center;color:#1a1204;box-shadow:0 18px 50px rgba(245,197,66,.35)">${ic('shieldCheck',46,'',1.6)}</div>`,
-  lockGrey: `<div style="width:84px;height:84px;border-radius:26px;background:#F1F2F4;display:flex;align-items:center;justify-content:center;color:#16191C">${ic('lock',40,'',1.6)}</div>`,
+  shieldBig: `<div style="width:92px;height:92px;border-radius:30px;background:linear-gradient(135deg,#c7b8fa,#0e0e10 60%,#d69f22);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 18px 50px rgba(166,168,253,.35)">${ic('shieldCheck',46,'',1.6)}</div>`,
+  lockGrey: `<div style="width:84px;height:84px;border-radius:26px;background:#F1F2F4;display:flex;align-items:center;justify-content:center;color:#0e0e10">${ic('lock',40,'',1.6)}</div>`,
   faceOval: `<div style="width:150px;height:196px;border-radius:18px;background:#FAFAFB;border:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center;margin:0 auto">
      <svg width="92" height="116" viewBox="0 0 92 116"><ellipse cx="46" cy="58" rx="38" ry="52" fill="none" stroke="#1B7A4E" stroke-width="2.5"/><circle cx="34" cy="48" r="3" fill="#1B7A4E"/><circle cx="58" cy="48" r="3" fill="#1B7A4E"/><path d="M34 74c7 6 17 6 24 0" stroke="#1B7A4E" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>`,
 };
