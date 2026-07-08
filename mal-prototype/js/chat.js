@@ -157,7 +157,7 @@ const affordCard = () => `
 /* ---------- scripts ---------- */
 const SCRIPTS = {
   hello:{ async run(c){
-    await c.ai(A.S.lang==='ar' ? `أهلاً يا <b>جون</b>. ${BR().line}` : `Hi, <b>${USER.first}</b>. ${BR().line}`, 700);
+    await c.ai(A.S.lang==='ar' ? `أهلاً يا <b>خديجة</b>. ${BR().line}` : `Hi, <b>${USER.first}</b>. ${BR().line}`, 700);
     await c.card(chips([
       {t:'📋 Open today’s briefing', fn:"A.go('briefing')"},
       {t:'💳 Find me a credit card', fn:"Chat.chipSend('Help me find a credit card with the best terms','findCard')"},
@@ -254,11 +254,11 @@ const SCRIPTS = {
 
   subs:{ user:'Show my subscriptions', async run(c){
     const total = SUBS.reduce((s,x)=>s+x.amt,0);
-    await c.ai(`I track <b>${SUBS.length} subscriptions</b> ≈ <b>AED ${fm(total)}/mo</b>. Three findings, AED 2 076/yr total:\n\n🎧 <b>Three music apps overlap.</b> Hours listened this month: Anghami <b>31 h ▲24%</b> · Spotify <b>2,1 h ▼67%</b> · Apple Music <b>0,4 h ▼81%</b>. Keep Anghami — it’s your player (and the Arabic catalogue is unmatched). Cancel the other two → <b>AED 552/yr</b>.\n\n📱 <b>du Mobile is overprovisioned</b> — you use 6,2 GB of 25 GB. The 12 GB plan saves <b>AED 1 080/yr</b>.\n\n☁️ <b>You and Aisha both pay for iCloud.</b> One iCloud+ 2TB shares with the whole family — cancel hers via Family Sharing → <b>AED 444/yr</b>.\n\nAlso watching: <b>Claude API</b> AED 142,67 in May, tokens ▲38% — caching would cut ~40%.`);
+    await c.ai(`I track <b>${SUBS.length} subscriptions</b> ≈ <b>AED ${fm(total)}/mo</b>. Three findings, AED 2 076/yr total:\n\n🎧 <b>Three music apps overlap.</b> Hours listened this month: Anghami <b>31 h ▲24%</b> · Spotify <b>2,1 h ▼67%</b> · Apple Music <b>0,4 h ▼81%</b>. Keep Anghami — it’s your player (and the Arabic catalogue is unmatched). Cancel the other two → <b>AED 552/yr</b>.\n\n📱 <b>du Mobile is overprovisioned</b> — you use 6,2 GB of 25 GB. The 12 GB plan saves <b>AED 1 080/yr</b>.\n\n☁️ <b>You and Omar both pay for iCloud.</b> One iCloud+ 2TB shares with the whole family — cancel hers via Family Sharing → <b>AED 444/yr</b>.\n\nAlso watching: <b>Claude API</b> AED 142,67 in May, tokens ▲38% — caching would cut ~40%.`);
     await c.card(chips([
       {t:'Cancel Spotify & Apple Music', fn:"Subs.cancel('Spotify + Apple Music',true)"},
       {t:'Switch du plan — save 1 080/yr', fn:"A.toast('Plan switch requested with du — active next cycle','check')"},
-      {t:'Set up iCloud Family Sharing', fn:"A.toast('Setup guide sent to you and Aisha — her duplicate flagged for cancellation','share')"},
+      {t:'Set up iCloud Family Sharing', fn:"A.toast('Setup guide sent to you and Omar — his duplicate flagged for cancellation','share')"},
       {t:'Open subscriptions', fn:"A.go('subs')"},
     ]), 250);
   }},
@@ -343,7 +343,7 @@ const SCRIPTS = {
       <div class="kv"><span class="k">🪙 Buy more gold → 8% target</span><span class="v">+AED 22 000</span></div>
       <div class="micro">Your hedge is underweight — round-ups alone won’t get you there.</div>
       <div class="kv" style="padding-top:10px"><span class="k">🏠 Property for lease (Ijarah)</span><span class="v">AED 80 000 entry</span></div>
-      <div class="micro">Fractional rental units, ~6,8% net yield, Shariah lease structure — turns dead cash into income.</div>
+      <div class="micro">Fractional rental units, ~6,8% net rental profit, Ijarah lease structure — turns dead cash into income.</div>
       <div class="kv" style="padding-top:10px"><span class="k">📈 Your shares</span><span class="v grn-t">Hold</span></div>
       <div class="micro">Sukuk + halal ETFs are doing their job (▲4,8%). Don’t touch what works.</div>
       <div class="kv" style="padding-top:10px"><span class="k">⚠️ Crypto</span><span class="v">Cap at 3%</span></div>
@@ -357,8 +357,8 @@ const SCRIPTS = {
     ]), 250);
   }},
 
-  gift:{ user:'What should I get Aisha for her birthday?', async run(c){
-    await c.ai(`🎂 <b>14 days out</b> — good timing. With <b>her consented signals</b> (she shared gift categories from her own Mal app), the strongest ideas:\n\n👜 <b>Cult Gaia “Hana” bag · AED 690</b> — searched 6× this month\n🌸 <b>Jo Malone Oud & Bergamot · 540</b> — her ~8-month rebuy is due\n🧘‍♀️ <b>Talise Spa day for two · 750</b> — wellness spends ▲40%\n🎶 <b>Fairuz tribute ×2 · 380</b> — her #1 Anghami artist\n\nI’d reserve <b>AED 800</b> into a hidden Gift pot — fits your safe-to-spend, and the purchase stays <b>masked from shared views</b>.`, 2000);
+  gift:{ user:'What should I get Omar for his birthday?', async run(c){
+    await c.ai(`🎂 <b>14 days out</b> — good timing. With <b>his consented signals</b> (he shared gift categories from his own Mal app), the strongest ideas:\n\n⌚ <b>Withings ScanWatch 2 · AED 690</b> — searched 5× this month\n🧴 <b>Tom Ford Oud Wood 50 ml · 540</b> — his ~8-month rebuy is due\n⛳ <b>Topgolf night ×4 · 750</b> — golf spends ▲40%\n🎶 <b>Kadim Al Sahir live ×2 · 380</b> — his #1 Anghami artist\n\nI’d reserve <b>AED 800</b> into a hidden Gift pot — fits your safe-to-spend, and the purchase stays <b>masked from shared views</b>.`, 2000);
     await c.card(chips([
       {t:'🎁 Open the gift planner', fn:"A.go('gift')"},
       {t:'Reserve AED 800 quietly', fn:"A.toast('AED 800 set aside in a hidden Gift pot 🤫','check')"},
@@ -366,7 +366,7 @@ const SCRIPTS = {
   }},
 
   approvalsChat:{ user:'What needs my approval?', async run(c){
-    await c.ai(`<b>3 actions need your nod</b> (the rest auto-approved under your AED 500 limit):\n\n👨‍👩‍👧 Disney On Ice ×4 — <b>AED 520</b> from the Family pot\n🎁 Reserve <b>AED 800</b> for Aisha’s gift\n🏦 Move e-Saver → Liv 3,4% (a product change always asks you)\n\nWant to review them?`, 1400);
+    await c.ai(`<b>3 actions need your nod</b> (the rest auto-approved under your AED 500 limit):\n\n👨‍👩‍👧 Disney On Ice ×4 — <b>AED 520</b> from the Family pot\n🎁 Reserve <b>AED 800</b> for Omar’s gift\n🏦 Move e-Saver → Liv 3,4% (a product change always asks you)\n\nWant to review them?`, 1400);
     await c.card(chips([
       {t:'🔔 Open approvals', fn:"A.go('approvals')"},
       {t:'Approve all', fn:"A.go('approvals');setTimeout(()=>AP.approveAll(),400)"},
@@ -401,9 +401,9 @@ window.ZKChat = {
     <button class="chip" onclick="ZKChat.debtsBiz()">🏢 My debts & payroll</button>
     <button class="chip" onclick="ZKChat.points()">✈️ Miles & cashback</button>
     <button class="chip" onclick="ZKChat.company()">📜 Company shares & funds</button>
-    <button class="chip" onclick="ZKChat.jewel()">💍 Family gold</button>
+    <button class="chip" onclick="ZKChat.jewel()">💍 My gold jewellery</button>
     <button class="chip" onclick="ZKChat.owed()">🤝 Money owed to me</button>
-    <button class="chip" onclick="ZKChat.family()">👫 My wife’s wealth too</button>
+    <button class="chip" onclick="ZKChat.family()">👫 My husband’s wealth too</button>
     <button class="chip" onclick="ZKChat.verdict()">✅ That’s everything — verdict</button>
   </div>`; },
   debtsBiz(){ this.guard(async()=>{
@@ -466,7 +466,7 @@ window.ZKChat = {
     await Chat.card(this.menu(),200);
   });},
   jewel(){ this.guard(async()=>{
-    Chat.user('My wife has gold jewellery — does it count?');
+    Chat.user('I have gold jewellery — does it count?');
     await Chat.ai(`This is a famous <b>khilaf</b> (scholarly difference):\n\n· <b>Hanafi school</b> — jewellery <b>is zakatable</b> (also the recorded view of <b>Sh. Ibn Baz</b> and <b>Sh. Ibn ‘Uthaymeen</b>)\n· <b>Maliki, Shafi‘i, Hanbali (majority)</b> — <b>personal-use</b> jewellery is exempt; only hoarded or trading gold counts\n\nWhich scholar or school do you follow? I’ll set the whole calculation to match.`, 1500);
     await Chat.card(`<div class="ch-quick">
       <button class="chip" onclick="ZKChat.scholar('hanafi','Mufti Taqi Usmani — Hanafi')">Mufti Taqi Usmani / Hanafi</button>
@@ -476,18 +476,17 @@ window.ZKChat = {
     </div>`,250);
   });},
   scholar(method, label){ this.guard(async()=>{
-    const s=ZK.st(); s.method=method;
-    if(ZK_METHODS[method].jewellery){ s.rel.aisha=true; s.wak.aisha=true; }
+    const s=ZK.st(); s.method=method;   /* her 50 g declared jewellery is gated by the method itself */
     Chat.user(`I follow ${label.split('—')[0].trim()}`);
     await Chat.ai(`Set ✓ — calculating per <b>${label}</b>.\n\n${ZK_METHODS[method].who}\n\nNisab basis: <b>${ZK_METHODS[method].nisab==='silver'?'silver (595 g ≈ AED '+fm(ZAKAT.nisabSilverG*ZAKAT.silverPerG,0)+') — the cautious one':'gold (85 g ≈ AED '+fm(ZAKAT.nisabGoldG*ZAKAT.goldPerG,0)+')'}</b> · jewellery: <b>${ZK_METHODS[method].jewellery?'counted':'exempt (personal use)'}</b>.`, 1400);
     await Chat.card(this.menu(),200);
   });},
 
   family(){ this.guard(async()=>{
-    Chat.user('We have two incomes — my wife works too. I handle zakat for the family.');
-    await Chat.ai(`Important nuance: <b>zakat is an individual obligation</b> — each person owes on <b>their own</b> wealth. There’s no “household zakat” in fiqh.\n\nBut you <b>can calculate and pay on their behalf as wakīl</b> — wife, elderly parents, anyone — valid in all four schools, <b>as long as they give permission</b> (and the niyyah is theirs). One payment from you, clean separate ledgers inside.`, 1600);
+    Chat.user('We have two incomes — my husband works too. I handle zakat for the family.');
+    await Chat.ai(`Important nuance: <b>zakat is an individual obligation</b> — each person owes on <b>their own</b> wealth. There’s no “household zakat” in fiqh.\n\nBut you <b>can calculate and pay on their behalf as wakīl</b> — spouse, elderly parents, anyone — valid in all four schools, <b>as long as they give permission</b> (and the niyyah is theirs). One payment from you, clean separate ledgers inside.`, 1600);
     await Chat.card(`<div class="ch-quick">
-      <button class="chip" onclick="ZKChat.addSpouse()">Add Aisha — she consented</button>
+      <button class="chip" onclick="ZKChat.addSpouse()">Add Omar — he consented</button>
       <button class="chip" onclick="ZKChat.addParents()">Add my elderly parents — they consented</button>
       <button class="chip" onclick="ZKChat.spouseSolo()">Keep it separate — just remind them</button>
     </div>`,250);
@@ -500,14 +499,14 @@ window.ZKChat = {
   });},
   addSpouse(){ this.guard(async()=>{
     const s=ZK.st(); s.rel.aisha=true; s.wak.aisha=true;
-    Chat.user('Add her — she consented');
-    await Chat.ai(`Done ✓ — <b>wakāla on</b>. Her ledger: salary savings <b>AED ${fm(ZAKAT.spouse.cash,0)}</b> + gold jewellery <b>${ZAKAT.spouse.jewelleryG} g</b> (≈ AED ${fm(ZAKAT.spouse.jewelleryG*ZAKAT.goldPerG,0)}) — ${ZK.meth().jewellery?'<b>counted</b> under your chosen method':'<b>exempt</b> as personal use under your chosen method'}. She’s above nisab either way.`,1300);
+    Chat.user('Add him — he consented');
+    await Chat.ai(`Done ✓ — <b>wakāla on</b>. His ledger: salary savings <b>AED ${fm(ZAKAT.spouse.cash,0)}</b> — above nisab on its own, due <b>AED ${fm(ZAKAT.spouse.cash*ZAKAT.rate)}</b> under every school. No gold on his side — the jewellery khilaf lives on your ledger, not his.`,1300);
     await Chat.card(this.menu(),200);
   });},
   spouseSolo(){ this.guard(async()=>{
     const s=ZK.st(); s.rel.aisha=true; s.wak.aisha=false;
     Chat.user('Keep it separate');
-    await Chat.ai(`Respect ✓ — I’ll compute her side so she can verify it, and send her the breakdown to pay herself. Her obligation stays hers.`,1000);
+    await Chat.ai(`Respect ✓ — I’ll compute his side so he can verify it, and send him the breakdown to pay himself. His obligation stays his.`,1000);
     await Chat.card(this.menu(),200);
   });},
 

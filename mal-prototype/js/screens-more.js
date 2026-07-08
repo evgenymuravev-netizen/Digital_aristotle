@@ -465,7 +465,7 @@ window.ZK = {
   set(k,v){ this.st()[k]=v; A.refresh(); },
   toggleManual(id){ const m=this.st().manual[id]; m.on=!m.on; if(m.on&&!m.v) this.editSheet(id); else A.refresh(); },
   editSheet(id){ const def=ZAKAT.manual.find(m=>m.id===id);
-    const vals = id==='jewel'?[24319,48632,70516]:id==='silver'?[1124,3344,5620]:id==='owed'?[2000,8000,20000]:id==='points'?[100,230,600]:[1000,3500,10000,18000];
+    const vals = id==='jewel'?[24316,48632,70516]:id==='silver'?[1124,3344,5620]:id==='owed'?[2000,8000,20000]:id==='points'?[100,230,600]:[1000,3500,10000,18000];
     A.sheet(`<div class="h2">${def.em} ${def.t}</div><div class="sub mt4">${def.note}.</div>
       <div class="chips" style="margin-top:14px">
         ${vals.map(v=>`<button class="chip" onclick="ZK.st().manual['${id}']={on:true,v:${v}};A.closeSheet();A.refresh()">AED ${fm(v,0)}</button>`).join('')}
@@ -477,7 +477,7 @@ window.ZK = {
           onkeydown="if(event.key==='Enter')ZK.custom('${id}')">
         <button class="btn pri sm" onclick="ZK.custom('${id}')">Set</button>
       </div>
-      ${id==='jewel'?'<div class="micro mt12">Tip: 50 g ≈ AED 24 319 · 100 g ≈ 48 632 · 145 g ≈ 70 516 at today’s price.</div>':''}`); },
+      ${id==='jewel'?'<div class="micro mt12">Tip: 50 g ≈ AED 24 316 · 100 g ≈ 48 632 · 145 g ≈ 70 516 at today’s price.</div>':''}`); },
   custom(id){
     const el=document.getElementById('zkCustom');
     const v=parseFloat(String(el&&el.value||'').replace(/[ ,]/g,''));
@@ -651,8 +651,8 @@ SCREENS.zakat = () => {
           </div>`).join('')}
       </div>`).join('')}
 
-    <div class="flex between mt16 mb8"><span class="lbl">Helping relatives — wakāla ${tipi('Wakāla = authorised agency. You may calculate and pay zakat for your wife or elderly parents only with their permission — the obligation and intention (niyyah) remain theirs.')}</span><span class="micro">each is an individual obligation</span></div>
-    <div class="micro mb8">A son or spouse may calculate and pay for elderly parents or each other — <b>with their permission</b> (wakāla, valid in all four schools). The niyyah belongs to them.</div>
+    <div class="flex between mt16 mb8"><span class="lbl">Helping relatives — wakāla ${tipi('Wakāla = authorised agency. You may calculate and pay zakat for your spouse or elderly parents only with their permission — the obligation and intention (niyyah) remain theirs.')}</span><span class="micro">each is an individual obligation</span></div>
+    <div class="micro mb8">An adult child or spouse may calculate and pay for elderly parents or each other — <b>with their permission</b> (wakāla, valid in all four schools). The niyyah belongs to them.</div>
     <div class="listcard">
       ${z.family.map(f=>{
         const on=s.rel[f.id], b=ZK.relUnder(f.id, s.method), dueF=ZK.relDue(f.id, s.method);
@@ -764,7 +764,7 @@ SCREENS.agents = () => {
   <div class="scr">
     ${hdr('Your agents',{right:`<button class="iconbtn" onclick="chatDeep('agents')">${ic('spark',18)}</button>`})}
     <div class="card lime">
-      <div class="flex between"><span class="lbl" style="color:rgba(26,18,4,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, yield bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(26,18,4,.14);color:#1a1204">${AGENTS.period}</span></div>
+      <div class="flex between"><span class="lbl" style="color:rgba(26,18,4,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, profit bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(26,18,4,.14);color:#1a1204">${AGENTS.period}</span></div>
       <div style="font:800 36px Inter,sans-serif" class="tnum mt8">AED ${fm(AGENTS.earned,0)}</div>
       <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')} — plus ${AGENTS.timeSaved}</div>
     </div>
@@ -785,7 +785,7 @@ SCREENS.agents = () => {
           <button class="switch lime ${st[id]?'on':''}" onclick="A.tmp.ag.${id}=!A.tmp.ag.${id};A.refresh()"></button>
         </div>`).join('')}
       <div class="row static"><span style="font-size:20px">⚡</span>
-        <div class="row-main"><div class="row-t" style="font-size:13.5px">Riskier yield — P2P business financing ${tipi('Musharaka: you share real profit and real loss with vetted SMEs. No interest anywhere — and no guarantees either. The most Shariah-native risk there is.')}</div>
+        <div class="row-main"><div class="row-t" style="font-size:13.5px">Higher-risk profit — P2P business financing ${tipi('Musharaka: you share real profit and real loss with vetted SMEs. No interest anywhere — and no guarantees either. The most Shariah-native risk there is.')}</div>
           <div class="row-d" style="white-space:normal">${AGENTS.p2p.exp} · ${AGENTS.p2p.platforms}</div>
           ${st.risk?`<div class="row-sub mt4" style="color:var(--gold)">⚠️ ${AGENTS.p2p.risk}</div>
           <div class="chips mt4">${AGENTS.p2p.alloc.map(p=>`<button class="chip ${p===10?'on':''}" onclick="A.toast('${p}% of savings allocated to Musharaka deals — drip-funded, diversified over 12+ SMEs','check')">${p}% of savings</button>`).join('')}</div>`:''}
@@ -836,7 +836,7 @@ SCREENS.gift = () => {
       <div class="micro mt4">${g.date} · reminder set — I won’t let it sneak up on you.</div>
     </div>
     <div class="card soft mt12 flex" style="gap:10px;align-items:flex-start">${ic('shieldCheck',20,'lime-t')}
-      <div class="micro"><b>With her consent:</b> ${g.consent} ${tipi('These signals come from Aisha’s own Mal app — she chose to share gift-relevant categories with you. You see ideas, never her raw transactions or searches.')}</div></div>
+      <div class="micro"><b>With his consent:</b> ${g.consent} ${tipi('These signals come from Omar’s own Mal app — he chose to share gift-relevant categories with you. You see ideas, never her raw transactions or searches.')}</div></div>
 
     <div class="lbl mt16 mb8">Budget it ${tipi('Reserved into a hidden Gift pot — masked from shared views and her insights, so the surprise survives.')}</div>
     <div class="chips">
@@ -1070,6 +1070,7 @@ SCREENS.profile = () => `
       ${[['shieldCheck','Security & privacy','security'],['bank','Linked banks & consents','consents'],['doc','Statements & documents','statement'],
          ['zap','Mal Rules','rules'],['gift','Rewards','rewards'],['headset','Support — humans, 24/7','support'],['globe',A.S.lang==='ar'?'اللغة · العربية':'Language · English','language']]
         .map(([i,t,r])=>`<div class="row" onclick="A.go('${r}')"><span class="bigico">${ic(i,20)}</span><div class="row-main"><div class="row-t">${t}</div></div><span class="chev">${ic('chevR',16)}</span></div>`).join('')}
+      <div class="row static"><span class="bigico">${ic('moon',20)}</span><div class="row-main"><div class="row-t">Black & white mode</div><div class="row-d">Greyscale display — money without the dopamine</div></div><button class="switch lime ${A.S.mono?'on':''}" onclick="A.S.mono=!A.S.mono;A.persist();A.refresh()"></button></div>
     </div>
     <div class="card soft mt12">
       <div class="kv"><span class="k">Verified salary</span><span class="v tnum">AED ${fm(USER.salary,0)} / mo · ${USER.employer}</span></div>

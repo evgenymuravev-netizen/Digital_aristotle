@@ -4,13 +4,13 @@ const TABS = ['home','money','pay','insights','goals'];
 const LS_KEY = 'malProtoV1';
 
 window.A = {
-  S:{ onboarded:false, linked:[], hideBal:false, frozen:false },
+  S:{ onboarded:false, linked:[], hideBal:false, frozen:false, mono:false },
   tmp:{}, stack:[], route:null, _scn:null, _hashLock:false,
 
   persist(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(this.S)); }catch(e){} },
   load(){ try{ const v=JSON.parse(localStorage.getItem(LS_KEY)); if(v) this.S=Object.assign(this.S,v); }catch(e){} },
-  ensureApp(){ this.S.onboarded=true; this.S.linked=['fab','wio','ei','careem','tabby','binance']; this.persist(); },
-  ensureFresh(){ this.S.onboarded=false; this.S.linked=[]; this.persist(); },
+  ensureApp(){ this.S.onboarded=true; this.S.linked=['fab','wio','ei','careem','tabby','binance']; this.S.mono=false; this.persist(); },
+  ensureFresh(){ this.S.onboarded=false; this.S.linked=[]; this.S.mono=false; this.persist(); },
 
   /* ---------- routing ---------- */
   go(route, replace=false){
@@ -50,6 +50,7 @@ window.A = {
     /* Arabic / RTL pass */
     host.classList.toggle('rtl', this.S.lang==='ar');
     if(this.S.lang==='ar'){ applyAr(host); applyAr(document.getElementById('navHost')); }
+    const ph=document.getElementById('phone'); if(ph) ph.classList.toggle('mono-mode', !!this.S.mono);
   },
   syncHash(){
     if(this._running) return;                     /* scenario sets one #s/N hash at the end instead */

@@ -34,11 +34,11 @@ window.SCN_GROUPS = [
   S('Consent receipt ✦','AA-style: purpose-, time-bound, revocable artefact','connect-consent/fab','fresh'),
   S('Bank linked + instant value ✦','Confetti + salary & subscriptions found immediately','connect-success/fab','fresh'),
   S('🎬 Full Lean replica run','Every screen flagged: replica vs lime enhancements',()=>CN.startReplica(),'fresh'),
-  S('Aggregation finale','“One number, John” — total counts up live','connect-finale'),
+  S('Aggregation finale','“One number, Khadeeja” — total counts up live','connect-finale'),
 ]},
 
 {g:'Home & daily agent', items:[
-  S('Home dashboard (deck slide 1)','“Hi, John” + briefing line + My money AED 275 900,76','home'),
+  S('Home dashboard (deck slide 1)','“Hi, Khadeeja” + briefing line + My money AED 275 900,76','home'),
   S('Agentic morning briefing','Trip docs · doctor tomorrow · Netflix debit · card due','briefing'),
   S('Hide balances everywhere','Privacy eye masks every amount',()=>{A.S.hideBal=true;A.persist();A.go('home');A.toast('Balances hidden — tap the eye to reveal','eyeOff');}),
   S('Notification centre','Story · debit alerts · score · consent expiry','notifs'),
@@ -112,6 +112,7 @@ window.SCN_GROUPS = [
   S('Cancel via your bank ✦','Mal files the cancellation + refund request','subs'),
   S('Safe-to-spend forecast','AED 9 540 until salary, 94% accuracy','forecast'),
   S('Financial health score','78/100 with named fixes','health'),
+  S('Black & white mode','Greyscale banking that doesn’t fight for your attention — toggle in Profile',()=>{A.S.mono=true;A.persist();A.go('home');setTimeout(()=>A.tip('Black & white mode is on — toggle it anytime in Profile'),700);}),
   S('June Money Story','Spotify-Wrapped for your month — tap through',()=>{A.go('insights');setTimeout(()=>Story.open(),450);}),
 ]},
 
@@ -177,7 +178,7 @@ window.SCN_GROUPS = [
   S('Declare what banks can’t see','Cash at home, trade stock, jewellery, receivables — with fiqh notes','zakat'),
   S('AI interview — every asset','Mal asks about merchant stock & hidden wealth, citing the four schools',()=>chatDeep('zakatFull')),
   S('Pick your scholar','Taqi Usmani · UAE Awqaf · Ibn ‘Uthaymeen · AAOIFI — math follows the fatwa',()=>chatDeep('zakatFull')),
-  S('Family zakat — wakāla','Two incomes, individual obligations; husband pays with her consent',()=>{const st=ZK.st();st.rel.aisha=true;st.wak.aisha=true;A.go('zakat');}),
+  S('Family zakat — wakāla','Two incomes, individual obligations; you pay as wakīl with his consent',()=>{const st=ZK.st();st.rel.aisha=true;st.wak.aisha=true;A.go('zakat');}),
   S('Pay tomorrow — 1 Ramadan','Hawl anchored to Ramadan; recalculated at live prices on the day','zakat'),
   S('Debts that reduce zakat','Payroll, BNPL, 12-month slices of mortgage/car/personal, business facilities — itemised toggles','zakat'),
 ]},
@@ -223,12 +224,12 @@ window.SCN_GROUPS = [
 {g:'Insights 2.0 ✦', items:[
   S('Budget rings — Apple style','Three rings (Essentials · Lifestyle · Travel) close toward plan; red ⚠️ = over, with the why',()=>A.go('insights')),
   S('Tooltips everywhere','Tap ⓘ on nisab, wakāla, Qard Ḥasan, pre-approved, rings, safe-to-spend…',()=>{A.go('zakat');setTimeout(()=>A.tip('Like this — every tricky concept has a one-tap explanation now.'),900);}),
-  S('Birthday radar — gift planner','Aisha’s birthday in 14 days: budget it + ideas from her consent-shared spends, searches & listening',()=>A.go('gift')),
-  S('Gift advice in chat','“What should I get Aisha?” — signals, budget, hidden Gift pot',()=>chatDeep('gift')),
+  S('Birthday radar — gift planner','Omar’s birthday in 14 days: budget it + ideas from his consent-shared spends, searches & listening',()=>A.go('gift')),
+  S('Gift advice in chat','“What should I get Omar?” — signals, budget, hidden Gift pot',()=>chatDeep('gift')),
 ]},
 
 {g:'Agent economy ✦', items:[
-  S('Agents hub — they earn for you','AED 1 643 this quarter with receipts: groceries, rides, codes, yield, rebooking',()=>A.go('agents')),
+  S('Agents hub — they earn for you','AED 1 643 this quarter with receipts: groceries, rides, codes, profit, rebooking',()=>A.go('agents')),
   S('Delegate groceries','Strategy dials: “eat healthy” + “support local brands” — local always ranked first',()=>A.go('agents')),
   S('Careem: cashback vs Skywards','3% Tabby (AED 1,15) or 1 500 miles? Agent shows the math, you can override',()=>A.go('agents')),
   S('Promo-code hunter + Fazaa','Every working code tried at checkout; Fazaa Gold partner pricing linked',()=>A.go('agents')),

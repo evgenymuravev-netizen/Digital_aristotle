@@ -2,7 +2,7 @@
 (function(){
 
 window.USER = {
-  first:'John', last:'Reeves', phone:'+971 50 482 7791', email:'john.reeves@gmail.com',
+  first:'Khadeeja', last:'AlMansoori', phone:'+971 50 482 7791', email:'khadeeja.almansoori@gmail.com',
   eid:'784-1990-63821-4', iban:'AE07 0331 2345 6789 0123 456', since:'June 2026', emirate:'Dubai',
   salary:32500, salaryDay:25, employer:'TABBY FZ-LLC',
 };
@@ -25,6 +25,19 @@ window.ACCOUNTS = [
   {id:'binance-c',bank:'binance',kind:'crypto', name:'Binance · BTC, ETH', mask:'', bal:9840.00},
 ];
 window.LIQUID_TOTAL = 275900.76;
+/* business side — same numbers as the zakat estate (Wio Business 22 400) and the debt book */
+ACCOUNTS.push(
+  {id:'wb-cur', bank:'wio',     biz:true, kind:'current', name:'Business current', mask:'7741', bal:22400.00},
+  {id:'mb-inv', bank:'mashreq', biz:true, kind:'finance', name:'Invoice financing',            bal:-22000, left:'14,5% · your most expensive dirham — close it'},
+  {id:'mb-fin', bank:'mashreq', biz:true, kind:'finance', name:'Business financing · Murabaha', bal:-45000, left:'9,2% → Mal deposit-secured 4,95%'},
+  {id:'mb-po',  bank:'mashreq', biz:true, kind:'finance', name:'Purchase financing (PO)',      bal:-12500, left:'11% · repaid as inventory sells'},
+  {id:'cw-b2b', bank:'cashew',  biz:true, kind:'finance', name:'B2B BNPL — supplier terms',   bal:-8400,  left:'0% inside 60 days · reminder on day 55'}
+);
+window.NETW = () => {
+  const xt=['careem','tabby','binance'].filter(b=>window.A&&A.S.linked.includes(b));
+  const bk=['fab','wio','ei','noor','dib'].concat(xt);
+  return ACCOUNTS.filter(a=>!a.biz&&bk.includes(a.bank)).reduce((s,a)=>s+a.bal,0);
+};
 
 window.BANK_ORDER = ['adcb','adib','ajman','cbd','dib','ei','enbd','fab','hsbc','liv','mashreq','rak','sib','wio'];
 /* connectable provider categories (enhanced Mal Connect — beyond banks) */
@@ -90,8 +103,8 @@ window.SUBS = [
    used:'AED 142,67 in May (≈ $38,85) · tokens ▲ 38%', flag:'Usage-based — caching could cut ~40%'},
   {m:'ChatGPT Plus',   amt:73.41, day:'31st', next:'30 Jun',   ic:'spark', c:'#B89CFF', acc:'fab-cc', used:'Used daily'},
   {m:'iCloud+ 2TB',    amt:36.99, day:'2nd',  next:'2 Jul',    ic:'doc',   c:'#9ba4c4', acc:'fab-cc',
-   used:'1,1 TB used · Aisha pays AED 36,99 for her own', flag:'Family Sharing covers you both — one plan, save AED 444/yr',
-   share:{who:'Aisha', herCost:36.99, save:444, why:'iCloud+ 2TB shares with up to 5 family members at no extra cost. You use 1,1 TB — plenty of room for both.'}},
+   used:'1,1 TB used · Omar pays AED 36,99 for his own', flag:'Family Sharing covers you both — one plan, save AED 444/yr',
+   share:{who:'Omar', herCost:36.99, save:444, why:'iCloud+ 2TB shares with up to 5 family members at no extra cost. You use 1,1 TB — plenty of room for both.'}},
   /* music cluster — main metric: hours listened + trend */
   {m:'Anghami Plus',   amt:19.99, day:'30th', next:'30 Jun',   ic:'film',  c:'#FF8FC0', acc:'fab-cc', music:true,
    hours:31, trend:+24, used:'31 h this month ▲ 24%', flag:'Keep — your main player, best Arabic catalogue'},
@@ -115,7 +128,7 @@ window.UPCOMING = [
 window.BRIEFING = {
   line:`Today you need <b>to send the documents for the trip</b>. And a <b>doctor's appointment</b> is scheduled for <b>tomorrow</b>.`,
   items:[
-    {ic:'gift', c:'#FF8FC0', t:'Aisha’s birthday — in 14 days', d:'Thu 26 June · gift plan ready from her shared signals · budget not set yet', cta:'Plan her gift', act:'gift'},
+    {ic:'gift', c:'#FF8FC0', t:'Omar’s birthday — in 14 days', d:'Thu 26 June · gift plan ready from his shared signals · budget not set yet', cta:'Plan his gift', act:'gift'},
     {ic:'doc',  c:'#6FB6FF', t:'Send trip documents', d:'Emirates booking RF8Q2P · visa copies due today 18:00', cta:'Open checklist', act:'done'},
     {ic:'heart',c:'#FF7A6B', t:"Doctor's appointment", d:'Dr. Mansoor · Al Das Medical · tomorrow 09:30 — AED 390 last visit', cta:'Add to calendar', act:'done'},
     {ic:'film', c:'#E50914', t:'Netflix will debit AED 29 tomorrow', d:'From FAB Cashback Visa ··4412', cta:'Manage', act:'subs'},
@@ -125,18 +138,18 @@ window.BRIEFING = {
 
 /* ---------- birthday gift radar (consent-shared signals) ---------- */
 window.GIFT = {
-  who:'Aisha', date:'Thursday, 26 June', inDays:14,
-  consent:'Aisha shared her wishlist signals on 3 May — spending categories, search & listening interests. Revocable anytime in her Consent centre.',
+  who:'Omar', date:'Thursday, 26 June', inDays:14,
+  consent:'Omar shared his wishlist signals on 3 May — spending categories, search & listening interests. Revocable anytime in his Consent centre.',
   budgets:[400,800,1500],
   ideas:[
-    {em:'👜', t:'Cult Gaia “Hana” bag', price:690, store:'Ounass · 2-day delivery', src:'🔍 Her searches',
-     why:'Searched 6× this month, saved twice on Instagram'},
-    {em:'🌸', t:'Jo Malone Oud & Bergamot', price:540, store:'Sephora MOE · today', src:'🧾 Her spends',
-     why:'She rebuys every ~8 months — last bottle November, running out about now'},
-    {em:'🧘‍♀️', t:'Talise Spa day for two', price:750, store:'Madinat Jumeirah', src:'🧾 Her spends',
-     why:'Wellness spends up 40% this quarter — she’s been hinting'},
-    {em:'🎶', t:'Fairuz tribute night ×2', price:380, store:'Dubai Opera · 28 Jun', src:'🎧 Her listening',
-     why:'Fairuz is her #1 artist on Anghami this year'},
+    {em:'⌚', t:'Withings ScanWatch 2', price:690, store:'Virgin Megastore · today', src:'🔍 His searches',
+     why:'Searched 5× this month, watched two review videos this week'},
+    {em:'🧴', t:'Tom Ford Oud Wood 50 ml', price:540, store:'Sephora MOE · today', src:'🧾 His spends',
+     why:'He rebuys every ~8 months — last bottle November, running out about now'},
+    {em:'⛳', t:'Topgolf Dubai night ×4', price:750, store:'Emirates Golf Club', src:'🧾 His spends',
+     why:'Golf spends up 40% this quarter — he’s been hinting'},
+    {em:'🎶', t:'Kadim Al Sahir live ×2', price:380, store:'Dubai Opera · 28 Jun', src:'🎧 His listening',
+     why:'Kadim Al Sahir is his #1 artist on Anghami this year'},
   ],
 };
 
@@ -286,7 +299,7 @@ window.ZAKAT = {
   manual:[
     {id:'homecash', t:'Cash at home',                em:'🏠', v:3500,  on:true,  note:'Zakatable wherever it sleeps — unanimous'},
     {id:'trade',    t:'Trade goods in stock',        em:'📦', v:18000, on:true,  note:'Merchant inventory at today’s selling price — agreed by all four schools'},
-    {id:'jewel',    t:'Gold jewellery (personal use)',em:'💍', v:0,    on:false, note:'Khilaf: Hanafi & Ibn ‘Uthaymeen — zakatable · Majority — exempt'},
+    {id:'jewel',    t:'Gold jewellery (personal use)',em:'💍', v:24316, on:true, note:'Your 50 g · khilaf: Hanafi & Ibn ‘Uthaymeen — zakatable · Majority — exempt'},
     {id:'silver',   t:'Silver',                      em:'🥈', v:0,    on:false, note:'595 g nisab on its own'},
     {id:'owed',     t:'Money owed to me (strong debts)', em:'🤝', v:0, on:false, note:'Expected receivables — zakatable now per the majority'},
     {id:'points',   t:'Cashback pending payout',     em:'💳', v:230,   on:true,  note:'Cash-back is money once credited. Miles & points are NOT māl until redeemed — see the chat for the “lifehack” ruling'},
@@ -310,10 +323,10 @@ window.ZAKAT = {
       {id:'b2b',     t:'B2B BNPL — supplier terms',                v:8400.00,  note:'0% if settled in 60 days'},
     ],
   },
-  spouse:{name:'Aisha', cash:42300.00, jewelleryG:145},
+  spouse:{name:'Omar', cash:42300.00, jewelleryG:0},
   /* helping relatives — each is an individual obligation; you pay as wakīl WITH their permission */
   family:[
-    {id:'aisha', rel:'Wife',   name:'Aisha',         cash:42300.00, jewelleryG:145, note:'Salary savings + her jewellery'},
+    {id:'aisha', rel:'Husband', name:'Omar',         cash:42300.00, jewelleryG:0,   note:'Salary savings — his own obligation; you act as his wakīl'},
     {id:'dad',   rel:'Father', name:'Robert (Dad)',  cash:88400.00, jewelleryG:0,   note:'Retired — pension savings, no gold'},
     {id:'mum',   rel:'Mother', name:'Mary (Mum)',    cash:12600.00, jewelleryG:210, note:'Little cash, much gold — the classic elderly-parent case'},
   ],
@@ -321,7 +334,7 @@ window.ZAKAT = {
   bizAssets:[
     {id:'bizcash', t:'Business account balance',     em:'🏢', v:22400, on:true,  note:'Wio Business ··7741 — cash is cash'},
     {id:'bizrecv', t:'Business receivables (strong)',em:'🧾', v:8000,  on:true,  note:'Invoices you expect to collect'},
-    {id:'llc',     t:'Reeves Trading LLC — your 30%',em:'📜', v:25200, on:true,  note:'Zakat flows through the company: 30% × AED 84 000 net current assets (AAOIFI look-through)'},
+    {id:'llc',     t:'AlMansoori Trading LLC — your 30%',em:'📜', v:25200, on:true,  note:'Zakat flows through the company: 30% × AED 84 000 net current assets (AAOIFI look-through)'},
     {id:'pefund',  t:'PE fund units — zakatable 42%',em:'🏛', v:6300,  on:true,  note:'AED 15 000 units × 42% zakatable ratio reported by the fund'},
     {id:'sukfund', t:'Mal Sukuk Fund',              em:'✅', v:0,     on:false, locked:true, note:'Fund pays zakat at fund level — already covered, excluded here'},
   ],
@@ -382,7 +395,7 @@ window.CONSENTS = [
 /* ---------- notifications ---------- */
 window.NOTIFS = [
   {ic:'bell', c:'#f5c542', t:'3 agent actions need your nod', d:'Disney On Ice, gift reserve, e-Saver switch', when:'Just now', act:'approvals'},
-  {ic:'gift', c:'#FF8FC0', t:'Aisha’s birthday in 14 days 🎂', d:'Gift plan ready — 4 ideas from her shared signals', when:'Just now', act:'gift'},
+  {ic:'gift', c:'#FF8FC0', t:'Omar’s birthday in 14 days 🎂', d:'Gift plan ready — 4 ideas from his shared signals', when:'Just now', act:'gift'},
   {ic:'spark', c:'#f5c542', t:'Your June Money Story is ready', d:'See where your money went in 30 seconds', when:'Just now', act:'story'},
   {ic:'film',  c:'#E50914', t:'Netflix debits AED 29 tomorrow', d:'FAB Cashback Visa ··4412', when:'2 h ago', act:'subs'},
   {ic:'card',  c:'#FFB050', t:'Pre-approved: FAB card, AED 20 000 limit', d:'3.99% · 55 days grace · expires in 6 days', when:'5 h ago', act:'chat-card'},
@@ -406,7 +419,7 @@ window.FX = [
 window.AGENTS = {
   earned:1643, period:'this quarter', timeSaved:'11 h of life-admin handled',
   breakdown:[['Subscription & tariff fixes',612],['Deal swaps & cheaper baskets',314],['Hotel rebooking refunds',230],
-             ['Cashback routed smartly',218],['Savings yield bumps',173],['Promo codes applied',96]],
+             ['Cashback routed smartly',218],['Savings profit bumps',173],['Promo codes applied',96]],
   fleet:[
     {em:'🛒', t:'Grocery agent', sub:'Weekly basket · Kibsons & Carrefour', strat:'Eat healthy + local brands',
      report:'May: saved AED 142 · 11 swaps to healthier or local items · 2 codes applied',
@@ -435,7 +448,7 @@ window.AGENTS = {
     {em:'👨‍👩‍👧', t:'Family agent', sub:'Together-time: events, kids, brunches',
      report:'Booked Friday brunch ×4 (kids menu ✓) · Disney On Ice tickets for the girls 28 Jun · movie night fund topped up',
      last:'Spends from the Family pot — every booking lands on the shared calendar first',
-     collab:'Synced with the Gift planner for Aisha’s birthday on the 26th'},
+     collab:'Synced with the Gift planner for Omar’s birthday on the 26th'},
   ],
   p2p:{exp:'9–14% expected (not guaranteed)', risk:'Capital at risk — Musharaka profit-share into vetted SMEs; the most Shariah-native risk there is',
        platforms:'Beehive · Funding Souq', alloc:[5,10,15]},
@@ -448,7 +461,7 @@ window.APPROVALS = [
   {id:'ap3', em:'✈️', agent:'Travel',   t:'Rebook August London hotel — price dropped', cost:-230, refund:true, why:'Same room & dates, AED 230 cheaper · free cancellation kept'},
   {id:'ap4', em:'🌿', agent:'Wellbeing',t:'Confirm dental check-up · 8 Jul 17:30',  cost:0,    why:'Covered by your Daman plan · last cleaning was 7 months ago'},
   {id:'ap5', em:'👨‍👩‍👧', agent:'Family', t:'Disney On Ice ×4 · 28 Jun',             cost:520,  why:'From the Family pot · seats together, block B · kids’ mid-term break'},
-  {id:'ap6', em:'🎁', agent:'Gift',     t:'Reserve AED 800 for Aisha’s gift',       cost:800,  why:'Birthday 26 Jun · hidden Gift pot, masked from shared views'},
+  {id:'ap6', em:'🎁', agent:'Gift',     t:'Reserve AED 800 for Omar’s gift',       cost:800,  why:'Birthday 26 Jun · hidden Gift pot, masked from shared views'},
   {id:'ap7', em:'🏦', agent:'Watchdog', t:'Move e-Saver → Liv 3,4% account',        cost:0, big:true, why:'+0,3% on AED 96 540 ≈ AED 290/yr · same liquidity · Shariah-compliant'},
 ];
 

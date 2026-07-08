@@ -4,14 +4,14 @@ const D = {
 /* navigation */
 'Overview':'نظرة عامة','Money':'أموالي','Insights':'الرؤى','Goals':'الأهداف',
 /* home */
-'Hi, John.':'أهلاً يا جون.','Morning briefing · 4 items':'الإحاطة الصباحية · 4 مهام','Morning briefing · 5 items':'الإحاطة الصباحية · 5 مهام',
-'My money':'أموالي','Budget':'الميزانية','Trends for June':'اتجاهات شهر يونيو',
+'Hi, Khadeeja.':'أهلاً يا خديجة.','Morning briefing · 4 items':'الإحاطة الصباحية · 4 مهام','Morning briefing · 5 items':'الإحاطة الصباحية · 5 مهام',
+'My money':'أموالي','Balance':'الرصيد','Personal':'شخصي','Business':'أعمال','Black & white mode':'الوضع الأبيض والأسود','Budget':'الميزانية','Trends for June':'اتجاهات شهر يونيو',
 'Payments':'المدفوعات','Transfers':'التحويلات','For you':'لك خصيصاً','Upcoming':'القادم','All':'الكل',
 'will be debited tomorrow':'سيُخصم غداً',
 'Send':'إرسال','Request':'طلب','Scan':'مسح','Between':'تحويل بيني',
 'Netflix':'نتفليكس','DEWA · autopay':'ديوا · دفع تلقائي','FAB card · min due':'بطاقة FAB · الحد الأدنى',
 'Salary expected':'الراتب المتوقع','Auto finance · DIB':'تمويل السيارة · DIB',
-'⚡ Pre-approved':'⚡ موافقة مسبقة','FAB card · AED 20 000 limit':'بطاقة FAB · حد 20 000 د.إ',
+'⚡ Pre-approved':'⚡ موافقة مسبقة','Mal Agentic card · AED 20 000':'بطاقة «مال» الوكيلة · 20 000 د.إ',
 '3.99% · 55 days grace · 1-click':'3,99% · سماح 55 يوماً · بنقرة واحدة',
 '✦ New':'✦ جديد','June Money Story':'قصة أموالك · يونيو','Your month in 30 seconds':'شهرك في 30 ثانية',
 '🌙 Ramadan tomorrow':'🌙 رمضان غداً','Zakat — pay on day 1':'الزكاة — ادفع في اليوم الأول',

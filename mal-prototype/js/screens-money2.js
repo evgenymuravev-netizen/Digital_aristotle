@@ -304,20 +304,21 @@ SCREENS.insights = () => {
       <div class="micro mt4">Dining is +38% vs May — mostly delivery. Want a cap?</div>
       <button class="chip mt8" onclick="A.go('rule-new')">Set a smart cap</button></div>`:''}
     <div class="lbl mt20 mb8">Categories</div>
+    <div class="micro mb8">Colour = status only: <span style="color:#53DE8E">●</span> on track · <span style="color:#FFB050">●</span> near limit · <span style="color:#FF7A6B">●</span> over budget</div>
     <div class="listcard">
-      ${CATSPEND.map(c=>`
+      ${CATSPEND.map(c=>{ const p=c.amt/c.bud, tc=p>1?'#FF7A6B':p>=0.85?'#FFB050':'#53DE8E'; return `
         <div class="row" onclick="A.go('cat/${c.cat}')">
-          ${catIc(c.cat)}
+          <span class="bigico">${ic(CATS[c.cat].ic,21)}</span>
           <div class="row-main"><div class="row-t">${CATS[c.cat].n}</div>
-            <div class="mt4">${meter(c.amt/c.bud, c.amt>c.bud?'#FF7A6B':CATS[c.cat].c)}</div></div>
-          <div class="row-r"><div class="row-amt tnum">${fm(c.amt,0)}</div><div class="row-sub tnum">of ${fm(c.bud,0)}</div></div>
-        </div>`).join('')}
+            <div class="mt4">${meter(p, tc)}</div></div>
+          <div class="row-r"><div class="row-amt tnum" style="color:${p>1?'#FF7A6B':'var(--tx)'}">${fm(c.amt,0)}</div><div class="row-sub tnum">of ${fm(c.bud,0)}</div></div>
+        </div>`;}).join('')}
     </div>
     <div class="lbl mt20 mb8">Top merchants</div>
     <div class="listcard">
       ${MERCHANTS_TOP.slice(0,4).map(m=>`
         <div class="row" onclick="A.toast('${esc(m.m)}: ${m.n} purchases in June','info')">
-          ${catIc(m.cat,38)}
+          <span class="bigico">${ic(CATS[m.cat].ic,19)}</span>
           <div class="row-main"><div class="row-t">${m.m}</div><div class="row-d">${m.n} purchase${m.n>1?'s':''}</div></div>
           <div class="row-amt tnum">${fm(m.amt)}</div>
         </div>`).join('')}
@@ -329,7 +330,7 @@ SCREENS.insights = () => {
     <div class="grid2 mt16">
       <div class="card tap" onclick="A.go('subs')"><span class="lbl">Subscriptions</span><div class="h3 mt8 tnum">AED 1 426 / mo</div><div class="micro mt4">AED 2 076/yr to save</div></div>
       <div class="card tap" onclick="A.go('forecast')"><span class="lbl">Safe to spend ${tipi('What you can still spend before salary day with every known bill, instalment and rule already reserved — across all linked banks.')}</span><div class="h3 mt8 tnum lime-t">AED 9 540</div><div class="micro mt4">until salary day</div></div>
-      <div class="card tap" onclick="A.go('health')"><span class="lbl">Financial health</span><div class="h3 mt8">78 / 100</div><div class="micro mt4">▲ 4 this month</div></div>
+      <div class="card tap" onclick="A.tmp.moneyMode='net';A.go('money')"><span class="lbl">Net worth</span><div class="h3 mt8 tnum">AED ${fm(NETW(),0)}</div><div class="micro mt4"><span style="color:var(--grn)">▲ 2,4%</span> this month</div></div>
       <div class="card tap" onclick="A.go('score')"><span class="lbl">AECB score</span><div class="h3 mt8">745</div><div class="micro mt4">Very good</div></div>
     </div>
   </div>`;
@@ -371,7 +372,7 @@ SCREENS.subs = () => {
     </div>
     <div class="card mt12" style="border-color:rgba(245,197,66,.45)">
       <b style="font-size:13.5px">✦ Mal found AED 2 076/yr to save</b>
-      <div class="micro mt4">Cheaper du plan (1 080) + two overlapping music apps (552) + iCloud Family Sharing instead of Aisha’s duplicate (444). Anghami stays.</div>
+      <div class="micro mt4">Cheaper du plan (1 080) + two overlapping music apps (552) + iCloud Family Sharing instead of Omar’s duplicate (444). Anghami stays.</div>
     </div>
 
     <div class="card mt12">

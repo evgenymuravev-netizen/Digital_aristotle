@@ -410,3 +410,7 @@
   font:700 10px/16px Inter,sans-serif;justify-content:center;cursor:pointer;vertical-align:middle;margin-left:2px}
 .light .tipi{background:#E9EBF0;color:#6B7280}
 .tipi:active{transform:scale(.9)}
+
+/* ---- Black & white (attention-safe) mode ---- */
+#phone.mono-mode #screen, #phone.mono-mode #navHost, #phone.mono-mode #sheetHost,
+#phone.mono-mode #storyHost, #phone.mono-mode #aiFab, #phone.mono-mode #island{filter:grayscale(1)}
