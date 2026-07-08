@@ -3,9 +3,9 @@
 window.CN = { bank:null, replica:false, accSel:{} };
 
 const replicaBar = () => CN.replica
-  ? `<div style="background:#16191C;color:#fff;border-radius:12px;padding:9px 13px;font:600 11px Inter,sans-serif;display:flex;gap:8px;align-items:center;margin-bottom:14px">
+  ? `<div style="background:#0e0e10;color:#fff;border-radius:12px;padding:9px 13px;font:600 11px Inter,sans-serif;display:flex;gap:8px;align-items:center;margin-bottom:14px">
       🎬 1:1 flow replica of the Lean Link recording — <span style="color:var(--lime)">✦ gold = Mal enhancement</span></div>` : '';
-const enh = t => `<span class="tag" style="background:rgba(245,197,66,.25);color:#6d4f06;margin-left:6px">✦ ${t}</span>`;
+const enh = t => `<span class="tag" style="background:rgba(166,168,253,.25);color:#45454d;margin-left:6px">✦ ${t}</span>`;
 const pby = () => `<div class="pby">${ic('shieldCheck',14)} powered by <span class="pby-n">mal connect</span> · CBUAE Open Finance</div>`;
 
 /* ---------- intro (deck slide 11, screen 1) ---------- */
@@ -13,7 +13,7 @@ SCREENS['connect-intro'] = () => {
   const linked = A.S.linked;
   return `
   <div class="scr">
-    <div class="glowblob" style="background:#f5c542;top:-60px;right:-100px;opacity:.22"></div>
+    <div class="glowblob" style="background:#0e0e10;top:-60px;right:-100px;opacity:.22"></div>
     ${hdr('', {right:`<button class="chip" onclick="A.demoSkip()">Skip →</button>`})}
     <div style="color:var(--lime)">${ic('spark',40)}</div>
     <div class="h1 mt12">Connect your accounts to track your entire budget in one place</div>
@@ -23,7 +23,7 @@ SCREENS['connect-intro'] = () => {
         <div class="row static">
           ${blg(b)}
           <div class="row-main"><div class="row-t">${BANKS[b].name}</div>
-            <div class="row-d">${linked.includes(b) ? (b==='fab'?'AED 78 865,05 · Salary ··5689 +1 more':b==='wio'?'AED 62 865,90 · 2 accounts':'AED 37 629,69 · e-Saver ··8841') : 'Not connected'}</div></div>
+            <div class="row-d">${linked.includes(b) ? (b==='fab'?'AED 78,865.05 · Salary ··5689 +1 more':b==='wio'?'AED 62,865.90 · 2 accounts':'AED 37,629.69 · e-Saver ··8841') : 'Not connected'}</div></div>
           <button class="switch lime ${linked.includes(b)?'on':''}" onclick="CN.toggleBank('${b}')"></button>
         </div>`).join('')}
     </div>
@@ -32,7 +32,7 @@ SCREENS['connect-intro'] = () => {
       ${[['careem','Wallet balance & spends'],['tabby','Plans, limits & due dates'],['binance','Read-only API · balances']].map(([b,d])=>`
         <div class="row static">
           ${blg(b)}
-          <div class="row-main"><div class="row-t">${BANKS[b].name}</div><div class="row-d">${linked.includes(b)?(b==='careem'?'AED 312,40 · wallet':b==='tabby'?'−AED 1 575,00 · 2 plans':'AED 9 840,00 · BTC, ETH'):d}</div></div>
+          <div class="row-main"><div class="row-t">${BANKS[b].name}</div><div class="row-d">${linked.includes(b)?(b==='careem'?'AED 312.40 · wallet':b==='tabby'?'−AED 1,575.00 · 2 plans':'AED 9,840.00 · BTC, ETH'):d}</div></div>
           <button class="switch lime ${linked.includes(b)?'on':''}" onclick="CN.toggleBank('${b}')"></button>
         </div>`).join('')}
       <div class="row" onclick="CN.start()">
@@ -69,8 +69,8 @@ SCREENS['connect-sheet'] = () => `
     ${hdr('',{right:'<button class="chip" onclick="A.go(\'connect-intro\')">Close</button>'})}
     ${replicaBar()}
     <div class="flex" style="gap:0">
-      <span class="blg" style="background:#f5c542;color:#1a1204;z-index:1">m</span>
-      <span class="blg" style="background:#fff;color:#16191C;margin-left:-8px;border:1px solid #E5E7EB">${ic('bank',20)}</span>
+      <span class="blg" style="background:#0e0e10;color:#0e0e10;z-index:1">m</span>
+      <span class="blg" style="background:#fff;color:#0e0e10;margin-left:-8px;border:1px solid #E5E7EB">${ic('bank',20)}</span>
     </div>
     <div class="h1 mt16" style="font-size:24px">Let’s connect your account</div>
     <div class="sub mt8">Mal uses <b>Mal Connect</b> to read data from your bank account so you can see and manage all your money in one place.</div>
@@ -84,7 +84,7 @@ SCREENS['connect-sheet'] = () => `
     </div>
     <div style="position:absolute;bottom:36px;left:18px;right:18px">
       <button class="btn dark" onclick="A.go('connect-banks')">Get started</button>
-      <div class="micro mt8" style="text-align:center">First time connecting your bank? <b style="color:#121517">Learn more</b></div>
+      <div class="micro mt8" style="text-align:center">First time connecting your bank? <b style="color:#0e0e10">Learn more</b></div>
       ${pby()}
     </div>
   </div>`;
@@ -106,7 +106,7 @@ SCREENS['connect-banks'] = () => {
     ${hdr('',{right:'<button class="chip" onclick="A.go(\'connect-intro\')">Close</button>'})}
     ${replicaBar()}
     <div class="h1" style="font-size:24px">${CN.replica?'Select your bank':'Select your provider'}</div>
-    <div class="input lt mt16 flex" style="font-weight:500;color:${q?'#121517':'#9AA3AD'}" onclick="CN.typeSearch()">${ic('search',18)} <span id="bankQ">${A.tmp.bankQ||'Search banks'}</span></div>
+    <div class="input lt mt16 flex" style="font-weight:500;color:${q?'#0e0e10':'#9a9aa2'}" onclick="CN.typeSearch()">${ic('search',18)} <span id="bankQ">${A.tmp.bankQ||'Search banks'}</span></div>
     <div class="chips mt12" style="flex-wrap:nowrap;overflow-x:auto">
       ${[['all','All'],...CONNECT_CATS.map(c=>[c.id,c.t])].map(([id,t])=>`<button class="chip ${cat===id?'on':''}" onclick="A.tmp.cnCat='${id}';A.refresh()">${t}</button>`).join('')}
     </div>
@@ -131,7 +131,7 @@ CN.typeSearch = () => {
   const word='Wio'; let k=0;
   const t=setInterval(()=>{
     A.tmp.bankQ = word.slice(0,++k);
-    const el=document.getElementById('bankQ'); if(el){el.textContent=A.tmp.bankQ; el.parentElement.style.color='#121517';}
+    const el=document.getElementById('bankQ'); if(el){el.textContent=A.tmp.bankQ; el.parentElement.style.color='#0e0e10';}
     if(k>=word.length){ clearInterval(t); A.tmp.bankTyping=false; A.refresh(); }
   },160);
 };
@@ -144,12 +144,12 @@ SCREENS['connect-login'] = (bank) => {
     ${hdr('',{right:'<button class="chip" onclick="A.go(\'connect-intro\')">Close</button>'})}
     ${replicaBar()}
     <div class="flex" style="gap:0">
-      <span class="blg" style="background:#f5c542;color:#1a1204;z-index:1">m</span>
+      <span class="blg" style="background:#0e0e10;color:#0e0e10;z-index:1">m</span>
       <span style="margin-left:-8px">${blg(bank)}</span>
     </div>
     <div class="h1 mt16" style="font-size:24px">Connect your ${B.name} account</div>
     <div class="sub mt8">Enter your ${B.name} username to authorise Mal Connect to make this connection.</div>
-    <div class="input lt mt20 flex tnum" id="cnUser" style="font-weight:500;color:#9AA3AD" onclick="CN.typeUser()">${ic('user',18)} <span id="cnUserTx">Email</span></div>
+    <div class="input lt mt20 flex tnum" id="cnUser" style="font-weight:500;color:#9a9aa2" onclick="CN.typeUser()">${ic('user',18)} <span id="cnUserTx">Email</span></div>
     <div id="cnErr"></div>
     <div class="flex mt12" style="gap:7px;justify-content:center">${ic('shieldCheck',15)} <span class="micro" style="color:#0F9D58;font-weight:600">Secure connection provided by Mal Connect.</span></div>
     <button class="btn dark mt12" onclick="CN.login()">${ic('lock',17)} Connect account</button>
@@ -162,7 +162,7 @@ CN.typeUser = () => {
   if(A.tmp.userTyping) return; A.tmp.userTyping=true;
   const v='john.reeves@gmail.com'; let k=0;
   const host=document.getElementById('cnUser'), tx=document.getElementById('cnUserTx');
-  host.style.color='#121517';
+  host.style.color='#0e0e10';
   const t=setInterval(()=>{ tx.textContent=v.slice(0,++k);
     if(k>=v.length){ clearInterval(t); A.tmp.userTyping=false; A.tmp.cnUser=v; } },42);
 };
@@ -183,15 +183,15 @@ SCREENS['connect-otp'] = (bank) => {
   <div class="scr light">
     ${hdr('',{right:'<button class="chip" onclick="A.go(\'connect-intro\')">Close</button>'})}
     ${replicaBar()}
-    <div class="flex" style="gap:0"><span class="blg" style="background:#f5c542;color:#1a1204;z-index:1">m</span><span style="margin-left:-8px">${blg(bank)}</span></div>
+    <div class="flex" style="gap:0"><span class="blg" style="background:#0e0e10;color:#0e0e10;z-index:1">m</span><span style="margin-left:-8px">${blg(bank)}</span></div>
     <div class="h1 mt16" style="font-size:24px">Authorize this connection</div>
     <div class="sub mt8">Enter the 6-digit code sent via SMS or email by ${B.name}.</div>
-    <div class="otp-wrap mt28">${[0,1,2].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}<span class="otp-dash" style="color:#9AA3AD">–</span>${[3,4,5].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}</div>
+    <div class="otp-wrap mt28">${[0,1,2].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}<span class="otp-dash" style="color:#9a9aa2">–</span>${[3,4,5].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}</div>
     <div class="micro mt10" style="text-align:center">Make sure the code isn’t expiring soon.</div>
     <button class="btn dark mt20" disabled id="cnAuthBtn">Authorize</button>
     <div class="micro mt10" style="text-align:center">Didn’t receive the OTP? <b id="cnResend">Resend in 10 s</b></div>
     <div style="position:absolute;bottom:46px;left:0;right:0;display:flex;justify-content:center">
-      <div class="autofill" onclick="CN.otpFill('${bank}')" id="cnAuto">${ic('lock',15)} From Messages: <span class="k">605 658</span> — tap to fill ${CN.replica?'':''}</div>
+      <div class="autofill" onclick="CN.otpFill('${bank}')" id="cnAuto">${ic('lock',15)} From Messages: <span class="k">605,658</span> — tap to fill ${CN.replica?'':''}</div>
     </div>
   </div>`;
 };
@@ -254,15 +254,15 @@ SCREENS['connect-fallback'] = () => `
   <div class="scr light">
     ${hdr('',{right:'<button class="chip" onclick="A.go(\'connect-intro\')">Close</button>'})}
     ${replicaBar()}
-    <div class="card" style="background:rgba(245,197,66,.2);border:1px solid #dfa92e;border-radius:18px">
+    <div class="card" style="background:rgba(166,168,253,.2);border:1px solid #dfa92e;border-radius:18px">
       <div class="flex" style="gap:10px">${ic('spark',22)}<b style="font-size:14px">Mal enhancement — no dead-ends</b></div>
-      <div class="micro mt8" style="color:#4a3806">Camera failed, so Mal Connect <b>automatically fell back to SMS verification</b>. The user never sees an error wall — the recording ended on “Wio couldn’t verify your identity”; we recover instead.</div>
+      <div class="micro mt8" style="color:#45454d">Camera failed, so Mal Connect <b>automatically fell back to SMS verification</b>. The user never sees an error wall — the recording ended on “Wio couldn’t verify your identity”; we recover instead.</div>
     </div>
     <div class="h1 mt20" style="font-size:24px">Verify by SMS instead</div>
     <div class="sub mt8">No camera needed. Code sent to +971 ·· 7791.</div>
-    <div class="otp-wrap mt20">${[0,1,2].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}<span class="otp-dash" style="color:#9AA3AD">–</span>${[3,4,5].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}</div>
+    <div class="otp-wrap mt20">${[0,1,2].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}<span class="otp-dash" style="color:#9a9aa2">–</span>${[3,4,5].map(i=>`<div class="otp-box lt" id="cn${i}"></div>`).join('')}</div>
     <div style="position:absolute;bottom:46px;left:0;right:0;display:flex;justify-content:center">
-      <div class="autofill" onclick="CN.fallbackFill()">${ic('lock',15)} From Messages: <span class="k">311 904</span> — tap to fill</div>
+      <div class="autofill" onclick="CN.fallbackFill()">${ic('lock',15)} From Messages: <span class="k">311,904</span> — tap to fill</div>
     </div>
   </div>`;
 CN.fallbackFill = () => {
@@ -276,7 +276,7 @@ SCREENS['connect-progress'] = (bank) => `
   <div class="scr light">
     ${hdr('',{noback:true})}
     ${replicaBar()}
-    <div class="flex" style="gap:0"><span class="blg" style="background:#f5c542;color:#1a1204;z-index:1">m</span><span style="margin-left:-8px">${blg(bank)}</span></div>
+    <div class="flex" style="gap:0"><span class="blg" style="background:#0e0e10;color:#0e0e10;z-index:1">m</span><span style="margin-left:-8px">${blg(bank)}</span></div>
     <div class="h1 mt16" style="font-size:24px">Connecting to ${BANKS[bank].name}…</div>
     <div class="sub mt8">Usually under 30 seconds. ${enh('live progress vs. a spinner')}</div>
     <div class="psteps mt28" id="cnSteps">
@@ -326,7 +326,7 @@ SCREENS['connect-accounts'] = (bank) => {
         <div class="row" onclick="CN.accSel['${bank}'][${i}]=!CN.accSel['${bank}'][${i}];A.refresh()">
           ${blg(bank)}
           <div class="row-main"><div class="row-t">${a.n} ··${a.m}</div><div class="row-d tnum">${aed(a.b)}</div></div>
-          <span class="bigico" style="width:30px;height:30px;min-width:30px;border-radius:9px;background:${CN.accSel[bank][i]?'#16191C':'#EDEFF2'};color:#fff">${CN.accSel[bank][i]?ic('check',16):''}</span>
+          <span class="bigico" style="width:30px;height:30px;min-width:30px;border-radius:9px;background:${CN.accSel[bank][i]?'#0e0e10':'#EDEFF2'};color:#fff">${CN.accSel[bank][i]?ic('check',16):''}</span>
         </div>`).join('')}
     </div>
     <button class="btn dark mt20" onclick="A.go('connect-consent/${bank}')">Continue</button>
@@ -361,9 +361,9 @@ CN.approve = (bank) => {
 
 /* ---------- success ---------- */
 SCREENS['connect-success'] = (bank) => {
-  const totals = {fab:'AED 167 164,67 across 3 accounts', wio:'AED 62 865,90 across 2 accounts', ei:'AED 35 775,39 across 2 accounts',
-    careem:'AED 312,40 wallet balance', tabby:'2 plans · AED 787,50 due 11 Jul', tamara:'1 plan · AED 420,00 outstanding',
-    binance:'AED 10 960,00 across spot & earn', ibkr:'AED 14 400,00 brokerage',
+  const totals = {fab:'AED 167,164.67 across 3 accounts', wio:'AED 62,865.90 across 2 accounts', ei:'AED 35,775.39 across 2 accounts',
+    careem:'AED 312.40 wallet balance', tabby:'2 plans · AED 787.50 due 11 Jul', tamara:'1 plan · AED 420.00 outstanding',
+    binance:'AED 10,960.00 across spot & earn', ibkr:'AED 14,400.00 brokerage',
     fazaa:'Gold tier — agents now see partner pricing', booking:'Genius L2 — instant booking unlocked'};
   const remaining = ['fab','wio','ei','careem','tabby','binance'].filter(b=>!A.S.linked.includes(b));
   return `
@@ -374,8 +374,8 @@ SCREENS['connect-success'] = (bank) => {
     <div class="sub mt8 tnum">${totals[bank]||'Accounts imported'} · synced just now</div>
     <div class="card mt20" style="background:#fff;border:1px solid var(--lt-line);text-align:left">
       <div class="lbl">Mal already found ${enh('instant value')}</div>
-      <div class="row static">${catIc('income',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">Your salary — AED 32 500 on the 25th</div></div></div>
-      <div class="row static">${catIc('entertainment',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">11 subscriptions ≈ AED 1 426/mo</div></div></div>
+      <div class="row static">${catIc('income',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">Your salary — AED 32,500 on the 25th</div></div></div>
+      <div class="row static">${catIc('entertainment',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">11 subscriptions ≈ AED 1,426/mo</div></div></div>
       <div class="row static">${catIc('bills',38)}<div class="row-main"><div class="row-t" style="font-size:13.5px">2 wasteful fees you can dispute</div></div></div>
     </div>
     ${remaining.length
@@ -390,7 +390,7 @@ AFTER['connect-success'] = () => confetti(document.getElementById('screen'));
 CN.finale = () => { A.S.onboarded = true; A.persist(); A.go('connect-finale'); };
 SCREENS['connect-finale'] = () => `
   <div class="scr center">
-    <div class="glowblob" style="background:#f5c542;top:-70px;left:-80px;opacity:.2"></div>
+    <div class="glowblob" style="background:#0e0e10;top:-70px;left:-80px;opacity:.2"></div>
     <span class="tag lime">${A.S.linked.length} sources connected — banks · wallet · BNPL · crypto</span>
     <div class="h1 mt16">One number,<br>${USER.first}.</div>
     <div class="mt16" style="font:800 46px/1 Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED <span id="finTotal">0</span></div>

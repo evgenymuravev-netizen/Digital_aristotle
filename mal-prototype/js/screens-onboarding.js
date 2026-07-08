@@ -7,7 +7,7 @@ const S = () => A.S;
 /* ---------- splash ---------- */
 SCREENS.splash = () => `
   <div class="scr center nopad" style="padding:40px">
-    <div class="glowblob" style="background:#f5c542;top:-80px;right:-90px;opacity:.25"></div>
+    <div class="glowblob" style="background:#0e0e10;top:-80px;right:-90px;opacity:.25"></div>
     <div style="font:800 64px/1 Inter,sans-serif;letter-spacing:-.03em;color:var(--lime)" class="logo-pop">mal</div>
     <div class="sub mt12">Agentic Islamic Finance Platform</div>
     <div class="spinner lm" style="position:absolute;bottom:90px"></div>
@@ -19,14 +19,14 @@ const W_SLIDES = [
   {h:'Be in control<br>of <span class="lime-t">your finances</span>', d:'Every bank, wallet, BNPL plan, debt and dirham — one live picture, one number you can trust.',
    art:`<div style="display:flex;flex-direction:column;gap:14px;align-items:center">
         <div class="logo-stack" style="transform:scale(1.6)">${blg('fab')}${blg('wio')}${blg('ei')}${blg('tabby')}</div>
-        <div style="margin-top:26px;font:800 44px Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275 900<span style="font-size:26px">,76</span></div>
+        <div style="margin-top:26px;font:800 44px Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">,76</span></div>
         <span class="tag lime">Live · banks, wallets, BNPL & crypto</span></div>`},
   {h:'100% compliant.<br><span class="lime-t">Always.</span>', d:'Every product is tracked by AI and confirmed by leading scholars — you will never violate Shariah without knowing. No interest, anywhere, ever.',
    art:`<div style="width:200px;height:200px;border-radius:60px;background:rgba(255,255,255,.06);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--lime)">${ic('shieldCheck',92,'',1.2)}</div>`},
   {h:'The most accurate<br><span class="lime-t">Zakat, ever.</span>', d:'Every asset and every debt — even trade stock and payroll — calculated to the dirham, by your scholar’s method. This is our craft.',
-   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,rgba(232,194,104,.35),rgba(232,194,104,.08));border:1px solid rgba(232,194,104,.35);display:flex;align-items:center;justify-content:center;color:var(--gold)">${ic('moon',88,'',1.2)}</div>`},
+   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,rgba(200,132.31,.35),rgba(200,132.31,.08));border:1px solid rgba(200,132.31,.35);display:flex;align-items:center;justify-content:center;color:var(--gold)">${ic('moon',88,'',1.2)}</div>`},
   {h:'Support your<br><span class="lime-t">local community</span>', d:'Your savings back the best Shariah-compliant local businesses — and the strictness dial is yours: stay 100% strict, or add local UAE & Saudi champions with purification handled.',
-   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,#ffe49a,#f5c542 55%,#b98614);display:flex;align-items:center;justify-content:center;color:#1a1204;box-shadow:0 30px 80px rgba(245,197,66,.35)">${ic('heart',86,'',1.4)}</div>`},
+   art:`<div style="width:200px;height:200px;border-radius:60px;background:radial-gradient(circle at 30% 25%,#d7ccfd,#0e0e10 55%,#b98614);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 30px 80px rgba(166,168,253,.35)">${ic('heart',86,'',1.4)}</div>`},
 ];
 SCREENS.welcome = () => {
   const i = A.tmp.slide||0;
@@ -89,7 +89,7 @@ SCREENS['ob-otp'] = () => `
     <div class="otp-wrap mt28">${[0,1,2,3].map(i=>`<div class="otp-box" id="ob${i}"></div>`).join('')}<span class="otp-dash">–</span>${[4,5].map(i=>`<div class="otp-box" id="ob${i}"></div>`).join('')}</div>
     <div class="micro mt12" style="text-align:center">Didn’t receive it? Resend in 24 s</div>
     <div style="position:absolute;bottom:120px;left:0;right:0;display:flex;justify-content:center">
-      <div class="autofill" id="otpAuto" onclick="OB.otpFill('ob-eid')">${ic('lock',15)} From Messages: <span class="k">482 917</span> — tap to fill</div>
+      <div class="autofill" id="otpAuto" onclick="OB.otpFill('ob-eid')">${ic('lock',15)} From Messages: <span class="k">482,917</span> — tap to fill</div>
     </div>
   </div>`;
 AFTER['ob-otp'] = () => setTimeout(()=>{ const a=document.getElementById('otpAuto'); if(a) a.classList.add('pop'); }, 600);
@@ -135,7 +135,7 @@ SCREENS['ob-face'] = () => `
     <div class="mt28" style="position:relative;width:210px;height:210px">
       <svg width="210" height="210" style="position:absolute;inset:0;transform:rotate(-90deg)">
         <circle cx="105" cy="105" r="98" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="5"/>
-        <circle id="faceRing" cx="105" cy="105" r="98" fill="none" stroke="var(--lime)" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 616"/>
+        <circle id="faceRing" cx="105" cy="105" r="98" fill="none" stroke="var(--lime)" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.616"/>
       </svg>
       <div style="position:absolute;inset:14px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:74px" id="faceEmoji">🙂</div>
     </div>

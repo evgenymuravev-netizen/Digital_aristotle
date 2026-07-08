@@ -19,7 +19,7 @@ SCREENS.cards = () => {
     <div style="display:flex;flex-direction:column;gap:14px">${cards.map(a=>cardVisual(a)).join('')}</div>
     <div class="card lime mt16 tap" onclick="A.go('chat-card')">
       <div class="flex between"><b style="font-size:14px">⚡ 3 pre-approved offers waiting</b>${ic('chevR',18)}</div>
-      <div class="micro mt4">Up to AED 25 000 limit · activated in 1 click</div>
+      <div class="micro mt4">Up to AED 25,000 limit · activated in 1 click</div>
     </div>
     <div class="listcard mt12">
       <div class="row" onclick="A.S.frozen=!A.S.frozen;A.persist();A.refresh();A.toast(A.S.frozen?'All cards frozen':'Cards unfrozen','shield')">
@@ -54,9 +54,9 @@ SCREENS.card = (id) => {
 };
 window.Cards = { limits(){ return `
   <div class="h2">Spending limits</div>
-  <div class="kv mt12"><span class="k">Online · per day</span><span class="v tnum">AED 5 000</span></div>${meter(0.42)}
-  <div class="kv mt12"><span class="k">In-store · per day</span><span class="v tnum">AED 10 000</span></div>${meter(0.2)}
-  <div class="kv mt12"><span class="k">ATM · per day</span><span class="v tnum">AED 3 000</span></div>${meter(0.1)}
+  <div class="kv mt12"><span class="k">Online · per day</span><span class="v tnum">AED 5,000</span></div>${meter(0.42)}
+  <div class="kv mt12"><span class="k">In-store · per day</span><span class="v tnum">AED 10,000</span></div>${meter(0.2)}
+  <div class="kv mt12"><span class="k">ATM · per day</span><span class="v tnum">AED 3,000</span></div>${meter(0.1)}
   <button class="btn pri mt16" onclick="A.closeSheet();A.toast('Limits updated','check')">Save</button>`; } };
 
 SCREENS.vcard = () => `
@@ -70,7 +70,7 @@ SCREENS.vcard = () => `
     </div>
     <div class="listcard mt16">
       <div class="row static"><div class="row-main"><div class="row-t">Single-use mode</div><div class="row-d">Number burns after one payment</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
-      <div class="row static"><div class="row-main"><div class="row-t">Monthly cap</div><div class="row-d">AED 1 000 for subscriptions</div></div><span class="chev">${ic('chevR',16)}</span></div>
+      <div class="row static"><div class="row-main"><div class="row-t">Monthly cap</div><div class="row-d">AED 1,000 for subscriptions</div></div><span class="chev">${ic('chevR',16)}</span></div>
     </div>
     <button class="btn lime mt16" onclick="A.toast('Added to Apple Pay','check')"> Add to Apple Pay</button>
   </div>`;
@@ -85,8 +85,8 @@ SCREENS.paybill = (id) => {
     ${hdr('Pay card bill')}
     <div class="card flex" style="gap:13px">${blg(a.bank)}<div class="f1"><div class="row-t">${a.name} ··${a.mask}</div><div class="row-d">Due ${a.due} — in 9 days</div></div>
       <div class="row-amt tnum red-t">${fm(amt)}</div></div>
-    <div class="card mt12" style="border-color:rgba(245,197,66,.4)">
-      <div class="flex between"><b style="font-size:13.5px">🔍 Fee watchdog found AED 36,00</b><span class="tag lime">✦</span></div>
+    <div class="card mt12" style="border-color:rgba(166,168,253,.4)">
+      <div class="flex between"><b style="font-size:13.5px">🔍 Fee watchdog found AED 36.00</b><span class="tag lime">✦</span></div>
       <div class="micro mt4">Late-payment fee (28 Feb) AED 25 + FX markup AED 11 look disputable.</div>
       <button class="chip mt8" onclick="A.go('dispute')">Dispute both</button>
     </div>
@@ -113,7 +113,7 @@ SCREENS.dispute = () => `
   <div class="scr">
     ${hdr('Raise a dispute')}
     <div class="listcard">
-      ${[['Late-payment fee · 28 Feb','AED 25,00 — first offence, banks usually waive'],['FX markup · Amazon US','AED 11,00 — charged despite AED billing']]
+      ${[['Late-payment fee · 28 Feb','AED 25.00 — first offence, banks usually waive'],['FX markup · Amazon US','AED 11.00 — charged despite AED billing']]
         .map(([t,d])=>`<div class="row static"><span class="bigico" style="color:var(--gold)">${ic('alert',20)}</span>
         <div class="row-main"><div class="row-t" style="white-space:normal">${t}</div><div class="row-d" style="white-space:normal">${d}</div></div>
         <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:9px;background:var(--lime);color:var(--ink)">${ic('check',14)}</span></div>`).join('')}
@@ -180,7 +180,7 @@ SCREENS['loan-activate'] = () => `
   <div class="scr">
     ${hdr('Activate financing')}
     <div class="card flex" style="gap:13px">${blg('ei')}
-      <div class="f1"><div class="row-t">Murabaha personal finance</div><div class="row-d tnum">AED 120 000 · 5,49% p.a. · 48 months</div></div>
+      <div class="f1"><div class="row-t">Murabaha personal finance</div><div class="row-d tnum">AED 120,000 · 5.49% p.a. · 48 months</div></div>
       <span class="tag gold">☪</span></div>
     <div class="chips mt12">${[60,90,120].map(v=>`<button class="chip ${v===120?'on':''}">AED ${v} 000</button>`).join('')}</div>
     <div class="psteps mt16" id="lnSteps">
@@ -188,8 +188,8 @@ SCREENS['loan-activate'] = () => `
         .map((s,i)=>`<div class="pstep dark" id="ln${i}"><div class="pdot">${i+1}</div><div><div class="ps-t">${s}</div></div></div>`).join('')}
     </div>
     <div class="card soft mt8">
-      <div class="kv"><span class="k">Monthly instalment</span><span class="v tnum">AED 2 641 × 48</span></div>
-      <div class="kv"><span class="k">Total profit (disclosed)</span><span class="v tnum">AED 6 768</span></div>
+      <div class="kv"><span class="k">Monthly instalment</span><span class="v tnum">AED 2,641 × 48</span></div>
+      <div class="kv"><span class="k">Total profit (disclosed)</span><span class="v tnum">AED 6,768</span></div>
       <div class="kv"><span class="k">Early settlement</span><span class="v grn-t">Free, anytime</span></div>
     </div>
     <button class="btn lime mt16" id="lnBtn" disabled onclick="A.go('loan-done')">${ic('faceid',20)} Activate — funds in ~2 min</button>
@@ -200,10 +200,10 @@ AFTER['loan-activate'] = () => { let i=0; const step=()=>{ const el=document.get
 SCREENS['loan-done'] = () => `
   <div class="scr center">
     <div class="checkpop">${ic('check',46,'',2.4)}</div>
-    <div class="h1 mt20">AED 120 000<br>on its way</div>
+    <div class="h1 mt20">AED 120,000<br>on its way</div>
     <div class="sub mt8">Disbursing to FAB Salary ··5689 — arrives in about 2 minutes. Contract saved to Documents.</div>
     <div class="card mt16" style="width:100%">
-      <div class="kv"><span class="k">First instalment</span><span class="v">25 July · AED 2 641</span></div>
+      <div class="kv"><span class="k">First instalment</span><span class="v">25 July · AED 2,641</span></div>
       <div class="kv"><span class="k">Auto-pay</span><span class="v grn-t">On · from salary account</span></div>
     </div>
     <button class="btn pri mt16" style="width:100%" onclick="A.go('home')">Done</button>
@@ -240,7 +240,7 @@ SCREENS.market = () => `
     ${hdr('Products',{big:true})}
     <div class="card lime tap" onclick="A.go('chat-card')">
       <b style="font-size:14px">⚡ Pre-approved for you</b>
-      <div class="micro mt4">3 cards · AED 120 000 financing · all 1-click</div>
+      <div class="micro mt4">3 cards · AED 120,000 financing · all 1-click</div>
     </div>
     <div class="grid2 mt12">
       ${MARKET.map(m=>`
@@ -259,7 +259,7 @@ SCREENS.invest = () => `
     <div class="card">
       <span class="lbl">Portfolio</span>
       <div class="flex between mt8"><span style="font:800 30px Inter,sans-serif" class="tnum">AED ${fm(INVEST.total,0)}</span><span class="tag grn">▲ ${INVEST.day}% today</span></div>
-      <div class="mt12">${spark([31,32.4,31.8,33.5,34.1,35.2,36.4,37.1,38.5],330,70,'#53DE8E')}</div>
+      <div class="mt12">${spark([31,32.4,31.8,33.5,34.1,35.2,36.4,37.1,38.5],330,70,'#1f8a5b')}</div>
     </div>
     <div class="listcard mt12">
       ${INVEST.positions.map(p=>`
@@ -270,7 +270,7 @@ SCREENS.invest = () => `
         </div>`).join('')}
     </div>
     <div class="card mt12 tap" onclick="A.go('gold')">
-      <div class="flex between"><div class="flex" style="gap:12px"><span class="bigico" style="background:rgba(232,194,104,.18);color:var(--gold)">${ic('coins',22)}</span>
+      <div class="flex between"><div class="flex" style="gap:12px"><span class="bigico" style="background:rgba(200,132.31,.18);color:var(--gold)">${ic('coins',22)}</span>
         <div><div class="row-t">Mal Gold</div><div class="row-d">${INVEST.gold.grams} g vaulted · ▲${INVEST.gold.mo}% this month</div></div></div>
         <div class="row-amt tnum">${fm(INVEST.gold.val,0)}</div></div>
     </div>
@@ -287,7 +287,7 @@ SCREENS.invest = () => `
     <div class="listcard">
       ${INVEST.locals.filter(l=>!strict||l.s==='halal').map(l=>`
         <div class="row" onclick="A.toast('${esc(l.n)} ${l.s==='grey'?'added — purification '+String(l.purif).replace('.',',')+'% auto-donated':'added to your halal portfolio'}','check')">
-          <span class="avx" style="background:${l.s==='halal'?'rgba(83,222,142,.18)':'rgba(232,194,104,.18)'};color:${l.s==='halal'?'var(--grn)':'var(--gold)'};font-size:11px;font-weight:800">${l.mkt}</span>
+          <span class="avx" style="background:${l.s==='halal'?'rgba(31,138.91,.18)':'rgba(200,132.31,.18)'};color:${l.s==='halal'?'var(--grn)':'var(--gold)'};font-size:11px;font-weight:800">${l.mkt}</span>
           <div class="row-main"><div class="row-t">${l.n}</div><div class="row-d" style="white-space:normal">${l.note}</div></div>
           <span class="tag ${l.s==='halal'?'grn':'gold'}">${l.s==='halal'?'✓ Halal':'Grey · purify '+String(l.purif).replace('.',',')+'%'}</span>
         </div>`).join('')}
@@ -296,7 +296,7 @@ SCREENS.invest = () => `
     <div class="card soft mt12 flex" style="gap:10px">${ic('heart',18,'lime-t')}
       <div class="micro">${strict?'Local impact: 24% of your portfolio backs GCC businesses — all fully compliant.':'Local impact: 38% of your portfolio backs GCC businesses. Purification this year: AED 86, donated to Dubai Cares.'}</div></div>`;})()}
     <div class="listcard mt12">
-      <div class="row static"><span class="bigico">${ic('refresh',20)}</span><div class="row-main"><div class="row-t">Auto-invest</div><div class="row-d">AED 1 000/mo into Sukuk fund · on the 26th</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="row static"><span class="bigico">${ic('refresh',20)}</span><div class="row-main"><div class="row-t">Auto-invest</div><div class="row-d">AED 1,000/mo into Sukuk fund · on the 26th</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
       <div class="row" onclick="A.sheet(Halal.sheet())"><span class="bigico" style="color:var(--gold)">${ic('moon',20)}</span><div class="row-main"><div class="row-t">Halal screener</div><div class="row-d">Check any stock in a second</div></div><span class="chev">${ic('chevR',16)}</span></div>
     </div>
     <div class="micro mt12" style="text-align:center">Strict mode: everything passes AAOIFI screening. Balanced mode: grey names disclosed + purified — never hidden riba.</div>
@@ -305,25 +305,25 @@ window.Halal = { sheet(){ return `
   <div class="h2">Halal screener</div>
   <div class="input mt12 flex">${ic('search',18)} <span style="color:var(--tx3)">Ticker — try AAPL, TSLA, BUD…</span></div>
   <div class="listcard mt12">
-    ${[['AAPL · Apple','Pass — debt 18%, no haram revenue','grn','✓ Halal'],['TSLA · Tesla','Pass — watch interest income 3,2%','grn','✓ Halal'],['BUD · AB InBev','Fail — alcohol is core business','red','✗ Not compliant']]
+    ${[['AAPL · Apple','Pass — debt 18%, no haram revenue','grn','✓ Halal'],['TSLA · Tesla','Pass — watch interest income 3.2%','grn','✓ Halal'],['BUD · AB InBev','Fail — alcohol is core business','red','✗ Not compliant']]
       .map(([t,d,c,v])=>`<div class="row static"><div class="row-main"><div class="row-t">${t}</div><div class="row-d" style="white-space:normal">${d}</div></div><span class="tag ${c}">${v}</span></div>`).join('')}
   </div>`; } };
 SCREENS.gold = () => `
   <div class="scr">
     ${hdr('Mal Gold')}
-    <div class="card" style="text-align:center;background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
+    <div class="card" style="text-align:center;background:linear-gradient(150deg,rgba(200,132.31,.16),var(--glass))">
       <div style="font-size:44px">🪙</div>
       <div style="font:800 32px Inter,sans-serif" class="tnum mt8">${INVEST.gold.grams} g</div>
       <div class="micro mt4">≈ AED ${fm(INVEST.gold.val)} · 999.9 vaulted in DMCC · Shariah-certified</div>
-      <div class="mt12">${spark([440,452,448,461,458,470,479,486],300,60,'#E8C268')}</div>
+      <div class="mt12">${spark([440,452,448,461,458,470,479,486],300,60,'#c8841f')}</div>
       <div class="micro">AED ${fm(INVEST.gold.perGram)} / g · ▲${INVEST.gold.mo}% this month</div>
     </div>
     <div class="btnrow mt12">
-      <button class="btn pri" onclick="A.toast('Bought 1 g — AED 486,32','check')">Buy</button>
+      <button class="btn pri" onclick="A.toast('Bought 1 g — AED 486.32','check')">Buy</button>
       <button class="btn ghost" onclick="A.toast('Sold instantly at spot — no spread games','check')">Sell</button>
     </div>
     <div class="listcard mt12">
-      <div class="row static"><span class="bigico">${ic('coins',20)}</span><div class="row-main"><div class="row-t">Round-ups feed gold</div><div class="row-d">AED 184,20 added in May</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
+      <div class="row static"><span class="bigico">${ic('coins',20)}</span><div class="row-main"><div class="row-t">Round-ups feed gold</div><div class="row-d">AED 184.20 added in May</div></div><button class="switch lime on" onclick="this.classList.toggle('on')"></button></div>
       <div class="row" onclick="A.toast('Physical delivery from 10 g — DMCC vault','info')"><span class="bigico">${ic('bag',20)}</span><div class="row-main"><div class="row-t">Physical delivery</div><div class="row-d">From 10 g, anywhere in UAE</div></div><span class="chev">${ic('chevR',16)}</span></div>
     </div>
   </div>`;
@@ -333,8 +333,8 @@ SCREENS.score = () => `
   <div class="scr">
     ${hdr('AECB score')}
     <div class="card" style="display:flex;flex-direction:column;align-items:center">
-      ${gaugeSemi(SCORE.v/SCORE.max, 230, '#53DE8E', `<div style="font:800 44px Inter,sans-serif" class="tnum">${SCORE.v}</div><div class="micro">${SCORE.band} · ▲${SCORE.delta} this month</div>`)}
-      <div class="mt12" style="width:100%">${spark(SCORE.hist,330,54,'#53DE8E')}</div>
+      ${gaugeSemi(SCORE.v/SCORE.max, 230, '#1f8a5b', `<div style="font:800 44px Inter,sans-serif" class="tnum">${SCORE.v}</div><div class="micro">${SCORE.band} · ▲${SCORE.delta} this month</div>`)}
+      <div class="mt12" style="width:100%">${spark(SCORE.hist,330,54,'#1f8a5b')}</div>
       <div class="micro mt4">Free forever · soft-pull · refreshed monthly</div>
     </div>
     <div class="lbl mt16 mb8">What’s driving it</div>
@@ -350,7 +350,7 @@ SCREENS.score = () => `
       <div class="chips mt8">
         ${Object.entries(SCORE_PROJ).map(([id,p])=>`<button class="chip ${k===id?'on':''}" onclick="A.tmp.scProj='${id}';A.refresh()">${p.t}</button>`).join('')}
       </div>
-      <div class="mt12">${spark(P.arr,330,64, P.end>=SCORE.v?'#53DE8E':'#FF7A6B')}</div>
+      <div class="mt12">${spark(P.arr,330,64, P.end>=SCORE.v?'#1f8a5b':'#d1483f')}</div>
       <div class="flex between"><span class="micro">Jun</span><span class="micro">Aug</span><span class="micro">Oct</span><span class="micro">Dec</span></div>
       <div class="micro mt8">${P.note}.</div>
       ${k==='plan'?`<button class="chip mt8" onclick="A.go('refi')">⚡ Open the refi plan</button>`:''}
@@ -370,14 +370,14 @@ SCREENS.rewards = () => `
   <div class="scr">
     ${hdr('Rewards')}
     <div class="card lime">
-      <div class="flex between"><span class="lbl" style="color:rgba(26,18,4,.55)">Mal points</span><span class="tag" style="background:rgba(26,18,4,.14);color:#1a1204">${REWARDS.tier} tier</span></div>
+      <div class="flex between"><span class="lbl" style="color:rgba(14.14.16,.55)">Mal points</span><span class="tag" style="background:rgba(14.14.16,.14);color:#0e0e10">${REWARDS.tier} tier</span></div>
       <div style="font:800 36px Inter,sans-serif" class="tnum mt8">${fm(REWARDS.pts,0)}</div>
       <div class="micro mt4">≈ AED ${fm(REWARDS.pts/20,0)} · redeem on fees, gold or charity</div>
     </div>
     <div class="card mt12">
       <div class="flex between"><b style="font-size:14px">🔥 ${REWARDS.streak}-day money streak</b><span class="micro">opened the app & stayed on budget</span></div>
       <div class="flex mt12" style="gap:7px">
-        ${['M','T','W','T','F','S','S'].map((d,i)=>`<div style="flex:1;text-align:center"><div class="bigico" style="width:100%;height:40px;border-radius:12px;background:${i<5?'rgba(245,197,66,.2)':'var(--glass)'};color:${i<5?'var(--lime)':'var(--tx3)'}">${i<5?ic('check',16):d}</div></div>`).join('')}
+        ${['M','T','W','T','F','S','S'].map((d,i)=>`<div style="flex:1;text-align:center"><div class="bigico" style="width:100%;height:40px;border-radius:12px;background:${i<5?'rgba(166,168,253,.2)':'var(--glass)'};color:${i<5?'var(--lime)':'var(--tx3)'}">${i<5?ic('check',16):d}</div></div>`).join('')}
       </div>
     </div>
     <div class="lbl mt16 mb8">Scratch cards · ${REWARDS.scratch} waiting</div>
@@ -412,7 +412,7 @@ AFTER.scratch = () => {
   const x=cv.getContext('2d');
   const grd=x.createLinearGradient(0,0,r.width,r.height); grd.addColorStop(0,'#4a3a12'); grd.addColorStop(1,'#231a06');
   x.fillStyle=grd; x.fillRect(0,0,r.width,r.height);
-  x.fillStyle='rgba(245,197,66,.8)'; x.font='700 15px Inter,sans-serif'; x.textAlign='center';
+  x.fillStyle='rgba(166,168,253,.8)'; x.font='700 15px Inter,sans-serif'; x.textAlign='center';
   x.fillText('scratch here', r.width/2, r.height/2+5);
   let scratched=0, done=false;
   const rub=(e)=>{ const p=e.touches?e.touches[0]:e; const b=cv.getBoundingClientRect();
@@ -473,11 +473,11 @@ window.ZK = {
       </div>
       <div class="lbl mt12 mb8">Or type any amount</div>
       <div class="flex" style="gap:8px">
-        <input id="zkCustom" class="input tnum" type="number" inputmode="decimal" placeholder="AED 0,00" style="flex:1"
+        <input id="zkCustom" class="input tnum" type="number" inputmode="decimal" placeholder="AED 0.00" style="flex:1"
           onkeydown="if(event.key==='Enter')ZK.custom('${id}')">
         <button class="btn pri sm" onclick="ZK.custom('${id}')">Set</button>
       </div>
-      ${id==='jewel'?'<div class="micro mt12">Tip: 50 g ≈ AED 24 316 · 100 g ≈ 48 632 · 145 g ≈ 70 516 at today’s price.</div>':''}`); },
+      ${id==='jewel'?'<div class="micro mt12">Tip: 50 g ≈ AED 24,316 · 100 g ≈ 48,632 · 145 g ≈ 70,516 at today’s price.</div>':''}`); },
   custom(id){
     const el=document.getElementById('zkCustom');
     const v=parseFloat(String(el&&el.value||'').replace(/[ ,]/g,''));
@@ -508,7 +508,7 @@ SCREENS.zakat = () => {
       ${z.charityInfo.map((c,i)=>`
         <div class="card mt12 tap" style="${sel===i?'outline:2px solid var(--lime)':''}" onclick="ZK.set('charity',${i})">
           <div class="flex" style="gap:12px">
-            <span class="avx" style="background:rgba(245,197,66,.14);font-size:24px">${c.em}</span>
+            <span class="avx" style="background:rgba(166,168,253,.14);font-size:24px">${c.em}</span>
             <div class="f1"><div class="row-t">${c.n}</div><div class="row-d">${c.focus} · since ${c.since}</div></div>
             ${sel===i?`<span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--lime);color:var(--ink)">${ic('check',14)}</span>`:''}
           </div>
@@ -536,13 +536,13 @@ SCREENS.zakat = () => {
       ['ramadan','Tomorrow · 1 Ramadan', 'The most rewarded day — amount refreshed at live prices'],
       ['later','Pay later — Mal advances it (Qard Ḥasan)', `Charity receives 100% today · you repay 4 × AED ${fm(due/4)} · 0 fees — zakat is never late`],
       ['income','A % of each salary', `${pct}% = AED ${fm(perSal,0)}/salary · finishes by ${finish} — Mal tops up any gap at hawl-end`],
-      ['pot','Zakat Pot — save ahead (Mudarabah)', `AED ${fm(due/12,0)}/mo set aside for NEXT year · earns ~3,1% profit · paid in one payment at hawl-end`],
+      ['pot','Zakat Pot — save ahead (Mudarabah)', `AED ${fm(due/12,0)}/mo set aside for NEXT year · earns ~3.1% profit · paid in one payment at hawl-end`],
     ];
     return `
     <div class="scr">
       ${hdr('How to pay',{back:"ZK.set('step',2)"})}
       ${stepper}
-      <div class="card" style="background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
+      <div class="card" style="background:linear-gradient(150deg,rgba(200,132.31,.16),var(--glass))">
         <div class="kv"><span class="k">Zakat due · ${m.n} method</span><span class="v tnum" style="font-size:18px">AED ${fm(due)}</span></div>
         <div class="kv"><span class="k">Going to</span><span class="v">${z.charityInfo[s.charity||0].n}</span></div>
         ${ZAKAT.family.some(f=>s.rel[f.id])?`<div class="kv"><span class="k">Covers</span><span class="v">You + ${ZAKAT.family.filter(f=>s.rel[f.id]).map(f=>f.name.split(' ')[0]).join(' + ')} (wakāla)</span></div>`:''}
@@ -668,10 +668,10 @@ SCREENS.zakat = () => {
         <button class="switch lime ${on?'on':''}" onclick="ZK.st().rel['${f.id}']=!ZK.st().rel['${f.id}'];ZK.st().wak['${f.id}']=true;A.refresh()"></button>
       </div>`;}).join('')}
     </div>
-    ${s.rel.mum?`<div class="card soft mt8"><div class="micro">💡 <b>Mum is the textbook case:</b> cash AED 12 600 is below the gold nisab and her jewellery is personal-use — so <b>Majority/AAOIFI: nothing due</b>. Under <b>Hanafi</b>, 210 g counts → AED ${fm(ZK.relUnder('mum','hanafi')*z.rate)}. Pick her school in the chips above and watch the totals move.</div></div>`:''}
+    ${s.rel.mum?`<div class="card soft mt8"><div class="micro">💡 <b>Mum is the textbook case:</b> cash AED 12,600 is below the gold nisab and her jewellery is personal-use — so <b>Majority/AAOIFI: nothing due</b>. Under <b>Hanafi</b>, 210 g counts → AED ${fm(ZK.relUnder('mum','hanafi')*z.rate)}. Pick her school in the chips above and watch the totals move.</div></div>`:''}
 
-    <div class="card mt16" style="background:linear-gradient(150deg,rgba(232,194,104,.16),var(--glass))">
-      <div class="flex between"><span class="tag gold">☪ Total zakat due · ${m.n} method</span><span class="micro">2,5% (lunar year)</span></div>
+    <div class="card mt16" style="background:linear-gradient(150deg,rgba(200,132.31,.16),var(--glass))">
+      <div class="flex between"><span class="tag gold">☪ Total zakat due · ${m.n} method</span><span class="micro">2.5% (lunar year)</span></div>
       <div style="font:800 38px Inter,sans-serif" class="tnum mt8">AED ${fm(due)}</div>
       <div class="kv mt8"><span class="k">${USER.first} — on AED ${fm(john)}</span><span class="v tnum">${fm(D.j)}</span></div>
       ${z.family.filter(f=>s.rel[f.id]).map(f=>{
@@ -692,7 +692,7 @@ ZK.activate = function(){
   else if(plan==='income'){ const pct=s.pct||2;
     RULES.unshift({id:'rzi', on:true, when:'Salary arrives (25th)', then:`Pay ${pct}% (AED ${fm(USER.salary*pct/100,0)}) of salary as zakat to ${ch} until AED ${fm(due)} is covered`, ic:'moon', ran:'Hawl-end top-up guarantee on — you can never end the year short'});
     A.toast('Salary-percentage zakat rule active','moon'); A.go('rules'); return; }
-  else { RULES.unshift({id:'rzp', on:true, when:'1st of every month', then:`Move AED ${fm(due/12,0)} into the Zakat Pot (Mudarabah ~3,1%) — auto-pays next hawl-end`, ic:'coins', ran:'Pot opened today · projected AED '+fm(due*1.016,0)+' by next Ramadan'});
+  else { RULES.unshift({id:'rzp', on:true, when:'1st of every month', then:`Move AED ${fm(due/12,0)} into the Zakat Pot (Mudarabah ~3.1%) — auto-pays next hawl-end`, ic:'coins', ran:'Pot opened today · projected AED '+fm(due*1.016,0)+' by next Ramadan'});
     A.toast('Zakat Pot opened — saving ahead, earning halal profit','coins'); A.go('rules'); return; }
 };
 
@@ -715,7 +715,7 @@ SCREENS.approvals = () => {
     return `
     <div class="card mt8" style="${dec==='no'?'opacity:.5':''}">
       <div class="flex" style="gap:12px">
-        <span class="avx" style="background:rgba(245,197,66,.12);font-size:22px">${it.em}</span>
+        <span class="avx" style="background:rgba(166,168,253,.12);font-size:22px">${it.em}</span>
         <div class="f1"><div class="row-t" style="font-size:14px;white-space:normal">${it.t}</div>
           <div class="row-d">${it.agent} agent</div></div>
         <div class="row-amt tnum" style="color:${it.refund?'var(--grn)':'var(--tx)'}">${amt}</div>
@@ -737,7 +737,7 @@ SCREENS.approvals = () => {
     ${hdr('Approvals',{right:`<button class="iconbtn" onclick="chatDeep('agents')">${ic('spark',18)}</button>`})}
     <div class="card lime">
       <div class="flex between"><b style="font-size:14px">${pend.length?pend.length+' need your nod today':'All caught up ✓'}</b>
-        <span class="tag" style="background:rgba(26,18,4,.14);color:#1a1204">${APPROVALS.length} total</span></div>
+        <span class="tag" style="background:rgba(14.14.16,.14);color:#0e0e10">${APPROVALS.length} total</span></div>
       <div class="micro mt4">Agents act freely under your limit and ask above it. You stay in control — nothing big moves without you.</div>
     </div>
 
@@ -764,12 +764,12 @@ SCREENS.agents = () => {
   <div class="scr">
     ${hdr('Your agents',{right:`<button class="iconbtn" onclick="chatDeep('agents')">${ic('spark',18)}</button>`})}
     <div class="card lime">
-      <div class="flex between"><span class="lbl" style="color:rgba(26,18,4,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, profit bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(26,18,4,.14);color:#1a1204">${AGENTS.period}</span></div>
+      <div class="flex between"><span class="lbl" style="color:rgba(14.14.16,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, profit bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(14.14.16,.14);color:#0e0e10">${AGENTS.period}</span></div>
       <div style="font:800 36px Inter,sans-serif" class="tnum mt8">AED ${fm(AGENTS.earned,0)}</div>
       <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')} — plus ${AGENTS.timeSaved}</div>
     </div>
 
-    <div class="card mt12 tap" onclick="A.go('approvals')" style="border-color:rgba(245,197,66,.4)">
+    <div class="card mt12 tap" onclick="A.go('approvals')" style="border-color:rgba(166,168,253,.4)">
       <div class="flex between"><b style="font-size:13.5px">🔔 ${AP.pending().length} actions need your nod today</b>${ic('chevR',18)}</div>
       <div class="micro mt4">Review what the fleet wants to do · approve all in one tap</div>
     </div>
@@ -798,7 +798,7 @@ SCREENS.agents = () => {
     ${AGENTS.fleet.map(f=>`
       <div class="card mt8">
         <div class="flex" style="gap:12px">
-          <span class="avx" style="background:rgba(245,197,66,.12);font-size:22px">${f.em}</span>
+          <span class="avx" style="background:rgba(166,168,253,.12);font-size:22px">${f.em}</span>
           <div class="f1"><div class="row-t" style="font-size:14px">${f.t}</div><div class="row-d" style="white-space:normal">${f.sub}${f.strat?' · '+f.strat:''}</div></div>
           <button class="switch lime on" onclick="this.classList.toggle('on')"></button>
         </div>
@@ -831,8 +831,8 @@ SCREENS.gift = () => {
   return `
   <div class="scr">
     ${hdr('Gift planner')}
-    <div class="card" style="background:linear-gradient(150deg,rgba(255,143,192,.16),var(--glass))">
-      <div class="flex between"><b style="font-size:15px">🎂 ${g.who}’s birthday</b><span class="tag" style="background:rgba(255,143,192,.2);color:#FF8FC0">in ${g.inDays} days</span></div>
+    <div class="card" style="background:linear-gradient(150deg,rgba(200.90,142,.16),var(--glass))">
+      <div class="flex between"><b style="font-size:15px">🎂 ${g.who}’s birthday</b><span class="tag" style="background:rgba(200.90,142,.2);color:#c85a8e">in ${g.inDays} days</span></div>
       <div class="micro mt4">${g.date} · reminder set — I won’t let it sneak up on you.</div>
     </div>
     <div class="card soft mt12 flex" style="gap:10px;align-items:flex-start">${ic('shieldCheck',20,'lime-t')}
@@ -841,7 +841,7 @@ SCREENS.gift = () => {
     <div class="lbl mt16 mb8">Budget it ${tipi('Reserved into a hidden Gift pot — masked from shared views and her insights, so the surprise survives.')}</div>
     <div class="chips">
       ${g.budgets.map(v=>`<button class="chip ${bud===v?'on':''}" onclick="A.tmp.giftBud=${v};A.refresh()">AED ${fm(v,0)}</button>`).join('')}
-      <button class="chip" onclick="A.tip('Type any amount in the chat — “budget 1 200 for the gift” works too.')">✏️ Custom</button>
+      <button class="chip" onclick="A.tip('Type any amount in the chat — “budget 1,200 for the gift” works too.')">✏️ Custom</button>
     </div>
     <button class="btn pri sm mt8" onclick="A.toast('AED ${fm(bud,0)} set aside in a hidden Gift pot 🤫 — fits your safe-to-spend','check')">Reserve AED ${fm(bud,0)} now</button>
 
@@ -849,12 +849,12 @@ SCREENS.gift = () => {
     ${g.ideas.map(i=>`
       <div class="card mt8">
         <div class="flex" style="gap:12px">
-          <span class="avx" style="background:rgba(255,143,192,.14);font-size:22px">${i.em}</span>
+          <span class="avx" style="background:rgba(200.90,142,.14);font-size:22px">${i.em}</span>
           <div class="f1"><div class="row-t" style="font-size:14px">${i.t}</div>
             <div class="row-d" style="white-space:normal">${i.store}</div></div>
           <div class="row-amt tnum">${fm(i.price,0)}</div>
         </div>
-        <div class="flex mt8" style="gap:8px"><span class="tag" style="background:rgba(255,143,192,.14);color:#FF8FC0">${i.src}</span>
+        <div class="flex mt8" style="gap:8px"><span class="tag" style="background:rgba(200.90,142,.14);color:#c85a8e">${i.src}</span>
           <span class="micro f1">${i.why}</span></div>
         <button class="btn ghost sm mt8" onclick="confetti(document.getElementById('screen'));A.toast('${esc(i.t)} reserved — delivery before the 26th, spend masked in shared views','gift')">Buy with the Gift pot</button>
       </div>`).join('')}
@@ -872,12 +872,12 @@ const BIZ_CARDS = [
   {ic:'🚀', icBg:'#FCE7F3',
    h:'Your sales this month rocketed 30% vs last month',
    chart:`<div style="display:flex;align-items:flex-end;justify-content:center;gap:34px;height:170px;margin:18px 0 6px">
-      <div style="text-align:center"><div class="micro" style="color:#6B7280;font-weight:700">32K</div>
+      <div style="text-align:center"><div class="micro" style="color:#6a6a73;font-weight:700">32K</div>
         <div style="width:84px;height:104px;background:#E935D8;border-radius:10px;margin-top:6px"></div>
-        <div class="micro mt8" style="color:#6B7280">Last month</div></div>
+        <div class="micro mt8" style="color:#6a6a73">Last month</div></div>
       <div style="text-align:center"><div class="micro" style="color:#111;font-weight:800">41.6K</div>
         <div style="width:84px;height:140px;background:#E935D8;border-radius:10px;margin-top:6px"></div>
-        <div class="micro mt8" style="color:#6B7280">This month</div></div>
+        <div class="micro mt8" style="color:#6a6a73">This month</div></div>
     </div>`,
    src:'Based on your sales report', cta:'Keep tracking'},
   {ic:'💳', icBg:'#D8F8EA',
@@ -885,13 +885,13 @@ const BIZ_CARDS = [
    chart:`<div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;height:180px;margin:16px 0 4px">
       ${[['Sep',38,[0,34,28]],['Oct',32,[0,40,28]],['Nov',18,[26,36,20]],['Dec',12,[38,34,16]]].map(([mn,rej,seg])=>`
         <div style="text-align:center">
-          <div class="micro" style="color:${rej===12?'#fff':'#6B7280'};font-weight:800;${rej===12?'background:#16191C;border-radius:8px;padding:2px 7px':''}">${rej}%</div>
+          <div class="micro" style="color:${rej===12?'#fff':'#6a6a73'};font-weight:800;${rej===12?'background:#0e0e10;border-radius:8px;padding:2px 7px':''}">${rej}%</div>
           <div style="width:56px;height:130px;display:flex;flex-direction:column;justify-content:flex-end;border-radius:10px;overflow:hidden;background:#E9EBF0;margin-top:5px">
             <div style="height:${seg[0]}%;background:#F7E96B"></div>
             <div style="height:${seg[1]}%;background:#3ECB7E"></div>
             <div style="height:${seg[2]}%;background:#A45CFF"></div>
           </div>
-          <div class="micro mt4" style="color:#6B7280">${mn}</div></div>`).join('')}
+          <div class="micro mt4" style="color:#6a6a73">${mn}</div></div>`).join('')}
     </div>
     <div class="chips" style="justify-content:center">
       <span class="tag" style="background:#FBF3C6;color:#6B5E00">Long-term financing</span>
@@ -904,8 +904,8 @@ const BIZ_CARDS = [
    h:'Your customer acquisition cost is 30% higher than average in your category',
    sub:'Streetwear category, UAE',
    chart:`<div style="margin:26px 0 10px">
-      <div class="kv" style="font-size:15px"><span class="k" style="color:#6B7280">Average CAC</span><span class="v tnum" style="font-size:22px;font-weight:800;color:#9AA3AD">AED 3,20</span></div>
-      <div class="kv" style="font-size:15px"><span class="k" style="color:#6B7280">Your CAC</span><span class="v tnum" style="font-size:22px;font-weight:800;color:#111">AED 4,21</span></div>
+      <div class="kv" style="font-size:15px"><span class="k" style="color:#6a6a73">Average CAC</span><span class="v tnum" style="font-size:22px;font-weight:800;color:#9a9aa2">AED 3.20</span></div>
+      <div class="kv" style="font-size:15px"><span class="k" style="color:#6a6a73">Your CAC</span><span class="v tnum" style="font-size:22px;font-weight:800;color:#111">AED 4.21</span></div>
     </div>`,
    src:'Based on Mal merchant data', cta:'Show this in a week'},
 ];
@@ -913,7 +913,7 @@ SCREENS.biz = () => {
   const i = Math.min(A.tmp.bizI||0, BIZ_CARDS.length-1), c = BIZ_CARDS[i];
   return `
   <div class="scr light" style="display:flex;flex-direction:column">
-    ${hdr('Business insights',{right:`<span class="tag lime" style="color:#6d4f06">${i+1}/${BIZ_CARDS.length}</span>`})}
+    ${hdr('Business insights',{right:`<span class="tag lime" style="color:#45454d">${i+1}/${BIZ_CARDS.length}</span>`})}
     <div class="card white f1" style="display:flex;flex-direction:column;justify-content:center;text-align:center;border:1px solid var(--lt-line)">
       <div style="width:74px;height:74px;border-radius:50%;background:${c.icBg};display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto">${c.ic}</div>
       <div class="h2 mt16" style="line-height:1.35">${c.h}</div>
@@ -946,7 +946,7 @@ SCREENS.debts = () => {
       <div class="micro">That’s AED ${fm(exMortg/12,0)}/month burning on expensive facilities — most of it fixable.</div>
     </div>
     <div class="card lime mt12 tap" onclick="A.go('refi')">
-      <div class="flex between"><b style="font-size:14px">⚡ Refinance plan ready — save AED 6 889/yr</b>${ic('chevR',18)}</div>
+      <div class="flex between"><b style="font-size:14px">⚡ Refinance plan ready — save AED 6,889/yr</b>${ic('chevR',18)}</div>
       <div class="micro mt4">Close 1 · transfer 4 · keep 4 — economics checked line by line</div>
     </div>
     ${['Personal','Business'].map(kind=>`
@@ -975,7 +975,7 @@ SCREENS.refi = () => {
     <div class="card lime">
       <b style="font-size:14px">Follow the plan → save AED ${fm(saves,0)}/yr</b>
       <div class="micro mt4">Every recommendation is ranked by <b>your</b> savings — including four “keep”s that earn Mal nothing.</div>
-      ${lens?`<div class="hr" style="background:rgba(26,18,4,.15)"></div>
+      ${lens?`<div class="hr" style="background:rgba(14.14,16,.15)"></div>
       <div class="micro"><b>💰 Mal unit economics (demo):</b> refinancing fees + financing margin ≈ <b>AED ${fm(rev,0)}</b> first-year revenue from this one customer. Honest advice still pays.</div>`:''}
     </div>
     ${DEBTS.map(d=>{
@@ -992,7 +992,7 @@ SCREENS.refi = () => {
         ${d.to?`<div class="kv mt4"><span class="k">→ ${d.to}</span><span class="v tnum grn-t">save ${fm(d.save,0)}/yr</span></div>`:''}
         ${lens&&d.malRev?`<div class="micro" style="color:var(--gold)">💰 Mal earns ≈ AED ${fm(d.malRev,0)} (1% switch fee + margin share)</div>`:lens?`<div class="micro" style="color:var(--tx3)">💰 Mal earns AED 0 — trust play</div>`:''}
         ${d.rec==='transfer'?`<button class="btn pri sm mt8" onclick="A.toast('${esc(d.t)} — buyout initiated, old facility settles in 2 days','check')">Transfer in 1 tap</button>`
-        :d.rec==='close'?`<button class="btn pri sm mt8" onclick="A.toast('Settled from e-Saver — AED 3 190/yr stays yours','check')">Settle from e-Saver</button>`
+        :d.rec==='close'?`<button class="btn pri sm mt8" onclick="A.toast('Settled from e-Saver — AED 3,190/yr stays yours','check')">Settle from e-Saver</button>`
         :d.rec==='schedule'?`<button class="btn pri sm mt8" onclick="A.toast('Payroll scheduled — 28th, from FAB ··5689','cal')">Schedule payroll</button>`:''}
       </div>`;}).join('')}
     <div class="card soft mt12 tap" onclick="A.go('dsf')">
@@ -1006,7 +1006,7 @@ SCREENS.refi = () => {
 SCREENS.dsf = () => `
   <div class="scr">
     ${hdr('Deposit-secured financing')}
-    <div class="card" style="text-align:center;background:linear-gradient(150deg,rgba(245,197,66,.12),var(--glass))">
+    <div class="card" style="text-align:center;background:linear-gradient(150deg,rgba(166,168,253,.12),var(--glass))">
       <div style="font-size:40px">🔐</div>
       <div class="h2 mt8">Borrow against your own savings</div>
       <div class="sub mt8">${DSF.blurb}</div>
@@ -1016,7 +1016,7 @@ SCREENS.dsf = () => `
       <div class="kv" style="padding:11px 2px"><span class="k">Pledge up to ${DSF.pledge*100}% (rahn)</span><span class="v tnum">AED ${fm(DSF.deposit*DSF.pledge,0)}</span></div>
       <div class="kv" style="padding:11px 2px"><span class="k">Personal rate</span><span class="v tnum">${DSF.rate.toFixed(2).replace('.',',')}% p.a.</span></div>
       <div class="kv" style="padding:11px 2px"><span class="k">Business rate</span><span class="v tnum">${DSF.bizRate.toFixed(2).replace('.',',')}% p.a.</span></div>
-      <div class="kv" style="padding:11px 2px"><span class="k">Net cost after deposit profit ${tipi('You pay 4,25% on the financing while your pledged deposit keeps earning ~3,1% Mudarabah profit — so the true cost is the difference, about 1,15%.')}</span><span class="v tnum grn-t">≈ 1,15% — cheapest financing in the app</span></div>
+      <div class="kv" style="padding:11px 2px"><span class="k">Net cost after deposit profit ${tipi('You pay 4.25% on the financing while your pledged deposit keeps earning ~3.1% Mudarabah profit — so the true cost is the difference, about 1.15%.')}</span><span class="v tnum grn-t">≈ 1.15% — cheapest financing in the app</span></div>
     </div>
     <div class="card soft mt12 flex" style="gap:10px">${ic('moon',18,'gold-t')}<div class="micro">Structure: commodity Murabaha with a pledge (rahn) over the deposit — reviewed by the Mal Shariah board; no interest at any step.</div></div>
     <button class="btn lime mt16" onclick="A.go('refi')">Use it in my refinance plan</button>
@@ -1118,6 +1118,29 @@ SCREENS.support = () => `
     <div class="listcard mt12">
       ${[['Report fraud or a scam','Instant freeze + case officer','alert'],['A payment looks wrong','Dispute with one tap','card'],['Talk about Shariah compliance','Certified advisors, free','moon'],['Anything else','Chat with us','headset']]
         .map(([t,d,i])=>`<div class="row" onclick="A.toast('Connecting you to a human… (mock)','headset')"><span class="bigico">${ic(i,20)}</span><div class="row-main"><div class="row-t">${t}</div><div class="row-d">${d}</div></div><span class="chev">${ic('chevR',16)}</span></div>`).join('')}
+    </div>
+  </div>`;
+/* ---------------- agentically better: matched competitor promo ---------------- */
+SCREENS['agentic-match'] = () => `
+  <div class="scr">
+    ${hdr('Agentically better')}
+    <div class="card lime">
+      <span class="tag solid">Promise kept</span>
+      <div class="h1 mt12">Your card just got better. Automatically.</div>
+      <div class="sub mt8" style="color:rgba(14,14,16,.66)">FAB refreshed their Cashback Visa campaign yesterday at 14:05. Your Mal Agentic card matched it by 15:02 — applied only to you.</div>
+    </div>
+    <div class="lbl mt20 mb8">What FAB launched — and what you now have on Mal</div>
+    <div class="listcard">
+      ${[['5% cashback on groceries & fuel','was 1.5% on Mal','check'],
+         ['Double cashback on dining this month','new — matched same-day','check'],
+         ['Cinema buy-1-get-1 weekends','matched via Mal Perks','check'],
+         ['Annual fee AED 0','always true on Mal','check']]
+        .map(([t,d])=>`<div class="row static"><span class="bigico" style="color:var(--grn)">${ic('check',20)}</span><div class="row-main"><div class="row-t" style="white-space:normal">${t}</div><div class="row-d">${d}</div></div></div>`).join('')}
+    </div>
+    <div class="card soft mt12"><div class="micro">How this works: agents watch every card campaign in the UAE — including banks you already hold. When one of your cards gets better, Mal matches the benefit on your Agentic card within the hour, or simply tells you to pay with theirs. Whichever wins for you. That is the promise: agentically better.</div></div>
+    <div class="btnrow mt16">
+      <button class="btn lime" onclick="A.toast('Matched benefits active until 31 Jul','check')">Use Mal for these</button>
+      <button class="btn ghost" onclick="A.toast('Fine too — each purchase routes to whichever card wins','check')">Keep using FAB</button>
     </div>
   </div>`;
 })();
