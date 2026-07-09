@@ -8,6 +8,9 @@ window.SCN_GROUPS = [
 {g:'First run & onboarding', items:[
   S('Splash & brand reveal','Mal wordmark on midnight indigo, auto-advances','splash','fresh'),
   S('Welcome story','3-slide value prop: 1-click products · all banks · Shariah-first','welcome','fresh'),
+  S('Sign in — UAE PASS · Apple · Google','Three-tap start; UAE PASS brings verified identity with the login',()=>{A.ensureFresh();A.tmp.slide=3;A.go('welcome',true);},'fresh'),
+  S('UAE PASS — KYC arrives with login','Identity, EID and sanctions cleared via ICP — zero documents','ob-uaepass','fresh'),
+  S('Progressive KYC — verify when it matters','Apple/Google sign-in defers documents until the first transfer',()=>{A.ensureApp();A.go('home');setTimeout(()=>KYC.gate(),600);}),
   S('Sign up with phone','UAE number — tap the field, it types itself','ob-phone','fresh'),
   S('SMS code autofill','iOS-style “From Messages” chip fills the OTP','ob-otp','fresh'),
   S('Emirates ID scan','Chip read → ICP match → sanctions screen, animated','ob-eid','fresh'),
@@ -112,6 +115,8 @@ window.SCN_GROUPS = [
   S('Cancel via your bank ✦','Mal files the cancellation + refund request','subs'),
   S('Safe-to-spend forecast','AED 9,540 until salary, 94% accuracy','forecast'),
   S('Financial health score','78/100 with named fixes','health'),
+  S('Goal pulse on home','29% across 4 goals · +2,394 earned by investments · agent wins routed in','home'),
+  S('Family wealth — 4 countries','KSA & UK open banking live · Egypt via parsed statement emails','global'),
   S('Net worth — tell me why','Cash 275,900 but net worth 27,714 — the home gap, explained, then the plan',()=>chatDeep('networth')),
   S('Financial plan — with teeth','5 steps: a real hard stop on dining, refi moves, Ijarah overpayment','plan'),
   S('Declined by your plan','A latte hits the dining hard stop — safe word “green light” unlocks an hour',()=>{A.go('plan');setTimeout(()=>HardStop.demo(),400)}),

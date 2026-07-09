@@ -494,6 +494,32 @@ SCREENS.health = () => `
     <button class="btn lime mt16" onclick="chatDeep('save')">✦ Make me a plan</button>
   </div>`;
 
+/* ---------------- family wealth across borders ---------------- */
+SCREENS.global = () => `
+  <div class="scr">
+    ${hdr('Family wealth · 4 countries')}
+    <div class="card">
+      <span class="lbl">Outside the UAE</span>
+      <div style="font:600 30px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum mt8">≈ AED ${fm(GLOBAL_WEALTH.totalAed)}</div>
+      <div class="micro mt4">3 foreign accounts · FX refreshed hourly · one tap adds them to the Zakat estate</div>
+    </div>
+    ${GLOBAL_WEALTH.countries.map(c=>`
+      <div class="flex between mt16 mb8">
+        <span class="flex" style="gap:8px"><span style="font-size:18px">${c.flag}</span><span class="h3">${c.c}</span></span>
+        <span class="tag ${c.badge}">${c.method}</span>
+      </div>
+      <div class="listcard">
+        ${c.accs.map(a=>`
+          <div class="row static">
+            <span class="bigico">${ic('bank',20)}</span>
+            <div class="row-main"><div class="row-t">${a.n}</div><div class="row-d" style="white-space:normal">${a.d} · ${c.live}</div></div>
+            ${a.v!=='—'?`<div class="row-amt tnum" style="font-size:12.5px;white-space:normal;max-width:120px">${a.v}</div>`:''}
+          </div>`).join('')}
+      </div>`).join('')}
+    <div class="card soft mt16 flex" style="gap:10px">${aiIc(13)}<div class="micro">${GLOBAL_WEALTH.note}</div></div>
+    <button class="btn ghost mt12" onclick="A.toast('Statement forwarding address created: khadeeja.statements@mal.ai','check')">Add a country — forward statements by email</button>
+  </div>`;
+
 /* ---------------- the financial plan ---------------- */
 SCREENS.plan = () => `
   <div class="scr">
@@ -625,6 +651,21 @@ SCREENS.goals = () => `
           <div class="t-d tnum">${fm(g.cur,0)} / ${fm(g.tgt,0)}</div>
           <div class="mt8">${meter(g.cur/g.tgt, g.c)}</div>
         </div>`).join('')}
+    </div>
+    <div class="card mt12 flex between tap" onclick="A.go('rules')">
+      <div class="flex" style="gap:12px">${aiIc(15)}
+      <div><div class="row-t">Agent wins auto-invest here</div><div class="row-d" style="white-space:normal">+AED ${fm(GOAL_STATS.agentRouted,0)} this quarter → Hajj first · Mudarabah profit while it waits · best practice, on by default</div></div></div>
+      <button class="switch lime on" onclick="event.stopPropagation();this.classList.toggle('on')"></button>
+    </div>
+    <div class="card mt12 flex between tap" onclick="A.go('rules')">
+      <div class="flex" style="gap:12px">${aiIc(15)}
+      <div><div class="row-t">Agent wins auto-invest here</div><div class="row-d" style="white-space:normal">+AED ${fm(GOAL_STATS.agentRouted,0)} this quarter → Hajj first · Mudarabah profit while it waits · best practice, on by default</div></div></div>
+      <button class="switch lime on" onclick="event.stopPropagation();this.classList.toggle('on')"></button>
+    </div>
+    <div class="card mt12 flex between tap" onclick="A.go('rules')">
+      <div class="flex" style="gap:12px">${aiIc(15)}
+      <div><div class="row-t">Agent wins auto-invest here</div><div class="row-d" style="white-space:normal">+AED ${fm(GOAL_STATS.agentRouted,0)} this quarter → Hajj first · Mudarabah profit while it waits · best practice, on by default</div></div></div>
+      <button class="switch lime on" onclick="event.stopPropagation();this.classList.toggle('on')"></button>
     </div>
     <div class="card mt16 flex between tap" onclick="A.go('roundups')">
       <div class="flex" style="gap:12px"><span class="bigico" style="background:rgba(200,132,31,.16);color:var(--gold)">${ic('coins',22)}</span>

@@ -772,6 +772,7 @@ SCREENS.agents = () => {
       <div class="flex between"><span class="lbl" style="color:rgba(14,14,16,.55)">Agents earned you ${tipi('Verified value: price differences vs. your old habits, refunds recovered, cashback routed, profit bumps — receipts attached to every line.')}</span><span class="tag" style="background:rgba(14,14,16,.14);color:#0e0e10">${AGENTS.period}</span></div>
       <div style="font:600 36px Inter,sans-serif" class="tnum mt8">AED ${fm(AGENTS.earned,0)}</div>
       <div class="micro mt4">${AGENTS.breakdown.map(([t,v])=>`${t} ${fm(v,0)}`).join(' · ')} — plus ${AGENTS.timeSaved}</div>
+      <div class="micro mt8" style="color:rgba(14,14,16,.62)">Every win auto-invests into your Goals (Hajj first) — earning Mudarabah profit instead of evaporating into the balance.</div>
     </div>
 
     <div class="card mt12 tap" onclick="A.go('approvals')" style="border-color:rgba(166,168,253,.4)">
