@@ -49,6 +49,7 @@ const Chat = window.Chat = {
       const v = parseFloat(t.replace(/[^\d.]/g,''));
       if (isFinite(v) && v>=0){ const p=ZKChat.pending; ZKChat.pending=null; ZKChat.applyTyped(p, v); return; }
     }
+    if (/what should i do|what do i do|what now|help me plan|give me a plan/.test(t)) return go('doplan');
     if (/(credit )?card/.test(t) && /find|best|help|need|new/.test(t)) return go('findCard');
     if (/ps ?5|playstation/.test(t)) return go('ps5');
     if (/birthday|present|anniversar|gift for/.test(t)) return go('gift');
@@ -378,6 +379,20 @@ const SCRIPTS = {
     await c.card(chips([
       {t:'🤖 Open agents hub', fn:"A.go('agents')"},
       {t:'⚡ Try the P2P risk strategy', fn:"A.tmp.ag={healthy:true,local:true,promo:true,risk:true,careem:'agent'};A.go('agents')"},
+    ]), 250);
+  }},
+
+  doplan:{ user:'What should I do?', async run(c){
+    await c.ai(`Keep it simple — three moves this month, I track all of them:\n\n1. <b>Cap dining at AED 1,400</b> — you are at 1,933. The hard stop on your Agentic card enforces it from tomorrow.\n2. <b>Close the 14.5% invoice financing</b> from idle e-Saver cash — +AED 3,190/yr, one tap.\n3. <b>Let agent wins keep auto-investing</b> into Goals — AED 1,643 already routed this quarter.\n\nThat is the whole plan. I review it every Friday and nudge you only when something drifts.`, 1900);
+    await c.card(`<div class="offer-card" style="min-width:0">
+      <div class="kv"><span class="k">Dining cap</span><span class="v">arms tomorrow</span></div>
+      <div class="kv"><span class="k">Invoice financing</span><span class="v">ready to close</span></div>
+      <div class="kv"><span class="k">Wins → Goals</span><span class="v grn-t">already on</span></div>
+      <button class="btn lime mt12" onclick="A.toast('Plan armed — weekly check-ins every Friday 09:00','check')">Track it for me — weekly</button>
+    </div>`);
+    await c.card(chips([
+      {t:'Open the full plan', fn:"A.go('plan')"},
+      {t:'See affected goals', fn:"A.go('goals')"},
     ]), 250);
   }},
 

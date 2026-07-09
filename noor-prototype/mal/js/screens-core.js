@@ -74,24 +74,6 @@ SCREENS.home = () => `
       <div class="flex mt8" style="gap:6px">${aiIc(9)}<span class="micro">Agent wins auto-invest here — AED ${fm(GOAL_STATS.agentRouted,0)} routed this quarter</span></div>
     </div>
 
-    <div class="card mt12 tap" onclick="A.go('goals')">
-      <div class="flex between"><span class="lbl">Goals</span><span class="tag grn tnum">${GOAL_STATS.pct}% · ${GOAL_STATS.active} active</span></div>
-      <div class="flex mt8" style="gap:14px">
-        <div class="f1"><div class="micro">Hajj · Emergency · Car · Umrah</div><div class="mt4">${meter(GOAL_STATS.pct/100,'#4a63d8')}</div></div>
-        <div class="row-r"><div class="row-amt tnum" style="color:var(--grn)">+AED ${fm(GOAL_STATS.investEarned,0)}</div><div class="row-sub">earned by investments</div></div>
-      </div>
-      <div class="flex mt8" style="gap:6px">${aiIc(9)}<span class="micro">Agent wins auto-invest here — AED ${fm(GOAL_STATS.agentRouted,0)} routed this quarter</span></div>
-    </div>
-
-    <div class="card mt12 tap" onclick="A.go('goals')">
-      <div class="flex between"><span class="lbl">Goals</span><span class="tag grn tnum">${GOAL_STATS.pct}% · ${GOAL_STATS.active} active</span></div>
-      <div class="flex mt8" style="gap:14px">
-        <div class="f1"><div class="micro">Hajj · Emergency · Car · Umrah</div><div class="mt4">${meter(GOAL_STATS.pct/100,'#4a63d8')}</div></div>
-        <div class="row-r"><div class="row-amt tnum" style="color:var(--grn)">+AED ${fm(GOAL_STATS.investEarned,0)}</div><div class="row-sub">earned by investments</div></div>
-      </div>
-      <div class="flex mt8" style="gap:6px">${aiIc(9)}<span class="micro">Agent wins auto-invest here — AED ${fm(GOAL_STATS.agentRouted,0)} routed this quarter</span></div>
-    </div>
-
     <div class="lbl mt20 mb8">For you</div>
     <div class="hscroll">
       <div class="card lime tap" style="min-width:218px" onclick="A.go('chat-card')">

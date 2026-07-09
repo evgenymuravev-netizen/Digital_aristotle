@@ -302,6 +302,7 @@ SCREENS.insights = () => {
     ${over.length?`<div class="card mt12" style="border-color:rgba(255,176,80,.4)">
       <b style="font-size:13.5px">⚠️ Over budget: ${over.map(c=>CATS[c.cat].n).join(', ')}</b>
       <div class="micro mt4">Dining is +38% vs May — mostly delivery. Want a cap?</div>
+      <div class="micro mt4"><b>Goals this touches:</b> Umrah slips ~3 weeks · Car ~1 week — the overspend is money that would have auto-invested. Hajj is protected and unaffected.</div>
       <button class="chip mt8" onclick="A.go('rule-new')">Set a smart cap</button></div>`:''}
     <div class="lbl mt20 mb8">Categories</div>
     <div class="micro mb8">Colour = status only: <span style="color:#1f8a5b">●</span> on track · <span style="color:#c8841f">●</span> near limit · <span style="color:#d1483f">●</span> over budget</div>
@@ -646,7 +647,7 @@ SCREENS.goals = () => `
     <div class="grid2 mt16">
       ${GOALS.map(g=>`
         <div class="tile" onclick="A.go('goal/${g.id}')">
-          <div class="flex between"><span style="font-size:30px">${g.em}</span><span class="tag gray tnum">${Math.round(g.cur/g.tgt*100)}%</span></div>
+          <div class="flex between"><span style="font-size:30px">${g.em}</span><span class="tag ${g.delay?'red':'gray'} tnum">${g.delay?'delayed':Math.round(g.cur/g.tgt*100)+'%'}</span></div>
           <div class="t-t">${g.n}</div>
           <div class="t-d tnum">${fm(g.cur,0)} / ${fm(g.tgt,0)}</div>
           <div class="mt8">${meter(g.cur/g.tgt, g.c)}</div>
