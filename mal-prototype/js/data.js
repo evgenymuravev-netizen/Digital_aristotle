@@ -223,6 +223,9 @@ window.RULES = [
   {id:'r3', on:true,  when:'Every Friday',                  then:'AED 100 Sadaqah to Dubai Cares', ic:'heart', ran:'Next: Friday 13 Jun'},
   {id:'r4', on:false, when:'Dining > AED 1,500 in a month', then:'Alert me + freeze food delivery', ic:'food', ran:'Triggered 28 May'},
   {id:'r5', on:true,  when:'FAB balance < AED 2,000',       then:'Top up AED 3,000 from Wio', ic:'swap',  ran:'Never triggered'},
+  {id:'r6', on:true,  when:'An agent saves you money',       then:'Auto-invest the win into Goals — Hajj first', ic:'target', ran:'AED 1,643 routed this quarter'},
+  {id:'r6', on:true,  when:'An agent saves you money',       then:'Auto-invest the win into Goals — Hajj first', ic:'target', ran:'AED 1,643 routed this quarter'},
+  {id:'r6', on:true,  when:'An agent saves you money',       then:'Auto-invest the win into Goals — Hajj first', ic:'target', ran:'AED 1,643 routed this quarter'},
 ];
 
 /* ---------- billers ---------- */
@@ -234,6 +237,63 @@ window.BILLERS = [
   {n:'Nol card', d:'Transport top-up', ic:'card', c:'#c85a8e', due:0, autopay:false},
   {n:'Dubai Police', d:'Traffic fines', ic:'alert', c:'#d1483f', due:0, autopay:false},
 ];
+
+/* ---------- goal pulse + agent auto-invest ---------- */
+window.GOAL_STATS = { pct:29, active:4, investEarned:2394.40, agentRouted:1643 };
+
+/* ---------- family wealth across borders ---------- */
+window.GLOBAL_WEALTH = {
+  totalAed:49731.42,
+  countries:[
+    {cc:'AE', flag:'🇦🇪', c:'United Arab Emirates', method:'Open Finance', badge:'blu', live:'live · CBUAE rails',
+     accs:[{n:'All UAE accounts', d:'FAB · Wio · EI · wallets · BNPL — the main view', v:'—'}]},
+    {cc:'SA', flag:'🇸🇦', c:'Saudi Arabia', method:'Open Banking', badge:'grn', live:'live · SAMA framework',
+     accs:[{n:'Al Rajhi savings', d:'Family home fund · synced 4 min ago', v:'SAR 28,400 ≈ AED 27,810.60'}]},
+    {cc:'EG', flag:'🇪🇬', c:'Egypt', method:'Email statements', badge:'gold', live:'parsed monthly',
+     accs:[{n:'CIB current', d:'Statement PDF from your inbox, parsed 2 Jul — auto-categorised', v:'EGP 210,000 ≈ AED 15,920.10'}]},
+    {cc:'GB', flag:'🇬🇧', c:'United Kingdom', method:'Open Banking', badge:'grn', live:'live · FCA rails',
+     accs:[{n:'Monzo current', d:'Student-era account · synced 12 min ago', v:'GBP 1,240 ≈ AED 6,000.72'}]},
+  ],
+  note:'Big families live across borders. Where open banking exists, Mal connects it; where it doesn’t, the inbox watchdog parses statement PDFs — same categories, same zakat estate, one picture.'
+};
+
+/* ---------- goal pulse + agent auto-invest ---------- */
+window.GOAL_STATS = { pct:29, active:4, investEarned:2394.40, agentRouted:1643 };
+
+/* ---------- family wealth across borders ---------- */
+window.GLOBAL_WEALTH = {
+  totalAed:49731.42,
+  countries:[
+    {cc:'AE', flag:'🇦🇪', c:'United Arab Emirates', method:'Open Finance', badge:'blu', live:'live · CBUAE rails',
+     accs:[{n:'All UAE accounts', d:'FAB · Wio · EI · wallets · BNPL — the main view', v:'—'}]},
+    {cc:'SA', flag:'🇸🇦', c:'Saudi Arabia', method:'Open Banking', badge:'grn', live:'live · SAMA framework',
+     accs:[{n:'Al Rajhi savings', d:'Family home fund · synced 4 min ago', v:'SAR 28,400 ≈ AED 27,810.60'}]},
+    {cc:'EG', flag:'🇪🇬', c:'Egypt', method:'Email statements', badge:'gold', live:'parsed monthly',
+     accs:[{n:'CIB current', d:'Statement PDF from your inbox, parsed 2 Jul — auto-categorised', v:'EGP 210,000 ≈ AED 15,920.10'}]},
+    {cc:'GB', flag:'🇬🇧', c:'United Kingdom', method:'Open Banking', badge:'grn', live:'live · FCA rails',
+     accs:[{n:'Monzo current', d:'Student-era account · synced 12 min ago', v:'GBP 1,240 ≈ AED 6,000.72'}]},
+  ],
+  note:'Big families live across borders. Where open banking exists, Mal connects it; where it doesn’t, the inbox watchdog parses statement PDFs — same categories, same zakat estate, one picture.'
+};
+
+/* ---------- goal pulse + agent auto-invest ---------- */
+window.GOAL_STATS = { pct:29, active:4, investEarned:2394.40, agentRouted:1643 };
+
+/* ---------- family wealth across borders ---------- */
+window.GLOBAL_WEALTH = {
+  totalAed:49731.42,
+  countries:[
+    {cc:'AE', flag:'🇦🇪', c:'United Arab Emirates', method:'Open Finance', badge:'blu', live:'live · CBUAE rails',
+     accs:[{n:'All UAE accounts', d:'FAB · Wio · EI · wallets · BNPL — the main view', v:'—'}]},
+    {cc:'SA', flag:'🇸🇦', c:'Saudi Arabia', method:'Open Banking', badge:'grn', live:'live · SAMA framework',
+     accs:[{n:'Al Rajhi savings', d:'Family home fund · synced 4 min ago', v:'SAR 28,400 ≈ AED 27,810.60'}]},
+    {cc:'EG', flag:'🇪🇬', c:'Egypt', method:'Email statements', badge:'gold', live:'parsed monthly',
+     accs:[{n:'CIB current', d:'Statement PDF from your inbox, parsed 2 Jul — auto-categorised', v:'EGP 210,000 ≈ AED 15,920.10'}]},
+    {cc:'GB', flag:'🇬🇧', c:'United Kingdom', method:'Open Banking', badge:'grn', live:'live · FCA rails',
+     accs:[{n:'Monzo current', d:'Student-era account · synced 12 min ago', v:'GBP 1,240 ≈ AED 6,000.72'}]},
+  ],
+  note:'Big families live across borders. Where open banking exists, Mal connects it; where it doesn’t, the inbox watchdog parses statement PDFs — same categories, same zakat estate, one picture.'
+};
 
 /* ---------- cashflow forecast ---------- */
 window.FORECAST = { zeroDay:'21 Jun', short:2140, salaryDay:'25 Jun',

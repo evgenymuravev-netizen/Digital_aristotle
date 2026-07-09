@@ -41,11 +41,64 @@ SCREENS.welcome = () => {
     </div>
     <div class="dots mb12">${W_SLIDES.map((_,k)=>`<i class="${k===i?'on':''}"></i>`).join('')}</div>
     ${i < W_SLIDES.length-1
-      ? `<button class="btn lime mt12" onclick="A.tmp.slide=${i+1};A.refresh()">Continue</button>`
-      : `<button class="btn lime mt12" onclick="A.tmp.slide=0;A.go('ob-phone')">Get started</button>`}
-    <button class="btn ghost mt8" onclick="A.demoSkip()">I already have an account</button>
+      ? `<button class="btn lime mt12" onclick="A.tmp.slide=${i+1};A.refresh()">Continue</button>
+    <button class="btn ghost mt8" onclick="A.demoSkip()">I already have an account</button>`
+      : `<button class="btn lime mt12" onclick="A.tmp.slide=0;A.go('ob-uaepass')">${ic('fingerprint',18)} Continue with UAE PASS</button>
+    <div class="btnrow mt8">
+      <button class="btn ghost" onclick="A.tmp.slide=0;A.tmp.kycLater=true;A.toast('Signed in with Apple — verify identity later, when it matters','check');setTimeout(()=>A.go('ob-pin'),600)"><svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="${BRAND_SVG.apple.p}"/></svg> Apple</button>
+      <button class="btn ghost" onclick="A.tmp.slide=0;A.tmp.kycLater=true;A.toast('Signed in with Google — verify identity later, when it matters','check');setTimeout(()=>A.go('ob-pin'),600)"><svg viewBox="0 0 24 24" width="17" height="17"><path fill="${BRAND_SVG.google.h}" d="${BRAND_SVG.google.p}"/></svg> Google</button>
+    </div>
+    <button class="btn ghost mt8" onclick="A.tmp.slide=0;A.go('ob-phone')">Use a phone number instead</button>`}
   </div>`;
 };
+
+/* ---------- UAE PASS sign-in: identity arrives with the login ---------- */
+SCREENS['ob-uaepass'] = () => `
+  <div class="scr light center">
+    <div style="width:120px;height:120px;border-radius:34px;background:#0e0e10;display:flex;align-items:center;justify-content:center;color:#2EDB8A">${ic('fingerprint',60,'',1.4)}</div>
+    <div class="h1 mt20" style="max-width:280px">UAE PASS</div>
+    <div class="sub mt8" style="max-width:300px">The national digital identity signs you in <b>and</b> verifies you in one step.</div>
+    <div class="card mt20" style="width:100%;text-align:left">
+      <div class="kv"><span class="k">Identity</span><span class="v">Khadeeja AlMansoori ✓</span></div>
+      <div class="kv"><span class="k">Emirates ID</span><span class="v tnum">784-••••-•••21-4 ✓</span></div>
+      <div class="kv"><span class="k">KYC & sanctions</span><span class="v" style="color:var(--grn)">cleared via ICP ✓</span></div>
+      <div class="kv"><span class="k">Documents needed</span><span class="v">none</span></div>
+    </div>
+    <button class="btn dark mt16" style="width:100%" onclick="A.go('ob-pin')">Continue — create passcode</button>
+    <div class="micro mt12">No ID scan, no selfie — UAE PASS already did both. Signing in with Apple or Google instead? We only ask for documents when you make your first transfer.</div>
+  </div>`;
+
+/* ---------- UAE PASS sign-in: identity arrives with the login ---------- */
+SCREENS['ob-uaepass'] = () => `
+  <div class="scr light center">
+    <div style="width:120px;height:120px;border-radius:34px;background:#0e0e10;display:flex;align-items:center;justify-content:center;color:#2EDB8A">${ic('fingerprint',60,'',1.4)}</div>
+    <div class="h1 mt20" style="max-width:280px">UAE PASS</div>
+    <div class="sub mt8" style="max-width:300px">The national digital identity signs you in <b>and</b> verifies you in one step.</div>
+    <div class="card mt20" style="width:100%;text-align:left">
+      <div class="kv"><span class="k">Identity</span><span class="v">Khadeeja AlMansoori ✓</span></div>
+      <div class="kv"><span class="k">Emirates ID</span><span class="v tnum">784-••••-•••21-4 ✓</span></div>
+      <div class="kv"><span class="k">KYC & sanctions</span><span class="v" style="color:var(--grn)">cleared via ICP ✓</span></div>
+      <div class="kv"><span class="k">Documents needed</span><span class="v">none</span></div>
+    </div>
+    <button class="btn dark mt16" style="width:100%" onclick="A.go('ob-pin')">Continue — create passcode</button>
+    <div class="micro mt12">No ID scan, no selfie — UAE PASS already did both. Signing in with Apple or Google instead? We only ask for documents when you make your first transfer.</div>
+  </div>`;
+
+/* ---------- UAE PASS sign-in: identity arrives with the login ---------- */
+SCREENS['ob-uaepass'] = () => `
+  <div class="scr light center">
+    <div style="width:120px;height:120px;border-radius:34px;background:#0e0e10;display:flex;align-items:center;justify-content:center;color:#2EDB8A">${ic('fingerprint',60,'',1.4)}</div>
+    <div class="h1 mt20" style="max-width:280px">UAE PASS</div>
+    <div class="sub mt8" style="max-width:300px">The national digital identity signs you in <b>and</b> verifies you in one step.</div>
+    <div class="card mt20" style="width:100%;text-align:left">
+      <div class="kv"><span class="k">Identity</span><span class="v">Khadeeja AlMansoori ✓</span></div>
+      <div class="kv"><span class="k">Emirates ID</span><span class="v tnum">784-••••-•••21-4 ✓</span></div>
+      <div class="kv"><span class="k">KYC & sanctions</span><span class="v" style="color:var(--grn)">cleared via ICP ✓</span></div>
+      <div class="kv"><span class="k">Documents needed</span><span class="v">none</span></div>
+    </div>
+    <button class="btn dark mt16" style="width:100%" onclick="A.go('ob-pin')">Continue — create passcode</button>
+    <div class="micro mt12">No ID scan, no selfie — UAE PASS already did both. Signing in with Apple or Google instead? We only ask for documents when you make your first transfer.</div>
+  </div>`;
 
 /* ---------- phone ---------- */
 SCREENS['ob-phone'] = () => `
@@ -61,6 +114,45 @@ SCREENS['ob-phone'] = () => `
     <button class="btn lime mt20" id="obPhoneBtn" ${A.tmp.phone?'':'disabled'} onclick="A.go('ob-otp')">Send code</button>
     <div class="card soft mt20 flex" style="gap:12px">${ic('info',20,'lime-t')}<div class="micro">Prototype tip: tap the field — it types for you. Every input in this demo self-fills.</div></div>
   </div>`;
+window.KYC = {
+  gate(){
+    A.sheet(`<div class="h2">One step before your first transfer</div>
+      <div class="sub mt8">You signed in with Apple — money can move only after a one-time identity check. Two minutes, once, required by CBUAE rules.</div>
+      <div class="listcard mt12">
+        <div class="row static"><span class="bigico">${ic('card',20)}</span><div class="row-main"><div class="row-t">Scan your Emirates ID</div><div class="row-d">Chip read + ICP match</div></div></div>
+        <div class="row static"><span class="bigico">${ic('faceid',20)}</span><div class="row-main"><div class="row-t">Selfie liveness</div><div class="row-d">Face match against the ID</div></div></div>
+      </div>
+      <button class="btn lime mt16" onclick="A.closeSheet();A.ensureFresh();A.go('ob-eid')">Verify now — 2 minutes</button>
+      <button class="btn ghost mt8" onclick="A.closeSheet();A.toast('No rush — everything except transfers works meanwhile','check')">Later</button>
+      <div class="micro mt8" style="text-align:center">Browsing, budgeting and linking banks work without it — verification unlocks payments.</div>`);
+  }
+};
+window.KYC = {
+  gate(){
+    A.sheet(`<div class="h2">One step before your first transfer</div>
+      <div class="sub mt8">You signed in with Apple — money can move only after a one-time identity check. Two minutes, once, required by CBUAE rules.</div>
+      <div class="listcard mt12">
+        <div class="row static"><span class="bigico">${ic('card',20)}</span><div class="row-main"><div class="row-t">Scan your Emirates ID</div><div class="row-d">Chip read + ICP match</div></div></div>
+        <div class="row static"><span class="bigico">${ic('faceid',20)}</span><div class="row-main"><div class="row-t">Selfie liveness</div><div class="row-d">Face match against the ID</div></div></div>
+      </div>
+      <button class="btn lime mt16" onclick="A.closeSheet();A.ensureFresh();A.go('ob-eid')">Verify now — 2 minutes</button>
+      <button class="btn ghost mt8" onclick="A.closeSheet();A.toast('No rush — everything except transfers works meanwhile','check')">Later</button>
+      <div class="micro mt8" style="text-align:center">Browsing, budgeting and linking banks work without it — verification unlocks payments.</div>`);
+  }
+};
+window.KYC = {
+  gate(){
+    A.sheet(`<div class="h2">One step before your first transfer</div>
+      <div class="sub mt8">You signed in with Apple — money can move only after a one-time identity check. Two minutes, once, required by CBUAE rules.</div>
+      <div class="listcard mt12">
+        <div class="row static"><span class="bigico">${ic('card',20)}</span><div class="row-main"><div class="row-t">Scan your Emirates ID</div><div class="row-d">Chip read + ICP match</div></div></div>
+        <div class="row static"><span class="bigico">${ic('faceid',20)}</span><div class="row-main"><div class="row-t">Selfie liveness</div><div class="row-d">Face match against the ID</div></div></div>
+      </div>
+      <button class="btn lime mt16" onclick="A.closeSheet();A.ensureFresh();A.go('ob-eid')">Verify now — 2 minutes</button>
+      <button class="btn ghost mt8" onclick="A.closeSheet();A.toast('No rush — everything except transfers works meanwhile','check')">Later</button>
+      <div class="micro mt8" style="text-align:center">Browsing, budgeting and linking banks work without it — verification unlocks payments.</div>`);
+  }
+};
 window.OB = {
   fillPhone(){
     const el = document.getElementById('obPhone'); if(!el || A.tmp.phoneTyping) return;
