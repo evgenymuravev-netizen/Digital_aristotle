@@ -498,9 +498,9 @@ SCREENS.health = () => `
 /* ---------------- family wealth across borders ---------------- */
 SCREENS.global = () => `
   <div class="scr">
-    ${hdr('Family wealth · 4 countries')}
+    ${hdr('Without borders')}
     <div class="card">
-      <span class="lbl">Outside the UAE</span>
+      <span class="lbl">Family wealth · 4 countries · outside the UAE</span>
       <div style="font:600 30px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum mt8">≈ AED ${fm(GLOBAL_WEALTH.totalAed)}</div>
       <div class="micro mt4">3 foreign accounts · FX refreshed hourly · one tap adds them to the Zakat estate</div>
     </div>
