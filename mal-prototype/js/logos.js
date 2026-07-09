@@ -37,3 +37,6 @@ window.merchIc = (name, fallbackHtml, s=44) => {
 };
 /* canonical AI orb — same mark as the home-page fab, everywhere */
 window.aiIc = (s=20, extra='') => `<span class="ai-orb" style="width:${s+16}px;height:${s+16}px;min-width:${s+16}px;${extra}">${ic('spark',s)}</span>`;
+
+/* single-file bundles inject window.ASSET_URI; web builds fall back to relative paths */
+window.assetSrc = (rel) => (window.ASSET_URI && ASSET_URI[rel]) || ('assets/' + rel);
