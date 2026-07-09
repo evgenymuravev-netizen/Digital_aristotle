@@ -213,7 +213,7 @@ window.GOALS = [
   {id:'hajj',  n:'Hajj fund',        em:'🕋', cur:12000, tgt:60000, by:'Dec 2027', auto:'AED 1,000 / salary', c:'#c8841f'},
   {id:'emrg',  n:'Emergency fund',   em:'🛟', cur:19500, tgt:36000, by:'6 months of expenses', auto:'20% of salary', c:'#1f8a5b'},
   {id:'car',   n:'New car',          em:'🚙', cur:22000, tgt:85000, by:'Mar 2028', auto:'Round-ups ×10', c:'#4a63d8'},
-  {id:'umrah', n:'Umrah with family',em:'🌙', cur:4200,  tgt:15000, by:'Apr 2027', auto:'AED 500 / month', c:'#7c6bd6'},
+  {id:'umrah', n:'Umrah with family',em:'🌙', cur:4200,  tgt:15000, by:'Apr 2027 · ~3 weeks late on current dining', auto:'AED 500 / month', c:'#7c6bd6', delay:true},
 ];
 
 /* ---------- rules (Fi-style automations) ---------- */
