@@ -16,11 +16,16 @@ AFTER.splash = () => setTimeout(()=>A.go('welcome', true), 3400);
 
 /* ---------- welcome carousel ---------- */
 const W_SLIDES = [
-  {h:'Be in control<br>of <span class="lime-t">your finances</span>', d:'Every bank, wallet, BNPL plan, debt and dirham — one live picture, one number you can trust.',
-   art:`<div style="display:flex;flex-direction:column;gap:14px;align-items:center">
-        <div class="logo-stack" style="transform:scale(1.6)">${blg('fab')}${blg('wio')}${blg('ei')}${blg('tabby')}</div>
-        <div style="margin-top:26px;font:600 44px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">.76</span></div>
-        <span class="tag lime">Live · banks, wallets, BNPL & crypto</span></div>`},
+  {h:'Control your wealth<br><span class="lime-t">across banks & fintechs</span>', d:'Every bank, wallet, BNPL plan, debt and dirham — one live picture, one number you can trust.',
+   art:`<div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+        <div class="app-cloud">
+          ${['fab','wio','nomo','io'].map(a=>`<img class="appic" src="assets/apps/${a}.png" alt="">`).join('')}
+        </div>
+        <div class="app-cloud" style="margin-top:-4px;transform:translateX(20px)">
+          ${['yap','telda','hexknot','panel'].map(a=>`<img class="appic" src="assets/apps/${a}.png" alt="">`).join('')}
+        </div>
+        <div style="margin-top:18px;font:600 44px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">.76</span></div>
+        <span class="tag lime">Live · banks, fintechs, wallets, BNPL & crypto</span></div>`},
   {h:'100% compliant.<br><span class="lime-t">Always.</span>', d:'Every product is tracked by AI and confirmed by leading scholars — you will never violate Shariah without knowing. No interest, anywhere, ever.',
    art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('shieldCheck',92,'',1.6)}</div>`},
   {h:'The most accurate<br><span class="lime-t">Zakat, ever.</span>', d:'Every asset and every debt — even trade stock and payroll — calculated to the dirham, by your scholar’s method. This is our craft.',

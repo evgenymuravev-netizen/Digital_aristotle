@@ -487,3 +487,8 @@ button.ai-orb:active{transform:scale(.94)}
 .cal-d.today{outline:2px solid #0e0e10}
 .cal-d:active{transform:scale(.94)}
 .cal-dot{position:absolute;left:50%;transform:translateX(-50%);bottom:4px;width:4px;height:4px;border-radius:50%;background:#4a63d8}
+
+/* onboarding app-icon cloud */
+.app-cloud{display:flex}
+.appic{width:46px;height:46px;border-radius:12px;object-fit:cover;box-shadow:0 0 0 3px #ffffff, 0 6px 18px rgba(14,14,16,.14)}
+.app-cloud .appic+.appic{margin-left:-10px}
