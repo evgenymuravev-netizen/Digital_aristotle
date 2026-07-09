@@ -30,6 +30,10 @@ const W_SLIDES = [
    art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('shieldCheck',92,'',1.6)}</div>`},
   {h:'The most accurate<br><span class="lime-t">Zakat, ever.</span>', d:'Every asset and every debt — even trade stock and payroll — calculated to the dirham, by your scholar’s method. This is our craft.',
    art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-warm-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('moon',92,'',1.6)}</div>`},
+  {h:'Control your wealth<br><span class="lime-t">without borders</span>', d:'Open banking in the UAE, KSA and the UK — and where it doesn’t exist yet, Mal reads the statement PDFs from your inbox. Big families live across borders; your money picture shouldn’t stop at one.',
+   art:`<div style="display:flex;flex-direction:column;gap:16px;align-items:center">
+        <div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-cool);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('globe',92,'',1.6)}</div>
+        <div class="flex" style="gap:8px;font-size:22px">🇦🇪 🇸🇦 🇪🇬 🇬🇧</div></div>`},
   {h:'Support your<br><span class="lime-t">local community</span>', d:'Your savings back the best Shariah-compliant local businesses — and the strictness dial is yours: stay 100% strict, or add local UAE & Saudi champions with purification handled.',
    art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(166,168,253,.4)">${ic('heart',92,'',1.6)}</div>`},
 ];

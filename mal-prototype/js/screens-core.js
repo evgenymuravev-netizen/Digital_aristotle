@@ -302,7 +302,7 @@ SCREENS.money = () => {
       <button class="btn ghost" onclick="A.go('consents')">${ic('shieldCheck',18)} Consents</button>
     </div>
     <div class="card mt12 tap" onclick="A.go('global')">
-      <div class="flex between"><b style="font-size:14px">🌍 Family wealth across borders — 4 countries</b>${ic('chevR',18)}</div>
+      <div class="flex between"><b style="font-size:14px">🌍 Without borders — wealth in 4 countries</b>${ic('chevR',18)}</div>
       <div class="micro mt4">KSA + UK live via open banking · Egypt parsed from statement emails · ≈ AED ${fm(GLOBAL_WEALTH.totalAed,0)}</div>
     </div>
     <div class="card lime mt12 tap" onclick="A.go('invest-upsell')">
