@@ -19,10 +19,10 @@ const W_SLIDES = [
   {h:'Control your wealth<br><span class="lime-t">across banks & fintechs</span>', d:'Every bank, wallet, BNPL plan, debt and dirham — one live picture, one number you can trust.',
    art:`<div style="display:flex;flex-direction:column;gap:12px;align-items:center">
         <div class="app-cloud">
-          ${['fab','wio','nomo','io'].map(a=>`<img class="appic" src="assets/apps/${a}.png" alt="">`).join('')}
+          ${['fab','wio','nomo','io'].map(a=>`<img class="appic" src="${assetSrc('apps/'+a+'.png')}" alt="">`).join('')}
         </div>
         <div class="app-cloud" style="margin-top:-4px;transform:translateX(20px)">
-          ${['yap','telda','hexknot','panel'].map(a=>`<img class="appic" src="assets/apps/${a}.png" alt="">`).join('')}
+          ${['yap','telda','hexknot','panel'].map(a=>`<img class="appic" src="${assetSrc('apps/'+a+'.png')}" alt="">`).join('')}
         </div>
         <div style="margin-top:18px;font:600 44px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">.76</span></div>
         <span class="tag lime">Live · banks, fintechs, wallets, BNPL & crypto</span></div>`},
