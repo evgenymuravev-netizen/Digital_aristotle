@@ -19,15 +19,24 @@ window.MMAT_CONFIG = {
 
   /* ---- access unlocking ----
      provider:
-       "demo"          → any non-empty code unlocks (for testing now)
+       "code"          → only the promo/comp codes in `accessCodes` unlock
+                         (great for testing, reviewers, and giveaways — no
+                          payment backend needed)
        "lemonsqueezy"  → validates the key against Lemon Squeezy's public
                          License API (no backend needed); set storeId + productId
        "gumroad"       → validates against Gumroad; set productId
                          (note: Gumroad's verify endpoint often needs a tiny
                           CORS proxy — see STRATEGY.md)
+       "demo"          → ANY non-empty code unlocks (open testing)
+
+     accessCodes ALWAYS work in every provider mode, so you can keep handing out
+     comp codes even after wiring real payments. NOTE: these codes ship in the
+     page source, so treat them as promo/testing codes, not hard security — the
+     real paywall should use provider license keys once payments are live.
   */
   paywall: {
-    provider: "demo",
+    provider: "code",
+    accessCodes: ["ARISTOTLE-ALL-ACCESS", "MMAT-FREE-2026"],
     storeId:  null,   // Lemon Squeezy numeric store id (from your dashboard)
     productId: null,  // Lemon Squeezy product id  OR  Gumroad product_id
   },

@@ -129,8 +129,8 @@ assert("locked forms show an Unlock button before purchase", !!unlockBtn, "no Un
 unlockBtn.fire("click");                            // → paywall
 assert("paywall screen shown", $("screen-paywall").classList.contains("active"), "paywall not active");
 const codeInput = byId["paywall-body"].querySelector(".code-input");
-codeInput.value = "DEMO-KEY-123";
-btnByText(byId["paywall-body"], "Unlock").fire("click");   // demo unlock → starts the form
+codeInput.value = (win.MMAT_CONFIG.paywall.accessCodes || ["x"])[0];  // a valid promo code
+btnByText(byId["paywall-body"], "Unlock").fire("click");   // code unlock → starts the form
 assert("unlocking a form launches its exam", $("screen-exam").classList.contains("active"), "exam not active after unlock");
 const locked = driveExam("correct");
 expect("unlocked form all-correct %", locked.pct, 100);

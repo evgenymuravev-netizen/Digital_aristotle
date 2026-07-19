@@ -552,7 +552,14 @@
   function renderPaywall(returnFormId) {
     var body = $("paywall-body"); body.innerHTML = "";
     var status = el("div", { class: "unlock-msg", id: "unlock-msg" });
-    var codeInput = el("input", { class: "code-input", id: "code-input", type: "text", placeholder: "Paste your access code", autocomplete: "off", spellcheck: "false" });
+    var codeInput = el("input", { class: "code-input", id: "code-input", type: "text", placeholder: "Enter your access code", autocomplete: "off", spellcheck: "false" });
+    var buyUrl = CFG.buyUrl || "";
+    var buyReady = buyUrl && !/REPLACE-ME|example\.lemonsqueezy|YOURSTORE|^#$/.test(buyUrl);
+    function buyBtn(cls, label) {
+      return buyReady
+        ? el("a", { class: cls, href: buyUrl, target: "_blank", rel: "noopener", text: label })
+        : el("button", { class: cls, type: "button", disabled: "disabled", text: "Checkout coming soon" });
+    }
 
     body.appendChild(el("div", {}, [
       el("p", { class: "muted", text: "Full Access" }),
@@ -563,17 +570,17 @@
           el("div", { class: "pc-tag", text: "Best value" }),
           el("div", { class: "pc-price", text: CFG.price }),
           el("div", { class: "pc-note", text: CFG.priceNote || "" }),
-          el("a", { class: "btn btn-primary btn-lg", href: CFG.buyUrl, target: "_blank", rel: "noopener", text: "Get Full Access" }),
+          buyBtn("btn btn-primary btn-lg", "Get Full Access"),
         ]),
         CFG.subPrice ? el("div", { class: "price-card" }, [
           el("div", { class: "pc-price", text: CFG.subPrice }),
           el("div", { class: "pc-note", text: CFG.subNote || "" }),
-          el("a", { class: "btn", href: CFG.buyUrl, target: "_blank", rel: "noopener", text: "Choose monthly" }),
+          buyBtn("btn", "Choose monthly"),
         ]) : null,
       ]),
       el("div", { class: "panel", style: "margin-top:8px" }, [
-        el("h2", { style: "margin-top:0", text: "Already bought? Enter your code" }),
-        el("p", { class: "muted", style: "margin-top:-.4em", text: "You'll get an access code by email after purchase. Paste it here to unlock on this device." }),
+        el("h2", { style: "margin-top:0", text: buyReady ? "Already bought? Enter your code" : "Enter your access code" }),
+        el("p", { class: "muted", style: "margin-top:-.4em", text: buyReady ? "You'll get an access code by email after purchase. Enter it here to unlock on this device." : "Payments aren't live yet — enter an access or promo code to unlock all tests on this device." }),
         el("div", { class: "code-row" }, [
           codeInput,
           el("button", { class: "btn btn-primary", type: "button", text: "Unlock", onclick: function () { validateCode(codeInput.value, returnFormId); } }),
@@ -593,11 +600,16 @@
 
   function validateCode(code, returnFormId) {
     code = (code || "").trim();
-    if (!code) return unlockMsg("Please paste your access code.", "bad");
+    if (!code) return unlockMsg("Please enter your access code.", "bad");
     var pay = CFG.paywall || { provider: "demo" };
     unlockMsg("Checking…", "");
 
     function ok(info) { setUnlocked(info); unlockMsg("Unlocked! Loading…", "good"); setTimeout(function () { returnFormId ? startForm(returnFormId) : renderHome(); }, 500); }
+
+    // Promo / comp codes always work, in every provider mode.
+    var codes = pay.accessCodes || CFG.accessCodes || [];
+    var norm = code.toLowerCase();
+    if (codes.some(function (c) { return String(c).trim().toLowerCase() === norm; })) return ok({ key: code, via: "code" });
 
     if (pay.provider === "lemonsqueezy") {
       fetch("https://api.lemonsqueezy.com/v1/licenses/validate", {
@@ -620,6 +632,8 @@
         (d && d.success && p && !p.refunded && !p.chargebacked) ? ok({ key: code, via: "gumroad" })
           : unlockMsg("That code wasn't valid for this product.", "bad");
       }).catch(function () { unlockMsg("Couldn't reach the licence server (a CORS proxy may be needed — see STRATEGY.md).", "bad"); });
+    } else if (pay.provider === "code") {
+      unlockMsg("That code wasn't recognised. Check for typos, or use the code from your purchase email.", "bad");
     } else {
       // demo: any non-empty code unlocks, so you can try the flow before wiring payments
       ok({ key: code, via: "demo" });
