@@ -484,6 +484,13 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 .lb-score { font-family: var(--font-serif); font-size: 1.15rem; color: var(--accent); font-variant-numeric: tabular-nums; justify-self: end; }
 @media (max-width: 520px) { .lb-row { grid-template-columns: 30px 1fr auto; } .lb-test { display: none; } }
 
+/* ---------------- answer closeness ---------------- */
+.close-chip { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 3px 9px; border-radius: 999px; display: inline-flex; align-items: center; }
+.close-chip.near { color: var(--good); background: color-mix(in oklab, var(--good) 16%, transparent); }
+.close-chip.close { color: var(--warn); background: color-mix(in oklab, var(--warn) 16%, transparent); }
+.close-chip.far { color: var(--muted); background: color-mix(in oklab, var(--muted) 16%, transparent); }
+.rv-close { margin-top: 8px; font-size: .88rem; color: var(--text-dim); }
+
 </style>
   <script type="application/ld+json">
   {
@@ -2400,12 +2407,55 @@ window.MMAT_DEEP = {
     ]);
   }
 
+  /* ---- how close was a wrong answer to the correct one? ---- */
+  function orderableValue(s) {
+    s = String(s).trim();
+    if (/^[A-Za-z]$/.test(s)) return s.toUpperCase().charCodeAt(0) - 64;   // A=1 … Z=26
+    if (s.indexOf(":") >= 0) return null;                                  // ratios/times aren't a linear scale
+    var t = s.replace(/,/g, "");
+    var frac = t.match(/(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)/);
+    if (frac) return parseFloat(frac[1]) / parseFloat(frac[2]);
+    var m = t.match(/-?\d+(?:\.\d+)?/);
+    return m ? parseFloat(m[0]) : null;
+  }
+  function fmtGap(x) { return String(Math.round(x * 100) / 100); }
+  function answerCloseness(q, yourIdx) {
+    if (yourIdx == null || yourIdx === q.answer) return null;
+    var vals = q.options.map(orderableValue);
+    var orderable = vals.every(function (v) { return v != null && isFinite(v); });
+    if (!orderable) {
+      var d = deepFor(q), trap = d && d.traps && d.traps[q.options[yourIdx]];
+      return { orderable: false, kind: trap ? "close" : "far", label: trap ? "Common trap" : "Off", detail: "" };
+    }
+    var letters = q.options.every(function (o) { return /^[A-Za-z]$/.test(String(o).trim()); });
+    var correctV = vals[q.answer], yourDist = Math.abs(vals[yourIdx] - correctV), nWrong = 0, closer = 0;
+    q.options.forEach(function (o, i) { if (i === q.answer) return; nWrong++; if (Math.abs(vals[i] - correctV) < yourDist) closer++; });
+    var rank = closer + 1;
+    var kind = rank === 1 ? "near" : (rank >= nWrong ? "far" : "close");
+    var gap = letters ? yourDist + " letter" + (yourDist === 1 ? "" : "s") : fmtGap(yourDist);
+    var detail = kind === "near"
+      ? "Nearly! Yours was the closest option to the right answer — just " + gap + " away."
+      : "Your answer was " + gap + " from correct" + (kind === "far" ? " — the furthest option." : ".");
+    return { orderable: true, kind: kind, label: kind === "near" ? "Near miss 🎯" : (kind === "close" ? "Close" : "Off"), detail: detail };
+  }
+  function closenessStats(res) {
+    var wrong = 0, near = 0, orderable = 0;
+    res.items.forEach(function (it) {
+      if (it.skipped || it.correct) return;
+      wrong++;
+      var c = answerCloseness(it.q, it.your);
+      if (c && c.orderable) { orderable++; if (c.kind === "near") near++; }
+    });
+    return { wrong: wrong, near: near, orderable: orderable };
+  }
+
   function renderResults(res) {
     var b = band(res.pct);
     var body = $("results-body"); body.innerHTML = "";
 
     // ---- celebration + "better than average" estimate ----
     var st = scoreStats(res);
+    var cs = closenessStats(res);
     var cc = celebrateCopy(st.pctile, res.expired);
     var bell = el("canvas", { class: "bell", role: "img",
       "aria-label": "Distribution curve: your score of " + res.pct + "% sits near the " + ordinal(st.pctile) + " percentile, above the estimated average of about " + st.mu + "%." });
@@ -2435,6 +2485,7 @@ window.MMAT_DEEP = {
             el("div", { class: "s", html: "<b>" + res.correct + "/" + res.total + "</b><span>Correct</span>" }),
             el("div", { class: "s", html: "<b>" + fmtTime(res.elapsed) + "</b><span>Time used</span>" }),
             el("div", { class: "s", html: "<b>" + (res.total - res.correct) + "</b><span>Missed</span>" }),
+            cs.near > 0 ? el("div", { class: "s", html: "<b>" + cs.near + "</b><span>Near misses</span>" }) : null,
           ]),
         ]),
       ]),
@@ -2458,6 +2509,9 @@ window.MMAT_DEEP = {
       el("h2", { style: "margin-top:0", text: "Speed & accuracy profile" }),
       el("p", { class: "muted", style: "margin-top:-.5em", html: "You averaged <b>" + prof.avgSec.toFixed(0) + "s</b> per question" + (prof.revisited ? " · revisited <b>" + prof.revisited + "</b> question" + (prof.revisited === 1 ? "" : "s") : "") + ". Time counts every visit — including stepping away and coming back." }),
       profileTable(prof.topics),
+      cs.wrong ? el("p", { class: "dim", style: "margin-top:12px", html: cs.near > 0
+        ? ("🎯 <b>" + cs.near + "</b> of your <b>" + cs.wrong + "</b> wrong answers were <b>near misses</b> — you chose the option closest to correct, so you're closer than the score suggests.")
+        : ("Across your <b>" + cs.wrong + "</b> wrong answers, none landed on the closest option — worth reviewing the method for those.") }) : null,
       el("div", { class: "recs" }, prof.recs.map(function (r) { return el("div", { class: "rec", html: "→ " + r }); })),
     ]));
 
@@ -2514,15 +2568,18 @@ window.MMAT_DEEP = {
         var tag = oi === q.answer ? "  ✓ correct" : (oi === it.your && !it.correct ? "  ✗ your answer" : "");
         return el("div", { class: cls, text: opt + tag });
       });
+      var cl = state === "wrong" ? answerCloseness(q, it.your) : null;
       var kids = [
         el("div", { class: "review-head" }, [
           el("span", { class: "rh-num", text: "Q" + (i + 1) }),
           el("span", { class: "rh-tag " + state, text: state }),
+          cl ? el("span", { class: "close-chip " + cl.kind, text: cl.label }) : null,
           el("span", { class: "q-topic", "data-cat": q.cat, text: catInfo(q.cat).label + " · " + (q.topic || "") }),
           el("span", { class: "rh-time", text: "⏱ " + Math.round((it.timeMs || 0) / 1000) + "s" + ((it.visits || 0) > 1 ? " · revisited" : "") }),
         ]),
         el("div", { class: "rv-prompt", html: q.prompt }),
         el("div", {}, optEls),
+        cl && cl.detail ? el("div", { class: "rv-close", text: cl.detail }) : null,
         q.explain ? el("div", { class: "rv-explain", html: "<b>Why:</b> " + q.explain }) : null,
       ];
       if (state !== "correct") {

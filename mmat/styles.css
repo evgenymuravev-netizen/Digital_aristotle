@@ -468,3 +468,10 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 .lb-test { font-size: .85rem; }
 .lb-score { font-family: var(--font-serif); font-size: 1.15rem; color: var(--accent); font-variant-numeric: tabular-nums; justify-self: end; }
 @media (max-width: 520px) { .lb-row { grid-template-columns: 30px 1fr auto; } .lb-test { display: none; } }
+
+/* ---------------- answer closeness ---------------- */
+.close-chip { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 3px 9px; border-radius: 999px; display: inline-flex; align-items: center; }
+.close-chip.near { color: var(--good); background: color-mix(in oklab, var(--good) 16%, transparent); }
+.close-chip.close { color: var(--warn); background: color-mix(in oklab, var(--warn) 16%, transparent); }
+.close-chip.far { color: var(--muted); background: color-mix(in oklab, var(--muted) 16%, transparent); }
+.rv-close { margin-top: 8px; font-size: .88rem; color: var(--text-dim); }

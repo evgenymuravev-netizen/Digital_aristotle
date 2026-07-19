@@ -155,6 +155,7 @@ console.log("\nPersonalized test (unlocks after 3 tests):");
 // the paywall section left us at 1 completed test (form-1); add tasters to reach 3
 byId["start-free"].fire("click"); driveExam("wrong");
 assert("wrong answers offer a deeper 'why' + report-broken-logic", byId["results-body"].textContent.includes("Report broken logic"), "no deep/report");
+assert("results rate how close each miss was", /Near miss|Close|Off/.test(byId["results-body"].textContent), "no closeness rating");
 goHome();       // 2 tests done
 assert("personalized test is LOCKED before 3 tests", !btnByText(byId["dashboard"], "Start your personalized test") && byId["dashboard"].textContent.includes("of 3 tests"), "expected locked progress at 2 tests");
 byId["start-free"].fire("click"); driveExam("wrong"); goHome();       // 3 tests done
