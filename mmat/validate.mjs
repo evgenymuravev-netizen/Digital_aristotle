@@ -10,7 +10,9 @@ import { dirname, join } from "node:path";
 const here = dirname(fileURLToPath(import.meta.url));
 const sandbox = { window: {} };
 new Function("window", readFileSync(join(here, "questions.js"), "utf8"))(sandbox.window);
+new Function("window", readFileSync(join(here, "deep.js"), "utf8"))(sandbox.window);
 const MMAT = sandbox.window.MMAT;
+const DEEP = sandbox.window.MMAT_DEEP || {};
 
 const CATS = Object.keys(MMAT.categories);
 let errors = 0;
@@ -70,6 +72,21 @@ MMAT.tests.forEach((t, ti) => {
 
 const grand = Object.values(totals).reduce((a, b) => a + b, 0);
 console.log(`\n  Forms total: ${grand} questions   ${CATS.map((c) => `${c}:${totals[c] || 0}`).join("  ")}`);
+
+// validate deep-explanation entries map to real questions/options
+const byPrompt = {};
+[MMAT.freeTest].concat(MMAT.tests).forEach((f) => f.questions.forEach((q) => { byPrompt[q.prompt] = q; }));
+Object.keys(DEEP).forEach((k) => {
+  const q = byPrompt[k];
+  if (!q) return err(`deep.js: no question matches prompt "${k.slice(0, 40)}…"`);
+  const d = DEEP[k];
+  if (!d.principle || !d.principle.trim()) err(`deep.js: "${k.slice(0, 30)}…" missing principle`);
+  Object.keys(d.traps || {}).forEach((opt) => {
+    if (!q.options.includes(opt)) err(`deep.js: "${k.slice(0, 30)}…" trap option "${opt}" is not one of that question's options`);
+    if (q.options[q.answer] === opt) err(`deep.js: "${k.slice(0, 30)}…" trap is keyed on the CORRECT option "${opt}"`);
+  });
+});
+console.log(`  ✓ deep explanations: ${Object.keys(DEEP).length} entries, all mapped to real questions/options`);
 
 if (errors) { console.error(`\n✗ ${errors} problem(s) found.`); process.exit(1); }
 console.log("\n✓ All forms valid.");

@@ -17,6 +17,7 @@ const read = (f) => readFileSync(join(here, f), "utf8");
 const css = read("styles.css");
 const config = read("config.js");
 const questions = read("questions.js");
+const deep = read("deep.js");
 const app = read("app.js");
 let html = read("index.html");
 
@@ -24,6 +25,7 @@ let html = read("index.html");
 html = html.replace('<link rel="stylesheet" href="./styles.css" />', "<style>\n" + css + "\n</style>");
 html = html.replace('<script src="./config.js"></script>', "<script>\n" + config + "\n</script>");
 html = html.replace('<script src="./questions.js"></script>', "<script>\n" + questions + "\n</script>");
+html = html.replace('<script src="./deep.js"></script>', "<script>\n" + deep + "\n</script>");
 html = html.replace('<script src="./app.js"></script>', "<script>\n" + app + "\n</script>");
 
 writeFileSync(join(here, "standalone.html"), html);

@@ -404,3 +404,24 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 #support-body textarea.code-input { width: 100%; resize: vertical; font-family: inherit; }
 #support-body .ticket { padding: 8px 0; border-top: 1px solid var(--border); font-size: .9rem; }
 @media (max-width: 520px) { #support-body .form-grid { grid-template-columns: 1fr; } }
+
+/* ---------------- deep explanation + report ---------------- */
+.deep { margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 8px; }
+.deep > summary { cursor: pointer; color: var(--info); font-size: .9rem; font-weight: 600; list-style: none; }
+.deep > summary::-webkit-details-marker { display: none; }
+.deep > summary:hover { color: var(--accent); }
+.deep[open] > summary { color: var(--accent); margin-bottom: 8px; }
+.deep-body { color: var(--text-dim); font-size: .92rem; }
+.deep-body p { margin: 0 0 .7em; }
+.deep-body b { color: var(--text); }
+.deep-actions { margin-top: 4px; }
+.linkbtn.report { color: var(--muted); font-size: .82rem; text-decoration: none; }
+.linkbtn.report:hover { color: var(--bad); text-decoration: underline; }
+
+/* ---------------- NPS ---------------- */
+.nps { text-align: center; }
+.nps-scale { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 12px 0 6px; }
+.nps-btn { width: 40px; height: 40px; border-radius: 9px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text-dim); font: inherit; font-weight: 700; cursor: pointer; transition: var(--transition); font-variant-numeric: tabular-nums; }
+.nps-btn:hover { border-color: var(--accent); color: var(--accent); background: color-mix(in oklab, var(--accent) 12%, var(--panel)); }
+.nps-foot { display: flex; align-items: center; max-width: 480px; margin: 0 auto 12px; color: var(--muted); font-size: .78rem; }
+.nps-foot .spacer { flex: 1; }

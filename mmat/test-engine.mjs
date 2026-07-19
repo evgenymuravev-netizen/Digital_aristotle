@@ -64,6 +64,7 @@ const noopInterval = () => 1;
 /* ---------------- load real source ---------------- */
 new Function("window", readFileSync(join(here, "config.js"), "utf8"))(win);
 new Function("window", readFileSync(join(here, "questions.js"), "utf8"))(win);
+new Function("window", readFileSync(join(here, "deep.js"), "utf8"))(win);
 const FORMS = [win.MMAT.freeTest, ...win.MMAT.tests];
 
 // key by prompt + options (odd-one-out prompts intentionally repeat, so prompt
@@ -123,6 +124,7 @@ assert("no two adjacent questions share a topic", noAdjacentDup(free.topics) ===
   "duplicate at position " + noAdjacentDup(free.topics) + " in " + JSON.stringify(free.topics));
 assert("results show a speed & accuracy profile", byId["results-body"].textContent.includes("Speed & accuracy profile"), "no profile panel");
 assert("results show an estimated percentile", byId["results-body"].textContent.includes("percentile"), "no percentile shown");
+assert("results ask the NPS recommend question (skippable)", byId["results-body"].textContent.includes("recommend"), "no NPS question");
 
 console.log("\nPaywall + locked form:");
 store.clear(); goHome();
@@ -144,7 +146,9 @@ assert("form no longer shows Unlock once purchased", !btnByText(byId["test-grid"
 
 console.log("\nPersonalized test (unlocks after 3 tests):");
 // the paywall section left us at 1 completed test (form-1); add tasters to reach 3
-byId["start-free"].fire("click"); driveExam("wrong"); goHome();       // 2 tests done
+byId["start-free"].fire("click"); driveExam("wrong");
+assert("wrong answers offer a deeper 'why' + report-broken-logic", byId["results-body"].textContent.includes("Report broken logic"), "no deep/report");
+goHome();       // 2 tests done
 assert("personalized test is LOCKED before 3 tests", !!btnByText(byId["dashboard"], "unlocks after"), "expected a locked CTA at 2 tests");
 byId["start-free"].fire("click"); driveExam("wrong"); goHome();       // 3 tests done
 const persBtn = btnByText(byId["dashboard"], "Start your personalized test");

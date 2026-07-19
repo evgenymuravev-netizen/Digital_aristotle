@@ -623,6 +623,87 @@
     return wrap;
   }
 
+  /* ---- deeper "why your answer misses" ---- */
+  function deepFor(q) { return q.deep || (window.MMAT_DEEP && window.MMAT_DEEP[q.prompt]) || null; }
+  var PRINCIPLES = {
+    "Synonyms": "You want the word whose meaning overlaps most fully — not one that merely shares the same topic or feeling.",
+    "Antonyms": "You want the most direct opposite along the same dimension — not just any negative or different-sounding word.",
+    "Analogies": "Analogies reward the pair with the closest, same-direction relationship — part↔whole, cause↔effect, young↔adult, tool↔user, and so on.",
+    "Odd one out": "Find the single rule that fits all but one item — and watch for a second, weaker pattern that can mislead you.",
+    "Classification": "Identify the property the group shares; the outlier is the one item that lacks it.",
+    "Number series": "Every term must obey one consistent rule; the right answer fits the whole pattern, not just the last gap.",
+    "Arithmetic": "Order of operations and clean estimation decide these — a wrong option usually matches a plausible but incorrect step.",
+    "Word problems": "Translate the words into one relationship, then compute; distractors match a tempting shortcut that skips a step.",
+    "Percentages": "Work from the base the percentage refers to; a classic trap is applying the percentage to the wrong number.",
+    "Ratio & proportion": "Split the total into equal 'parts' first; wrong options usually mix up which quantity the ratio describes.",
+    "Letter series": "Convert letters to positions (A=1 … Z=26) and the rule appears; distractors often shift by the wrong step.",
+    "Syllogisms": "Accept only what MUST be true in every case; reject anything that is merely possible.",
+    "Logical deduction": "Build the single order or arrangement the clues force, then read the answer straight off it.",
+    "Coding": "Find the exact shift or mapping and apply it consistently; a wrong option usually breaks the pattern by one.",
+    "Blood relations": "Rephrase the relationship one link at a time, working outward from the speaker.",
+    "Directions": "Sketch the path and cancel opposite legs; the net movement is the answer.",
+  };
+  function topicPrinciple(t) { return PRINCIPLES[t] || "A good answer fits the exact rule the question is testing — not just something related to it."; }
+  function topicTrap(t, your) {
+    var b = "<b>" + your + "</b> ";
+    switch (t) {
+      case "Analogies": return b + "is linked to the first word, but the connection isn't the same kind — or as tight — as in the original pair.";
+      case "Synonyms": return b + "is in the right ballpark, but its core meaning drifts from the target word.";
+      case "Antonyms": return b + "sounds opposite-ish, but it isn't the exact reverse along the same dimension.";
+      case "Odd one out":
+      case "Classification": return b + "fits a weaker, secondary pattern rather than the main rule.";
+      case "Number series": return b + "would follow a different rule than the one the whole sequence actually uses.";
+      case "Arithmetic": case "Word problems": case "Percentages": case "Ratio & proportion": return b + "matches a plausible but incorrect step in the working.";
+      case "Syllogisms": return b + "can be imagined true, but you can also picture a case where it's false — so it doesn't necessarily follow.";
+      default: return b + "comes from a small slip in applying the rule.";
+    }
+  }
+  function deepExplanation(q, yourIdx) {
+    var d = deepFor(q) || {};
+    var correct = q.options[q.answer];
+    var yourTxt = (yourIdx != null && yourIdx !== q.answer) ? q.options[yourIdx] : null;
+    var principle = d.principle || topicPrinciple(q.topic);
+    var best = d.best || q.explain || "";
+    var trap = yourTxt ? ((d.traps && d.traps[yourTxt]) || topicTrap(q.topic, yourTxt)) : "";
+    var html = "";
+    if (yourTxt) html += "<p>It's easy to see why <b>" + yourTxt + "</b> felt right. " + trap + "</p>";
+    html += "<p><b>The core idea.</b> " + principle + "</p>";
+    html += "<p><b>Why “" + correct + "” fits best.</b> " + best + "</p>";
+    if (!yourTxt) html += "<p>Any option that doesn't fit that exact relationship is a distractor here.</p>";
+    return html;
+  }
+  function reportLogic(q, yourIdx, btn) {
+    var rep = { prompt: String(q.prompt).replace(/<[^>]+>/g, ""), topic: q.topic,
+      your: (yourIdx != null ? q.options[yourIdx] : null), correct: q.options[q.answer], at: Date.now() };
+    var list = getJSON("mmat:v2:reports", []); list.push(rep); setJSON("mmat:v2:reports", list);
+    var sup = CFG.support || {};
+    if (sup.endpoint) { try { fetch(sup.endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "logic-report", report: rep }) }); } catch (e) {} }
+    if (btn) { btn.textContent = "✓ Reported — thanks, we'll review this one"; btn.disabled = true; }
+  }
+
+  /* ---- NPS (skippable) ---- */
+  function npsPanel() {
+    if (getJSON("mmat:v2:nps", null)) return null;   // already answered or skipped
+    var wrap = el("div", { class: "panel nps" });
+    function done(score) {
+      setJSON("mmat:v2:nps", { score: score, at: Date.now() });
+      var sup = CFG.support || {};
+      if (score != null && sup.endpoint) { try { fetch(sup.endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "nps", score: score }) }); } catch (e) {} }
+      wrap.innerHTML = "";
+      wrap.appendChild(el("p", { class: "muted", style: "margin:0", text: score == null ? "No problem — maybe next time." : "Thanks for the feedback! 🙏" }));
+    }
+    var scale = el("div", { class: "nps-scale" });
+    for (var i = 0; i <= 10; i++) (function (n) { scale.appendChild(el("button", { class: "nps-btn", type: "button", text: String(n), "aria-label": n + " out of 10", onclick: function () { done(n); } })); })(i);
+    wrap.appendChild(el("div", {}, [
+      el("h2", { style: "margin-top:0", text: "One quick question" }),
+      el("p", { class: "muted", style: "margin-top:-.4em", text: "How likely are you to recommend this test to a friend or colleague?" }),
+      scale,
+      el("div", { class: "nps-foot" }, [el("span", { text: "0 · Not likely" }), el("span", { class: "spacer" }), el("span", { text: "Very likely · 10" })]),
+      el("button", { class: "linkbtn", type: "button", text: "Skip", onclick: function () { done(null); } }),
+    ]));
+    return wrap;
+  }
+
   function renderResults(res) {
     var b = band(res.pct);
     var body = $("results-body"); body.innerHTML = "";
@@ -703,6 +784,9 @@
       ]),
     ]));
 
+    // NPS (skippable, shown once)
+    var npsEl = npsPanel(); if (npsEl) body.appendChild(npsEl);
+
     // review
     var listHost = el("div", { id: "review-list" });
     var filters = el("div", { class: "review-filter" });
@@ -731,7 +815,7 @@
         var tag = oi === q.answer ? "  ✓ correct" : (oi === it.your && !it.correct ? "  ✗ your answer" : "");
         return el("div", { class: cls, text: opt + tag });
       });
-      host.appendChild(el("div", { class: "review-item " + state }, [
+      var kids = [
         el("div", { class: "review-head" }, [
           el("span", { class: "rh-num", text: "Q" + (i + 1) }),
           el("span", { class: "rh-tag " + state, text: state }),
@@ -741,7 +825,18 @@
         el("div", { class: "rv-prompt", html: q.prompt }),
         el("div", {}, optEls),
         q.explain ? el("div", { class: "rv-explain", html: "<b>Why:</b> " + q.explain }) : null,
-      ]));
+      ];
+      if (state !== "correct") {
+        var summaryTxt = it.skipped ? "Explain this in depth" : "Still not convinced? Why “" + q.options[it.your] + "” misses →";
+        kids.push(el("details", { class: "deep" }, [
+          el("summary", { text: summaryTxt }),
+          el("div", { class: "deep-body", html: deepExplanation(q, it.your) }),
+          el("div", { class: "deep-actions" }, [
+            el("button", { class: "linkbtn report", type: "button", text: "⚑ Report broken logic", onclick: function () { reportLogic(q, it.your, this); } }),
+          ]),
+        ]));
+      }
+      host.appendChild(el("div", { class: "review-item " + state }, kids));
     });
     if (!host.children.length) host.appendChild(el("p", { class: "muted", text: "Nothing in this category." }));
   }
