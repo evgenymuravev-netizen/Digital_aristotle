@@ -358,3 +358,49 @@ canvas.bell { width: 100%; max-width: 520px; height: 120px; display: block; marg
 .confetti-overlay { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
 @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .celebrate-emoji { animation: none; } }
+
+/* ---------------- speed × accuracy profile ---------------- */
+.prof-table { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
+.prof-row { display: grid; grid-template-columns: 1.4fr .8fr .8fr auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 8px; background: var(--panel-2); }
+.prof-row.prof-head { background: transparent; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; padding: 0 10px 2px; }
+.prof-topic { color: var(--text); }
+.prof-num { font-variant-numeric: tabular-nums; color: var(--text-dim); }
+.vchip { font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; justify-self: start; }
+.vchip.good { color: var(--good); background: color-mix(in oklab, var(--good) 16%, transparent); }
+.vchip.warn { color: var(--warn); background: color-mix(in oklab, var(--warn) 16%, transparent); }
+.vchip.bad  { color: var(--bad);  background: color-mix(in oklab, var(--bad) 16%, transparent); }
+.recs { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.rec { color: var(--text-dim); font-size: .92rem; }
+.rec b { color: var(--text); }
+.rh-time { margin-left: auto; color: var(--muted); font-size: .78rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------------- why-us + comparison ---------------- */
+.why-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 14px; }
+.why-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.why-ico { font-size: 1.7rem; line-height: 1; }
+.why-card h3 { margin: .35em 0 .3em; font-size: 1.1rem; }
+.why-card p { color: var(--text-dim); font-size: .92rem; margin: 0; }
+.compare-wrap { overflow-x: auto; margin-top: 22px; }
+table.compare { width: 100%; border-collapse: collapse; font-size: .92rem; min-width: 520px; }
+table.compare th, table.compare td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+table.compare thead th { color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; }
+table.compare tbody th { font-weight: 600; color: var(--text); }
+table.compare td { color: var(--text-dim); }
+table.compare td.yes { color: var(--good); font-weight: 600; }
+table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { background: color-mix(in oklab, var(--accent) 8%, transparent); }
+
+/* ---------------- auth ---------------- */
+.auth-slot { display: inline-flex; align-items: center; }
+.auth-user { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--text-dim); }
+.auth-pic { width: 26px; height: 26px; border-radius: 50%; }
+.auth-name { color: var(--text); font-weight: 600; }
+.gbtn { display: inline-flex; }
+
+/* ---------------- support form ---------------- */
+#support-body .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+#support-body label { display: block; }
+#support-body label.block { margin-top: 14px; }
+#support-body label span { display: block; font-size: .82rem; color: var(--text-dim); margin-bottom: 5px; }
+#support-body textarea.code-input { width: 100%; resize: vertical; font-family: inherit; }
+#support-body .ticket { padding: 8px 0; border-top: 1px solid var(--border); font-size: .9rem; }
+@media (max-width: 520px) { #support-body .form-grid { grid-template-columns: 1fr; } }

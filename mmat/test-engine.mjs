@@ -121,6 +121,8 @@ expect("all-correct %", free.pct, 100);
 expect("tally", free.sub, "12 / 12 correct");
 assert("no two adjacent questions share a topic", noAdjacentDup(free.topics) === -1,
   "duplicate at position " + noAdjacentDup(free.topics) + " in " + JSON.stringify(free.topics));
+assert("results show a speed & accuracy profile", byId["results-body"].textContent.includes("Speed & accuracy profile"), "no profile panel");
+assert("results show an estimated percentile", byId["results-body"].textContent.includes("percentile"), "no percentile shown");
 
 console.log("\nPaywall + locked form:");
 store.clear(); goHome();
@@ -140,19 +142,19 @@ assert("interleaved: no adjacent topic in a 25-Q form", noAdjacentDup(locked.top
 goHome();
 assert("form no longer shows Unlock once purchased", !btnByText(byId["test-grid"], "Unlock"), "still locked");
 
-console.log("\nAdaptive weak-area round:");
-// already did one full form all-correct above; add a taster with wrong answers to create weak topics
-byId["start-free"].fire("click");
-driveExam("wrong");
-goHome();
-const dashBtn = btnByText(byId["dashboard"], "Practice");
-assert("weak-area button is enabled after enough data", dashBtn && !dashBtn.getAttribute("disabled"),
-  "button: " + (dashBtn && dashBtn.textContent));
-dashBtn.fire("click");                              // start adaptive round
-assert("adaptive round launches an exam", $("screen-exam").classList.contains("active"), "exam not active");
+console.log("\nPersonalized test (unlocks after 3 tests):");
+// the paywall section left us at 1 completed test (form-1); add tasters to reach 3
+byId["start-free"].fire("click"); driveExam("wrong"); goHome();       // 2 tests done
+assert("personalized test is LOCKED before 3 tests", !!btnByText(byId["dashboard"], "unlocks after"), "expected a locked CTA at 2 tests");
+byId["start-free"].fire("click"); driveExam("wrong"); goHome();       // 3 tests done
+const persBtn = btnByText(byId["dashboard"], "Start your personalized test");
+assert("personalized test unlocks after 3 completed tests", persBtn && !persBtn.getAttribute("disabled"),
+  "button: " + (persBtn && persBtn.textContent));
+persBtn.fire("click");
+assert("personalized test launches an exam", $("screen-exam").classList.contains("active"), "exam not active");
 const weak = driveExam("correct");
-assert("adaptive round grades to 100% when all correct", weak.pct === 100, "got " + weak.pct);
-assert("adaptive round interleaves topics too", noAdjacentDup(weak.topics) === -1, "dup at " + noAdjacentDup(weak.topics));
+assert("personalized test grades to 100% when all correct", weak.pct === 100, "got " + weak.pct);
+assert("personalized test interleaves topics too", noAdjacentDup(weak.topics) === -1, "dup at " + noAdjacentDup(weak.topics));
 
 if (fail) { console.error(`\n✗ ${fail} engine assertion(s) failed.`); process.exit(1); }
 console.log("\n✓ Engine: grading, interleaving, paywall unlock and adaptive round all verified end-to-end.");

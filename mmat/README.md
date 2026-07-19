@@ -34,7 +34,11 @@ Results stay in the browser's `localStorage`.
 - 15-minute / 5-minute countdowns that warn, turn red, and **auto-submit** at zero.
 - Question navigator with flags; **resume on refresh** (keeps answers + remaining time).
 - Keyboard: `1`–`5` answer, `←/→` move, `F` flag.
-- Results: banded score, per-category breakdown, weak-area focus, full worked-answer review with filters.
+- Results: banded score, per-category breakdown, full worked-answer review with filters.
+- **Finish celebration** (confetti) + an **estimated percentile** vs. the average, with a bell-curve — modeled transparently, labelled as an estimate (not an official norm).
+- **Speed × accuracy profile**: per-question timing (accumulated across revisits) → per-topic verdicts (Strength / Rushing / Too slow / Needs work) + recommendations.
+- **Personalized test**: after 3 completed tests, a round built only from your weakest topics.
+- **Google Sign-In**, **support tickets**, and **analytics** — all optional and config-gated in `config.js`.
 - Best score per form saved on the device.
 
 ## Run it
@@ -55,11 +59,12 @@ mmat/
   styles.css        # theming + components
   app.js            # engine: timer, interleaving, gating, dashboard, adaptive round, unlock
   questions.js      # free taster + 10 forms (window.MMAT) — all original items
-  config.js         # merchant/paywall config (price, buy URL, provider) — edit this
+  config.js         # merchant/paywall + Google/support/analytics config — edit this
   robots.txt        # allows AI retrieval crawlers (edit domain)
   sitemap.xml       # edit YOURDOMAIN before use
   llms.txt          # minimal AI hint file
   STRATEGY.md       # pricing, paywall wiring, domain, deployment, AI-search plan
+  PRELAUNCH.md      # pre-launch checklist (payments, legal, analytics, support…)
   validate.mjs      # structural checks for the question bank
   check-answers.mjs # independent re-computation of every numerical key
   test-engine.mjs   # end-to-end engine test via a tiny DOM shim

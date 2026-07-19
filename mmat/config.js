@@ -40,4 +40,32 @@ window.MMAT_CONFIG = {
     storeId:  null,   // Lemon Squeezy numeric store id (from your dashboard)
     productId: null,  // Lemon Squeezy product id  OR  Gumroad product_id
   },
+
+  /* ---- Google Sign-In (optional) ----
+     Paste an OAuth 2.0 Web client ID from Google Cloud Console
+     (APIs & Services → Credentials). Leave blank to hide the button.
+     Add your live domain to the client's "Authorized JavaScript origins".
+     NOTE: with no backend this is identity display + local personalisation
+     only — it is NOT server-verified auth. See PRELAUNCH.md. */
+  google: {
+    clientId: "",   // e.g. "1234567890-abc.apps.googleusercontent.com"
+  },
+
+  /* ---- Support tickets ----
+     endpoint: a form backend that accepts a POST from the browser
+       (Formspree / Web3Forms / Getform). Leave blank to fall back to a
+       pre-filled email to `email`. */
+  support: {
+    endpoint: "",                 // e.g. "https://formspree.io/f/xxxxxxx"
+    email: "support@example.com", // used for the mailto fallback
+  },
+
+  /* ---- Analytics (optional, privacy-friendly first) ----
+     Set ONE of these. Plausible/Fathom are cookieless (no consent banner
+     needed in most regions); GA4 needs a consent notice. */
+  analytics: {
+    plausibleDomain: "",  // e.g. "mmatpractice.com" → loads Plausible
+    fathomSiteId: "",     // e.g. "ABCDEFGH"
+    ga4Id: "",            // e.g. "G-XXXXXXX" (needs a cookie/consent notice)
+  },
 };

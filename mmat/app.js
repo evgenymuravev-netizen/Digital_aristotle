@@ -82,19 +82,22 @@
 
   /* ---------------- performance tracking (for weak areas) ---------------- */
   function getPerf() { return getJSON(KEY.perf, { topics: {}, cats: {} }); }
-  function recordPerf(items, answers) {
-    var p = getPerf();
-    items.forEach(function (ref, pos) {
+  function recordPerf(s) {
+    var p = getPerf(); p.topics = p.topics || {}; p.cats = p.cats || {};
+    s.items.forEach(function (ref, pos) {
       var q = qOf(ref); if (!q) return;
-      var ok = answers[pos] === q.answer;
-      ["topics:" + q.topic, "cats:" + q.cat].forEach(function (k) {
-        var parts = k.split(":"), bucket = p[parts[0]], key = parts[1];
-        bucket[key] = bucket[key] || { c: 0, t: 0 };
-        bucket[key].t++; if (ok) bucket[key].c++;
+      var ok = s.answers[pos] === q.answer;
+      var ms = (s.timeSpent && s.timeSpent[pos]) || 0;
+      [["topics", q.topic], ["cats", q.cat]].forEach(function (x) {
+        var bucket = p[x[0]], key = x[1];
+        bucket[key] = bucket[key] || { c: 0, t: 0, ms: 0 };
+        bucket[key].t++; bucket[key].ms += ms; if (ok) bucket[key].c++;
       });
     });
+    if (s.kind === "form" || s.kind === "free") p.done = (p.done || 0) + 1;   // completed tests
     setJSON(KEY.perf, p);
   }
+  function testsDone() { return getPerf().done || 0; }
   function weakestTopics(minTotal) {
     var p = getPerf();
     return Object.keys(p.topics)
@@ -104,7 +107,7 @@
   }
 
   /* ---------------- screens ---------------- */
-  var SCREENS = ["home", "intro", "exam", "results", "paywall"];
+  var SCREENS = ["home", "intro", "exam", "results", "paywall", "support"];
   function show(name) {
     SCREENS.forEach(function (s) { $("screen-" + s).classList.toggle("active", s === name); });
     window.scrollTo(0, 0);
@@ -197,7 +200,7 @@
     var weakRow = el("div", { class: "weak-chips" });
     weak.forEach(function (w) { weakRow.appendChild(el("span", { class: "badge", html: w.topic + " · " + Math.round(w.acc * 100) + "%" })); });
 
-    var canWeak = weakRoundItems() !== null;
+    var done = testsDone();
     host.appendChild(el("div", { class: "panel dash" }, [
       el("div", { class: "dash-head" }, [
         el("h2", { style: "margin:0", text: "Your skills snapshot" }),
@@ -205,11 +208,10 @@
       ]),
       bars,
       weak.length ? el("div", { class: "weak-wrap" }, [el("span", { class: "muted", text: "Weakest topics: " }), weakRow]) : null,
-      el("div", { class: "cta-row", style: "margin-bottom:0" }, [
-        canWeak
-          ? el("button", { class: "btn btn-primary", type: "button", text: "🎯 Practice your weak areas", onclick: startWeakRound })
-          : el("button", { class: "btn", type: "button", disabled: "disabled", text: "🎯 Practice weak areas (answer a few more first)" }),
-      ]),
+      el("div", { class: "muted", style: "margin-top:12px;font-size:.9rem" }, personalizedReady()
+        ? "🎯 Your personalized test is unlocked — a round of only your weakest questions."
+        : "Your personalized test unlocks after 3 completed tests (" + Math.min(3, done) + "/3 done)."),
+      el("div", { class: "cta-row", style: "margin-bottom:0" }, [personalizedCTA()]),
     ]));
   }
 
@@ -261,7 +263,7 @@
   function startWeakRound() {
     var items = weakRoundItems();
     if (!items) return renderHome();
-    beginSession({ kind: "custom", testId: null, title: "Custom round — your weak areas", items: interleave(items), durationSec: Math.max(300, items.length * 40) });
+    beginSession({ kind: "custom", testId: null, title: "Your personalized test — weakest topics", items: interleave(items), durationSec: Math.max(300, items.length * 40) });
   }
 
   /* Build the adaptive round: a spread of questions from your weakest topics.
@@ -274,7 +276,7 @@
     var byTopic = {};
     allForms().filter(function (f) { return f && (f.free || isUnlocked()); })
       .forEach(function (f) { f.questions.forEach(function (q, i) { (byTopic[q.topic] = byTopic[q.topic] || []).push({ fid: f.id, qi: i, topic: q.topic, diff: q.diff }); }); });
-    var picked = [], CAP = 3, TARGET = 15, topicsUsed = 0;
+    var picked = [], CAP = 4, TARGET = 20, topicsUsed = 0;
     for (var w = 0; w < weak.length && picked.length < TARGET; w++) {
       var pool = (byTopic[weak[w].topic] || []).slice().sort(function (a, b) { return b.diff - a.diff; });
       if (!pool.length) continue;
@@ -285,10 +287,24 @@
     return (picked.length >= 8 && topicsUsed >= 2) ? picked : null;
   }
 
+  /* The "personalized test" unlocks after 3 completed tests, and only once we
+     have enough of your weak-topic data to build a meaningful round. */
+  function personalizedReady() { return testsDone() >= 3 && weakRoundItems() !== null; }
+  function personalizedCTA() {
+    var done = testsDone();
+    if (personalizedReady())
+      return el("button", { class: "btn btn-primary", type: "button", text: "🎯 Start your personalized test", onclick: startWeakRound });
+    if (done < 3) {
+      var left = 3 - done;
+      return el("button", { class: "btn", type: "button", disabled: "disabled", text: "🎯 Personalized test unlocks after " + left + " more test" + (left === 1 ? "" : "s") });
+    }
+    return el("button", { class: "btn", type: "button", disabled: "disabled", text: "🎯 Answer a few more so we can map your weak spots" });
+  }
+
   function beginSession(s) {
     var now = Date.now();
     session = { kind: s.kind, testId: s.testId, title: s.title, items: s.items, durationSec: s.durationSec,
-      startedAt: now, deadline: now + s.durationSec * 1000, answers: {}, flags: [], index: 0 };
+      startedAt: now, deadline: now + s.durationSec * 1000, answers: {}, flags: [], index: 0, timeSpent: {}, visits: {} };
     setJSON(KEY.session, session);
     announced = {};
     enterExam(session);
@@ -296,6 +312,7 @@
 
   function enterExam(s) {
     session = s; announced = {};
+    s.timeSpent = s.timeSpent || {}; s.visits = s.visits || {}; s._enter = null; s._activePos = null;
     if (!s.items || !s.items.length) { del(KEY.session); return renderHome(); }
     if (s.deadline <= Date.now()) return finish(true);
     $("exam-title").textContent = s.title;
@@ -323,7 +340,15 @@
   }
 
   /* ---------------- question render ---------------- */
+  function accrueTime() {
+    if (!session || session._enter == null || session._activePos == null) return;
+    session.timeSpent[session._activePos] = (session.timeSpent[session._activePos] || 0) + (Date.now() - session._enter);
+    session._enter = Date.now();
+  }
   function renderQuestion(pos) {
+    accrueTime();
+    if (pos !== session._activePos) session.visits[pos] = (session.visits[pos] || 0) + 1;
+    session._activePos = pos; session._enter = Date.now();
     session.index = pos;
     setJSON(KEY.session, session);
     var q = qOf(session.items[pos]);
@@ -412,7 +437,7 @@
         bucket[key] = bucket[key] || { correct: 0, total: 0 };
         bucket[key].total++; if (ok) bucket[key].correct++;
       });
-      items.push({ q: q, your: your, correct: ok, skipped: skipped });
+      items.push({ q: q, your: your, correct: ok, skipped: skipped, timeMs: (s.timeSpent && s.timeSpent[pos]) || 0, visits: (s.visits && s.visits[pos]) || 0 });
     });
     var total = s.items.length;
     return { correct: correct, total: total, pct: Math.round((correct / total) * 100), byCat: byCat, byTopic: byTopic, items: items };
@@ -420,12 +445,13 @@
   function finish(expired) {
     if (!session) return;
     stopTimer();
+    accrueTime();
     var s = session;
     var elapsed = expired ? s.durationSec : Math.min(s.durationSec, Math.round((Date.now() - s.startedAt) / 1000));
     var res = grade(s);
     res.testId = s.testId; res.kind = s.kind; res.title = s.title; res.expired = !!expired; res.elapsed = elapsed;
 
-    recordPerf(s.items, s.answers);
+    recordPerf(s);
     if (s.testId) {
       var best = getJSON(KEY.best, {});
       if (!best[s.testId] || res.pct > best[s.testId].pct) {
@@ -550,6 +576,53 @@
     ctx.fillStyle = accent; ctx.fillText("You " + score + "%", lx(X(score)), base + 14);
   }
 
+  /* ---- speed × accuracy profile ---- */
+  function verdictFor(fast, accurate) {
+    if (fast && accurate) return { label: "Strength", cls: "good" };
+    if (!fast && accurate) return { label: "Too slow", cls: "warn" };
+    if (fast && !accurate) return { label: "Rushing", cls: "bad" };
+    return { label: "Needs work", cls: "bad" };
+  }
+  function buildProfile(res) {
+    var per = {}, times = [];
+    res.items.forEach(function (it) {
+      var s = per[it.q.topic] = per[it.q.topic] || { n: 0, correct: 0, ms: 0 };
+      s.n++; s.ms += it.timeMs || 0; if (it.correct) s.correct++;
+      times.push(it.timeMs || 0);
+    });
+    times.sort(function (a, b) { return a - b; });
+    var medianMs = times.length ? times[Math.floor(times.length / 2)] : 0;
+    var totalMs = times.reduce(function (a, b) { return a + b; }, 0);
+    var topics = Object.keys(per).map(function (t) {
+      var s = per[t], tAvg = s.ms / s.n, acc = s.correct / s.n;
+      return { topic: t, n: s.n, avgSec: tAvg / 1000, acc: acc, verdict: verdictFor(tAvg <= medianMs * 1.15, acc >= 0.6) };
+    }).sort(function (a, b) { var r = { bad: 0, warn: 1, good: 2 }; return r[a.verdict.cls] - r[b.verdict.cls] || a.acc - b.acc; });
+    var by = function (lbl) { return topics.filter(function (x) { return x.verdict.label === lbl; }).map(function (x) { return x.topic; }); };
+    var needs = by("Needs work"), rush = by("Rushing"), slow = by("Too slow"), strong = by("Strength");
+    var recs = [];
+    if (needs.length) recs.push("Study the method for <b>" + needs.slice(0, 3).join(", ") + "</b> — slow <em>and</em> often wrong.");
+    if (rush.length) recs.push("Slow down on <b>" + rush.slice(0, 3).join(", ") + "</b> — you're fast but making avoidable mistakes.");
+    if (slow.length) recs.push("Build speed on <b>" + slow.slice(0, 3).join(", ") + "</b> — you get them right but they eat your clock.");
+    if (strong.length) recs.push("Your strengths are <b>" + strong.slice(0, 3).join(", ") + "</b> — bank those marks first, fast.");
+    if (!recs.length) recs.push("Nicely balanced — keep doing full timed forms to build stamina.");
+    return { avgSec: res.total ? totalMs / res.total / 1000 : 0, revisited: res.items.filter(function (it) { return (it.visits || 0) > 1; }).length, topics: topics, recs: recs };
+  }
+  function profileTable(topics) {
+    var wrap = el("div", { class: "prof-table" });
+    wrap.appendChild(el("div", { class: "prof-row prof-head" }, [
+      el("span", { text: "Topic" }), el("span", { text: "Avg time" }), el("span", { text: "Accuracy" }), el("span", { text: "Verdict" }),
+    ]));
+    topics.forEach(function (x) {
+      wrap.appendChild(el("div", { class: "prof-row" }, [
+        el("span", { class: "prof-topic", text: x.topic }),
+        el("span", { class: "prof-num", text: x.avgSec.toFixed(0) + "s" }),
+        el("span", { class: "prof-num", text: Math.round(x.acc * 100) + "%" }),
+        el("span", {}, el("span", { class: "vchip " + x.verdict.cls, text: x.verdict.label })),
+      ]));
+    });
+    return wrap;
+  }
+
   function renderResults(res) {
     var b = band(res.pct);
     var body = $("results-body"); body.innerHTML = "";
@@ -602,17 +675,29 @@
     });
     body.appendChild(el("div", { class: "panel" }, [el("h2", { style: "margin-top:0", text: "By category" }), rows]));
 
-    // weakest topics from cumulative history + adaptive CTA
+    // speed × accuracy profile + recommendations
+    var prof = buildProfile(res);
+    body.appendChild(el("div", { class: "panel" }, [
+      el("h2", { style: "margin-top:0", text: "Speed & accuracy profile" }),
+      el("p", { class: "muted", style: "margin-top:-.5em", html: "You averaged <b>" + prof.avgSec.toFixed(0) + "s</b> per question" + (prof.revisited ? " · revisited <b>" + prof.revisited + "</b> question" + (prof.revisited === 1 ? "" : "s") : "") + ". Time counts every visit — including stepping away and coming back." }),
+      profileTable(prof.topics),
+      el("div", { class: "recs" }, prof.recs.map(function (r) { return el("div", { class: "rec", html: "→ " + r }); })),
+    ]));
+
+    // weakest topics + personalized-test CTA
     var weak = weakestTopics(2).slice(0, 4);
-    var canWeak = weakRoundItems() !== null;
+    var done = testsDone();
     body.appendChild(el("div", { class: "panel" }, [
       el("h2", { style: "margin-top:0", text: "Where to focus next" }),
       weak.length
         ? el("p", { class: "dim", html: "Across everything you've done, your weakest topics are " +
             weak.map(function (w) { return "<b>" + w.topic + "</b> (" + Math.round(w.acc * 100) + "%)"; }).join(", ") + "." })
         : el("p", { class: "dim", text: "Do a couple more tests and we'll pinpoint your weak topics." }),
+      personalizedReady()
+        ? el("p", { class: "dim", text: "Your personalized test is ready — a full round built only from the questions you're weakest at." })
+        : el("p", { class: "muted", html: "Complete <b>" + Math.max(0, 3 - done) + "</b> more test" + (3 - done === 1 ? "" : "s") + " to unlock your personalized test (only your weak questions)." }),
       el("div", { class: "cta-row", style: "margin-bottom:0" }, [
-        canWeak ? el("button", { class: "btn btn-primary", type: "button", text: "🎯 Practice these weak areas", onclick: startWeakRound }) : null,
+        personalizedCTA(),
         res.testId && res.kind === "form" ? el("button", { class: "btn", type: "button", text: "↻ Retake this form", onclick: function () { renderIntro(res.testId); } }) : null,
         el("button", { class: "btn", type: "button", text: "All tests", onclick: renderHome }),
       ]),
@@ -651,6 +736,7 @@
           el("span", { class: "rh-num", text: "Q" + (i + 1) }),
           el("span", { class: "rh-tag " + state, text: state }),
           el("span", { class: "q-topic", "data-cat": q.cat, text: catInfo(q.cat).label + " · " + (q.topic || "") }),
+          el("span", { class: "rh-time", text: "⏱ " + Math.round((it.timeMs || 0) / 1000) + "s" + ((it.visits || 0) > 1 ? " · revisited" : "") }),
         ]),
         el("div", { class: "rv-prompt", html: q.prompt }),
         el("div", {}, optEls),
@@ -755,6 +841,118 @@
   }
 
   /* ============================================================
+     Google sign-in (optional, client-side only)
+     ============================================================ */
+  var AUTH_KEY = "mmat:v2:user", TICKETS_KEY = "mmat:v2:tickets";
+  function getUser() { return getJSON(AUTH_KEY, null); }
+  function decodeJwt(t) { try { var p = t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"); return JSON.parse(decodeURIComponent(escape(atob(p)))); } catch (e) { return null; } }
+  function handleCredential(resp) {
+    var d = decodeJwt(resp && resp.credential); if (!d) return;
+    setJSON(AUTH_KEY, { name: d.name, email: d.email, picture: d.picture, sub: d.sub });
+    renderAuth(); if ($("screen-home").classList.contains("active")) renderHome();
+  }
+  function signOut() {
+    del(AUTH_KEY);
+    try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
+    renderAuth(); renderHome();
+  }
+  function initGoogleAuth() {
+    var cid = CFG.google && CFG.google.clientId; if (!cid) return;               // not configured → no button
+    function ready() { try { google.accounts.id.initialize({ client_id: cid, callback: handleCredential }); } catch (e) {} renderAuth(); }
+    if (window.google && window.google.accounts && google.accounts.id) return ready();
+    var s = document.createElement("script"); s.src = "https://accounts.google.com/gsi/client"; s.async = true; s.defer = true;
+    s.onload = ready; document.head.appendChild(s);                             // only loaded when a client id exists
+  }
+  function renderAuth() {
+    var slot = $("auth-slot"); if (!slot) return; slot.innerHTML = "";
+    var u = getUser();
+    if (u) {
+      slot.appendChild(el("span", { class: "auth-user" }, [
+        u.picture ? el("img", { class: "auth-pic", src: u.picture, alt: "", referrerpolicy: "no-referrer" }) : null,
+        el("span", { class: "auth-name", text: u.name || u.email || "Signed in" }),
+        el("button", { class: "linkbtn", type: "button", text: "Sign out", onclick: signOut }),
+      ]));
+      return;
+    }
+    if (!(CFG.google && CFG.google.clientId)) return;                            // no auth configured → show nothing
+    var btn = el("div", { class: "gbtn", id: "g-btn" }); slot.appendChild(btn);
+    try { google.accounts.id.renderButton(btn, { theme: "filled_black", size: "medium", text: "signin_with", shape: "pill" }); }
+    catch (e) { slot.appendChild(el("button", { class: "btn btn-sm", type: "button", text: "Sign in with Google", onclick: function () { try { google.accounts.id.prompt(); } catch (e) {} } })); }
+  }
+
+  /* ============================================================
+     Support tickets
+     ============================================================ */
+  function renderSupport() {
+    var u = getUser(), sup = CFG.support || {};
+    var body = $("support-body"); body.innerHTML = "";
+    var name = el("input", { class: "code-input", type: "text", placeholder: "Your name", value: (u && u.name) || "" });
+    var email = el("input", { class: "code-input", type: "email", placeholder: "you@email.com", value: (u && u.email) || "" });
+    var subject = el("input", { class: "code-input", type: "text", placeholder: "e.g. Access code not working" });
+    var message = el("textarea", { class: "code-input", rows: "5", placeholder: "Tell us what happened, and include any error message." });
+    var status = el("div", { class: "unlock-msg", id: "sup-status" });
+    body.appendChild(el("div", {}, [
+      el("p", { class: "muted", text: "Support" }),
+      el("h1", { text: "Contact support" }),
+      el("p", { class: "lede", text: "Question, bug, or refund request? Send a message and we'll reply by email." }),
+      el("div", { class: "panel" }, [
+        el("div", { class: "form-grid" }, [
+          el("label", {}, [el("span", { text: "Name" }), name]),
+          el("label", {}, [el("span", { text: "Email" }), email]),
+        ]),
+        el("label", { class: "block" }, [el("span", { text: "Subject" }), subject]),
+        el("label", { class: "block" }, [el("span", { text: "Message" }), message]),
+        el("div", { class: "cta-row", style: "margin-bottom:0" }, [
+          el("button", { class: "btn btn-primary", type: "button", text: "Send message", onclick: function () { submitTicket(name.value, email.value, subject.value, message.value, status); } }),
+          el("button", { class: "btn btn-ghost", type: "button", text: "Back", onclick: renderHome }),
+        ]),
+        status,
+      ]),
+      ticketHistory(),
+    ]));
+    show("support");
+  }
+  function ticketHistory() {
+    var list = getJSON(TICKETS_KEY, []);
+    if (!list.length) return el("p", { class: "muted", style: "margin-top:16px", text: "Your submitted tickets will be listed here." });
+    return el("div", { class: "panel" }, [el("h2", { style: "margin-top:0", text: "Your tickets" })].concat(
+      list.slice(-5).reverse().map(function (t) { return el("div", { class: "ticket" }, [el("b", { text: t.subject || "(no subject)" }), el("span", { class: "muted", text: " — " + t.status })]); })));
+  }
+  function submitTicket(name, email, subject, message, status) {
+    name = (name || "").trim(); email = (email || "").trim(); subject = (subject || "").trim(); message = (message || "").trim();
+    if (!email || !message) { status.className = "unlock-msg bad"; status.textContent = "Please add your email and a message."; return; }
+    var sup = CFG.support || {}, ticket = { subject: subject, email: email, at: Date.now(), status: "sending" };
+    var save = function (st) { var l = getJSON(TICKETS_KEY, []); ticket.status = st; l.push(ticket); setJSON(TICKETS_KEY, l); };
+    status.className = "unlock-msg"; status.textContent = "Sending…";
+    if (sup.endpoint) {
+      fetch(sup.endpoint, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ name: name, email: email, subject: subject, message: message }) })
+        .then(function (r) { if (!r.ok) throw new Error(); save("sent"); status.className = "unlock-msg good"; status.textContent = "Thanks! Your message has been sent — we'll reply by email."; })
+        .catch(function () { save("failed"); status.className = "unlock-msg bad"; status.textContent = "Couldn't send right now. Please email " + (sup.email || "support") + " directly."; });
+    } else {
+      var to = sup.email || "support@example.com";
+      var href = "mailto:" + to + "?subject=" + encodeURIComponent(subject || "Support request") + "&body=" + encodeURIComponent("From: " + name + " <" + email + ">\n\n" + message);
+      save("emailed"); status.className = "unlock-msg good"; status.textContent = "Opening your email app…";
+      window.location.href = href;
+    }
+  }
+
+  /* ============================================================
+     Analytics (optional, config-gated; nothing loads unless set)
+     ============================================================ */
+  function loadAnalytics() {
+    var a = CFG.analytics || {};
+    try {
+      if (a.plausibleDomain) { var p = document.createElement("script"); p.defer = true; p.src = "https://plausible.io/js/script.js"; p.setAttribute("data-domain", a.plausibleDomain); document.head.appendChild(p); }
+      if (a.fathomSiteId) { var f = document.createElement("script"); f.defer = true; f.src = "https://cdn.usefathom.com/script.js"; f.setAttribute("data-site", a.fathomSiteId); document.head.appendChild(f); }
+      if (a.ga4Id) {
+        var g = document.createElement("script"); g.async = true; g.src = "https://www.googletagmanager.com/gtag/js?id=" + a.ga4Id; document.head.appendChild(g);
+        var s = document.createElement("script"); s.text = "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','" + a.ga4Id + "');"; document.head.appendChild(s);
+      }
+    } catch (e) {}
+  }
+
+  /* ============================================================
      keyboard + wiring + boot
      ============================================================ */
   document.addEventListener("keydown", function (e) {
@@ -775,8 +973,12 @@
   });
   $("exam-submit").addEventListener("click", confirmSubmit);
   $("exam-quit").addEventListener("click", abandon);
+  var navSup = $("nav-support"); if (navSup) navSup.addEventListener("click", function (e) { e.preventDefault(); renderSupport(); });
 
   (function boot() {
+    loadAnalytics();
+    renderAuth();
+    initGoogleAuth();
     var saved = getJSON(KEY.session, null);
     if (saved && saved.items && saved.items.length) {
       if (saved.deadline > Date.now()) { enterExam(saved); return; }
