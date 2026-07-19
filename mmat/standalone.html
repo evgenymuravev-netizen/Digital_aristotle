@@ -359,6 +359,21 @@ ul.tight li { margin: .25em 0; }
 .guide-hero { border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 8px; }
 .updated { color: var(--muted); font-size: .85rem; }
 
+/* ---------------- results celebration ---------------- */
+.celebrate { text-align: center; position: relative; overflow: hidden; }
+.celebrate-emoji { font-size: 2.6rem; line-height: 1; animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+.celebrate-title { margin: .12em 0 .1em; }
+.celebrate-sub { color: var(--text-dim); max-width: 52ch; margin: 0 auto; }
+.celebrate-sub b { color: var(--text); }
+.beat-row { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin: 18px 0 4px; }
+.beat-stat b { display: block; font-family: var(--font-serif); font-size: 1.9rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+.beat-stat span { color: var(--muted); font-size: .8rem; }
+canvas.bell { width: 100%; max-width: 520px; height: 120px; display: block; margin: 14px auto 0; }
+.disclaimer { color: var(--muted); font-size: .78rem; line-height: 1.5; max-width: 58ch; margin: 12px auto 0; }
+.confetti-overlay { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+@keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .celebrate-emoji { animation: none; } }
+
 </style>
   <script type="application/ld+json">
   {
@@ -1366,9 +1381,122 @@ window.MMAT = {
   ];
   function band(pct) { for (var i = 0; i < BANDS.length; i++) if (pct >= BANDS[i].min) return BANDS[i]; return BANDS[BANDS.length - 1]; }
 
+  /* ---- estimated percentile vs. the "average" test-taker ----
+     We have no proprietary norm table (McQuaig's are copyrighted and B2B-only),
+     so we MODEL the distribution from public facts: cognitive-test scores are
+     approximately normal, and a harder test has a lower expected average. The
+     mean is derived from this form's own difficulty tags; sigma is a moderate
+     spread. This is a transparent estimate, clearly labelled as such — not an
+     official norm. Tune the two constants below to taste. */
+  function erf(x) {
+    var s = x < 0 ? -1 : 1; x = Math.abs(x);
+    var a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+    var t = 1 / (1 + p * x);
+    var y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+    return s * y;
+  }
+  function normCdf(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
+  function ordinal(n) { var s = ["th", "st", "nd", "rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+
+  function scoreStats(res) {
+    var ds = res.items.map(function (it) { return it.q.diff || 2; });
+    var avgDiff = ds.reduce(function (a, b) { return a + b; }, 0) / ds.length;   // 1..3
+    var mu = Math.round(clamp(62 - 9 * (avgDiff - 1), 40, 66));  // easier form → higher average
+    var sigma = 17;
+    var pctile = clamp(Math.round(normCdf((res.pct - mu) / sigma) * 100), 1, 99);
+    return { mu: mu, sigma: sigma, pctile: pctile, above: Math.round(res.pct - mu) };
+  }
+  function celebrateCopy(pctile, expired) {
+    if (expired && pctile < 40) return { emoji: "⏱️", head: "Time's up — nice try!" };
+    if (pctile >= 95) return { emoji: "🏆", head: "Exceptional!" };
+    if (pctile >= 80) return { emoji: "🎉", head: "Impressive!" };
+    if (pctile >= 60) return { emoji: "✨", head: "Above average!" };
+    if (pctile >= 40) return { emoji: "👍", head: "Solid effort!" };
+    return { emoji: "✅", head: "Test complete!" };
+  }
+
+  function launchConfetti() {
+    if (!window.requestAnimationFrame) return;                                   // non-browser (tests)
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var host = $("screen-results"); if (!host) return;
+    var cv = document.createElement("canvas"); cv.className = "confetti-overlay"; cv.setAttribute("aria-hidden", "true");
+    host.appendChild(cv);
+    var ctx = cv.getContext && cv.getContext("2d"); if (!ctx) { if (cv.parentNode) cv.parentNode.removeChild(cv); return; }
+    var dpr = window.devicePixelRatio || 1, W = window.innerWidth, H = window.innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
+    var colors = ["#d9b25a", "#46c98b", "#5aa9e6", "#ef6f6f", "#e2b04a", "#e7edf5"];
+    var P = [];
+    for (var i = 0; i < 150; i++) P.push({ x: W * (0.15 + 0.7 * Math.random()), y: -20 - Math.random() * H * 0.3,
+      r: 4 + Math.random() * 5, c: colors[i % colors.length], vx: -2 + Math.random() * 4, vy: 2 + Math.random() * 3.5,
+      rot: Math.random() * 6.28, vr: -0.2 + Math.random() * 0.4 });
+    var start = null;
+    function frame(ts) {
+      if (start == null) start = ts; var t = ts - start;
+      ctx.clearRect(0, 0, W, H);
+      P.forEach(function (p) {
+        p.vy += 0.06; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.globalAlpha = Math.max(0, 1 - t / 2600);
+        ctx.fillStyle = p.c; ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6); ctx.restore();
+      });
+      if (t < 2600) window.requestAnimationFrame(frame); else if (cv.parentNode) cv.parentNode.removeChild(cv);
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  function drawBellCurve(cv, mu, sigma, score) {
+    var ctx = cv && cv.getContext && cv.getContext("2d"); if (!ctx) return;      // non-browser (tests)
+    var dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 500, H = cv.clientHeight || 120;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
+    var padX = 10, padT = 8, padB = 20, plotH = H - padT - padB;
+    var css = getComputedStyle(document.documentElement);
+    var tok = function (n, f) { return (css.getPropertyValue(n) || "").trim() || f; };
+    var accent = tok("--accent", "#d9b25a"), lineC = tok("--text-dim", "#9fb0c3"), muted = tok("--muted", "#6b7c91"), grid = tok("--border", "#273140");
+    var X = function (v) { return padX + (v / 100) * (W - 2 * padX); };
+    var peak = 1, pdf = function (v) { var z = (v - mu) / sigma; return Math.exp(-0.5 * z * z); };
+    var Y = function (v) { return padT + plotH * (1 - pdf(v) / peak); };
+    var base = padT + plotH;
+    // area you beat (0..score)
+    ctx.beginPath(); ctx.moveTo(X(0), base);
+    for (var v = 0; v <= score; v++) ctx.lineTo(X(v), Y(v));
+    ctx.lineTo(X(score), base); ctx.closePath();
+    ctx.fillStyle = accent; ctx.globalAlpha = 0.22; ctx.fill(); ctx.globalAlpha = 1;
+    // curve
+    ctx.beginPath(); for (var v2 = 0; v2 <= 100; v2++) { var x = X(v2), y = Y(v2); v2 === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.strokeStyle = lineC; ctx.lineWidth = 2; ctx.stroke();
+    // baseline
+    ctx.strokeStyle = grid; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X(0), base); ctx.lineTo(X(100), base); ctx.stroke();
+    // average marker (dashed)
+    ctx.setLineDash([4, 4]); ctx.strokeStyle = muted; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(mu), Y(mu)); ctx.lineTo(X(mu), base); ctx.stroke(); ctx.setLineDash([]);
+    // you marker
+    ctx.strokeStyle = accent; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(score), Y(score)); ctx.lineTo(X(score), base); ctx.stroke();
+    ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(X(score), Y(score), 4, 0, 6.29); ctx.fill();
+    // labels
+    var lx = function (x) { return Math.max(30, Math.min(W - 30, x)); };
+    ctx.font = "600 11px -apple-system, BlinkMacSystemFont, sans-serif"; ctx.textAlign = "center";
+    ctx.fillStyle = muted; ctx.fillText("Avg ~" + mu + "%", lx(X(mu)), base + 14);
+    ctx.fillStyle = accent; ctx.fillText("You " + score + "%", lx(X(score)), base + 14);
+  }
+
   function renderResults(res) {
     var b = band(res.pct);
     var body = $("results-body"); body.innerHTML = "";
+
+    // ---- celebration + "better than average" estimate ----
+    var st = scoreStats(res);
+    var cc = celebrateCopy(st.pctile, res.expired);
+    var bell = el("canvas", { class: "bell", role: "img",
+      "aria-label": "Distribution curve: your score of " + res.pct + "% sits near the " + ordinal(st.pctile) + " percentile, above the estimated average of about " + st.mu + "%." });
+    body.appendChild(el("div", { class: "panel celebrate" }, [
+      el("div", { class: "celebrate-emoji", "aria-hidden": "true", text: cc.emoji }),
+      el("h1", { class: "celebrate-title", text: cc.head }),
+      el("p", { class: "celebrate-sub", html: "You scored <b>" + res.pct + "%</b> — better than an estimated <b>" + st.pctile + "%</b> of people who take a test like this." }),
+      el("div", { class: "beat-row" }, [
+        el("div", { class: "beat-stat" }, [el("b", { text: ordinal(st.pctile) }), el("span", { text: "percentile (est.)" })]),
+        el("div", { class: "beat-stat" }, [el("b", { text: (st.above >= 0 ? "+" : "") + st.above + " pts" }), el("span", { text: "vs the ~" + st.mu + "% average" })]),
+      ]),
+      bell,
+      el("p", { class: "disclaimer", text: "Estimated from a normal model calibrated to this form's difficulty, using public information about how timed cognitive tests score — a guide, not an official McQuaig norm." }),
+    ]));
 
     body.appendChild(el("div", { class: "panel" }, [
       el("div", { class: "score-hero" }, [
@@ -1431,6 +1559,7 @@ window.MMAT = {
     ]));
     drawReview(listHost, res, "all");
     show("results");
+    if (window.requestAnimationFrame) window.requestAnimationFrame(function () { drawBellCurve(bell, st.mu, st.sigma, res.pct); launchConfetti(); });
   }
 
   function drawReview(host, res, filter) {
