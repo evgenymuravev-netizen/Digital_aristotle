@@ -458,6 +458,32 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 @keyframes signIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .sign, .modal-overlay { animation: none; } }
 
+/* ---------------- review head: align WRONG tag + topic chip ---------------- */
+.review-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.review-head .rh-tag, .review-head .q-topic { margin: 0; padding: 3px 10px; font-size: .7rem; line-height: 1.4; border-radius: 999px; display: inline-flex; align-items: center; }
+
+/* ---------------- personalized-test progress ---------------- */
+.pt-card { margin-top: 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.pt-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.pt-top b { font-size: 1.02rem; }
+.pt-bar { height: 10px; border-radius: 999px; background: var(--panel); overflow: hidden; border: 1px solid var(--border); }
+.pt-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--good)); border-radius: 999px; transition: width .5s ease; }
+.pt-card .btn { align-self: flex-start; }
+
+/* ---------------- share ---------------- */
+.share-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------------- leaderboard ---------------- */
+.lb-table { display: flex; flex-direction: column; gap: 2px; }
+.lb-row { display: grid; grid-template-columns: 36px 1fr 1fr auto; gap: 12px; align-items: center; padding: 9px 12px; border-radius: 8px; background: var(--panel-2); }
+.lb-row.lb-head { background: transparent; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; padding: 0 12px 2px; }
+.lb-row.top { border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border)); }
+.lb-rank { font-family: var(--font-mono); font-weight: 700; color: var(--accent); }
+.lb-name { color: var(--text); font-weight: 600; }
+.lb-test { font-size: .85rem; }
+.lb-score { font-family: var(--font-serif); font-size: 1.15rem; color: var(--accent); font-variant-numeric: tabular-nums; justify-self: end; }
+@media (max-width: 520px) { .lb-row { grid-template-columns: 30px 1fr auto; } .lb-test { display: none; } }
+
 </style>
   <script type="application/ld+json">
   {
@@ -493,6 +519,7 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
     </button>
     <nav class="topnav" aria-label="Primary">
       <a href="./guide.html">Strategy guide</a>
+      <a href="#" id="nav-leaderboard">Leaderboard</a>
       <a href="#" id="nav-support">Support</a>
       <span id="auth-slot" class="auth-slot"></span>
       <a class="home-link" href="../index.html">Digital Aristotle</a>
@@ -512,7 +539,7 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
       </p>
 
       <div class="cta-row">
-        <button class="btn btn-primary btn-lg" id="start-free" type="button">▶ Start the free 5-minute test</button>
+        <button class="btn btn-primary btn-lg" id="start-free" type="button">▶ Start the free 15-minute test</button>
         <a class="btn btn-lg" href="./guide.html">📘 How to pass — strategy guide</a>
       </div>
 
@@ -521,8 +548,8 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
       <div class="panel" style="margin-top:22px">
         <h2 style="margin-top:0">How it works</h2>
         <ul class="tight dim">
-          <li><b>Free taster:</b> 12 mixed questions in 5 minutes — no sign-up.</li>
-          <li><b>Ten full forms:</b> 25 harder questions in 15 minutes each, graded easy → hard.</li>
+          <li><b>Free full test:</b> 25 medium-hard questions in a full 15 minutes — no sign-up, not a cut-down version.</li>
+          <li><b>Ten more forms:</b> 25 harder questions in 15 minutes each, graded easy → hard.</li>
           <li><b>Interleaved:</b> question types are mixed so no two similar questions run back-to-back.</li>
           <li><b>Adaptive:</b> your results build a custom round from the topics you miss most.</li>
         </ul>
@@ -559,7 +586,7 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
           </thead>
           <tbody>
             <tr><th scope="row">Price</th><td class="yes">$15.99 once</td><td>$59–$89, or $99+ subscriptions</td></tr>
-            <tr><th scope="row">Free full-length test</th><td class="yes">5-minute test, no sign-up</td><td>A few sample questions</td></tr>
+            <tr><th scope="row">Free full-length test</th><td class="yes">Full 15-min test, no sign-up</td><td>A few sample questions</td></tr>
             <tr><th scope="row">Personalized (weak-area) test</th><td class="yes">Yes — after 3 tests</td><td>Rarely</td></tr>
             <tr><th scope="row">Worked answer for every question</th><td class="yes">Yes</td><td>Often behind the paywall</td></tr>
             <tr><th scope="row">Speed &amp; accuracy analysis</th><td class="yes">Per-topic profile</td><td>Score only</td></tr>
@@ -629,6 +656,12 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
     <section id="screen-support" class="screen container" aria-labelledby="support-h">
       <h1 id="support-h" class="sr-only">Support</h1>
       <div id="support-body"></div>
+    </section>
+
+    <!-- ===================== LEADERBOARD ===================== -->
+    <section id="screen-leaderboard" class="screen container" aria-labelledby="lb-h">
+      <h1 id="lb-h" class="sr-only">Leaderboard</h1>
+      <div id="leaderboard-body"></div>
     </section>
 
   </main>
@@ -713,6 +746,20 @@ window.MMAT_CONFIG = {
     fathomSiteId: "",     // e.g. "ABCDEFGH"
     ga4Id: "",            // e.g. "G-XXXXXXX" (needs a cookie/consent notice)
   },
+
+  /* ---- public site URL used in share text. Blank = the current page URL. */
+  siteUrl: "",
+
+  /* ---- leaderboard ----
+     Blank endpoint = a local, this-device leaderboard (works immediately).
+     For a true global all-time board, point this at a tiny backend that:
+       • POST {name,pct,pctile,title,at}  → stores a row
+       • GET                              → returns an array of those rows
+     Easiest options: a Supabase table + REST endpoint, or a one-file
+     serverless function (Cloudflare Worker / Vercel). See STRATEGY.md. */
+  leaderboard: {
+    endpoint: "",
+  },
 };
 
 </script>
@@ -753,21 +800,34 @@ window.MMAT = {
 
   /* -------- FREE 5-minute taster (12 questions) -------- */
   freeTest: {
-    id: "free", name: "Free 5-minute taster", free: true, durationSec: 300,
-    blurb: "Twelve mixed questions in five minutes — a quick taste of the full test.",
+    id: "free", name: "Free full test", free: true, durationSec: 900,
+    blurb: "The real thing, free: 25 medium-hard questions in a full 15 minutes.",
     questions: [
-      { cat: "verbal", topic: "Synonyms", diff: 1, prompt: "Choose the word closest in meaning to <span class='mono'>METICULOUS</span>.", options: ["Careless", "Thorough", "Hasty", "Loud"], answer: 1, explain: "Meticulous means showing great attention to detail — thorough." },
-      { cat: "numerical", topic: "Number series", diff: 2, prompt: "What comes next?  <span class='mono'>2, 6, 12, 20, ?</span>", options: ["28", "30", "32", "42"], answer: 1, explain: "Differences grow 4, 6, 8, 10: 20 + 10 = 30 (it is n²+n)." },
-      { cat: "logical", topic: "Syllogisms", diff: 2, prompt: "All engineers are logical. Some logical people are artists. Which MUST be true?", options: ["All engineers are artists", "Some engineers are artists", "Some artists are logical", "No engineers are artists"], answer: 2, explain: "'Some logical people are artists' reverses to 'some artists are logical'." },
+      { cat: "verbal", topic: "Synonyms", diff: 2, prompt: "Choose the word closest in meaning to <span class='mono'>SCRUTINIZE</span>.", options: ["Ignore", "Examine", "Glance", "Approve"], answer: 1, explain: "To scrutinize is to inspect closely — examine." },
+      { cat: "verbal", topic: "Synonyms", diff: 2, prompt: "Choose the word closest in meaning to <span class='mono'>BOLSTER</span>.", options: ["Weaken", "Strengthen", "Lower", "Remove"], answer: 1, explain: "To bolster is to support or strengthen." },
+      { cat: "verbal", topic: "Synonyms", diff: 2, prompt: "Choose the word closest in meaning to <span class='mono'>WHIMSICAL</span>.", options: ["Serious", "Playful", "Cruel", "Rigid"], answer: 1, explain: "Whimsical means fanciful and playful." },
+      { cat: "verbal", topic: "Antonyms", diff: 1, prompt: "Choose the OPPOSITE of <span class='mono'>SCARCE</span>.", options: ["Rare", "Plentiful", "Few", "Limited"], answer: 1, explain: "Scarce means in short supply; plentiful is the opposite." },
+      { cat: "verbal", topic: "Antonyms", diff: 1, prompt: "Choose the OPPOSITE of <span class='mono'>RIGID</span>.", options: ["Stiff", "Flexible", "Hard", "Firm"], answer: 1, explain: "Rigid means unbending; flexible is the opposite." },
       { cat: "verbal", topic: "Analogies", diff: 2, prompt: "Drizzle is to Downpour as Breeze is to ___", options: ["Gale", "Calm", "Cloud", "Storm"], answer: 0, explain: "Each pair is mild → intense: a gale is an intense breeze." },
-      { cat: "numerical", topic: "Percentages", diff: 1, prompt: "What is 12% of 150?", options: ["15", "18", "21", "12"], answer: 1, explain: "0.12 × 150 = 18." },
-      { cat: "logical", topic: "Letter series", diff: 2, prompt: "What comes next?  <span class='mono'>B, D, G, K, ?</span>", options: ["O", "P", "Q", "N"], answer: 1, explain: "Steps grow +2, +3, +4, +5: K (11) + 5 = P (16)." },
-      { cat: "verbal", topic: "Antonyms", diff: 1, prompt: "Choose the OPPOSITE of <span class='mono'>ABUNDANT</span>.", options: ["Ample", "Scarce", "Plenty", "Lavish"], answer: 1, explain: "Abundant means plentiful; scarce is the opposite." },
+      { cat: "verbal", topic: "Analogies", diff: 2, prompt: "Clock is to Time as Scale is to ___", options: ["Weight", "Balance", "Fish", "Kitchen"], answer: 0, explain: "A clock measures time; a scale measures weight." },
+      { cat: "verbal", topic: "Analogies", diff: 2, prompt: "Chapter is to Book as Act is to ___", options: ["Play", "Actor", "Scene", "Stage"], answer: 0, explain: "A chapter is a division of a book; an act is a division of a play." },
+      { cat: "verbal", topic: "Odd one out", diff: 2, prompt: "Which does NOT belong?", options: ["Copper", "Silver", "Oxygen", "Gold"], answer: 2, explain: "Copper, silver and gold are metals; oxygen is a gas." },
+      { cat: "verbal", topic: "Odd one out", diff: 1, prompt: "Which does NOT belong?", options: ["Rose", "Oak", "Tulip", "Daisy"], answer: 1, explain: "Rose, tulip and daisy are flowers; an oak is a tree." },
+      { cat: "numerical", topic: "Number series", diff: 1, prompt: "What comes next?  <span class='mono'>2, 4, 8, 16, ?</span>", options: ["24", "30", "32", "48"], answer: 2, explain: "Each term doubles: 16 × 2 = 32." },
+      { cat: "numerical", topic: "Number series", diff: 1, prompt: "What comes next?  <span class='mono'>1, 4, 9, 16, ?</span>", options: ["20", "24", "25", "36"], answer: 2, explain: "These are squares: 1², 2², 3², 4², 5² = 25." },
+      { cat: "numerical", topic: "Number series", diff: 2, prompt: "What comes next?  <span class='mono'>5, 8, 14, 26, ?</span>", options: ["48", "50", "52", "46"], answer: 1, explain: "Rule is ×2 − 2: 26 × 2 − 2 = 50." },
+      { cat: "numerical", topic: "Arithmetic", diff: 2, prompt: "What is 14 × 12?", options: ["154", "168", "172", "148"], answer: 1, explain: "14 × 12 = 168." },
+      { cat: "numerical", topic: "Arithmetic", diff: 2, prompt: "What is 15² − 10²?", options: ["115", "125", "135", "145"], answer: 1, explain: "225 − 100 = 125." },
       { cat: "numerical", topic: "Word problems", diff: 2, prompt: "A shirt costs $50 after a 20% discount. What was the original price?", options: ["$60.00", "$62.50", "$70.00", "$65.00"], answer: 1, explain: "$50 is 80% of the original: 50 ÷ 0.8 = $62.50." },
-      { cat: "logical", topic: "Logical deduction", diff: 1, prompt: "P is taller than Q but shorter than R. S is taller than R. Who is tallest?", options: ["P", "R", "S", "Q"], answer: 2, explain: "S > R > P > Q, so S is tallest." },
-      { cat: "verbal", topic: "Odd one out", diff: 1, prompt: "Which word does NOT belong with the others?", options: ["Square", "Circle", "Triangle", "Cube"], answer: 3, explain: "Square, circle and triangle are flat shapes; a cube is a solid." },
+      { cat: "numerical", topic: "Word problems", diff: 1, prompt: "A car travels 90 km in 1.5 hours. What is its speed in km/h?", options: ["55", "60", "65", "75"], answer: 1, explain: "90 ÷ 1.5 = 60 km/h." },
+      { cat: "numerical", topic: "Percentages", diff: 1, prompt: "What is 15% of 240?", options: ["24", "30", "36", "48"], answer: 2, explain: "0.15 × 240 = 36." },
       { cat: "numerical", topic: "Ratio & proportion", diff: 2, prompt: "Two numbers are in the ratio 2:3 and add up to 60. What is the larger number?", options: ["24", "36", "30", "40"], answer: 1, explain: "5 parts = 60, so 1 part = 12; the larger is 3 × 12 = 36." },
-      { cat: "logical", topic: "Syllogisms", diff: 1, prompt: "No mammals are cold-blooded. All whales are mammals. Therefore:", options: ["No whales are cold-blooded", "Some whales are cold-blooded", "All mammals are whales", "Whales are cold-blooded"], answer: 0, explain: "Whales are mammals and no mammal is cold-blooded, so no whale is." },
+      { cat: "logical", topic: "Syllogisms", diff: 1, prompt: "No reptiles are warm-blooded. All lizards are reptiles. Therefore:", options: ["No lizard is warm-blooded", "Some lizards are warm-blooded", "All reptiles are lizards", "Lizards are not reptiles"], answer: 0, explain: "Lizards are reptiles and no reptile is warm-blooded, so no lizard is." },
+      { cat: "logical", topic: "Syllogisms", diff: 2, prompt: "Some artists are musicians. All musicians are creative. Which MUST be true?", options: ["Some artists are creative", "All artists are creative", "All creative people are artists", "No artists are musicians"], answer: 0, explain: "The artist-musicians are creative, so some artists are creative." },
+      { cat: "logical", topic: "Logical deduction", diff: 1, prompt: "P is heavier than Q. R is lighter than Q. S is heavier than P. Who is heaviest?", options: ["P", "Q", "R", "S"], answer: 3, explain: "S > P > Q > R, so S is heaviest." },
+      { cat: "logical", topic: "Logical deduction", diff: 2, prompt: "In a row of 5 items, the book is 2nd from the left and the pen is 2nd from the right. How many items are between them?", options: ["0", "1", "2", "3"], answer: 1, explain: "The book is at position 2 and the pen at position 4; only position 3 is between them." },
+      { cat: "logical", topic: "Letter series", diff: 2, prompt: "What comes next?  <span class='mono'>C, F, I, L, ?</span>", options: ["M", "N", "O", "P"], answer: 2, explain: "Add three letters each time: L (12) + 3 = O (15)." },
+      { cat: "logical", topic: "Coding", diff: 2, prompt: "If DOG is coded EPH (each letter +1), how is CAT coded?", options: ["DBU", "EBU", "DCU", "DBV"], answer: 0, explain: "Shift each letter forward one: C→D, A→B, T→U = DBU." },
     ],
   },
 
@@ -1603,7 +1663,7 @@ window.MMAT_DEEP = {
   }
 
   /* ---------------- screens ---------------- */
-  var SCREENS = ["home", "intro", "exam", "results", "paywall", "support"];
+  var SCREENS = ["home", "intro", "exam", "results", "paywall", "support", "leaderboard"];
   function show(name) {
     SCREENS.forEach(function (s) { $("screen-" + s).classList.toggle("active", s === name); });
     window.scrollTo(0, 0);
@@ -1735,10 +1795,7 @@ window.MMAT_DEEP = {
       ]),
       bars,
       weak.length ? el("div", { class: "weak-wrap" }, [el("span", { class: "muted", text: "Weakest topics: " }), weakRow]) : null,
-      el("div", { class: "muted", style: "margin-top:12px;font-size:.9rem" }, personalizedReady()
-        ? "🎯 Your personalized test is unlocked — a round of only your weakest questions."
-        : "Your personalized test unlocks after 3 completed tests (" + Math.min(3, done) + "/3 done)."),
-      el("div", { class: "cta-row", style: "margin-bottom:0" }, [personalizedCTA()]),
+      personalizedProgress(true),
     ]));
   }
 
@@ -1826,6 +1883,21 @@ window.MMAT_DEEP = {
       return el("button", { class: "btn", type: "button", disabled: "disabled", text: "🎯 Personalized test unlocks after " + left + " more test" + (left === 1 ? "" : "s") });
     }
     return el("button", { class: "btn", type: "button", disabled: "disabled", text: "🎯 Answer a few more so we can map your weak spots" });
+  }
+  function personalizedProgress(compact) {
+    var done = Math.min(3, testsDone()), ready = personalizedReady();
+    var pct = ready ? 100 : Math.round(done / 3 * 100);
+    var cta = ready
+      ? el("button", { class: "btn btn-primary" + (compact ? " btn-sm" : " btn-lg"), type: "button", text: "🎯 Start your personalized test", onclick: startWeakRound })
+      : el("button", { class: "btn btn-primary" + (compact ? " btn-sm" : " btn-lg"), type: "button", text: "Take another test to unlock →", onclick: renderHome });
+    return el("div", { class: "pt-card" }, [
+      el("div", { class: "pt-top" }, [
+        el("b", { text: "🎯 Personalized test" }),
+        el("span", { class: "muted", text: ready ? "unlocked — only your weakest questions" : done + " of 3 tests done" }),
+      ]),
+      el("div", { class: "pt-bar" }, el("span", { style: "width:" + pct + "%" })),
+      cta,
+    ]);
   }
 
   function beginSession(s) {
@@ -2241,6 +2313,93 @@ window.MMAT_DEEP = {
     return wrap;
   }
 
+  /* ---- share results ---- */
+  function siteUrl() { return (CFG.siteUrl && String(CFG.siteUrl).trim()) || (typeof window !== "undefined" && window.location ? window.location.href : ""); }
+  function sharePanel(res, st) {
+    var text = "I scored " + res.pct + "% on the Mental Agility Test — better than an estimated " + st.pctile + "% of people. Can you beat me?";
+    var url = siteUrl(), enc = encodeURIComponent, full = text + (url ? " " + url : "");
+    var openWin = function (u) { try { window.open(u, "_blank", "noopener"); } catch (e) {} };
+    var btns = [];
+    if (typeof navigator !== "undefined" && navigator.share)
+      btns.push(el("button", { class: "btn btn-sm", type: "button", text: "Share…", onclick: function () { try { navigator.share({ title: "Mental Agility Test", text: text, url: url }); } catch (e) {} } }));
+    btns.push(el("button", { class: "btn btn-sm", type: "button", text: "𝕏 / Twitter", onclick: function () { openWin("https://twitter.com/intent/tweet?text=" + enc(text) + (url ? "&url=" + enc(url) : "")); } }));
+    btns.push(el("button", { class: "btn btn-sm", type: "button", text: "LinkedIn", onclick: function () { openWin("https://www.linkedin.com/sharing/share-offsite/?url=" + enc(url || "")); } }));
+    btns.push(el("button", { class: "btn btn-sm", type: "button", text: "WhatsApp", onclick: function () { openWin("https://wa.me/?text=" + enc(full)); } }));
+    var copyBtn = el("button", { class: "btn btn-sm", type: "button", text: "Copy result", onclick: function () {
+      var ok = function () { copyBtn.textContent = "✓ Copied"; };
+      try { if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(full).then(ok, ok); else ok(); } catch (e) { ok(); }
+    } });
+    btns.push(copyBtn);
+    return el("div", { class: "panel" }, [
+      el("h2", { style: "margin-top:0", text: "Share your result" }),
+      el("p", { class: "muted", style: "margin-top:-.5em", text: text }),
+      el("div", { class: "share-row" }, btns),
+    ]);
+  }
+
+  /* ---- leaderboard (local by default; remote if configured) ---- */
+  var BOARD_KEY = "mmat:v2:board";
+  function getBoardLocal() { return getJSON(BOARD_KEY, []); }
+  function boardConfigured() { return !!(CFG.leaderboard && CFG.leaderboard.endpoint); }
+  function rankSort(a, b) { return b.pct - a.pct || (b.pctile || 0) - (a.pctile || 0) || (a.at || 0) - (b.at || 0); }
+  function submitScore(entry, cb) {
+    var l = getBoardLocal(); l.push(entry); l.sort(rankSort); setJSON(BOARD_KEY, l.slice(0, 100));
+    if (boardConfigured()) { try { fetch(CFG.leaderboard.endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(entry) }).then(function () { cb && cb(true); }, function () { cb && cb(true); }); return; } catch (e) {} }
+    cb && cb(true);
+  }
+  function loadBoard(cb) {
+    if (boardConfigured()) { try { fetch(CFG.leaderboard.endpoint, { headers: { "Accept": "application/json" } }).then(function (r) { return r.json(); }).then(function (rows) { cb(Array.isArray(rows) ? rows : [], "global"); }, function () { cb(getBoardLocal(), "local"); }); return; } catch (e) {} }
+    cb(getBoardLocal(), "local");
+  }
+  function renderLeaderboard() {
+    var body = $("leaderboard-body"); body.innerHTML = "";
+    body.appendChild(el("div", {}, [
+      el("p", { class: "muted", text: "Leaderboard" }),
+      el("h1", { text: "🏆 All-time leaderboard" }),
+      el("p", { class: "lede", id: "lb-sub", text: "Loading…" }),
+      el("div", { class: "panel", id: "lb-list" }),
+      el("div", { class: "cta-row" }, [el("button", { class: "btn", type: "button", text: "← Back", onclick: renderHome })]),
+    ]));
+    show("leaderboard");
+    loadBoard(function (rows, kind) {
+      var sub = $("lb-sub"); if (sub) sub.textContent = kind === "global" ? "The top scores from everyone who has played." : "Your top scores on this device. Connect a backend (see STRATEGY.md) to make it global.";
+      var list = $("lb-list"); if (!list) return; list.innerHTML = "";
+      rows = (rows || []).slice().sort(rankSort).slice(0, 20);
+      if (!rows.length) { list.appendChild(el("p", { class: "muted", text: "No scores yet — finish a test and add yours!" })); return; }
+      var tbl = el("div", { class: "lb-table" });
+      tbl.appendChild(el("div", { class: "lb-row lb-head" }, [el("span", { text: "#" }), el("span", { text: "Name" }), el("span", { text: "Test" }), el("span", { text: "Score" })]));
+      rows.forEach(function (r, i) {
+        tbl.appendChild(el("div", { class: "lb-row" + (i < 3 ? " top" : "") }, [
+          el("span", { class: "lb-rank", text: String(i + 1) }),
+          el("span", { class: "lb-name", text: r.name || "Anonymous" }),
+          el("span", { class: "lb-test muted", text: r.title || "" }),
+          el("span", { class: "lb-score", text: (r.pct != null ? r.pct + "%" : "") }),
+        ]));
+      });
+      list.appendChild(tbl);
+    });
+  }
+  function boardCTA(res, st) {
+    var u = getUser();
+    var nameInput = el("input", { class: "code-input", type: "text", maxlength: "24", placeholder: "Your name or initials", value: (u && u.name) || "" });
+    var status = el("div", { class: "unlock-msg", id: "board-status" });
+    var addBtn = el("button", { class: "btn btn-primary", type: "button", text: "Add my score" });
+    addBtn.addEventListener("click", function () {
+      var nm = (nameInput.value || "").trim().slice(0, 24) || "Anonymous";
+      addBtn.disabled = true; status.className = "unlock-msg"; status.textContent = "Adding…";
+      submitScore({ name: nm, pct: res.pct, pctile: st.pctile, title: res.title, at: Date.now() }, function () {
+        status.className = "unlock-msg good"; status.textContent = "Added! ";
+        status.appendChild(el("button", { class: "linkbtn", type: "button", text: "View leaderboard →", onclick: renderLeaderboard }));
+      });
+    });
+    return el("div", { class: "panel" }, [
+      el("h2", { style: "margin-top:0", text: "🏆 Add your score to the leaderboard" }),
+      el("p", { class: "muted", style: "margin-top:-.5em", text: "See how you rank against everyone else." }),
+      el("div", { class: "code-row" }, [nameInput, addBtn, el("button", { class: "btn", type: "button", text: "View board", onclick: renderLeaderboard })]),
+      status,
+    ]);
+  }
+
   function renderResults(res) {
     var b = band(res.pct);
     var body = $("results-body"); body.innerHTML = "";
@@ -2311,32 +2470,35 @@ window.MMAT_DEEP = {
         ? el("p", { class: "dim", html: "Across everything you've done, your weakest topics are " +
             weak.map(function (w) { return "<b>" + w.topic + "</b> (" + Math.round(w.acc * 100) + "%)"; }).join(", ") + "." })
         : el("p", { class: "dim", text: "Do a couple more tests and we'll pinpoint your weak topics." }),
-      personalizedReady()
-        ? el("p", { class: "dim", text: "Your personalized test is ready — a full round built only from the questions you're weakest at." })
-        : el("p", { class: "muted", html: "Complete <b>" + Math.max(0, 3 - done) + "</b> more test" + (3 - done === 1 ? "" : "s") + " to unlock your personalized test (only your weak questions)." }),
+      personalizedProgress(),
       el("div", { class: "cta-row", style: "margin-bottom:0" }, [
-        personalizedCTA(),
         res.testId && res.kind === "form" ? el("button", { class: "btn", type: "button", text: "↻ Retake this form", onclick: function () { renderIntro(res.testId); } }) : null,
         el("button", { class: "btn", type: "button", text: "All tests", onclick: renderHome }),
       ]),
     ]));
 
+    body.appendChild(sharePanel(res, st));
+    body.appendChild(boardCTA(res, st));
+
     // NPS (skippable, shown once)
     var npsEl = npsPanel(); if (npsEl) body.appendChild(npsEl);
 
-    // review
+    // review — defaults to Incorrect, with counts on each filter
     var listHost = el("div", { id: "review-list" });
+    var counts = { all: res.items.length, wrong: 0, skipped: 0, correct: 0 };
+    res.items.forEach(function (it) { counts[it.skipped ? "skipped" : (it.correct ? "correct" : "wrong")]++; });
+    var defFilter = counts.wrong > 0 ? "wrong" : (counts.skipped > 0 ? "skipped" : "all");
     var filters = el("div", { class: "review-filter" });
-    [["all", "All"], ["wrong", "Incorrect"], ["skipped", "Skipped"], ["correct", "Correct"]].forEach(function (f, idx) {
-      filters.appendChild(el("button", { class: "btn btn-sm " + (idx === 0 ? "btn-primary" : "btn-ghost"), type: "button", text: f[1],
+    [["all", "All"], ["wrong", "Incorrect"], ["skipped", "Skipped"], ["correct", "Correct"]].forEach(function (f) {
+      filters.appendChild(el("button", { class: "btn btn-sm " + (f[0] === defFilter ? "btn-primary" : "btn-ghost"), type: "button", text: f[1] + " (" + counts[f[0]] + ")",
         onclick: function () { filters.querySelectorAll("button").forEach(function (x) { x.className = "btn btn-sm btn-ghost"; }); this.className = "btn btn-sm btn-primary"; drawReview(listHost, res, f[0]); } }));
     });
     body.appendChild(el("div", { class: "panel" }, [
       el("h2", { style: "margin-top:0", text: "Review answers" }),
-      el("p", { class: "muted", style: "margin-top:-.5em", text: "Worked answer for every question." }),
+      el("p", { class: "muted", style: "margin-top:-.5em", text: "Showing your incorrect answers first — use the filters to see the rest." }),
       filters, listHost,
     ]));
-    drawReview(listHost, res, "all");
+    drawReview(listHost, res, defFilter);
     show("results");
     if (window.requestAnimationFrame) window.requestAnimationFrame(function () { drawBellCurve(bell, st.mu, st.sigma, res.pct); launchConfetti(); });
   }
@@ -2610,6 +2772,7 @@ window.MMAT_DEEP = {
   $("exam-submit").addEventListener("click", confirmSubmit);
   $("exam-quit").addEventListener("click", abandon);
   var navSup = $("nav-support"); if (navSup) navSup.addEventListener("click", function (e) { e.preventDefault(); renderSupport(); });
+  var navLb = $("nav-leaderboard"); if (navLb) navLb.addEventListener("click", function (e) { e.preventDefault(); renderLeaderboard(); });
 
   (function boot() {
     loadAnalytics();

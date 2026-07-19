@@ -51,8 +51,8 @@ function checkForm(t, where) {
 const free = MMAT.freeTest;
 if (!free) err("missing freeTest");
 else {
-  const pc = checkForm(free, "Free taster");
-  console.log(`  ✓ ${"Free taster".padEnd(22)} ${free.questions.length} Qs   ${CATS.map((c) => `${c}:${pc[c] || 0}`).join("  ")}`);
+  const pc = checkForm(free, "Free full test");
+  console.log(`  ✓ ${"Free full test".padEnd(22)} ${free.questions.length} Qs   ${CATS.map((c) => `${c}:${pc[c] || 0}`).join("  ")}`);
 }
 
 // full forms

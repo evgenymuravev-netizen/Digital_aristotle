@@ -442,3 +442,29 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 .sign.out { opacity: 0; transform: translateY(-8px); transition: .4s ease; }
 @keyframes signIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .sign, .modal-overlay { animation: none; } }
+
+/* ---------------- review head: align WRONG tag + topic chip ---------------- */
+.review-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.review-head .rh-tag, .review-head .q-topic { margin: 0; padding: 3px 10px; font-size: .7rem; line-height: 1.4; border-radius: 999px; display: inline-flex; align-items: center; }
+
+/* ---------------- personalized-test progress ---------------- */
+.pt-card { margin-top: 4px; background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.pt-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.pt-top b { font-size: 1.02rem; }
+.pt-bar { height: 10px; border-radius: 999px; background: var(--panel); overflow: hidden; border: 1px solid var(--border); }
+.pt-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--good)); border-radius: 999px; transition: width .5s ease; }
+.pt-card .btn { align-self: flex-start; }
+
+/* ---------------- share ---------------- */
+.share-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------------- leaderboard ---------------- */
+.lb-table { display: flex; flex-direction: column; gap: 2px; }
+.lb-row { display: grid; grid-template-columns: 36px 1fr 1fr auto; gap: 12px; align-items: center; padding: 9px 12px; border-radius: 8px; background: var(--panel-2); }
+.lb-row.lb-head { background: transparent; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; padding: 0 12px 2px; }
+.lb-row.top { border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border)); }
+.lb-rank { font-family: var(--font-mono); font-weight: 700; color: var(--accent); }
+.lb-name { color: var(--text); font-weight: 600; }
+.lb-test { font-size: .85rem; }
+.lb-score { font-family: var(--font-serif); font-size: 1.15rem; color: var(--accent); font-variant-numeric: tabular-nums; justify-self: end; }
+@media (max-width: 520px) { .lb-row { grid-template-columns: 30px 1fr auto; } .lb-test { display: none; } }

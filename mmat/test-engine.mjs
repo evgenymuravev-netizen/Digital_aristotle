@@ -121,13 +121,17 @@ store.clear(); goHome();
 byId["start-free"].fire("click");                  // free test starts (no lock)
 const free = driveExam("correct");
 expect("all-correct %", free.pct, 100);
-expect("tally", free.sub, "12 / 12 correct");
+expect("tally", free.sub, "25 / 25 correct");
 assert("no two adjacent questions share a topic", noAdjacentDup(free.topics) === -1,
   "duplicate at position " + noAdjacentDup(free.topics) + " in " + JSON.stringify(free.topics));
 assert("results show a speed & accuracy profile", byId["results-body"].textContent.includes("Speed & accuracy profile"), "no profile panel");
 assert("results show an estimated percentile", byId["results-body"].textContent.includes("percentile"), "no percentile shown");
 assert("results ask the NPS recommend question (skippable)", byId["results-body"].textContent.includes("recommend"), "no NPS question");
 assert("submitting with time left asks 'are you sure'", free.sawConfirm, "no submit-confirm dialog appeared");
+assert("results offer sharing", byId["results-body"].textContent.includes("Share your result"), "no share panel");
+assert("results offer the leaderboard", byId["results-body"].textContent.includes("leaderboard"), "no leaderboard CTA");
+assert("results show unlock progress card", byId["results-body"].textContent.includes("Personalized test"), "no progress card");
+assert("review filters show counts", byId["results-body"].textContent.includes("Incorrect ("), "no review counts");
 
 console.log("\nPaywall + locked form:");
 store.clear(); goHome();
@@ -152,7 +156,7 @@ console.log("\nPersonalized test (unlocks after 3 tests):");
 byId["start-free"].fire("click"); driveExam("wrong");
 assert("wrong answers offer a deeper 'why' + report-broken-logic", byId["results-body"].textContent.includes("Report broken logic"), "no deep/report");
 goHome();       // 2 tests done
-assert("personalized test is LOCKED before 3 tests", !!btnByText(byId["dashboard"], "unlocks after"), "expected a locked CTA at 2 tests");
+assert("personalized test is LOCKED before 3 tests", !btnByText(byId["dashboard"], "Start your personalized test") && byId["dashboard"].textContent.includes("of 3 tests"), "expected locked progress at 2 tests");
 byId["start-free"].fire("click"); driveExam("wrong"); goHome();       // 3 tests done
 const persBtn = btnByText(byId["dashboard"], "Start your personalized test");
 assert("personalized test unlocks after 3 completed tests", persBtn && !persBtn.getAttribute("disabled"),

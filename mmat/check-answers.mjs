@@ -28,9 +28,10 @@ function check(form, idx, want, where) {
   if (String(got) !== String(want)) fail(`${where} Q${idx + 1}: marked "${got}" but recomputed "${want}"`);
 }
 
-// ---- free taster: numerical at [1,4,7,10] ----
+// ---- free full test: numerical at indices 10–18 (like the forms) ----
 const free = MMAT.freeTest;
-[[1, `${20 + 10}`], [4, `${0.12 * 150}`], [7, "$62.50"], [10, `${(60 / 5) * 3}`]]
+[[10, `${16 * 2}`], [11, `${5 ** 2}`], [12, `${26 * 2 - 2}`], [13, `${14 * 12}`], [14, `${15 ** 2 - 10 ** 2}`],
+ [15, "$62.50"], [16, `${90 / 1.5}`], [17, `${240 * 15 / 100}`], [18, `${(60 / 5) * 3}`]]
   .forEach(([i, w]) => check(free, i, w, "Free"));
 
 // ---- full forms: numerical at indices 10–18 ----

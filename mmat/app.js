@@ -107,7 +107,7 @@
   }
 
   /* ---------------- screens ---------------- */
-  var SCREENS = ["home", "intro", "exam", "results", "paywall", "support"];
+  var SCREENS = ["home", "intro", "exam", "results", "paywall", "support", "leaderboard"];
   function show(name) {
     SCREENS.forEach(function (s) { $("screen-" + s).classList.toggle("active", s === name); });
     window.scrollTo(0, 0);
@@ -239,10 +239,7 @@
       ]),
       bars,
       weak.length ? el("div", { class: "weak-wrap" }, [el("span", { class: "muted", text: "Weakest topics: " }), weakRow]) : null,
-      el("div", { class: "muted", style: "margin-top:12px;font-size:.9rem" }, personalizedReady()
-        ? "🎯 Your personalized test is unlocked — a round of only your weakest questions."
-        : "Your personalized test unlocks after 3 completed tests (" + Math.min(3, done) + "/3 done)."),
-      el("div", { class: "cta-row", style: "margin-bottom:0" }, [personalizedCTA()]),
+      personalizedProgress(true),
     ]));
   }
 
@@ -330,6 +327,21 @@
       return el("button", { class: "btn", type: "button", disabled: "disabled", text: "🎯 Personalized test unlocks after " + left + " more test" + (left === 1 ? "" : "s") });
     }
     return el("button", { class: "btn", type: "button", disabled: "disabled", text: "🎯 Answer a few more so we can map your weak spots" });
+  }
+  function personalizedProgress(compact) {
+    var done = Math.min(3, testsDone()), ready = personalizedReady();
+    var pct = ready ? 100 : Math.round(done / 3 * 100);
+    var cta = ready
+      ? el("button", { class: "btn btn-primary" + (compact ? " btn-sm" : " btn-lg"), type: "button", text: "🎯 Start your personalized test", onclick: startWeakRound })
+      : el("button", { class: "btn btn-primary" + (compact ? " btn-sm" : " btn-lg"), type: "button", text: "Take another test to unlock →", onclick: renderHome });
+    return el("div", { class: "pt-card" }, [
+      el("div", { class: "pt-top" }, [
+        el("b", { text: "🎯 Personalized test" }),
+        el("span", { class: "muted", text: ready ? "unlocked — only your weakest questions" : done + " of 3 tests done" }),
+      ]),
+      el("div", { class: "pt-bar" }, el("span", { style: "width:" + pct + "%" })),
+      cta,
+    ]);
   }
 
   function beginSession(s) {
@@ -745,6 +757,93 @@
     return wrap;
   }
 
+  /* ---- share results ---- */
+  function siteUrl() { return (CFG.siteUrl && String(CFG.siteUrl).trim()) || (typeof window !== "undefined" && window.location ? window.location.href : ""); }
+  function sharePanel(res, st) {
+    var text = "I scored " + res.pct + "% on the Mental Agility Test — better than an estimated " + st.pctile + "% of people. Can you beat me?";
+    var url = siteUrl(), enc = encodeURIComponent, full = text + (url ? " " + url : "");
+    var openWin = function (u) { try { window.open(u, "_blank", "noopener"); } catch (e) {} };
+    var btns = [];
+    if (typeof navigator !== "undefined" && navigator.share)
+      btns.push(el("button", { class: "btn btn-sm", type: "button", text: "Share…", onclick: function () { try { navigator.share({ title: "Mental Agility Test", text: text, url: url }); } catch (e) {} } }));
+    btns.push(el("button", { class: "btn btn-sm", type: "button", text: "𝕏 / Twitter", onclick: function () { openWin("https://twitter.com/intent/tweet?text=" + enc(text) + (url ? "&url=" + enc(url) : "")); } }));
+    btns.push(el("button", { class: "btn btn-sm", type: "button", text: "LinkedIn", onclick: function () { openWin("https://www.linkedin.com/sharing/share-offsite/?url=" + enc(url || "")); } }));
+    btns.push(el("button", { class: "btn btn-sm", type: "button", text: "WhatsApp", onclick: function () { openWin("https://wa.me/?text=" + enc(full)); } }));
+    var copyBtn = el("button", { class: "btn btn-sm", type: "button", text: "Copy result", onclick: function () {
+      var ok = function () { copyBtn.textContent = "✓ Copied"; };
+      try { if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(full).then(ok, ok); else ok(); } catch (e) { ok(); }
+    } });
+    btns.push(copyBtn);
+    return el("div", { class: "panel" }, [
+      el("h2", { style: "margin-top:0", text: "Share your result" }),
+      el("p", { class: "muted", style: "margin-top:-.5em", text: text }),
+      el("div", { class: "share-row" }, btns),
+    ]);
+  }
+
+  /* ---- leaderboard (local by default; remote if configured) ---- */
+  var BOARD_KEY = "mmat:v2:board";
+  function getBoardLocal() { return getJSON(BOARD_KEY, []); }
+  function boardConfigured() { return !!(CFG.leaderboard && CFG.leaderboard.endpoint); }
+  function rankSort(a, b) { return b.pct - a.pct || (b.pctile || 0) - (a.pctile || 0) || (a.at || 0) - (b.at || 0); }
+  function submitScore(entry, cb) {
+    var l = getBoardLocal(); l.push(entry); l.sort(rankSort); setJSON(BOARD_KEY, l.slice(0, 100));
+    if (boardConfigured()) { try { fetch(CFG.leaderboard.endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(entry) }).then(function () { cb && cb(true); }, function () { cb && cb(true); }); return; } catch (e) {} }
+    cb && cb(true);
+  }
+  function loadBoard(cb) {
+    if (boardConfigured()) { try { fetch(CFG.leaderboard.endpoint, { headers: { "Accept": "application/json" } }).then(function (r) { return r.json(); }).then(function (rows) { cb(Array.isArray(rows) ? rows : [], "global"); }, function () { cb(getBoardLocal(), "local"); }); return; } catch (e) {} }
+    cb(getBoardLocal(), "local");
+  }
+  function renderLeaderboard() {
+    var body = $("leaderboard-body"); body.innerHTML = "";
+    body.appendChild(el("div", {}, [
+      el("p", { class: "muted", text: "Leaderboard" }),
+      el("h1", { text: "🏆 All-time leaderboard" }),
+      el("p", { class: "lede", id: "lb-sub", text: "Loading…" }),
+      el("div", { class: "panel", id: "lb-list" }),
+      el("div", { class: "cta-row" }, [el("button", { class: "btn", type: "button", text: "← Back", onclick: renderHome })]),
+    ]));
+    show("leaderboard");
+    loadBoard(function (rows, kind) {
+      var sub = $("lb-sub"); if (sub) sub.textContent = kind === "global" ? "The top scores from everyone who has played." : "Your top scores on this device. Connect a backend (see STRATEGY.md) to make it global.";
+      var list = $("lb-list"); if (!list) return; list.innerHTML = "";
+      rows = (rows || []).slice().sort(rankSort).slice(0, 20);
+      if (!rows.length) { list.appendChild(el("p", { class: "muted", text: "No scores yet — finish a test and add yours!" })); return; }
+      var tbl = el("div", { class: "lb-table" });
+      tbl.appendChild(el("div", { class: "lb-row lb-head" }, [el("span", { text: "#" }), el("span", { text: "Name" }), el("span", { text: "Test" }), el("span", { text: "Score" })]));
+      rows.forEach(function (r, i) {
+        tbl.appendChild(el("div", { class: "lb-row" + (i < 3 ? " top" : "") }, [
+          el("span", { class: "lb-rank", text: String(i + 1) }),
+          el("span", { class: "lb-name", text: r.name || "Anonymous" }),
+          el("span", { class: "lb-test muted", text: r.title || "" }),
+          el("span", { class: "lb-score", text: (r.pct != null ? r.pct + "%" : "") }),
+        ]));
+      });
+      list.appendChild(tbl);
+    });
+  }
+  function boardCTA(res, st) {
+    var u = getUser();
+    var nameInput = el("input", { class: "code-input", type: "text", maxlength: "24", placeholder: "Your name or initials", value: (u && u.name) || "" });
+    var status = el("div", { class: "unlock-msg", id: "board-status" });
+    var addBtn = el("button", { class: "btn btn-primary", type: "button", text: "Add my score" });
+    addBtn.addEventListener("click", function () {
+      var nm = (nameInput.value || "").trim().slice(0, 24) || "Anonymous";
+      addBtn.disabled = true; status.className = "unlock-msg"; status.textContent = "Adding…";
+      submitScore({ name: nm, pct: res.pct, pctile: st.pctile, title: res.title, at: Date.now() }, function () {
+        status.className = "unlock-msg good"; status.textContent = "Added! ";
+        status.appendChild(el("button", { class: "linkbtn", type: "button", text: "View leaderboard →", onclick: renderLeaderboard }));
+      });
+    });
+    return el("div", { class: "panel" }, [
+      el("h2", { style: "margin-top:0", text: "🏆 Add your score to the leaderboard" }),
+      el("p", { class: "muted", style: "margin-top:-.5em", text: "See how you rank against everyone else." }),
+      el("div", { class: "code-row" }, [nameInput, addBtn, el("button", { class: "btn", type: "button", text: "View board", onclick: renderLeaderboard })]),
+      status,
+    ]);
+  }
+
   function renderResults(res) {
     var b = band(res.pct);
     var body = $("results-body"); body.innerHTML = "";
@@ -815,32 +914,35 @@
         ? el("p", { class: "dim", html: "Across everything you've done, your weakest topics are " +
             weak.map(function (w) { return "<b>" + w.topic + "</b> (" + Math.round(w.acc * 100) + "%)"; }).join(", ") + "." })
         : el("p", { class: "dim", text: "Do a couple more tests and we'll pinpoint your weak topics." }),
-      personalizedReady()
-        ? el("p", { class: "dim", text: "Your personalized test is ready — a full round built only from the questions you're weakest at." })
-        : el("p", { class: "muted", html: "Complete <b>" + Math.max(0, 3 - done) + "</b> more test" + (3 - done === 1 ? "" : "s") + " to unlock your personalized test (only your weak questions)." }),
+      personalizedProgress(),
       el("div", { class: "cta-row", style: "margin-bottom:0" }, [
-        personalizedCTA(),
         res.testId && res.kind === "form" ? el("button", { class: "btn", type: "button", text: "↻ Retake this form", onclick: function () { renderIntro(res.testId); } }) : null,
         el("button", { class: "btn", type: "button", text: "All tests", onclick: renderHome }),
       ]),
     ]));
 
+    body.appendChild(sharePanel(res, st));
+    body.appendChild(boardCTA(res, st));
+
     // NPS (skippable, shown once)
     var npsEl = npsPanel(); if (npsEl) body.appendChild(npsEl);
 
-    // review
+    // review — defaults to Incorrect, with counts on each filter
     var listHost = el("div", { id: "review-list" });
+    var counts = { all: res.items.length, wrong: 0, skipped: 0, correct: 0 };
+    res.items.forEach(function (it) { counts[it.skipped ? "skipped" : (it.correct ? "correct" : "wrong")]++; });
+    var defFilter = counts.wrong > 0 ? "wrong" : (counts.skipped > 0 ? "skipped" : "all");
     var filters = el("div", { class: "review-filter" });
-    [["all", "All"], ["wrong", "Incorrect"], ["skipped", "Skipped"], ["correct", "Correct"]].forEach(function (f, idx) {
-      filters.appendChild(el("button", { class: "btn btn-sm " + (idx === 0 ? "btn-primary" : "btn-ghost"), type: "button", text: f[1],
+    [["all", "All"], ["wrong", "Incorrect"], ["skipped", "Skipped"], ["correct", "Correct"]].forEach(function (f) {
+      filters.appendChild(el("button", { class: "btn btn-sm " + (f[0] === defFilter ? "btn-primary" : "btn-ghost"), type: "button", text: f[1] + " (" + counts[f[0]] + ")",
         onclick: function () { filters.querySelectorAll("button").forEach(function (x) { x.className = "btn btn-sm btn-ghost"; }); this.className = "btn btn-sm btn-primary"; drawReview(listHost, res, f[0]); } }));
     });
     body.appendChild(el("div", { class: "panel" }, [
       el("h2", { style: "margin-top:0", text: "Review answers" }),
-      el("p", { class: "muted", style: "margin-top:-.5em", text: "Worked answer for every question." }),
+      el("p", { class: "muted", style: "margin-top:-.5em", text: "Showing your incorrect answers first — use the filters to see the rest." }),
       filters, listHost,
     ]));
-    drawReview(listHost, res, "all");
+    drawReview(listHost, res, defFilter);
     show("results");
     if (window.requestAnimationFrame) window.requestAnimationFrame(function () { drawBellCurve(bell, st.mu, st.sigma, res.pct); launchConfetti(); });
   }
@@ -1114,6 +1216,7 @@
   $("exam-submit").addEventListener("click", confirmSubmit);
   $("exam-quit").addEventListener("click", abandon);
   var navSup = $("nav-support"); if (navSup) navSup.addEventListener("click", function (e) { e.preventDefault(); renderSupport(); });
+  var navLb = $("nav-leaderboard"); if (navLb) navLb.addEventListener("click", function (e) { e.preventDefault(); renderLeaderboard(); });
 
   (function boot() {
     loadAnalytics();

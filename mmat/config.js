@@ -68,4 +68,18 @@ window.MMAT_CONFIG = {
     fathomSiteId: "",     // e.g. "ABCDEFGH"
     ga4Id: "",            // e.g. "G-XXXXXXX" (needs a cookie/consent notice)
   },
+
+  /* ---- public site URL used in share text. Blank = the current page URL. */
+  siteUrl: "",
+
+  /* ---- leaderboard ----
+     Blank endpoint = a local, this-device leaderboard (works immediately).
+     For a true global all-time board, point this at a tiny backend that:
+       • POST {name,pct,pctile,title,at}  → stores a row
+       • GET                              → returns an array of those rows
+     Easiest options: a Supabase table + REST endpoint, or a one-file
+     serverless function (Cloudflare Worker / Vercel). See STRATEGY.md. */
+  leaderboard: {
+    endpoint: "",
+  },
 };
