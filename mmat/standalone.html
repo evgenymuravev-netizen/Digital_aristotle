@@ -441,6 +441,23 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 .nps-foot { display: flex; align-items: center; max-width: 480px; margin: 0 auto 12px; color: var(--muted); font-size: .78rem; }
 .nps-foot .spacer { flex: 1; }
 
+/* ---------------- confirm modal ---------------- */
+.modal-overlay { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: color-mix(in oklab, #000 55%, transparent); backdrop-filter: blur(2px); animation: fade .15s ease; }
+.modal { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; max-width: 440px; width: 100%; box-shadow: var(--shadow); }
+.modal h2 { font-size: 1.25rem; }
+.modal p { color: var(--text-dim); }
+.modal p b { color: var(--text); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+
+/* ---------------- pacing signs ---------------- */
+#sign-host { position: fixed; top: 66px; left: 0; right: 0; z-index: 70; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+.sign { background: var(--panel-2); border: 1px solid var(--border); color: var(--text); border-radius: 999px; padding: 10px 20px; font-weight: 600; font-size: .95rem; box-shadow: var(--shadow); animation: signIn .3s ease; }
+.sign.info { border-color: color-mix(in oklab, var(--info) 55%, var(--border)); color: var(--info); }
+.sign.warn { border-color: color-mix(in oklab, var(--bad) 60%, var(--border)); color: var(--bad); }
+.sign.out { opacity: 0; transform: translateY(-8px); transition: .4s ease; }
+@keyframes signIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .sign, .modal-overlay { animation: none; } }
+
 </style>
   <script type="application/ld+json">
   {
@@ -615,6 +632,9 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
     </section>
 
   </main>
+
+  <div id="sign-host" aria-live="polite"></div>
+  <div id="modal-root"></div>
 
   <footer class="footer">
     A McQuaig-style Mental Agility practice test, part of the Digital Aristotle project.
@@ -1363,6 +1383,113 @@ window.MMAT_DEEP = {
       "Chickens": "A cooper has nothing to do with chickens — you may be thinking of a chicken 'coop'.",
     },
   },
+
+  /* ---------- numerical: classic-trap word problems, %, ratios ---------- */
+  "A's salary is 20% more than B's. By what percent is B's salary less than A's?": {
+    principle: "\"X% more\" and \"Y% less\" are measured from different starting points, so they're almost never the same number — the reference (base) changes.",
+    best: "The gap is 20, and A (120) is the salary you're comparing to, so 20 ÷ 120 = 16.67%.",
+    traps: {
+      "20%": "This is the classic symmetry trap: assuming \"20% more\" simply reverses to \"20% less.\" But the first 20% is measured against B (100) and the second against A (120). Same 20-unit gap, bigger base → smaller percentage.",
+      "25%": "This divides the 20 gap by 80 — the wrong base again. You must divide by A's actual salary, 120, not 80.",
+      "18%": "Just a near-miss value; the exact figure is 20 ÷ 120 = 16.67%.",
+    },
+  },
+  "A train covers 150 km at 50 km/h, then 150 km at 75 km/h. What is the average speed for the whole trip?": {
+    principle: "Average speed is total distance ÷ total time — never the plain average of the two speeds.",
+    best: "300 km total in 3 + 2 = 5 hours gives 60 km/h.",
+    traps: {
+      "62.5 km/h": "This is just the average of 50 and 75. You spend more time at the slower speed (3 hours vs 2), so the true average is pulled below the midpoint — use total distance ÷ total time.",
+      "65 km/h": "Another averaging shortcut; the correct method is 300 ÷ 5 = 60.",
+    },
+  },
+  "A $200 item gets two successive discounts of 10% then 20%. What is the final price?": {
+    principle: "Successive discounts multiply, they don't add — apply each to the running price, not the original.",
+    best: "200 × 0.9 = 180, then 180 × 0.8 = 144.",
+    traps: {
+      "$140": "This adds the discounts (10% + 20% = 30% off → $140). But the 20% comes off the already-reduced $180, so you multiply 0.9 × 0.8 = 0.72, not subtract 0.30.",
+      "$136": "Close, but it isn't 0.9 × 0.8 of 200; recompute 180 × 0.8 = 144.",
+    },
+  },
+  "After a 20% rise a price is $96. What was it before?": {
+    principle: "$96 is 120% of the original, so divide by 1.2 — don't take 20% off 96.",
+    best: "96 ÷ 1.2 = 80, and as a check, 80 + 20% = 96.",
+    traps: {
+      "$76.80": "This takes 20% off 96 (96 × 0.8). But 96 is the price after a rise = 120% of the original, so you divide by 1.2, not multiply by 0.8.",
+      "$76": "A rough 'take 20% off' guess; the exact original is 96 ÷ 1.2 = 80.",
+    },
+  },
+  "A price reduced by 20% is now $48. What was the original price?": {
+    principle: "$48 is 80% of the original, so divide by 0.8 — don't add 20% back onto 48.",
+    best: "48 ÷ 0.8 = 60, and as a check, 20% of 60 is 12, so 60 − 12 = 48.",
+    traps: {
+      "$58": "This adds 20% back onto 48 (48 × 1.2 ≈ 57.6). But 48 is the reduced price = 80% of the original, so divide by 0.8.",
+      "$56": "Same 'add it back' mistake; the original is 48 ÷ 0.8 = 60.",
+    },
+  },
+  "If 40% of x is 60, what is 75% of x?": {
+    principle: "Find the whole (x) first, then take the percentage you actually want.",
+    best: "40% of x = 60 means x = 150, so 75% of 150 = 112.5.",
+    traps: {
+      "90": "This scales 60 up by 1.5, as if 75% were 1.5× of 40%. Instead recover x = 150 first, then take 75%.",
+      "120": "This just doubles 60; you need x = 150 first, then 75% of it.",
+    },
+  },
+  "If the side of a square is increased by 20%, by what percent does its area increase?": {
+    principle: "Area depends on the side squared, so a 20% longer side gives 1.2² = 1.44× the area.",
+    best: "1.2 × 1.2 = 1.44, which is a 44% increase.",
+    traps: {
+      "20%": "This assumes area grows in step with the side. Area scales with side², so 1.2² = 1.44 → a 44% increase, not 20%.",
+      "40%": "This doubles the 20%; squaring 1.2 gives 1.44, i.e. +44%, not +40%.",
+    },
+  },
+  "A town of 8,000 grows 5% one year and 5% the next. What is the population after two years?": {
+    principle: "Two 5% rises compound — apply the second to the already-grown total, not the original.",
+    best: "8,000 × 1.05 = 8,400, then 8,400 × 1.05 = 8,820.",
+    traps: {
+      "8,800": "This adds 10% once (8,000 × 1.10). The second 5% applies to 8,400, not 8,000, so the total is a little higher: 8,820.",
+      "8,400": "That's only the first year's growth — apply the second 5% as well.",
+    },
+  },
+  "A pipe fills a tank in 6 hours; a drain empties it in 12 hours. With both open, how long to fill?": {
+    principle: "Combine the rates, not the times: fill rate minus drain rate gives the net rate.",
+    best: "1/6 − 1/12 = 1/12 of the tank per hour, so it fills in 12 hours.",
+    traps: {
+      "18 hours": "This adds the two times (6 + 12). You must work with rates: 1/6 − 1/12 = 1/12, giving 12 hours.",
+      "8 hours": "Doesn't come from the rate difference; the net rate is 1/12, so 12 hours.",
+    },
+  },
+  "If 6 workers build a wall in 8 days, how long would 4 workers take at the same rate?": {
+    principle: "Fewer workers means more days — the total work (worker-days) stays fixed, so it's inverse proportion.",
+    best: "6 × 8 = 48 worker-days of work; 48 ÷ 4 = 12 days.",
+    traps: {
+      "16 days": "Over-shoots the inverse relationship; the fixed work is 48 worker-days, so 48 ÷ 4 = 12.",
+      "10 days": "Under-counts; keep the total at 48 worker-days and divide by 4.",
+    },
+  },
+  "5 machines make 5 widgets in 5 minutes. How long for 100 machines to make 100 widgets?": {
+    principle: "Find the rate per machine first; adding machines and work in the same proportion leaves the time unchanged.",
+    best: "Each machine makes 1 widget in 5 minutes, so 100 machines make 100 widgets in the same 5 minutes.",
+    traps: {
+      "100 minutes": "This assumes time scales with the number of widgets. But you added machines in the same proportion, so the per-machine rate (1 widget / 5 min) is unchanged — still 5 minutes.",
+      "20 minutes": "This mixes up which quantities scale; the time stays 5 minutes because machines and widgets grew together.",
+    },
+  },
+  "A shirt costs $50 after a 20% discount. What was the original price?": {
+    principle: "$50 is 80% of the original, so divide by 0.8 — don't add 20% onto 50.",
+    best: "50 ÷ 0.8 = 62.50, and as a check, 20% off 62.50 is 12.50, leaving 50.",
+    traps: {
+      "$60.00": "This adds 20% of 50 (50 × 1.2). But $50 is the discounted price = 80% of the original, so divide by 0.8 → 62.50.",
+      "$65.00": "A rough add-back guess; the exact original is 62.50.",
+    },
+  },
+  "Two numbers are in the ratio 2:3 and add up to 60. What is the larger number?": {
+    principle: "Split the total into equal 'parts' first: 2 + 3 = 5 parts, so one part is 60 ÷ 5 = 12.",
+    best: "The larger number is 3 parts = 3 × 12 = 36.",
+    traps: {
+      "24": "This is the smaller number (2 parts). The question asks for the larger, which is 3 parts = 36.",
+      "30": "That's just half of 60 — but the split is 2:3, not equal halves.",
+    },
+  },
 };
 
 </script>
@@ -1480,6 +1607,37 @@ window.MMAT_DEEP = {
   function show(name) {
     SCREENS.forEach(function (s) { $("screen-" + s).classList.toggle("active", s === name); });
     window.scrollTo(0, 0);
+  }
+
+  /* on-brand confirm dialog (works in sandboxed previews, unlike native confirm) */
+  function confirmDialog(opts) {
+    var root = $("modal-root"); if (!root) { if (opts.onConfirm) opts.onConfirm(); return; }
+    root.innerHTML = "";
+    var close = function () { root.innerHTML = ""; document.removeEventListener("keydown", onKey); };
+    var onKey = function (e) { if (e.key === "Escape") close(); };
+    var confirmBtn = el("button", { class: "btn btn-primary", type: "button", text: opts.confirmText || "Confirm",
+      onclick: function () { close(); if (opts.onConfirm) opts.onConfirm(); } });
+    var overlay = el("div", { class: "modal-overlay", onclick: function (e) { if (e.target === overlay) close(); } }, [
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true" }, [
+        opts.title ? el("h2", { style: "margin-top:0", text: opts.title }) : null,
+        el("p", { class: "dim", style: "margin:0", html: opts.message || "" }),
+        el("div", { class: "modal-actions" }, [
+          el("button", { class: "btn btn-ghost", type: "button", text: opts.cancelText || "Cancel", onclick: close }),
+          confirmBtn,
+        ]),
+      ]),
+    ]);
+    root.appendChild(overlay);
+    document.addEventListener("keydown", onKey);
+    try { confirmBtn.focus(); } catch (e) {}
+  }
+
+  /* transient pacing "sign" toast near the top of the screen */
+  function showSign(text, kind) {
+    var host = $("sign-host"); if (!host) return;
+    var s = el("div", { class: "sign " + (kind || ""), role: "status" }, text);
+    host.appendChild(s);
+    setTimeout(function () { s.classList.add("out"); setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 400); }, 3500);
   }
 
   var session = null, timerId = null, announced = {};
@@ -1705,6 +1863,11 @@ window.MMAT_DEEP = {
     t.classList.toggle("danger", remain <= 60);
     if (remain <= 120 && !announced[120]) { announced[120] = 1; $("exam-timer-sr").textContent = "Two minutes remaining."; }
     if (remain <= 60 && !announced[60]) { announced[60] = 1; $("exam-timer-sr").textContent = "One minute remaining."; }
+    // pacing "signs" at 5 min in, 10 min in, and 1 minute left
+    var elapsed = session.durationSec - remain;
+    if (elapsed >= 300 && !announced.m5 && remain > 75) { announced.m5 = 1; showSign("⏱ 5 minutes gone — keep up the pace", "info"); }
+    if (elapsed >= 600 && !announced.m10 && remain > 75) { announced.m10 = 1; showSign("⏱ 10 minutes gone — 5 minutes to go", "info"); }
+    if (remain <= 60 && !announced.last) { announced.last = 1; showSign("⏳ 1 minute left!", "warn"); }
     if (remain <= 0) finish(true);
   }
 
@@ -1791,10 +1954,11 @@ window.MMAT_DEEP = {
 
   /* ---------------- finish & grade ---------------- */
   function confirmSubmit() {
+    var remain = Math.max(0, Math.round((session.deadline - Date.now()) / 1000));
     var un = session.items.length - Object.keys(session.answers).length;
-    var msg = un > 0 ? "You have " + un + " unanswered question" + (un === 1 ? "" : "s") + " (marked wrong). Submit now?"
-                     : "Submit your answers and see your score?";
-    if (window.confirm(msg)) finish(false);
+    var msg = "Are you sure you want to submit? You still have <b>" + fmtTime(remain) + "</b> left on the clock.";
+    if (un > 0) msg += "<br>You also have <b>" + un + "</b> unanswered question" + (un === 1 ? "" : "s") + " — they'll be marked wrong.";
+    confirmDialog({ title: "Submit test?", message: msg, confirmText: "Submit now", cancelText: "Keep working", onConfirm: function () { finish(false); } });
   }
   function grade(s) {
     var byCat = {}, byTopic = {}, items = [], correct = 0;
@@ -1833,7 +1997,8 @@ window.MMAT_DEEP = {
   }
   function abandon() {
     if (!session) return renderHome();
-    if (window.confirm("Quit this test without scoring? Your progress will be discarded.")) { stopTimer(); del(KEY.session); session = null; renderHome(); }
+    confirmDialog({ title: "Quit without scoring?", message: "Your progress on this test will be discarded.", confirmText: "Quit", cancelText: "Stay",
+      onConfirm: function () { stopTimer(); del(KEY.session); session = null; renderHome(); } });
   }
 
   /* ============================================================
@@ -2021,8 +2186,11 @@ window.MMAT_DEEP = {
       case "Antonyms": return b + "sounds opposite-ish, but it isn't the exact reverse along the same dimension.";
       case "Odd one out":
       case "Classification": return b + "fits a weaker, secondary pattern rather than the main rule.";
-      case "Number series": return b + "would follow a different rule than the one the whole sequence actually uses.";
-      case "Arithmetic": case "Word problems": case "Percentages": case "Ratio & proportion": return b + "matches a plausible but incorrect step in the working.";
+      case "Number series": return b + "fits only the last gap or a single operation, not the one rule that holds across the whole run.";
+      case "Percentages": return b + "usually comes from using the wrong base — applying the percentage to the total instead of the part it refers to, or adding a change back onto the new figure instead of dividing.";
+      case "Word problems": return b + "matches a tempting shortcut — averaging two figures, adding what should be multiplied, or scaling the quantity that should stay fixed.";
+      case "Ratio & proportion": return b + "usually comes from taking the wrong share, or forgetting to split the total into equal parts first.";
+      case "Arithmetic": return b + "is what a small order-of-operations slip or a rounding error would give.";
       case "Syllogisms": return b + "can be imagined true, but you can also picture a case where it's false — so it doesn't necessarily follow.";
       default: return b + "comes from a small slip in applying the rule.";
     }
@@ -2032,12 +2200,12 @@ window.MMAT_DEEP = {
     var correct = q.options[q.answer];
     var yourTxt = (yourIdx != null && yourIdx !== q.answer) ? q.options[yourIdx] : null;
     var principle = d.principle || topicPrinciple(q.topic);
-    var best = d.best || q.explain || "";
+    var best = d.best || "";   // q.explain is already shown as "Why:" — don't repeat it
     var trap = yourTxt ? ((d.traps && d.traps[yourTxt]) || topicTrap(q.topic, yourTxt)) : "";
     var html = "";
     if (yourTxt) html += "<p>It's easy to see why <b>" + yourTxt + "</b> felt right. " + trap + "</p>";
     html += "<p><b>The core idea.</b> " + principle + "</p>";
-    html += "<p><b>Why “" + correct + "” fits best.</b> " + best + "</p>";
+    if (best) html += "<p><b>Why “" + correct + "” fits best.</b> " + best + "</p>";
     if (!yourTxt) html += "<p>Any option that doesn't fit that exact relationship is a distractor here.</p>";
     return html;
   }
@@ -2432,7 +2600,11 @@ window.MMAT_DEEP = {
     if (session && $("screen-exam").classList.contains("active")) { e.preventDefault(); e.returnValue = ""; }
   });
   $("brand").addEventListener("click", function () {
-    if (session && $("screen-exam").classList.contains("active")) { if (!window.confirm("Leave this test? You can resume it later from the list.")) return; }
+    if (session && $("screen-exam").classList.contains("active")) {
+      confirmDialog({ title: "Leave this test?", message: "You can resume it later from the list — your time keeps running.", confirmText: "Leave", cancelText: "Stay",
+        onConfirm: function () { stopTimer(); renderHome(); } });
+      return;
+    }
     stopTimer(); renderHome();
   });
   $("exam-submit").addEventListener("click", confirmSubmit);

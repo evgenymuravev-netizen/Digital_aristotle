@@ -425,3 +425,20 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 .nps-btn:hover { border-color: var(--accent); color: var(--accent); background: color-mix(in oklab, var(--accent) 12%, var(--panel)); }
 .nps-foot { display: flex; align-items: center; max-width: 480px; margin: 0 auto 12px; color: var(--muted); font-size: .78rem; }
 .nps-foot .spacer { flex: 1; }
+
+/* ---------------- confirm modal ---------------- */
+.modal-overlay { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: color-mix(in oklab, #000 55%, transparent); backdrop-filter: blur(2px); animation: fade .15s ease; }
+.modal { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; max-width: 440px; width: 100%; box-shadow: var(--shadow); }
+.modal h2 { font-size: 1.25rem; }
+.modal p { color: var(--text-dim); }
+.modal p b { color: var(--text); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+
+/* ---------------- pacing signs ---------------- */
+#sign-host { position: fixed; top: 66px; left: 0; right: 0; z-index: 70; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+.sign { background: var(--panel-2); border: 1px solid var(--border); color: var(--text); border-radius: 999px; padding: 10px 20px; font-weight: 600; font-size: .95rem; box-shadow: var(--shadow); animation: signIn .3s ease; }
+.sign.info { border-color: color-mix(in oklab, var(--info) 55%, var(--border)); color: var(--info); }
+.sign.warn { border-color: color-mix(in oklab, var(--bad) 60%, var(--border)); color: var(--bad); }
+.sign.out { opacity: 0; transform: translateY(-8px); transition: .4s ease; }
+@keyframes signIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .sign, .modal-overlay { animation: none; } }

@@ -34,8 +34,7 @@ writeFileSync(join(here, "standalone.html"), html);
 let body = html.slice(html.indexOf("<body>") + 6, html.indexOf("</body>"));
 body = body.replace(/<nav class="topnav"[\s\S]*?<\/nav>/, "");                 // drop guide / Digital Aristotle links
 body = body.replace(/<a class="btn btn-lg" href="\.\/guide\.html">[\s\S]*?<\/a>/, ""); // drop guide CTA
-// sandboxed iframes may block window.confirm() modals; make submit/flows work anyway
-body = body.replace("<script>\n" + config, "<script>\nwindow.confirm = function () { return true; };\n" + config);
+// (confirmations use an in-app modal now, so no native confirm() shim is needed)
 const artifact = "<style>\n" + css + "\n</style>\n" + body;
 
 const scratch = "/tmp/claude-0/-home-user-Digital-aristotle/15c086bf-8bd9-5ba9-933e-2a40ce60b935/scratchpad/mmat-artifact.html";

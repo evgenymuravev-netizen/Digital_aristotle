@@ -50,7 +50,7 @@ const document = {
   getElementById: (id) => byId[id] || (byId[id] = new FakeEl("div")),
   createElement: (t) => new FakeEl(t),
   createTextNode: (t) => Object.assign(new FakeEl("text"), { _text: String(t) }),
-  addEventListener() {},
+  addEventListener() {}, removeEventListener() {},
 };
 const store = new Map();
 const localStorage = {
@@ -84,7 +84,7 @@ const btnByText = (root, txt) => root.querySelectorAll("button").find((b) => (b.
 // Returns { pct, sub, topics:[chip text per position in shown order] }.
 function driveExam(mode) {
   const topics = [];
-  let guard = 0;
+  let guard = 0, sawConfirm = false;
   while ($("screen-exam").classList.contains("active") && guard++ < 200) {
     const qEl = byId["exam-question"];
     const prompt = qEl.querySelector(".q-prompt").innerHTML;
@@ -95,11 +95,13 @@ function driveExam(mode) {
     const choose = mode === "wrong" ? (info.answer + 1) % info.n : info.answer;
     qEl.querySelectorAll(".option")[choose].fire("click");
     const next = btnByText(qEl, "Next") || btnByText(qEl, "Review & submit");
-    next.fire("click"); // advances, or submits on the last item (confirm → finish)
+    next.fire("click"); // advances, or opens the submit confirm on the last item
+    const confirmBtn = btnByText($("modal-root"), "Submit now");
+    if (confirmBtn) { if ($("modal-root").textContent.includes("Submit test?")) sawConfirm = true; confirmBtn.fire("click"); }
   }
   const pctEl = byId["results-body"].querySelector(".dial-pct");
   const subEl = byId["results-body"].querySelector(".dial-sub");
-  return { pct: parseInt((pctEl && pctEl.textContent) || "x", 10), sub: subEl && subEl.textContent, topics };
+  return { pct: parseInt((pctEl && pctEl.textContent) || "x", 10), sub: subEl && subEl.textContent, topics, sawConfirm };
 }
 function $(id) { return document.getElementById(id); }
 function goHome() { byId["brand"].fire("click"); }
@@ -125,6 +127,7 @@ assert("no two adjacent questions share a topic", noAdjacentDup(free.topics) ===
 assert("results show a speed & accuracy profile", byId["results-body"].textContent.includes("Speed & accuracy profile"), "no profile panel");
 assert("results show an estimated percentile", byId["results-body"].textContent.includes("percentile"), "no percentile shown");
 assert("results ask the NPS recommend question (skippable)", byId["results-body"].textContent.includes("recommend"), "no NPS question");
+assert("submitting with time left asks 'are you sure'", free.sawConfirm, "no submit-confirm dialog appeared");
 
 console.log("\nPaywall + locked form:");
 store.clear(); goHome();

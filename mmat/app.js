@@ -113,6 +113,37 @@
     window.scrollTo(0, 0);
   }
 
+  /* on-brand confirm dialog (works in sandboxed previews, unlike native confirm) */
+  function confirmDialog(opts) {
+    var root = $("modal-root"); if (!root) { if (opts.onConfirm) opts.onConfirm(); return; }
+    root.innerHTML = "";
+    var close = function () { root.innerHTML = ""; document.removeEventListener("keydown", onKey); };
+    var onKey = function (e) { if (e.key === "Escape") close(); };
+    var confirmBtn = el("button", { class: "btn btn-primary", type: "button", text: opts.confirmText || "Confirm",
+      onclick: function () { close(); if (opts.onConfirm) opts.onConfirm(); } });
+    var overlay = el("div", { class: "modal-overlay", onclick: function (e) { if (e.target === overlay) close(); } }, [
+      el("div", { class: "modal", role: "dialog", "aria-modal": "true" }, [
+        opts.title ? el("h2", { style: "margin-top:0", text: opts.title }) : null,
+        el("p", { class: "dim", style: "margin:0", html: opts.message || "" }),
+        el("div", { class: "modal-actions" }, [
+          el("button", { class: "btn btn-ghost", type: "button", text: opts.cancelText || "Cancel", onclick: close }),
+          confirmBtn,
+        ]),
+      ]),
+    ]);
+    root.appendChild(overlay);
+    document.addEventListener("keydown", onKey);
+    try { confirmBtn.focus(); } catch (e) {}
+  }
+
+  /* transient pacing "sign" toast near the top of the screen */
+  function showSign(text, kind) {
+    var host = $("sign-host"); if (!host) return;
+    var s = el("div", { class: "sign " + (kind || ""), role: "status" }, text);
+    host.appendChild(s);
+    setTimeout(function () { s.classList.add("out"); setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 400); }, 3500);
+  }
+
   var session = null, timerId = null, announced = {};
 
   /* ============================================================
@@ -336,6 +367,11 @@
     t.classList.toggle("danger", remain <= 60);
     if (remain <= 120 && !announced[120]) { announced[120] = 1; $("exam-timer-sr").textContent = "Two minutes remaining."; }
     if (remain <= 60 && !announced[60]) { announced[60] = 1; $("exam-timer-sr").textContent = "One minute remaining."; }
+    // pacing "signs" at 5 min in, 10 min in, and 1 minute left
+    var elapsed = session.durationSec - remain;
+    if (elapsed >= 300 && !announced.m5 && remain > 75) { announced.m5 = 1; showSign("⏱ 5 minutes gone — keep up the pace", "info"); }
+    if (elapsed >= 600 && !announced.m10 && remain > 75) { announced.m10 = 1; showSign("⏱ 10 minutes gone — 5 minutes to go", "info"); }
+    if (remain <= 60 && !announced.last) { announced.last = 1; showSign("⏳ 1 minute left!", "warn"); }
     if (remain <= 0) finish(true);
   }
 
@@ -422,10 +458,11 @@
 
   /* ---------------- finish & grade ---------------- */
   function confirmSubmit() {
+    var remain = Math.max(0, Math.round((session.deadline - Date.now()) / 1000));
     var un = session.items.length - Object.keys(session.answers).length;
-    var msg = un > 0 ? "You have " + un + " unanswered question" + (un === 1 ? "" : "s") + " (marked wrong). Submit now?"
-                     : "Submit your answers and see your score?";
-    if (window.confirm(msg)) finish(false);
+    var msg = "Are you sure you want to submit? You still have <b>" + fmtTime(remain) + "</b> left on the clock.";
+    if (un > 0) msg += "<br>You also have <b>" + un + "</b> unanswered question" + (un === 1 ? "" : "s") + " — they'll be marked wrong.";
+    confirmDialog({ title: "Submit test?", message: msg, confirmText: "Submit now", cancelText: "Keep working", onConfirm: function () { finish(false); } });
   }
   function grade(s) {
     var byCat = {}, byTopic = {}, items = [], correct = 0;
@@ -464,7 +501,8 @@
   }
   function abandon() {
     if (!session) return renderHome();
-    if (window.confirm("Quit this test without scoring? Your progress will be discarded.")) { stopTimer(); del(KEY.session); session = null; renderHome(); }
+    confirmDialog({ title: "Quit without scoring?", message: "Your progress on this test will be discarded.", confirmText: "Quit", cancelText: "Stay",
+      onConfirm: function () { stopTimer(); del(KEY.session); session = null; renderHome(); } });
   }
 
   /* ============================================================
@@ -652,8 +690,11 @@
       case "Antonyms": return b + "sounds opposite-ish, but it isn't the exact reverse along the same dimension.";
       case "Odd one out":
       case "Classification": return b + "fits a weaker, secondary pattern rather than the main rule.";
-      case "Number series": return b + "would follow a different rule than the one the whole sequence actually uses.";
-      case "Arithmetic": case "Word problems": case "Percentages": case "Ratio & proportion": return b + "matches a plausible but incorrect step in the working.";
+      case "Number series": return b + "fits only the last gap or a single operation, not the one rule that holds across the whole run.";
+      case "Percentages": return b + "usually comes from using the wrong base — applying the percentage to the total instead of the part it refers to, or adding a change back onto the new figure instead of dividing.";
+      case "Word problems": return b + "matches a tempting shortcut — averaging two figures, adding what should be multiplied, or scaling the quantity that should stay fixed.";
+      case "Ratio & proportion": return b + "usually comes from taking the wrong share, or forgetting to split the total into equal parts first.";
+      case "Arithmetic": return b + "is what a small order-of-operations slip or a rounding error would give.";
       case "Syllogisms": return b + "can be imagined true, but you can also picture a case where it's false — so it doesn't necessarily follow.";
       default: return b + "comes from a small slip in applying the rule.";
     }
@@ -663,12 +704,12 @@
     var correct = q.options[q.answer];
     var yourTxt = (yourIdx != null && yourIdx !== q.answer) ? q.options[yourIdx] : null;
     var principle = d.principle || topicPrinciple(q.topic);
-    var best = d.best || q.explain || "";
+    var best = d.best || "";   // q.explain is already shown as "Why:" — don't repeat it
     var trap = yourTxt ? ((d.traps && d.traps[yourTxt]) || topicTrap(q.topic, yourTxt)) : "";
     var html = "";
     if (yourTxt) html += "<p>It's easy to see why <b>" + yourTxt + "</b> felt right. " + trap + "</p>";
     html += "<p><b>The core idea.</b> " + principle + "</p>";
-    html += "<p><b>Why “" + correct + "” fits best.</b> " + best + "</p>";
+    if (best) html += "<p><b>Why “" + correct + "” fits best.</b> " + best + "</p>";
     if (!yourTxt) html += "<p>Any option that doesn't fit that exact relationship is a distractor here.</p>";
     return html;
   }
@@ -1063,7 +1104,11 @@
     if (session && $("screen-exam").classList.contains("active")) { e.preventDefault(); e.returnValue = ""; }
   });
   $("brand").addEventListener("click", function () {
-    if (session && $("screen-exam").classList.contains("active")) { if (!window.confirm("Leave this test? You can resume it later from the list.")) return; }
+    if (session && $("screen-exam").classList.contains("active")) {
+      confirmDialog({ title: "Leave this test?", message: "You can resume it later from the list — your time keeps running.", confirmText: "Leave", cancelText: "Stay",
+        onConfirm: function () { stopTimer(); renderHome(); } });
+      return;
+    }
     stopTimer(); renderHome();
   });
   $("exam-submit").addEventListener("click", confirmSubmit);

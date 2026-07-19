@@ -294,4 +294,111 @@ window.MMAT_DEEP = {
       "Chickens": "A cooper has nothing to do with chickens — you may be thinking of a chicken 'coop'.",
     },
   },
+
+  /* ---------- numerical: classic-trap word problems, %, ratios ---------- */
+  "A's salary is 20% more than B's. By what percent is B's salary less than A's?": {
+    principle: "\"X% more\" and \"Y% less\" are measured from different starting points, so they're almost never the same number — the reference (base) changes.",
+    best: "The gap is 20, and A (120) is the salary you're comparing to, so 20 ÷ 120 = 16.67%.",
+    traps: {
+      "20%": "This is the classic symmetry trap: assuming \"20% more\" simply reverses to \"20% less.\" But the first 20% is measured against B (100) and the second against A (120). Same 20-unit gap, bigger base → smaller percentage.",
+      "25%": "This divides the 20 gap by 80 — the wrong base again. You must divide by A's actual salary, 120, not 80.",
+      "18%": "Just a near-miss value; the exact figure is 20 ÷ 120 = 16.67%.",
+    },
+  },
+  "A train covers 150 km at 50 km/h, then 150 km at 75 km/h. What is the average speed for the whole trip?": {
+    principle: "Average speed is total distance ÷ total time — never the plain average of the two speeds.",
+    best: "300 km total in 3 + 2 = 5 hours gives 60 km/h.",
+    traps: {
+      "62.5 km/h": "This is just the average of 50 and 75. You spend more time at the slower speed (3 hours vs 2), so the true average is pulled below the midpoint — use total distance ÷ total time.",
+      "65 km/h": "Another averaging shortcut; the correct method is 300 ÷ 5 = 60.",
+    },
+  },
+  "A $200 item gets two successive discounts of 10% then 20%. What is the final price?": {
+    principle: "Successive discounts multiply, they don't add — apply each to the running price, not the original.",
+    best: "200 × 0.9 = 180, then 180 × 0.8 = 144.",
+    traps: {
+      "$140": "This adds the discounts (10% + 20% = 30% off → $140). But the 20% comes off the already-reduced $180, so you multiply 0.9 × 0.8 = 0.72, not subtract 0.30.",
+      "$136": "Close, but it isn't 0.9 × 0.8 of 200; recompute 180 × 0.8 = 144.",
+    },
+  },
+  "After a 20% rise a price is $96. What was it before?": {
+    principle: "$96 is 120% of the original, so divide by 1.2 — don't take 20% off 96.",
+    best: "96 ÷ 1.2 = 80, and as a check, 80 + 20% = 96.",
+    traps: {
+      "$76.80": "This takes 20% off 96 (96 × 0.8). But 96 is the price after a rise = 120% of the original, so you divide by 1.2, not multiply by 0.8.",
+      "$76": "A rough 'take 20% off' guess; the exact original is 96 ÷ 1.2 = 80.",
+    },
+  },
+  "A price reduced by 20% is now $48. What was the original price?": {
+    principle: "$48 is 80% of the original, so divide by 0.8 — don't add 20% back onto 48.",
+    best: "48 ÷ 0.8 = 60, and as a check, 20% of 60 is 12, so 60 − 12 = 48.",
+    traps: {
+      "$58": "This adds 20% back onto 48 (48 × 1.2 ≈ 57.6). But 48 is the reduced price = 80% of the original, so divide by 0.8.",
+      "$56": "Same 'add it back' mistake; the original is 48 ÷ 0.8 = 60.",
+    },
+  },
+  "If 40% of x is 60, what is 75% of x?": {
+    principle: "Find the whole (x) first, then take the percentage you actually want.",
+    best: "40% of x = 60 means x = 150, so 75% of 150 = 112.5.",
+    traps: {
+      "90": "This scales 60 up by 1.5, as if 75% were 1.5× of 40%. Instead recover x = 150 first, then take 75%.",
+      "120": "This just doubles 60; you need x = 150 first, then 75% of it.",
+    },
+  },
+  "If the side of a square is increased by 20%, by what percent does its area increase?": {
+    principle: "Area depends on the side squared, so a 20% longer side gives 1.2² = 1.44× the area.",
+    best: "1.2 × 1.2 = 1.44, which is a 44% increase.",
+    traps: {
+      "20%": "This assumes area grows in step with the side. Area scales with side², so 1.2² = 1.44 → a 44% increase, not 20%.",
+      "40%": "This doubles the 20%; squaring 1.2 gives 1.44, i.e. +44%, not +40%.",
+    },
+  },
+  "A town of 8,000 grows 5% one year and 5% the next. What is the population after two years?": {
+    principle: "Two 5% rises compound — apply the second to the already-grown total, not the original.",
+    best: "8,000 × 1.05 = 8,400, then 8,400 × 1.05 = 8,820.",
+    traps: {
+      "8,800": "This adds 10% once (8,000 × 1.10). The second 5% applies to 8,400, not 8,000, so the total is a little higher: 8,820.",
+      "8,400": "That's only the first year's growth — apply the second 5% as well.",
+    },
+  },
+  "A pipe fills a tank in 6 hours; a drain empties it in 12 hours. With both open, how long to fill?": {
+    principle: "Combine the rates, not the times: fill rate minus drain rate gives the net rate.",
+    best: "1/6 − 1/12 = 1/12 of the tank per hour, so it fills in 12 hours.",
+    traps: {
+      "18 hours": "This adds the two times (6 + 12). You must work with rates: 1/6 − 1/12 = 1/12, giving 12 hours.",
+      "8 hours": "Doesn't come from the rate difference; the net rate is 1/12, so 12 hours.",
+    },
+  },
+  "If 6 workers build a wall in 8 days, how long would 4 workers take at the same rate?": {
+    principle: "Fewer workers means more days — the total work (worker-days) stays fixed, so it's inverse proportion.",
+    best: "6 × 8 = 48 worker-days of work; 48 ÷ 4 = 12 days.",
+    traps: {
+      "16 days": "Over-shoots the inverse relationship; the fixed work is 48 worker-days, so 48 ÷ 4 = 12.",
+      "10 days": "Under-counts; keep the total at 48 worker-days and divide by 4.",
+    },
+  },
+  "5 machines make 5 widgets in 5 minutes. How long for 100 machines to make 100 widgets?": {
+    principle: "Find the rate per machine first; adding machines and work in the same proportion leaves the time unchanged.",
+    best: "Each machine makes 1 widget in 5 minutes, so 100 machines make 100 widgets in the same 5 minutes.",
+    traps: {
+      "100 minutes": "This assumes time scales with the number of widgets. But you added machines in the same proportion, so the per-machine rate (1 widget / 5 min) is unchanged — still 5 minutes.",
+      "20 minutes": "This mixes up which quantities scale; the time stays 5 minutes because machines and widgets grew together.",
+    },
+  },
+  "A shirt costs $50 after a 20% discount. What was the original price?": {
+    principle: "$50 is 80% of the original, so divide by 0.8 — don't add 20% onto 50.",
+    best: "50 ÷ 0.8 = 62.50, and as a check, 20% off 62.50 is 12.50, leaving 50.",
+    traps: {
+      "$60.00": "This adds 20% of 50 (50 × 1.2). But $50 is the discounted price = 80% of the original, so divide by 0.8 → 62.50.",
+      "$65.00": "A rough add-back guess; the exact original is 62.50.",
+    },
+  },
+  "Two numbers are in the ratio 2:3 and add up to 60. What is the larger number?": {
+    principle: "Split the total into equal 'parts' first: 2 + 3 = 5 parts, so one part is 60 ÷ 5 = 12.",
+    best: "The larger number is 3 parts = 3 × 12 = 36.",
+    traps: {
+      "24": "This is the smaller number (2 parts). The question asks for the larger, which is 3 parts = 36.",
+      "30": "That's just half of 60 — but the split is 2:3, not equal halves.",
+    },
+  },
 };
