@@ -417,6 +417,32 @@ const SCRIPTS = {
 };
 window.CHAT_SCRIPTS = SCRIPTS;
 
+/* ---------- context-aware entry: the fab knows what screen you came from ---------- */
+const CTX_MAP = [
+  [/^zakat/,            'your Zakat',            'Walk me through my Zakat',        'zakatFull'],
+  [/^(debts|refi|dsf)/, 'your financing',        'What should I close or move?',    'refi'],
+  [/^subs/,             'subscriptions',         'Trim my subscriptions',           'subs'],
+  [/^(money|account)/,  'your money picture',    'Why is net worth so low?',        'networth'],
+  [/^insights|^cat/,    'June spending',         'Why did I spend so much?',        'spend'],
+  [/^(goals|goal|plan)/,'your goals & plan',     'What should I do?',               'doplan'],
+  [/^forecast/,         'the cashflow forecast', 'Fix my zero-day',                 'doplan'],
+  [/^(qard|market|ujrah|sme)/,'financing options','Which financing fits me?',       'advise'],
+  [/^(agents|approvals)/,'your agent fleet',     'What did my agents do?',          'agents'],
+  [/^invest/,           'your portfolio',        'Advise on my portfolio',          'advise'],
+  [/^calendar/,         'the money calendar',    'Plan my big spends',              'doplan'],
+  [/^score/,            'your credit score',     'How do I reach 770?',             'advise'],
+];
+Chat.ctxIntro = (route) => {
+  const hit = CTX_MAP.find(([re]) => re.test(route));
+  if (!hit) { if(!CHAT.msgs.length) Chat.play('hello'); return; }
+  Chat.push({from:'ai', html:`You were just on <b>${hit[1]}</b> — I can explain it, or simply act. What do you need?`});
+  Chat.push({from:'card', html:`<div class="ch-quick">
+    <button class="chip" onclick="Chat.chipSend('${hit[2].replace(/'/g,"\\'")}','${hit[3]}')">${hit[2]}</button>
+    <button class="chip" onclick="Chat.chipSend('Do it for me — you have my approval limits','${hit[3]}')">Do it on my behalf</button>
+    <button class="chip" onclick="Chat.play('hello')">Something else</button>
+  </div>`});
+};
+
 /* ---------- zakat interview helper (stateful chips) ---------- */
 window.ZKChat = {
   menu(){ return `<div class="ch-quick">

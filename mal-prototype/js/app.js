@@ -45,7 +45,10 @@ window.A = {
     /* bottom nav + AI fab */
     const tab=TABS.includes(name);
     document.getElementById('navHost').innerHTML = tab?navbar(name):'';
-    document.body.classList.toggle('show-fab', tab && this.S.onboarded!==false);
+    /* AI-first: the agent is reachable from every app screen, not only tabs */
+    const aiOk = this.S.onboarded!==false && !/^(splash|welcome|ob-|connect-|chat|kiosk)/.test(name);
+    document.body.classList.toggle('show-fab', aiOk);
+    document.body.classList.toggle('fab-low', aiOk && !tab);
     if(AFTER[name]) try{ AFTER[name](param); }catch(e){ console.warn(e); }
     /* Arabic / RTL pass */
     host.classList.toggle('rtl', this.S.lang==='ar');
@@ -135,6 +138,7 @@ window.A = {
   demoReset(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} location.hash=''; location.reload(); },
   demoOnboard(){ this.ensureFresh(); this.tmp={}; this.stack=[]; this._scn=null; this.go('splash', true); },
   demoSkip(){ this.ensureApp(); this.tmp={}; this.stack=[]; this.go('home', true); },
+  askAI(){ this.tmp.chatCtx = this.route; this.go('chat'); },
 };
 
 /* ---------- chat deep-link glue ---------- */
@@ -142,7 +146,9 @@ window.chatDeep = (script) => { Chat.reset(); A.tmp.chatScript=script; if(A.rout
 AFTER.chat = () => {
   Chat.mount();
   const s=A.tmp.chatScript; A.tmp.chatScript=null;
+  const ctx=A.tmp.chatCtx; A.tmp.chatCtx=null;
   if(s) setTimeout(()=>Chat.play(s, true), 250);
+  else if(ctx) setTimeout(()=>Chat.ctxIntro(ctx), 250);
   else if(!CHAT.msgs.length) setTimeout(()=>Chat.play('hello'), 250);
 };
 

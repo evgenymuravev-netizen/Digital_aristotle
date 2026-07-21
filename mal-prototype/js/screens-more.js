@@ -1150,28 +1150,65 @@ SCREENS['agentic-match'] = () => `
     </div>
   </div>`;
 /* ---------------- Qard Hasan salary line ---------------- */
-SCREENS.qard = () => `
+SCREENS.qard = () => {
+  const active = !!A.tmp.qardActive;
+  const drawn  = A.tmp.qardDrawn || 0;
+  const avail  = QARD.cap - drawn;
+  const amt    = A.tmp.qardAmt || 0;
+  return `
   <div class="scr">
     ${hdr('Qard Hasan')}
     <div class="card lime">
-      <span class="tag solid">Salary customers</span>
-      <div class="h1 mt12">Truly free money exists.</div>
-      <div class="sub mt8" style="color:rgba(14,14,16,.66)">Bring your salary to Mal and hold a Qard Hasan line — the one financing Islam made free by definition. No fee, no profit, no catch. Ever.</div>
+      <span class="tag solid">${active?'Active — your salary lands at Mal':'Salary customers'}</span>
+      <div class="h1 mt12">${active?'Your free line is live.':'Truly free money exists.'}</div>
+      <div class="sub mt8" style="color:rgba(14,14,16,.66)">${active
+        ?'Because your salary arrives here, AED '+fm(QARD.cap,0)+' sits ready at all times — the one financing Islam made free by definition. No fee, no profit, no catch. Ever.'
+        :'Bring your salary to Mal and hold a Qard Hasan line — the one financing Islam made free by definition. No fee, no profit, no catch. Ever.'}</div>
     </div>
     <div class="lbl mt16 mb8">Your line</div>
     <div class="card">
-      <div class="kv"><span class="k">Verified salary</span><span class="v tnum">AED ${fm(QARD.salary,0)} / mo</span></div>
+      <div class="kv"><span class="k">Verified salary${active?' · lands at Mal':''}</span><span class="v tnum">AED ${fm(QARD.salary,0)} / mo</span></div>
       <div class="kv"><span class="k">Cap — ${QARD.capPct}% of salary</span><span class="v tnum">AED ${fm(QARD.cap,0)}</span></div>
       <div class="kv"><span class="k">Cost</span><span class="v" style="color:var(--grn)">AED 0 — always</span></div>
-      <div class="kv"><span class="k">Repayment</span><span class="v">auto, next salary day</span></div>
-      <div class="mt8">${meter(0,'#1f8a5b')}</div>
-      <div class="micro mt4">Nothing drawn — the line just sits there for the bad week.</div>
+      <div class="kv"><span class="k">Repayment</span><span class="v">auto, salary day (25th)</span></div>
+      <div class="mt8">${meter(drawn/QARD.cap,'#1f8a5b')}</div>
+      <div class="micro mt4">${drawn?`Drawn AED ${fm(drawn,0)} · AED ${fm(avail,0)} still available · repays on the 25th`:'Nothing drawn — the line just sits there for the bad week.'}</div>
     </div>
+    ${active?`
+    <div class="lbl mt16 mb8">Get money — pick the exact amount</div>
+    <div class="card">
+      <div class="chips">
+        ${[500,1000,2140,avail].filter((v,i,a)=>v>0&&v<=avail&&a.indexOf(v)===i).map(v=>`
+          <button class="chip ${amt===v?'on':''}" onclick="A.tmp.qardAmt=${v};A.refresh()">AED ${fm(v,0)}${v===2140?' · zero-day gap':''}${v===avail&&v!==2140?' · max':''}</button>`).join('')}
+      </div>
+      <input class="input mt12 tnum" id="qardInp" inputmode="numeric" placeholder="Or type any amount up to ${fm(avail,0)}" value="${amt||''}"
+        oninput="A.tmp.qardAmt=Math.min(parseFloat(this.value)||0, ${avail})">
+      <div class="kv mt8"><span class="k">Arrives</span><span class="v">in seconds, to your Mal account</span></div>
+      <div class="kv"><span class="k">You repay</span><span class="v tnum">exactly AED ${fm(amt||0,0)} — on the 25th, automatically</span></div>
+      <button class="btn lime mt12" onclick="QardC.draw()">Get ${amt?'AED '+fm(amt,0):'the money'} now — costs AED 0</button>
+      <div class="micro mt8" style="text-align:center">No questions asked up to the cap — the salary is the underwriting.</div>
+    </div>`:''}
     <div class="card soft mt12"><div class="micro">${QARD.why} The ${QARD.capPct}% cap keeps it a bridge, not a burden — Qard Hasan protects both sides.</div></div>
+    ${active?'':`
     <div class="card soft mt8"><div class="micro"><b>Why the salary?</b> Qard Hasan has no pricing to absorb risk — so the risk control is knowing your income arrives here. That is the whole underwriting.</div></div>
-    <button class="btn lime mt16" onclick="A.toast('Salary transfer letter drafted — line activates with your first credit','check')">Bring my salary — activate the line</button>
-    <div class="micro mt8" style="text-align:center">Salary already lands at FAB ··5689 — the letter moves it in one signature.</div>
+    <button class="btn lime mt16" onclick="A.tmp.qardActive=1;A.tmp.qardAmt=0;A.refresh();A.toast('Salary transfer letter signed — the line is yours from the first credit','check')">Bring my salary — activate the line</button>
+    <div class="micro mt8" style="text-align:center">Salary already lands at FAB ··5689 — the letter moves it in one signature. Salary already at Mal? The line is on automatically.</div>`}
   </div>`;
+};
+window.QardC = {
+  draw(){
+    const amt = A.tmp.qardAmt||0;
+    if(!amt){ A.tip('Pick an amount — or type the exact dirham you need.'); return; }
+    A.sheet(`<div class="h2">Qard Hasan · AED ${fm(amt,0)}</div>
+      <div class="listcard mt12">
+        <div class="row static"><span class="bigico">${ic('recv',20)}</span><div class="row-main"><div class="row-t">AED ${fm(amt,0)} to Mal current</div><div class="row-d">arrives in seconds</div></div></div>
+        <div class="row static"><span class="bigico">${ic('cal',20)}</span><div class="row-main"><div class="row-t">Auto-repay 25 Jun</div><div class="row-d">deducted from salary — exactly AED ${fm(amt,0)}, nothing more</div></div></div>
+        <div class="row static"><span class="bigico" style="color:var(--grn)">${ic('check',20)}</span><div class="row-main"><div class="row-t">Total cost: AED 0</div><div class="row-d">no fee, no profit — Qard Hasan by definition</div></div></div>
+      </div>
+      <button class="btn lime mt16" onclick="A.closeSheet();A.tmp.qardDrawn=(A.tmp.qardDrawn||0)+${amt};A.tmp.qardAmt=0;A.refresh();A.toast('AED ${fm(amt,0)} is in your account — repays itself on the 25th','check')">Confirm — get the money</button>
+      <button class="btn ghost mt8" onclick="A.closeSheet()">Not now</button>`);
+  }
+};
 
 /* ---------------- Mal Ujrah Card ---------------- */
 SCREENS['ujrah-card'] = () => {

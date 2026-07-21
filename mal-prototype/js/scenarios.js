@@ -199,7 +199,9 @@ window.SCN_GROUPS = [
 ]},
 
 {g:'Debt intelligence ✦', items:[
-  S('Qard Hasan — truly free','Bring your salary → 10% as an interest-free line. AED 0, forever','qard'),
+  S('Qard Hasan — truly free','Bring your salary → 10% as an interest-free line. AED 0, forever',()=>{A.tmp.qardActive=0;A.go('qard');}),
+  S('Qard Hasan — draw the money','Salary already at Mal: pick the exact amount, confirm, repaid on the 25th',()=>{A.tmp.qardActive=1;A.tmp.qardAmt=2140;A.go('qard');}),
+  S('AI on every screen','The orb follows you — context-aware: it knows the screen you came from',()=>{A.go('debts');setTimeout(()=>A.askAI(),700);}),
   S('Ujrah Card — flat-fee revolving','No interest ever: flat ujrah + merchant interchange, said out loud','ujrah-card'),
   S('SME financing by video','Film the shop + a 15-min plan, in-app only — uploads and AI fakes rejected',()=>{A.tmp.smev=1;A.tmp.smevRec=0;A.go('sme-video');}),
   S('Financing check-up','All 9 facilities, true profit cost per year — AED 49,079 (12,371 ex-home)','debts'),
