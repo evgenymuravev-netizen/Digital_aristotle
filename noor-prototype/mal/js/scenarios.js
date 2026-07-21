@@ -199,6 +199,9 @@ window.SCN_GROUPS = [
 ]},
 
 {g:'Debt intelligence ✦', items:[
+  S('Qard Hasan — truly free','Bring your salary → 10% as an interest-free line. AED 0, forever','qard'),
+  S('Ujrah Card — flat-fee revolving','No interest ever: flat ujrah + merchant interchange, said out loud','ujrah-card'),
+  S('SME financing by video','Film the shop + a 15-min plan, in-app only — uploads and AI fakes rejected',()=>{A.tmp.smev=1;A.tmp.smevRec=0;A.go('sme-video');}),
   S('Financing check-up','All 9 facilities, true profit cost per year — AED 49,079 (12,371 ex-home)','debts'),
   S('Refinance plan — close · transfer · keep','Honest line-by-line: settle invoice financing, move 4, keep the well-priced ones','refi'),
   S('Deposit-secured financing','Rahn over your e-Saver: 4.25% while savings keep earning 3.1%','dsf'),

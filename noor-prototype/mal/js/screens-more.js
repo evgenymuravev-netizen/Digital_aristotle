@@ -244,7 +244,7 @@ SCREENS.market = () => `
     </div>
     <div class="grid2 mt12">
       ${MARKET.map(m=>`
-        <div class="tile" onclick="${m.id==='cards'?`A.go('chat-card')`:m.id==='loan'?`A.go('loan-activate')`:m.id==='invest'?`A.go('invest')`:m.id==='dsf'?`A.go('dsf')`:m.id==='refi'?`A.go('refi')`:`A.toast('${esc(m.t)} — flow mocked in this build','info')`}">
+        <div class="tile" onclick="${m.id==='qard'?`A.go('qard')`:m.id==='ujrah'?`A.go('ujrah-card')`:m.id==='smev'?`A.tmp.smev=1;A.go('sme-video')`:m.id==='cards'?`A.go('chat-card')`:m.id==='loan'?`A.go('loan-activate')`:m.id==='invest'?`A.go('invest')`:m.id==='dsf'?`A.go('dsf')`:m.id==='refi'?`A.go('refi')`:`A.toast('${esc(m.t)} — flow mocked in this build','info')`}">
           <span class="bigico" style="background:${m.c}1f;color:${m.c}">${ic(m.ic,22)}</span>
           <div class="t-t">${m.t}</div><div class="t-d">${m.d}</div>
         </div>`).join('')}
@@ -1149,4 +1149,284 @@ SCREENS['agentic-match'] = () => `
       <button class="btn ghost" onclick="A.toast('Fine too — each purchase routes to whichever card wins','check')">Keep using FAB</button>
     </div>
   </div>`;
+/* ---------------- Qard Hasan salary line ---------------- */
+SCREENS.qard = () => `
+  <div class="scr">
+    ${hdr('Qard Hasan')}
+    <div class="card lime">
+      <span class="tag solid">Salary customers</span>
+      <div class="h1 mt12">Truly free money exists.</div>
+      <div class="sub mt8" style="color:rgba(14,14,16,.66)">Bring your salary to Mal and hold a Qard Hasan line — the one financing Islam made free by definition. No fee, no profit, no catch. Ever.</div>
+    </div>
+    <div class="lbl mt16 mb8">Your line</div>
+    <div class="card">
+      <div class="kv"><span class="k">Verified salary</span><span class="v tnum">AED ${fm(QARD.salary,0)} / mo</span></div>
+      <div class="kv"><span class="k">Cap — ${QARD.capPct}% of salary</span><span class="v tnum">AED ${fm(QARD.cap,0)}</span></div>
+      <div class="kv"><span class="k">Cost</span><span class="v" style="color:var(--grn)">AED 0 — always</span></div>
+      <div class="kv"><span class="k">Repayment</span><span class="v">auto, next salary day</span></div>
+      <div class="mt8">${meter(0,'#1f8a5b')}</div>
+      <div class="micro mt4">Nothing drawn — the line just sits there for the bad week.</div>
+    </div>
+    <div class="card soft mt12"><div class="micro">${QARD.why} The ${QARD.capPct}% cap keeps it a bridge, not a burden — Qard Hasan protects both sides.</div></div>
+    <div class="card soft mt8"><div class="micro"><b>Why the salary?</b> Qard Hasan has no pricing to absorb risk — so the risk control is knowing your income arrives here. That is the whole underwriting.</div></div>
+    <button class="btn lime mt16" onclick="A.toast('Salary transfer letter drafted — line activates with your first credit','check')">Bring my salary — activate the line</button>
+    <div class="micro mt8" style="text-align:center">Salary already lands at FAB ··5689 — the letter moves it in one signature.</div>
+  </div>`;
+
+/* ---------------- Mal Ujrah Card ---------------- */
+SCREENS['ujrah-card'] = () => {
+  const tier = A.tmp.ujrahTier ?? 1;
+  return `
+  <div class="scr">
+    ${hdr('Mal Ujrah Card')}
+    <div class="ccvisual" style="background:linear-gradient(135deg,#16181f,#0e0e10 60%,#23252e)">
+      <div class="flex between"><span style="font:600 17px Onest,Inter,sans-serif;letter-spacing:-.02em">Mal <span style="opacity:.6">Ujrah</span></span><span class="cc-small">Revolving</span></div>
+      <div>
+        <div class="cc-num">•••• •••• •••• 7214</div>
+        <div class="flex between mt8"><span class="cc-small">KHADEEJA ALMANSOORI</span><span class="cc-small tnum">Limit AED ${fm(UJRAH.tiers[tier][0],0)}</span></div>
+      </div>
+    </div>
+    <div class="lbl mt16 mb8">Pick your limit — the fee is flat, never a percentage</div>
+    <div class="listcard">
+      ${UJRAH.tiers.map(([lim,fee],i)=>`
+        <div class="row" onclick="A.tmp.ujrahTier=${i};A.refresh()">
+          <span class="bigico" style="${i===tier?'background:#0e0e10;color:#fff':''}">${ic('card',20)}</span>
+          <div class="row-main"><div class="row-t">Limit AED ${fm(lim,0)}</div><div class="row-d">Ujrah AED ${fee}/mo — only in months you revolve</div></div>
+          ${i===tier?`<span class="tag solid">selected</span>`:''}
+        </div>`).join('')}
+    </div>
+    <div class="card mt12">
+      <div class="kv"><span class="k">Pay in full by the due date</span><span class="v" style="color:var(--grn)">AED 0 that month</span></div>
+      <div class="kv"><span class="k">Revolve any balance</span><span class="v tnum">flat AED ${UJRAH.tiers[tier][1]} — whether you owe 100 or ${fm(UJRAH.tiers[tier][0],0)}</span></div>
+      <div class="kv"><span class="k">Late?</span><span class="v">charity, not revenue — enforced donation</span></div>
+    </div>
+    <div class="card soft mt12"><div class="micro"><b>How Mal earns — said out loud:</b> merchants pay ~${UJRAH.interchange}% interchange on the credit BIN when you spend, plus the flat ujrah. ${UJRAH.note}</div></div>
+    <button class="btn lime mt16" onclick="A.toast('Mal Ujrah Card issued — flat AED ${UJRAH.tiers[tier][1]}/mo only when revolving','check')">Issue the card</button>
+  </div>`;
+};
+
+/* ---------------- SME financing — video underwriting ---------------- */
+SCREENS['sme-video'] = () => {
+  const st = A.tmp.smev || 1;
+  const stepper = `<div class="chips mb12" style="justify-content:center">${[[1,'1 · Business'],[2,'2 · Tour'],[3,'3 · Your plan'],[4,'4 · Decision']].map(([n,t])=>`<button class="chip ${st===n?'on':''}" ${n<st?`onclick="A.tmp.smev=${n};A.refresh()"`:''} style="${n>st?'opacity:.45':''}">${t}</button>`).join('')}</div>`;
+  if(st===2||st===3){
+    const tour = st===2;
+    const rec = A.tmp.smevRec||0;
+    return `
+  <div class="scr">
+    ${hdr(tour?'Show us the place':'Tell us the plan',{back:"A.tmp.smev=${st-1};A.refresh()".replace('${st-1}','`+(st-1)+`')})}
+    ${stepper}
+    <div style="border-radius:20px;background:#101014;color:#fff;padding:18px;min-height:250px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.12)">
+      <div class="flex between">
+        <span class="flex" style="gap:7px"><i style="width:10px;height:10px;border-radius:50%;background:${rec?'#ff4d4d':'#666'};display:inline-block"></i><span style="font:600 12px Onest,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
+        <span class="tnum" style="font:600 13px Onest,Inter,sans-serif" id="smevTimer">${tour?'0:00 / ~1:00':'0:00 / 15:00 max'}</span>
+      </div>
+      <div style="text-align:center;opacity:.55;font:500 12.5px Onest,Inter,sans-serif">${tour?'Walk the camera through the real place':'Talk to the camera — like to a partner'}</div>
+      <div style="font:400 11.5px/1.6 Onest,Inter,sans-serif;opacity:.8">
+        ${tour
+          ? '· The entrance and signage<br>· Stock room / treatment rooms<br>· The till and the POS terminal<br>· Your team at work'
+          : '· What the business does, since when<br>· What exactly the AED 60,000 buys<br>· How that becomes revenue, month by month<br>· How you repay if the plan slips'}
+      </div>
+    </div>
+    <div class="card soft mt12"><div class="micro"><b>Camera only — uploads are disabled by design.</b> A file could be edited, outsourced or generated. A live recording with liveness, location and our frame-level AI screen cannot.</div></div>
+    <button class="btn lime mt12" id="smevBtn" onclick="SMEVC.rec(${st})">${rec?'Recording…':(tour?'Start the tour':'Start recording — 15:00 max')}</button>
+  </div>`;
+  }
+  if(st===4){
+    return `
+  <div class="scr">
+    ${hdr('Decision',{back:"A.tmp.smev=3;A.refresh()"})}
+    ${stepper}
+    <div class="lbl mb8">Checks — passed</div>
+    <div class="listcard">
+      ${SMEV.checks.map(([t,d])=>`
+        <div class="row static"><span class="bigico" style="color:var(--grn)">${ic('check',20)}</span>
+          <div class="row-main"><div class="row-t" style="white-space:normal">${t}</div><div class="row-d" style="white-space:normal">${d}</div></div></div>`).join('')}
+    </div>
+    <div class="card lime mt16">
+      <span class="tag solid">Approved in principle</span>
+      <div class="h2 mt8">AED ${fm(SMEV.amount,0)} working capital</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">Murabaha · ${SMEV.rate}% deposit-secured · first instalment after 60 days · settles as inventory sells</div>
+    </div>
+    <div class="card soft mt12"><div class="micro"><b>Why video beats a scorecard:</b> a real founder, in a real shop, telling a real plan — reviewed by a human and the underwriting agent. Synthetic videos fail the frame-level screen; uploaded files are never accepted.</div></div>
+    <button class="btn lime mt16" onclick="A.toast('Financing agreement sent for signature — funds on countersign','check')">Accept the offer</button>
+  </div>`;
+  }
+  return `
+  <div class="scr">
+    ${hdr('SME financing')}
+    ${stepper}
+    <div class="card lime">
+      <span class="tag solid">New — video underwriting</span>
+      <div class="h2 mt8">Your shop and your story decide.</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">No statements theatre. Show the place, tell the plan — 15 minutes of truth beat 15 documents.</div>
+    </div>
+    <div class="lbl mt16 mb8">What Mal already sees</div>
+    <div class="card">
+      <div class="kv"><span class="k">Wio Business ··7741</span><span class="v tnum">AED 22,400.00</span></div>
+      <div class="kv"><span class="k">POS settlements</span><span class="v">steady · 14-month history</span></div>
+      <div class="kv"><span class="k">Facilities</span><span class="v tnum">−87,900 across 3 (refi ready)</span></div>
+      <div class="kv"><span class="k">Requested</span><span class="v tnum">AED ${fm(SMEV.amount,0)}</span></div>
+    </div>
+    <div class="lbl mt16 mb8">Use of funds</div>
+    <div class="chips">${['Inventory ahead of Q4','New treatment room','Second POS + staff','Marketing push'].map((c,i)=>`<button class="chip ${i===0?'on':''}" onclick="A.toast('Noted — the plan video should walk through exactly this','check')">${c}</button>`).join('')}</div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=2;A.refresh()">Continue — film the tour</button>
+    <div class="micro mt8" style="text-align:center">Two recordings, both in-app: a walk-through of the premises and a 15-minute plan.</div>
+  </div>`;
+};
+window.SMEVC = {
+  rec(step){
+    if(A.tmp.smevRec) return;
+    A.tmp.smevRec=1; A.refresh();
+    const total = step===2 ? 47 : 872;   /* 0:47 tour · 14:32 pitch */
+    let t=0;
+    const iv=setInterval(()=>{
+      t+=step===2?6:109;
+      const el=document.getElementById('smevTimer');
+      if(el) el.textContent = Math.floor(t/60)+':'+String(t%60).padStart(2,'0') + (step===2?' / ~1:00':' / 15:00 max');
+      if(t>=total){ clearInterval(iv); A.tmp.smevRec=0; A.tmp.smev=step+1; A.refresh();
+        A.toast(step===2?'Tour captured — location matches the trade licence':'Plan recorded — passed the AI-generation screen','check'); }
+    }, 350);
+  }
+};
+/* ---------------- Qard Hasan salary line ---------------- */
+SCREENS.qard = () => `
+  <div class="scr">
+    ${hdr('Qard Hasan')}
+    <div class="card lime">
+      <span class="tag solid">Salary customers</span>
+      <div class="h1 mt12">Truly free money exists.</div>
+      <div class="sub mt8" style="color:rgba(14,14,16,.66)">Bring your salary to Mal and hold a Qard Hasan line — the one financing Islam made free by definition. No fee, no profit, no catch. Ever.</div>
+    </div>
+    <div class="lbl mt16 mb8">Your line</div>
+    <div class="card">
+      <div class="kv"><span class="k">Verified salary</span><span class="v tnum">AED ${fm(QARD.salary,0)} / mo</span></div>
+      <div class="kv"><span class="k">Cap — ${QARD.capPct}% of salary</span><span class="v tnum">AED ${fm(QARD.cap,0)}</span></div>
+      <div class="kv"><span class="k">Cost</span><span class="v" style="color:var(--grn)">AED 0 — always</span></div>
+      <div class="kv"><span class="k">Repayment</span><span class="v">auto, next salary day</span></div>
+      <div class="mt8">${meter(0,'#1f8a5b')}</div>
+      <div class="micro mt4">Nothing drawn — the line just sits there for the bad week.</div>
+    </div>
+    <div class="card soft mt12"><div class="micro">${QARD.why} The ${QARD.capPct}% cap keeps it a bridge, not a burden — Qard Hasan protects both sides.</div></div>
+    <div class="card soft mt8"><div class="micro"><b>Why the salary?</b> Qard Hasan has no pricing to absorb risk — so the risk control is knowing your income arrives here. That is the whole underwriting.</div></div>
+    <button class="btn lime mt16" onclick="A.toast('Salary transfer letter drafted — line activates with your first credit','check')">Bring my salary — activate the line</button>
+    <div class="micro mt8" style="text-align:center">Salary already lands at FAB ··5689 — the letter moves it in one signature.</div>
+  </div>`;
+
+/* ---------------- Mal Ujrah Card ---------------- */
+SCREENS['ujrah-card'] = () => {
+  const tier = A.tmp.ujrahTier ?? 1;
+  return `
+  <div class="scr">
+    ${hdr('Mal Ujrah Card')}
+    <div class="ccvisual" style="background:linear-gradient(135deg,#16181f,#0e0e10 60%,#23252e)">
+      <div class="flex between"><span style="font:600 17px Onest,Inter,sans-serif;letter-spacing:-.02em">Mal <span style="opacity:.6">Ujrah</span></span><span class="cc-small">Revolving</span></div>
+      <div>
+        <div class="cc-num">•••• •••• •••• 7214</div>
+        <div class="flex between mt8"><span class="cc-small">KHADEEJA ALMANSOORI</span><span class="cc-small tnum">Limit AED ${fm(UJRAH.tiers[tier][0],0)}</span></div>
+      </div>
+    </div>
+    <div class="lbl mt16 mb8">Pick your limit — the fee is flat, never a percentage</div>
+    <div class="listcard">
+      ${UJRAH.tiers.map(([lim,fee],i)=>`
+        <div class="row" onclick="A.tmp.ujrahTier=${i};A.refresh()">
+          <span class="bigico" style="${i===tier?'background:#0e0e10;color:#fff':''}">${ic('card',20)}</span>
+          <div class="row-main"><div class="row-t">Limit AED ${fm(lim,0)}</div><div class="row-d">Ujrah AED ${fee}/mo — only in months you revolve</div></div>
+          ${i===tier?`<span class="tag solid">selected</span>`:''}
+        </div>`).join('')}
+    </div>
+    <div class="card mt12">
+      <div class="kv"><span class="k">Pay in full by the due date</span><span class="v" style="color:var(--grn)">AED 0 that month</span></div>
+      <div class="kv"><span class="k">Revolve any balance</span><span class="v tnum">flat AED ${UJRAH.tiers[tier][1]} — whether you owe 100 or ${fm(UJRAH.tiers[tier][0],0)}</span></div>
+      <div class="kv"><span class="k">Late?</span><span class="v">charity, not revenue — enforced donation</span></div>
+    </div>
+    <div class="card soft mt12"><div class="micro"><b>How Mal earns — said out loud:</b> merchants pay ~${UJRAH.interchange}% interchange on the credit BIN when you spend, plus the flat ujrah. ${UJRAH.note}</div></div>
+    <button class="btn lime mt16" onclick="A.toast('Mal Ujrah Card issued — flat AED ${UJRAH.tiers[tier][1]}/mo only when revolving','check')">Issue the card</button>
+  </div>`;
+};
+
+/* ---------------- SME financing — video underwriting ---------------- */
+SCREENS['sme-video'] = () => {
+  const st = A.tmp.smev || 1;
+  const stepper = `<div class="chips mb12" style="justify-content:center">${[[1,'1 · Business'],[2,'2 · Tour'],[3,'3 · Your plan'],[4,'4 · Decision']].map(([n,t])=>`<button class="chip ${st===n?'on':''}" ${n<st?`onclick="A.tmp.smev=${n};A.refresh()"`:''} style="${n>st?'opacity:.45':''}">${t}</button>`).join('')}</div>`;
+  if(st===2||st===3){
+    const tour = st===2;
+    const rec = A.tmp.smevRec||0;
+    return `
+  <div class="scr">
+    ${hdr(tour?'Show us the place':'Tell us the plan',{back:"A.tmp.smev=${st-1};A.refresh()".replace('${st-1}','`+(st-1)+`')})}
+    ${stepper}
+    <div style="border-radius:20px;background:#101014;color:#fff;padding:18px;min-height:250px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.12)">
+      <div class="flex between">
+        <span class="flex" style="gap:7px"><i style="width:10px;height:10px;border-radius:50%;background:${rec?'#ff4d4d':'#666'};display:inline-block"></i><span style="font:600 12px Onest,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
+        <span class="tnum" style="font:600 13px Onest,Inter,sans-serif" id="smevTimer">${tour?'0:00 / ~1:00':'0:00 / 15:00 max'}</span>
+      </div>
+      <div style="text-align:center;opacity:.55;font:500 12.5px Onest,Inter,sans-serif">${tour?'Walk the camera through the real place':'Talk to the camera — like to a partner'}</div>
+      <div style="font:400 11.5px/1.6 Onest,Inter,sans-serif;opacity:.8">
+        ${tour
+          ? '· The entrance and signage<br>· Stock room / treatment rooms<br>· The till and the POS terminal<br>· Your team at work'
+          : '· What the business does, since when<br>· What exactly the AED 60,000 buys<br>· How that becomes revenue, month by month<br>· How you repay if the plan slips'}
+      </div>
+    </div>
+    <div class="card soft mt12"><div class="micro"><b>Camera only — uploads are disabled by design.</b> A file could be edited, outsourced or generated. A live recording with liveness, location and our frame-level AI screen cannot.</div></div>
+    <button class="btn lime mt12" id="smevBtn" onclick="SMEVC.rec(${st})">${rec?'Recording…':(tour?'Start the tour':'Start recording — 15:00 max')}</button>
+  </div>`;
+  }
+  if(st===4){
+    return `
+  <div class="scr">
+    ${hdr('Decision',{back:"A.tmp.smev=3;A.refresh()"})}
+    ${stepper}
+    <div class="lbl mb8">Checks — passed</div>
+    <div class="listcard">
+      ${SMEV.checks.map(([t,d])=>`
+        <div class="row static"><span class="bigico" style="color:var(--grn)">${ic('check',20)}</span>
+          <div class="row-main"><div class="row-t" style="white-space:normal">${t}</div><div class="row-d" style="white-space:normal">${d}</div></div></div>`).join('')}
+    </div>
+    <div class="card lime mt16">
+      <span class="tag solid">Approved in principle</span>
+      <div class="h2 mt8">AED ${fm(SMEV.amount,0)} working capital</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">Murabaha · ${SMEV.rate}% deposit-secured · first instalment after 60 days · settles as inventory sells</div>
+    </div>
+    <div class="card soft mt12"><div class="micro"><b>Why video beats a scorecard:</b> a real founder, in a real shop, telling a real plan — reviewed by a human and the underwriting agent. Synthetic videos fail the frame-level screen; uploaded files are never accepted.</div></div>
+    <button class="btn lime mt16" onclick="A.toast('Financing agreement sent for signature — funds on countersign','check')">Accept the offer</button>
+  </div>`;
+  }
+  return `
+  <div class="scr">
+    ${hdr('SME financing')}
+    ${stepper}
+    <div class="card lime">
+      <span class="tag solid">New — video underwriting</span>
+      <div class="h2 mt8">Your shop and your story decide.</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">No statements theatre. Show the place, tell the plan — 15 minutes of truth beat 15 documents.</div>
+    </div>
+    <div class="lbl mt16 mb8">What Mal already sees</div>
+    <div class="card">
+      <div class="kv"><span class="k">Wio Business ··7741</span><span class="v tnum">AED 22,400.00</span></div>
+      <div class="kv"><span class="k">POS settlements</span><span class="v">steady · 14-month history</span></div>
+      <div class="kv"><span class="k">Facilities</span><span class="v tnum">−87,900 across 3 (refi ready)</span></div>
+      <div class="kv"><span class="k">Requested</span><span class="v tnum">AED ${fm(SMEV.amount,0)}</span></div>
+    </div>
+    <div class="lbl mt16 mb8">Use of funds</div>
+    <div class="chips">${['Inventory ahead of Q4','New treatment room','Second POS + staff','Marketing push'].map((c,i)=>`<button class="chip ${i===0?'on':''}" onclick="A.toast('Noted — the plan video should walk through exactly this','check')">${c}</button>`).join('')}</div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=2;A.refresh()">Continue — film the tour</button>
+    <div class="micro mt8" style="text-align:center">Two recordings, both in-app: a walk-through of the premises and a 15-minute plan.</div>
+  </div>`;
+};
+window.SMEVC = {
+  rec(step){
+    if(A.tmp.smevRec) return;
+    A.tmp.smevRec=1; A.refresh();
+    const total = step===2 ? 47 : 872;   /* 0:47 tour · 14:32 pitch */
+    let t=0;
+    const iv=setInterval(()=>{
+      t+=step===2?6:109;
+      const el=document.getElementById('smevTimer');
+      if(el) el.textContent = Math.floor(t/60)+':'+String(t%60).padStart(2,'0') + (step===2?' / ~1:00':' / 15:00 max');
+      if(t>=total){ clearInterval(iv); A.tmp.smevRec=0; A.tmp.smev=step+1; A.refresh();
+        A.toast(step===2?'Tour captured — location matches the trade licence':'Plan recorded — passed the AI-generation screen','check'); }
+    }, 350);
+  }
+};
 })();

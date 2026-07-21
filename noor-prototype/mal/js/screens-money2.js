@@ -463,6 +463,8 @@ SCREENS.forecast = () => `
       <div class="micro mt4">With Omar’s gift reserve and the payroll run, you go AED ${fm(FORECAST.short,0)} short four days before salary.</div>
       <div class="btnrow mt12">
         <button class="btn sm lime" onclick="A.toast('AED ${fm(FORECAST.short,0)} earned-wage advance scheduled for 20 Jun — AED 0 fee','check')">Salary advance · 0 fee</button>
+        <button class="btn sm ghost" onclick="A.go('qard')">Qard Hasan · AED 0</button>
+        <button class="btn sm ghost" onclick="A.go('qard')">Qard Hasan · AED 0</button>
         <button class="btn sm ghost" onclick="A.go('plan')">Cut expenses</button>
       </div>
       <div class="micro mt8">${FORECAST.advance.note}</div>

@@ -271,6 +271,10 @@ SCREENS.money = () => {
     <div class="card lime mt16 tap" onclick="A.go('debts')">
       <div class="flex between"><b style="font-size:14px">⚡ Facilities cost ≈ AED 8,705/yr — refinancing saves 5,614</b>${ic('chevR',18)}</div>
       <div class="micro mt4">Close the 14.5% invoice line · move Murabaha & PO to Mal deposit-secured — full read in Debts</div>
+    </div>
+    <div class="card mt12 tap" onclick="A.tmp.smev=1;A.go('sme-video')">
+      <div class="flex between"><b style="font-size:14px">New capital? Apply with a video</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">Film the shop + a 15-minute plan, in-app — AED 60,000 pre-scoped at 4.95%</div>
     </div>`:''}
     ${G.map(g=>{
       const visible = g.accs;
