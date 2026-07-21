@@ -31,6 +31,7 @@ window.SCN_GROUPS = [
   S('Authorize — OTP autofill','“From Messages: 605,658” — lifted from the recording','connect-otp/fab','fresh'),
   S('Wio two-step (replica)','“Verify it’s you / authorise sharing” step list','connect-2fa','fresh'),
   S('Wio FacePass (replica)','Camera permission fails — where the recording dead-ends','connect-facepass','fresh'),
+  S('Statements instead — Perfios','Bank not on open banking? 6 months of PDFs, parsed: salary, balances, categories',()=>{A.tmp.stmtFiles=[{name:'HBZ_Statement_Jan26.pdf',size:'1.2 MB'},{name:'HBZ_Statement_Feb26.pdf',size:'1.1 MB'},{name:'HBZ_Statement_Mar26.pdf',size:'1.3 MB'},{name:'HBZ_Statement_Apr26.pdf',size:'1.2 MB'},{name:'HBZ_Statement_May26.pdf',size:'1.1 MB'},{name:'HBZ_Statement_Jun26.pdf',size:'1.4 MB'}];A.tmp.stmtParsed=1;A.ensureFresh();A.go('connect-statements');},'fresh'),
   S('✦ No-dead-end fallback','Mal auto-switches to SMS — the key enhancement','connect-fallback','fresh'),
   S('Live linking progress ✦','4 transparent steps instead of a spinner','connect-progress/fab','fresh'),
   S('Choose what to share ✦','Granular account selection with balances','connect-accounts/fab','fresh'),
