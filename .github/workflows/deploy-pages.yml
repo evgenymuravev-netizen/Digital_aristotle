@@ -46,16 +46,23 @@ jobs:
           ref: main
           path: _main
 
-      - name: Assemble composite site
+      - name: Assemble composite site (noor retired — Mal only)
         run: |
           mkdir -p _site
-          cp -r noor-prototype/. _site/
-          rm -rf _site/tradepay
+          cp -r noor-prototype/mal _site/mal
           cp -r _main/tradepay _site/tradepay
           mkdir -p _site/aristotle
           cp -r _main/. _site/aristotle/
           rm -rf _site/aristotle/.git _site/aristotle/.github
           touch _site/.nojekyll
+          cat > _site/index.html <<'HTML'
+          <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Mal — clickable prototype</title>
+          <script>location.replace('./mal/' + location.hash);</script>
+          <meta http-equiv="refresh" content="0; url=./mal/">
+          <style>body{font-family:system-ui;background:#f7f7f9;color:#0e0e10;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style>
+          </head><body><p>Redirecting to the <a href="./mal/">Mal prototype</a>…</p></body></html>
+          HTML
+          cp _site/index.html _site/404.html
 
       - name: Push composite to gh-pages branch
         run: |

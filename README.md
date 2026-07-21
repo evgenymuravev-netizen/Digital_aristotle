@@ -3,7 +3,9 @@
 A deep, clickable HTML prototype of the **Noor** app from the May 2026 investor deck
 (“Banking Products in 1-Click · Agentic Islamic Finance Platform”).
 
-**Live demo (GitHub Pages):** https://evgenymuravev-netizen.github.io/Digital_aristotle/
+**Live demo (GitHub Pages):** https://evgenymuravev-netizen.github.io/Digital_aristotle/mal/ — the
+**Mal** prototype is the live build. The original Noor-branded build is retired from the site
+(source kept in `noor-prototype/`; the root URL redirects to `/mal/`).
 
 ## What’s inside
 
