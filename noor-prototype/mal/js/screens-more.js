@@ -1245,14 +1245,15 @@ SCREENS['ujrah-card'] = () => {
 /* ---------------- SME financing — full video + KYB journey ---------------- */
 const SME_STEPS = ['','Business','Tour','Your plan','Company docs','UBOs','Ejari & presence','Offer','Sign','Direct debits'];
 const smeTick = (id, label, d, opt) => {
-  const on = (A.tmp.smeDocs||{})[id];
-  return `<div class="row" onclick="A.tmp.smeDocs=A.tmp.smeDocs||{};A.tmp.smeDocs['${id}']=!A.tmp.smeDocs['${id}'];A.refresh()">
-    <span class="bigico" style="${on?'background:#1f8a5b;color:#fff':''}">${ic(on?'check':'doc',20)}</span>
+  const doc = (A.tmp.smeDocs||{})[id];
+  return `<div class="row" onclick="SMEVC.pick('${id}','${label.replace(/'/g,'’')}')">
+    <span class="bigico" style="${doc?'background:#1f8a5b;color:#fff':''}">${ic(doc?'check':'doc',20)}</span>
     <div class="row-main"><div class="row-t" style="white-space:normal">${label}${opt?' <span class="tag gray">optional</span>':''}</div>
-      <div class="row-d" style="white-space:normal">${d}</div></div>
-    ${on?'<span class="tag grn">captured</span>':'<span class="chev">'+ic('cam',16)+'</span>'}
+      <div class="row-d" style="white-space:normal">${doc&&doc.name?`<b>${doc.name}</b> · ${doc.size} · parsed ✓`:d}</div></div>
+    ${doc?'<span class="tag grn">uploaded</span>':'<span class="chev">'+ic('doc',16)+'</span>'}
   </div>`;
 };
+const smeFileInput = `<input type="file" id="smeFile" accept="application/pdf,image/*" style="display:none" onchange="SMEVC.filePicked(this)">`;
 SCREENS['sme-video'] = () => {
   const st = A.tmp.smev || 1;
   const stepper = `
@@ -1290,14 +1291,15 @@ SCREENS['sme-video'] = () => {
     return `
   <div class="scr">
     ${hdr('Company documents')}
+    ${smeFileInput}
     ${stepper}
-    <div class="sub mb8">Three documents, three quick captures — the agent reads them and pre-fills everything.</div>
+    <div class="sub mb8">Three documents — upload the PDFs (or photograph the originals). The agent reads them and pre-fills everything.</div>
     <div class="listcard">
       ${smeTick('lic','Trade licence','DED licence — number, activity and expiry are auto-extracted')}
       ${smeTick('moa','Memorandum of Association (MoA)','Ownership shares are read out and matched to the UBO step')}
       ${smeTick('aoa','Articles of Association (AoA)','Signing authority confirmed — who may accept the offer')}
     </div>
-    <div class="card soft mt12"><div class="micro">Photograph the originals — the agent flags expired licences and share mismatches on the spot, before underwriting ever sees them.</div></div>
+    <div class="card soft mt12"><div class="micro">PDF, photo or scan — all fine. The agent flags expired licences and share mismatches on the spot, before underwriting ever sees them. Only the two videos are camera-only; documents are documents.</div></div>
     <button class="btn lime mt16" onclick="A.tmp.smev=5;A.refresh()">Continue — UBOs</button>
   </div>`;
   }
@@ -1307,8 +1309,9 @@ SCREENS['sme-video'] = () => {
     return `
   <div class="scr">
     ${hdr('Ultimate beneficial owners')}
+    ${smeFileInput}
     ${stepper}
-    <div class="sub mb8">Every owner from the MoA — each needs an Emirates ID and a passport.</div>
+    <div class="sub mb8">Every owner from the MoA — each needs an Emirates ID and a passport. PDF or photo, front and back in one file is fine.</div>
     ${SME2.ubos.map((u,k)=>`
     <div class="lbl mt12 mb8">${u.n} — ${u.role}</div>
     <div class="listcard">
@@ -1326,6 +1329,7 @@ SCREENS['sme-video'] = () => {
     return `
   <div class="scr">
     ${hdr('Ejari & presence')}
+    ${smeFileInput}
     ${stepper}
     <div class="lbl mb8">Ejari — mandatory</div>
     <div class="seg mb8" style="max-width:280px">
@@ -1467,6 +1471,22 @@ SCREENS['sme-video'] = () => {
   </div>`;
 };
 window.SMEVC = {
+  pick(id,label){
+    A.tmp.smePick={id,label};
+    const inp=document.getElementById('smeFile');
+    if(!inp) return;
+    inp.value='';
+    inp.click();
+  },
+  filePicked(inp){
+    const f=inp.files&&inp.files[0]; const p=A.tmp.smePick;
+    if(!f||!p) return;
+    const size=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(f.size/1024))+' KB';
+    A.tmp.smeDocs=A.tmp.smeDocs||{};
+    A.tmp.smeDocs[p.id]={name:f.name,size};
+    A.refresh();
+    A.toast(p.label+' uploaded — '+f.name+' parsed','check');
+  },
   rec(step){
     if(A.tmp.smevRec) return;
     A.tmp.smevRec=1; A.refresh();

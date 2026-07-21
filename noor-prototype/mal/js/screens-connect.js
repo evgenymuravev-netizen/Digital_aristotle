@@ -115,9 +115,63 @@ SCREENS['connect-banks'] = () => {
       ${['fab','wio','ei','careem','tabby'].filter(b=>!linked.includes(b)).map(b=>CN.bankRow(b,'Detected on this phone')).join('') || '<div class="row static"><div class="row-d">All suggested providers connected ✓</div></div>'}
     </div>`:''}
     ${cats.map(section).join('')}
+    <div class="card mt16 tap" onclick="A.go('connect-statements')" style="border-color:rgba(74,99,216,.35)">
+      <div class="flex between"><b style="font-size:13.5px">Bank not supported yet?</b>${ic('chevR',18)}</div>
+      <div class="micro mt4">Upload 6 months of PDF statements — parsed by <b>Perfios</b>, same categories, same picture.</div>
+    </div>
     <div style="height:18px"></div>
     ${pby()}
   </div>`;
+};
+
+/* ---------------- statement-upload fallback (Perfios) ---------------- */
+SCREENS['connect-statements'] = () => {
+  const files = A.tmp.stmtFiles || [];
+  const parsed = !!A.tmp.stmtParsed;
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun'];
+  return `
+  <div class="scr light">
+    ${hdr('Statements instead')}
+    <input type="file" id="stmtFile" accept="application/pdf" multiple style="display:none" onchange="CN.stmtPicked(this)">
+    <div class="card">
+      <div class="flex" style="gap:12px"><span class="bigico">${ic('bank',20)}</span>
+        <div class="f1"><div class="row-t">Habib Bank AG Zurich</div><div class="row-d">Not on CBUAE Open Finance yet — statements work just as well</div></div></div>
+    </div>
+    <div class="lbl mt16 mb8">Upload 6 months — PDF, straight from your bank</div>
+    <div class="card">
+      <div class="chips">
+        ${MONTHS.map((m,i)=>`<span class="chip" style="${files.length>i?'background:#e4f4ec;border-color:#1f8a5b;color:#1f8a5b':''}">${m} 2026 ${files.length>i?'✓':''}</span>`).join('')}
+      </div>
+      <button class="btn ghost mt12" onclick="CN.stmtPick()">${files.length?`Add more (${files.length} uploaded)`:'Choose PDF statements'}</button>
+      ${files.length?`<div class="micro mt8">${files.map(f=>`<b>${f.name}</b> · ${f.size}`).join('<br>')}</div>`:''}
+      <div class="micro mt8">Password-protected PDFs are fine — you’ll be asked for the password locally; it never leaves the device.</div>
+    </div>
+    ${parsed?`
+    <div class="lbl mt16 mb8">Parsed by Perfios</div>
+    <div class="card" style="border-color:rgba(31,138,91,.4)">
+      <div class="kv"><span class="k">Statement months</span><span class="v">6 of 6 · no gaps</span></div>
+      <div class="kv"><span class="k">Salary detected</span><span class="v tnum">AED 32,500.00 × 6 · TABBY FZ-LLC</span></div>
+      <div class="kv"><span class="k">Average balance</span><span class="v tnum">AED 18,340.55</span></div>
+      <div class="kv"><span class="k">Returned payments</span><span class="v" style="color:var(--grn)">0 in 6 months</span></div>
+      <div class="kv"><span class="k">Transactions categorised</span><span class="v tnum">94%</span></div>
+    </div>
+    <div class="card soft mt12"><div class="micro">This account now behaves like a linked one — balances and categories in your money picture, counted into Zakat and net worth. Refresh monthly by re-upload, or forward statements to <b>khadeeja.statements@mal.ai</b> and the inbox watchdog does it for you.</div></div>
+    <button class="btn dark mt16" style="width:100%" onclick="A.toast('Habib Bank added from statements — refreshes monthly','check');A.go('money')">Add the account</button>`
+    :`<button class="btn dark mt16" style="width:100%" ${files.length?'':'disabled'} onclick="CN.stmtParse()">${files.length?'Parse with Perfios':'Upload statements first'}</button>`}
+    ${pby()}
+  </div>`;
+};
+CN.stmtPick = () => { const i=document.getElementById('stmtFile'); if(i){ i.value=''; i.click(); } };
+CN.stmtPicked = (inp) => {
+  const fs=[...(inp.files||[])];
+  if(!fs.length) return;
+  A.tmp.stmtFiles=(A.tmp.stmtFiles||[]).concat(fs.map(f=>({name:f.name,size:f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(f.size/1024))+' KB'}))).slice(0,6);
+  A.refresh();
+  A.toast(fs.length+' statement'+(fs.length>1?'s':'')+' received','check');
+};
+CN.stmtParse = () => {
+  A.toast('Perfios is reading the statements…','doc');
+  setTimeout(()=>{ A.tmp.stmtParsed=1; A.refresh(); A.toast('Parsed — salary, balances and categories extracted','check'); }, 1200);
 };
 CN.bankRow = (b, note) => `
   <div class="row" onclick="A.go('connect-login/${b}')">
