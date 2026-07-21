@@ -599,8 +599,22 @@ window.APPROVALS = [
   {id:'ap7', em:'🏦', agent:'Watchdog', t:'Move e-Saver → Liv 3.4% account',        cost:0, big:true, why:'+0.3% on AED 96,540 ≈ AED 290/yr · same liquidity · Shariah-compliant'},
 ];
 
+/* new financing products */
+window.QARD = { capPct:10, salary:32500, cap:3250,
+  why:'Qard Hasan may never earn the lender anything — any benefit tied to it is riba. Mal offers it anyway, because your salary relationship is worth more to us than fee income.' };
+window.UJRAH = { limit:20000, tiers:[[10000,29],[20000,49],[35000,79]], interchange:1.7,
+  note:'A flat monthly ujrah only in months you revolve — a fee for card service, not a price of money. It never grows with the balance; a fee that scaled with your debt would be riba.' };
+window.SMEV = { amount:60000, rate:4.95,
+  checks:[['Recorded in-app only','file uploads are disabled by design — the camera is the only way in'],
+          ['AI-generation screen','frame-level deepfake and synthetic-video detection on every second'],
+          ['Liveness + location','GPS of the recording must match the trade-licence address'],
+          ['Human + agent review','a credit officer and the underwriting agent watch every minute']] };
+
 /* products marketplace */
 window.MARKET = [
+  {id:'qard',  t:'Qard Hasan salary line', d:'Truly free — AED 0, ever', ic:'heart', c:'#1f8a5b'},
+  {id:'ujrah', t:'Mal Ujrah Card', d:'Revolving · flat ujrah, no interest', ic:'card', c:'#0e0e10'},
+  {id:'smev',  t:'SME financing — by video', d:'Your shop and your story decide', ic:'cam', c:'#4a63d8'},
   {id:'cards', t:'Credit cards', d:'3 pre-approved', ic:'card', c:'#4a63d8'},
   {id:'loan',  t:'Personal finance', d:'Up to AED 120,000', ic:'dollar', c:'#1f8a5b'},
   {id:'dsf',   t:'Deposit-secured financing', d:'4.25% — savings keep earning', ic:'lock', c:'#0e0e10'},
