@@ -274,7 +274,7 @@ SCREENS.money = () => {
     </div>
     <div class="card mt12 tap" onclick="A.tmp.smev=1;A.go('sme-video')">
       <div class="flex between"><b style="font-size:14px">New capital? Apply with a video</b>${ic('chevR',18)}</div>
-      <div class="micro mt4">Film the shop + a 15-minute plan, in-app — AED 60,000 pre-scoped at 4.95%</div>
+      <div class="micro mt4">Film the shop + a 15-minute plan, in-app — AED 100,000 pre-scoped</div>
     </div>`:''}
     ${G.map(g=>{
       const visible = g.accs;
