@@ -147,3 +147,6 @@ body.show-fab #aiFab{display:flex}
 .kioskroot #screen{border-radius:0}
 .kioskroot #island{display:none}
 @media (min-width:561px){ .kioskroot #phone{max-width:430px; margin:0 auto} .kioskroot #phoneWrap{display:flex; justify-content:center} }
+
+/* fab on non-tab screens (no navbar underneath) sits lower */
+body.fab-low #aiFab{bottom:30px}
