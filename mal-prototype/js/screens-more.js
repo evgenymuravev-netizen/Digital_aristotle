@@ -1243,7 +1243,7 @@ SCREENS['ujrah-card'] = () => {
 };
 
 /* ---------------- SME financing — full video + KYB journey ---------------- */
-const SME_STEPS = ['','Business','Tour','Your plan','Company docs','UBOs','Ejari & presence','Offer','Sign','Direct debits'];
+const SME_STEPS = ['','Business','Signatory','Company docs','UBOs','Ejari & presence','Tour','Your plan','Offer','Sign','Direct debits'];
 const smeTick = (id, label, d, opt) => {
   const doc = (A.tmp.smeDocs||{})[id];
   return `<div class="row" onclick="SMEVC.pick('${id}','${label.replace(/'/g,'’')}')">
@@ -1256,19 +1256,124 @@ const smeTick = (id, label, d, opt) => {
 const smeFileInput = `<input type="file" id="smeFile" accept="application/pdf,image/*" style="display:none" onchange="SMEVC.filePicked(this)">`;
 SCREENS['sme-video'] = () => {
   const st = A.tmp.smev || 1;
+  const sig = A.tmp.smeSig ?? 0;
   const stepper = `
-    <div class="flex between mb8"><span class="lbl">Step ${st} of 9 — ${SME_STEPS[st]}</span>
+    <div class="flex between mb8"><span class="lbl">Step ${st} of 10 — ${SME_STEPS[st]}</span>
       ${st>1?`<button class="chip" style="padding:4px 10px;font-size:10.5px" onclick="A.tmp.smev=${st-1};A.refresh()">Back</button>`:''}</div>
-    <div class="mb12">${meter(st/9,'#4a63d8')}</div>`;
+    <div class="mb12">${meter(st/10,'#4a63d8')}</div>`;
 
-  /* --- 2 & 3: the two recordings --- */
-  if(st===2||st===3){
-    const tour = st===2;
+  /* --- 2: authorized signatory --- */
+  if(st===2){
+    return `
+  <div class="scr">
+    ${hdr('Who signs?')}
+    ${stepper}
+    <div class="sub mb8">Before any documents — who will be the <b>authorized signatory</b> for AlMansoori Trading LLC? We check it against the AoA.</div>
+    <div class="listcard">
+      ${SME2.ubos.map((u,k)=>`
+        <div class="row" onclick="A.tmp.smeSig=${k};A.refresh()">
+          ${avx(u.n)}
+          <div class="row-main"><div class="row-t">${u.n}</div>
+            <div class="row-d" style="white-space:normal">${u.role}${k===0?' · already a Mal retail customer — KYC on file':''}</div></div>
+          ${sig===k?`<span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:50%;background:#0e0e10;color:#fff">${ic('check',14)}</span>`:''}
+        </div>`).join('')}
+    </div>
+    <div class="card soft mt12"><div class="micro">The signatory verifies live (chip read + liveness) and signs the Murabaha chain. Every other UBO can simply upload documents — no live scan needed.</div></div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=3;A.refresh()">Continue — company docs</button>
+  </div>`;
+  }
+
+  /* --- 3: company documents --- */
+  if(st===3){
+    return `
+  <div class="scr">
+    ${hdr('Company documents')}
+    ${stepper}
+    ${smeFileInput}
+    <div class="sub mb8">Three documents — upload the PDFs (or photograph the originals). The agent reads them and pre-fills everything.</div>
+    <div class="listcard">
+      ${smeTick('lic','Trade licence','DED licence — number, activity and expiry are auto-extracted')}
+      ${smeTick('moa','Memorandum of Association (MoA)','Ownership shares are read out and matched to the UBO step')}
+      ${smeTick('aoa','Articles of Association (AoA)','Signing authority confirmed — must match '+SME2.ubos[sig].n.split(" ")[0])}
+    </div>
+    <div class="card soft mt12"><div class="micro">PDF, photo or scan — all fine. The agent flags expired licences and share mismatches on the spot, before underwriting ever sees them. Only the two videos are camera-only; documents are documents.</div></div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=4;A.refresh()">Continue — UBOs</button>
+  </div>`;
+  }
+
+  /* --- 4: UBOs — reused KYC + uploads for non-signatories --- */
+  if(st===4){
+    return `
+  <div class="scr">
+    ${hdr('Ultimate beneficial owners')}
+    ${stepper}
+    ${smeFileInput}
+    <div class="sub mb8">Every owner from the MoA. The signatory verifies live; everyone else can upload.</div>
+
+    <div class="lbl mt12 mb8">${SME2.ubos[0].n} — ${SME2.ubos[0].role}${sig===0?' · signatory':''}</div>
+    <div class="card" style="border-color:rgba(31,138,91,.4)">
+      <div class="flex" style="gap:12px">
+        <span class="bigico" style="background:#1f8a5b;color:#fff">${ic('check',20)}</span>
+        <div class="f1"><div class="row-t">Already verified — nothing to upload</div>
+          <div class="row-d" style="white-space:normal">Mal retail customer since Jun 2026 · Emirates ID chip-read, ICP match and liveness are on file. Her KYC carries over${sig===0?' — and covers her role as signatory':''}.</div></div>
+        <span class="tag grn">KYC passed</span>
+      </div>
+    </div>
+
+    <div class="lbl mt16 mb8">${SME2.ubos[1].n} — ${SME2.ubos[1].role}${sig===1?' · signatory':''}</div>
+    ${sig===1?`
+    <div class="listcard">
+      <div class="row" onclick="A.tmp.smeDocs=A.tmp.smeDocs||{};A.tmp.smeDocs.sigscan=1;A.refresh();A.toast('Chip read + liveness passed — ICP matched','check')">
+        <span class="bigico" style="${(A.tmp.smeDocs||{}).sigscan?'background:#1f8a5b;color:#fff':''}">${ic((A.tmp.smeDocs||{}).sigscan?'check':'faceid',20)}</span>
+        <div class="row-main"><div class="row-t">Emirates ID — live verification</div>
+          <div class="row-d" style="white-space:normal">Signatories verify like onboarding: chip read + liveness, no uploads</div></div>
+        ${(A.tmp.smeDocs||{}).sigscan?'<span class="tag grn">verified</span>':'<span class="chev">'+ic('cam',16)+'</span>'}
+      </div>
+      ${smeTick('pass1','Passport','PDF or photo — MRZ read, sanctions & PEP screen')}
+    </div>`
+    :`
+    <div class="listcard">
+      ${smeTick('eid1','Emirates ID (PDF or photo)','Front and back in one file is fine — not the signatory, so uploads work')}
+      ${smeTick('pass1','Passport (PDF or photo)','MRZ read from the upload · sanctions & PEP screen')}
+    </div>`}
+    <div class="card soft mt12"><div class="micro">Shares are cross-checked against the MoA automatically. A missing UBO is the #1 reason SME applications stall — here it cannot happen silently.</div></div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=5;A.refresh()">Continue — Ejari & presence</button>
+  </div>`;
+  }
+
+  /* --- 5: Ejari + web presence + backoffice --- */
+  if(st===5){
+    const solo = !!A.tmp.smeSolo;
+    return `
+  <div class="scr">
+    ${hdr('Ejari & presence')}
+    ${stepper}
+    ${smeFileInput}
+    <div class="card soft mb8"><div class="flex" style="gap:10px">${ic('doc',18)}<div class="micro">Your trade licence reads <b>${solo?'Sole Establishment':'Limited Liability Company'}</b> — so we ask for ${solo?'your personal Ejari':'the business Ejari'}. We didn’t need to ask you; the licence already answered.</div></div></div>
+    <div class="lbl mb8">Ejari — mandatory</div>
+    <div class="listcard">
+      ${smeTick('ejari', solo?'Personal Ejari':'Business Ejari', solo?'Sole establishment — your personal tenancy contract is the right document':'Registered tenancy contract for the premises you will film — address must match the tour GPS')}
+    </div>
+    <div class="lbl mt16 mb8">Web presence — optional, raises the approval rate</div>
+    <div class="listcard">
+      ${smeTick('web','Business website','The agent reads your catalogue, prices and reviews', true)}
+      ${smeTick('soc','Social accounts','Instagram / TikTok — followers and activity feed the score', true)}
+      ${smeTick('bnpl','Tabby / Tamara back-office screenshot','Your BNPL order volumes — strongest revenue signal we can get', true)}
+    </div>
+    <div class="card soft mt12"><div class="micro">Optional really means optional — but applicants who share their web presence and BNPL back-office get approved <b>meaningfully more often</b>, because real orders beat any projection.</div></div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=6;A.refresh()">Continue — film the tour</button>
+  </div>`;
+  }
+
+  /* --- 6 & 7: the two recordings — the finale of the application --- */
+  if(st===6||st===7){
+    const tour = st===6;
     const rec = A.tmp.smevRec||0;
     return `
   <div class="scr">
     ${hdr(tour?'Show us the place':'Tell us the plan')}
     ${stepper}
+    ${tour?'':'<div class="card soft mb12"><div class="micro"><b>The last step of your application.</b> Documents told us the facts — now tell us the story. This recording is what the credit officer watches first.</div></div>'}
     <div style="border-radius:20px;background:#101014;color:#fff;padding:18px;min-height:250px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.12)">
       <div class="flex between">
         <span class="flex" style="gap:7px"><i style="width:10px;height:10px;border-radius:50%;background:${rec?'#ff4d4d':'#666'};display:inline-block"></i><span style="font:600 12px Onest,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
@@ -1281,77 +1386,13 @@ SCREENS['sme-video'] = () => {
           : '· What the business does, since when<br>· What exactly the AED 100,000 buys<br>· How that becomes revenue, month by month<br>· How you repay if the plan slips'}
       </div>
     </div>
-    <div class="card soft mt12"><div class="micro"><b>Camera only — uploads are disabled by design.</b> A file could be edited, outsourced or generated. A live recording with liveness, location and our frame-level AI screen cannot.</div></div>
+    <div class="card soft mt12"><div class="micro"><b>Camera only — uploads are disabled for the videos.</b> A file could be edited, outsourced or generated. A live recording with liveness, location and our frame-level AI screen cannot.</div></div>
     <button class="btn lime mt12" id="smevBtn" onclick="SMEVC.rec(${st})">${rec?'Recording…':(tour?'Start the tour':'Start recording — 15:00 max')}</button>
   </div>`;
   }
 
-  /* --- 4: company documents --- */
-  if(st===4){
-    return `
-  <div class="scr">
-    ${hdr('Company documents')}
-    ${smeFileInput}
-    ${stepper}
-    <div class="sub mb8">Three documents — upload the PDFs (or photograph the originals). The agent reads them and pre-fills everything.</div>
-    <div class="listcard">
-      ${smeTick('lic','Trade licence','DED licence — number, activity and expiry are auto-extracted')}
-      ${smeTick('moa','Memorandum of Association (MoA)','Ownership shares are read out and matched to the UBO step')}
-      ${smeTick('aoa','Articles of Association (AoA)','Signing authority confirmed — who may accept the offer')}
-    </div>
-    <div class="card soft mt12"><div class="micro">PDF, photo or scan — all fine. The agent flags expired licences and share mismatches on the spot, before underwriting ever sees them. Only the two videos are camera-only; documents are documents.</div></div>
-    <button class="btn lime mt16" onclick="A.tmp.smev=5;A.refresh()">Continue — UBOs</button>
-  </div>`;
-  }
-
-  /* --- 5: UBOs --- */
-  if(st===5){
-    return `
-  <div class="scr">
-    ${hdr('Ultimate beneficial owners')}
-    ${smeFileInput}
-    ${stepper}
-    <div class="sub mb8">Every owner from the MoA — each needs an Emirates ID and a passport. PDF or photo, front and back in one file is fine.</div>
-    ${SME2.ubos.map((u,k)=>`
-    <div class="lbl mt12 mb8">${u.n} — ${u.role}</div>
-    <div class="listcard">
-      ${smeTick('eid'+k,'Emirates ID','Chip read + ICP match — like your own onboarding')}
-      ${smeTick('pass'+k,'Passport','MRZ scan · sanctions & PEP screen')}
-    </div>`).join('')}
-    <div class="card soft mt12"><div class="micro">Shares are cross-checked against the MoA automatically. A missing UBO is the #1 reason SME applications stall — here it cannot happen silently.</div></div>
-    <button class="btn lime mt16" onclick="A.tmp.smev=6;A.refresh()">Continue — Ejari & presence</button>
-  </div>`;
-  }
-
-  /* --- 6: Ejari + web presence + backoffice --- */
-  if(st===6){
-    const solo = !!A.tmp.smeSolo;
-    return `
-  <div class="scr">
-    ${hdr('Ejari & presence')}
-    ${smeFileInput}
-    ${stepper}
-    <div class="lbl mb8">Ejari — mandatory</div>
-    <div class="seg mb8" style="max-width:280px">
-      <button class="${solo?'':'on'}" onclick="A.tmp.smeSolo=0;A.refresh()">Business Ejari</button>
-      <button class="${solo?'on':''}" onclick="A.tmp.smeSolo=1;A.refresh()">Personal (solo)</button>
-    </div>
-    <div class="listcard">
-      ${smeTick('ejari', solo?'Personal Ejari':'Business Ejari', solo?'Sole proprietorship — your personal tenancy contract works':'Registered tenancy contract for the premises you filmed — address must match the tour GPS')}
-    </div>
-    <div class="lbl mt16 mb8">Web presence — optional, raises the approval rate</div>
-    <div class="listcard">
-      ${smeTick('web','Business website','The agent reads your catalogue, prices and reviews', true)}
-      ${smeTick('soc','Social accounts','Instagram / TikTok — followers and activity feed the score', true)}
-      ${smeTick('bnpl','Tabby / Tamara back-office screenshot','Your BNPL order volumes — strongest revenue signal we can get', true)}
-    </div>
-    <div class="card soft mt12"><div class="micro">Optional really means optional — but applicants who share their web presence and BNPL back-office get approved <b>meaningfully more often</b>, because real orders beat any projection.</div></div>
-    <button class="btn lime mt16" onclick="A.tmp.smev=7;A.refresh()">Continue — the decision</button>
-  </div>`;
-  }
-
-  /* --- 7: offer (the approved-terms design, in AED) --- */
-  if(st===7){
+  /* --- 8: offer --- */
+  if(st===8){
     const o=SME2.offer, m=SME2.merchant;
     return `
   <div class="scr">
@@ -1385,19 +1426,19 @@ SCREENS['sme-video'] = () => {
       <div class="kv"><span class="k">Address</span><span class="v" style="max-width:55%;text-align:right">${m.addr}</span></div>
       <div class="kv"><span class="k">Email</span><span class="v">${m.email}</span></div>
     </div>
-    <div class="micro mt8">Find more information in our <b style="color:var(--blu)">Key Facts Statement</b>.</div>
-    <button class="btn lime mt12" onclick="A.tmp.smev=8;A.tmp.smeSigned=0;A.refresh()">Accept</button>
+    <div class="micro mt8">Signed by the authorized signatory: <b>${SME2.ubos[sig].n}</b>. Find more information in our <b style="color:var(--blu)">Key Facts Statement</b>.</div>
+    <button class="btn lime mt12" onclick="A.tmp.smev=9;A.tmp.smeSigned=0;A.refresh()">Accept</button>
   </div>`;
   }
 
-  /* --- 8: the Murabaha signing cascade --- */
-  if(st===8){
+  /* --- 9: the Murabaha signing cascade --- */
+  if(st===9){
     const signed = A.tmp.smeSigned||0;
     return `
   <div class="scr">
     ${hdr('Review and sign')}
     ${stepper}
-    <div class="sub mb8">One tap signs the whole Murabaha chain — every document sealed and timestamped, in order, on 7 Apr 2025.</div>
+    <div class="sub mb8">One tap by <b>${SME2.ubos[sig].n}</b> signs the whole Murabaha chain — every document sealed and timestamped, in order, on 7 Apr 2025.</div>
     <div class="listcard">
       ${SME2.signdocs.map(([t,ts],k)=>{
         const isContract = t==='Murabaha agreement';
@@ -1410,14 +1451,14 @@ SCREENS['sme-video'] = () => {
     </div>
     ${signed>=SME2.signdocs.length
       ? `<div class="card soft mt12"><div class="micro">All ten documents executed in eleven seconds — the commodity was bought, held, certified and sold on. That is a real Murabaha, not paperwork theatre. The <b>Murabaha agreement</b> is your contract; everything else proves the trade actually happened.</div></div>
-         <button class="btn lime mt16" onclick="A.tmp.smev=9;A.refresh()">Continue — direct debits</button>`
+         <button class="btn lime mt16" onclick="A.tmp.smev=10;A.refresh()">Continue — direct debits</button>`
       : `<button class="btn lime mt16" onclick="SMEVC.sign()">${signed?'Signing…':'Sign everything — with one tap'}</button>
          <div class="micro mt8" style="text-align:center">Each document is hash-stamped the second it is executed — watch the timestamps land.</div>`}
   </div>`;
   }
 
-  /* --- 9: direct debit mandates + release --- */
-  if(st===9){
+  /* --- 10: direct debit mandates + release --- */
+  if(st===10){
     const dd=A.tmp.smeDD||{};
     const both = dd.wio && dd.enbd;
     return `
@@ -1452,9 +1493,9 @@ SCREENS['sme-video'] = () => {
     ${hdr('SME financing')}
     ${stepper}
     <div class="card lime">
-      <span class="tag solid">Video + documents, all in-app</span>
+      <span class="tag solid">Documents first, story last — all in-app</span>
       <div class="h2 mt8">Your shop and your story decide.</div>
-      <div class="micro mt4" style="color:rgba(14,14,16,.62)">No statements theatre. Show the place, tell the plan, photograph the documents — the agent does the rest.</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">No statements theatre. Photograph or upload the documents, then close with the two recordings — the story is the finale, not the warm-up.</div>
     </div>
     <div class="lbl mt16 mb8">What Mal already sees</div>
     <div class="card">
@@ -1465,9 +1506,9 @@ SCREENS['sme-video'] = () => {
     </div>
     <div class="lbl mt16 mb8">Use of funds</div>
     <div class="chips">${['Inventory ahead of Q4','New treatment room','Second POS + staff','Marketing push'].map((c,i)=>`<button class="chip ${i===0?'on':''}" onclick="A.toast('Noted — the plan video should walk through exactly this','check')">${c}</button>`).join('')}</div>
-    <div class="lbl mt16 mb8">The journey — 9 steps, ~20 minutes</div>
-    <div class="card soft"><div class="micro">Tour video → 15-min plan video → company docs (licence, MoA, AoA) → UBO IDs & passports → Ejari + web presence → offer → one-tap Murabaha signing → direct debits → funds released.</div></div>
-    <button class="btn lime mt16" onclick="A.tmp.smev=2;A.refresh()">Continue — film the tour</button>
+    <div class="lbl mt16 mb8">The journey — 10 steps, ~20 minutes</div>
+    <div class="card soft"><div class="micro">Who signs → company docs (licence, MoA, AoA) → UBO IDs (uploads fine; the signatory verifies live, and KYC-passed customers skip entirely) → Ejari + web presence → premises tour → the 15-minute plan video, last → offer → one-tap Murabaha signing → direct debits → funds released.</div></div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=2;A.refresh()">Continue — who signs?</button>
   </div>`;
 };
 window.SMEVC = {
@@ -1490,14 +1531,14 @@ window.SMEVC = {
   rec(step){
     if(A.tmp.smevRec) return;
     A.tmp.smevRec=1; A.refresh();
-    const total = step===2 ? 47 : 872;
+    const total = step===6 ? 47 : 872;
     let t=0;
     const iv=setInterval(()=>{
-      t+=step===2?6:109;
+      t+=step===6?6:109;
       const el=document.getElementById('smevTimer');
-      if(el) el.textContent = Math.floor(t/60)+':'+String(t%60).padStart(2,'0') + (step===2?' / ~1:00':' / 15:00 max');
+      if(el) el.textContent = Math.floor(t/60)+':'+String(t%60).padStart(2,'0') + (step===6?' / ~1:00':' / 15:00 max');
       if(t>=total){ clearInterval(iv); A.tmp.smevRec=0; A.tmp.smev=step+1; A.refresh();
-        A.toast(step===2?'Tour captured — location matches the trade licence':'Plan recorded — passed the AI-generation screen','check'); }
+        A.toast(step===6?'Tour captured — location matches the trade licence':'Plan recorded — passed the AI-generation screen. Application complete.','check'); }
     }, 350);
   },
   sign(){
