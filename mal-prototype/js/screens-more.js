@@ -1243,7 +1243,7 @@ SCREENS['ujrah-card'] = () => {
 };
 
 /* ---------------- SME financing — full video + KYB journey ---------------- */
-const SME_STEPS = ['','Business','Signatory','Company docs','UBOs','Ejari & presence','Tour','Your plan','Offer','Sign','Direct debits'];
+const SME_STEPS = ['','Business','Company docs','Signatory','UBOs','Ejari & presence','Tour','Your plan','Offer','Sign','Direct debits'];
 const smeTick = (id, label, d, opt) => {
   const doc = (A.tmp.smeDocs||{})[id];
   return `<div class="row" onclick="SMEVC.pick('${id}','${label.replace(/'/g,'’')}')">
@@ -1262,13 +1262,13 @@ SCREENS['sme-video'] = () => {
       ${st>1?`<button class="chip" style="padding:4px 10px;font-size:10.5px" onclick="A.tmp.smev=${st-1};A.refresh()">Back</button>`:''}</div>
     <div class="mb12">${meter(st/10,'#4a63d8')}</div>`;
 
-  /* --- 2: authorized signatory --- */
-  if(st===2){
+  /* --- 3: authorized signatory --- */
+  if(st===3){
     return `
   <div class="scr">
     ${hdr('Who signs?')}
     ${stepper}
-    <div class="sub mb8">Before any documents — who will be the <b>authorized signatory</b> for AlMansoori Trading LLC? We check it against the AoA.</div>
+    <div class="sub mb8">The AoA is in — now, who will be the <b>authorized signatory</b> for AlMansoori Trading LLC? We match your pick against the signing authority we just read.</div>
     <div class="listcard">
       ${SME2.ubos.map((u,k)=>`
         <div class="row" onclick="A.tmp.smeSig=${k};A.refresh()">
@@ -1279,12 +1279,12 @@ SCREENS['sme-video'] = () => {
         </div>`).join('')}
     </div>
     <div class="card soft mt12"><div class="micro">The signatory verifies live (chip read + liveness) and signs the Murabaha chain. Every other UBO can simply upload documents — no live scan needed.</div></div>
-    <button class="btn lime mt16" onclick="A.tmp.smev=3;A.refresh()">Continue — company docs</button>
+    <button class="btn lime mt16" onclick="A.tmp.smev=4;A.refresh()">Continue — UBOs</button>
   </div>`;
   }
 
-  /* --- 3: company documents --- */
-  if(st===3){
+  /* --- 2: company documents --- */
+  if(st===2){
     return `
   <div class="scr">
     ${hdr('Company documents')}
@@ -1294,10 +1294,10 @@ SCREENS['sme-video'] = () => {
     <div class="listcard">
       ${smeTick('lic','Trade licence','DED licence — number, activity and expiry are auto-extracted')}
       ${smeTick('moa','Memorandum of Association (MoA)','Ownership shares are read out and matched to the UBO step')}
-      ${smeTick('aoa','Articles of Association (AoA)','Signing authority confirmed — must match '+SME2.ubos[sig].n.split(" ")[0])}
+      ${smeTick('aoa','Articles of Association (AoA)','Signing authority read out — you pick the signatory next, and we check the match')}
     </div>
     <div class="card soft mt12"><div class="micro">PDF, photo or scan — all fine. The agent flags expired licences and share mismatches on the spot, before underwriting ever sees them. Only the two videos are camera-only; documents are documents.</div></div>
-    <button class="btn lime mt16" onclick="A.tmp.smev=4;A.refresh()">Continue — UBOs</button>
+    <button class="btn lime mt16" onclick="A.tmp.smev=3;A.refresh()">Continue — who signs?</button>
   </div>`;
   }
 
@@ -1507,8 +1507,8 @@ SCREENS['sme-video'] = () => {
     <div class="lbl mt16 mb8">Use of funds</div>
     <div class="chips">${['Inventory ahead of Q4','New treatment room','Second POS + staff','Marketing push'].map((c,i)=>`<button class="chip ${i===0?'on':''}" onclick="A.toast('Noted — the plan video should walk through exactly this','check')">${c}</button>`).join('')}</div>
     <div class="lbl mt16 mb8">The journey — 10 steps, ~20 minutes</div>
-    <div class="card soft"><div class="micro">Who signs → company docs (licence, MoA, AoA) → UBO IDs (uploads fine; the signatory verifies live, and KYC-passed customers skip entirely) → Ejari + web presence → premises tour → the 15-minute plan video, last → offer → one-tap Murabaha signing → direct debits → funds released.</div></div>
-    <button class="btn lime mt16" onclick="A.tmp.smev=2;A.refresh()">Continue — who signs?</button>
+    <div class="card soft"><div class="micro">Company docs (licence, MoA, AoA) → who signs → UBO IDs (uploads fine; the signatory verifies live, and KYC-passed customers skip entirely) → Ejari + web presence → premises tour → the 15-minute plan video, last → offer → one-tap Murabaha signing → direct debits → funds released.</div></div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=2;A.refresh()">Continue — company docs</button>
   </div>`;
 };
 window.SMEVC = {
