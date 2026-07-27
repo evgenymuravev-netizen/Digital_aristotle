@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Study guide for the System Analyst Assessment: APIs & REST design (good vs bad), SOAP vs REST and other protocols, the OSI model, RabbitMQ & messaging, and databases — each with quick 1-2-3 tactics." />
+  <meta name="color-scheme" content="dark" />
+  <title>System Analyst Study Guide — APIs, REST, SOAP, OSI, RabbitMQ, Databases</title>
+  <link rel="canonical" href="./guide.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="System Analyst Study Guide — the fundamentals" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%98%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    .guide h1 { margin-bottom: .2em; }
+    .guide .toc { display: flex; flex-wrap: wrap; gap: .5em; align-items: baseline; font-size: .95rem; }
+    .guide-sec { margin-top: 20px; }
+    .guide-sec h2 { margin-top: 0; }
+    .guide-sec h3 { margin: 1.1em 0 .3em; font-size: 1.02rem; opacity: .95; }
+    .guide-sec .compare { margin: .6em 0 1em; }
+    .tactic { margin: 1em 0 0; padding: .7em .9em; border-left: 3px solid var(--gold, #d9b25a);
+      background: rgba(217,178,90,.08); border-radius: 6px; }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "BreadcrumbList", "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "System Analyst Assessment", "item": "./index.html" },
+        { "@type": "ListItem", "position": 2, "name": "Study guide", "item": "./guide.html" }
+      ]},
+      { "@type": "Article",
+        "headline": "System Analyst Study Guide — APIs, protocols, OSI, messaging and databases",
+        "about": ["REST API design", "SOAP", "gRPC", "GraphQL", "OSI model", "TCP/UDP", "RabbitMQ", "message queues", "relational databases", "ACID", "database indexing"],
+        "articleSection": ["APIs & REST", "Protocols", "Networking & OSI", "Messaging & Queues", "Databases & Data"],
+        "description": "A concise, vendor-neutral study guide to the fundamentals a systems analyst is expected to know." },
+      { "@type": "FAQPage", "mainEntity": [
+        { "@type": "Question", "name": "What is the difference between REST and SOAP?",
+          "acceptedAnswer": { "@type": "Answer", "text": "SOAP is a strict protocol: XML messages wrapped in an Envelope, described by a WSDL contract, with WS-* standards for security and transactions. REST is an architectural style over HTTP — stateless, resource-oriented, usually JSON — with no mandated envelope or contract format. SOAP suits formal enterprise integrations; REST suits lightweight, browser- and mobile-friendly APIs." } },
+        { "@type": "Question", "name": "What does the OSI model's layer 7 do, and where does HTTP sit?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Layer 7 is the Application layer — where application protocols like HTTP, DNS, SMTP and FTP live. HTTP sits at Layer 7 and relies on TCP at Layer 4 (Transport) and IP at Layer 3 (Network) beneath it." } },
+        { "@type": "Question", "name": "What is a dead-letter queue in RabbitMQ?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A dead-letter queue (DLQ) collects messages that cannot be delivered or processed — rejected (nacked), expired via TTL, or over a retry limit — so they can be inspected or retried instead of being lost or looping forever." } },
+        { "@type": "Question", "name": "What are the ACID properties of a database transaction?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Atomicity (all operations commit or none do), Consistency (each transaction respects all constraints), Isolation (concurrent transactions don't corrupt each other), and Durability (a committed transaction survives a crash)." } }
+      ]}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./index.html" aria-label="Back to the assessment">
+      <span class="brand-mark" aria-hidden="true">📘</span>
+      <span class="brand-text"><strong>Study Guide</strong><small>System Analyst Assessment</small></span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="./index.html">← Back to the test</a>
+    </nav>
+  </header>
+
+  <main id="main" class="container guide">
+    <h1>The systems-analyst fundamentals — a study guide</h1>
+    <p class="lede">Five domains, each with the core ideas and a quick <b>1-2-3</b> way to reason your way to the right answer under time pressure. Read it before a test, or after, to turn the "why" of each miss into something that sticks.</p>
+
+    <nav class="toc panel" aria-label="Contents">
+      <b>Jump to:</b>
+      <a href="#apis">APIs &amp; REST</a> ·
+      <a href="#protocols">Protocols</a> ·
+      <a href="#osi">Networking &amp; OSI</a> ·
+      <a href="#messaging">Messaging &amp; Queues</a> ·
+      <a href="#data">Databases &amp; Data</a>
+    </nav>
+
+    <!-- APIS -->
+    <section id="apis" class="panel guide-sec">
+      <h2>1 · APIs &amp; REST</h2>
+      <p>REST is an <em>architectural style</em>, not a format. Its core constraints: <b>resources</b> named as nouns, a <b>uniform interface</b> of standard HTTP methods, and <b>statelessness</b> (each request self-contained).</p>
+      <h3>Good vs. bad design — the tells</h3>
+      <ul class="tight">
+        <li><b>Good:</b> <span class="mono">GET /users/123/orders</span> — nouns in the path, the verb is the HTTP method, hierarchy is obvious.</li>
+        <li><b>Bad:</b> <span class="mono">POST /getUserOrders?id=123</span> — a verb baked into the path (RPC-over-HTTP), and POST used for a read.</li>
+        <li><b>Good:</b> a create returns <span class="mono">201 Created</span> + a <span class="mono">Location</span> header; a missing resource returns <span class="mono">404</span>.</li>
+        <li><b>Bad:</b> returning <span class="mono">200 OK</span> with <span class="mono">{"error": …}</span> — the status line lies to clients, proxies and caches.</li>
+      </ul>
+      <h3>Methods &amp; semantics</h3>
+      <ul class="tight">
+        <li><b>Safe</b> (no state change): GET, HEAD. <b>Idempotent</b> (repeat = same end state): GET, PUT, DELETE. <b>Not idempotent:</b> POST.</li>
+        <li>PUT <b>replaces</b> the whole resource; PATCH applies a <b>partial</b> update.</li>
+        <li>Status families: 2xx success · 3xx redirect · 4xx client error (401 = authenticate, 403 = forbidden, 404 = missing, 409 = conflict, 422 = valid-but-unprocessable, 429 = rate-limited) · 5xx server error (502/504 = bad/timed-out upstream).</li>
+      </ul>
+      <h3>Robustness</h3>
+      <ul class="tight">
+        <li><b>Idempotency keys</b> let a retried POST (e.g. a payment) return the first result instead of double-charging.</li>
+        <li><b>Versioning:</b> additive/optional changes are safe; renames, removals and type changes are breaking → new version (e.g. <span class="mono">/v1/</span>).</li>
+        <li><b>Pagination:</b> prefer cursor/keyset over offset for large, changing lists. <b>Auth:</b> short-lived tokens in the <span class="mono">Authorization</span> header, never in the URL.</li>
+      </ul>
+      <p class="tactic"><b>1-2-3:</b> (1) Is the URL a noun and the action the HTTP method? (2) Does the status code match the real outcome? (3) If I retry this call, is the end state the same?</p>
+    </section>
+
+    <!-- PROTOCOLS -->
+    <section id="protocols" class="panel guide-sec">
+      <h2>2 · Protocols</h2>
+      <table class="compare">
+        <thead><tr><th>Protocol/style</th><th>Shape</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">REST/JSON</th><td>Resources over HTTP, stateless</td><td>Public, cache-friendly, browser/mobile CRUD</td></tr>
+          <tr><th scope="row">SOAP/XML</th><td>Strict Envelope + WSDL, WS-*</td><td>Formal enterprise/finance contracts, message-level security</td></tr>
+          <tr><th scope="row">gRPC</th><td>Protobuf over HTTP/2, .proto contract</td><td>Fast, strongly-typed internal service-to-service calls; streaming</td></tr>
+          <tr><th scope="row">GraphQL</th><td>Client selects fields; one endpoint</td><td>Avoiding over-/under-fetching across varied clients</td></tr>
+          <tr><th scope="row">WebSockets / SSE</th><td>Persistent connection; push</td><td>Live updates — full-duplex (WS) or one-way server push (SSE)</td></tr>
+        </tbody>
+      </table>
+      <ul class="tight">
+        <li><b>SOAP</b> = a protocol (always XML, WSDL contract, WS-Security signs/encrypts the message itself). <b>REST</b> = a style (format-agnostic, usually JSON).</li>
+        <li><b>gRPC</b> gains bidirectional streaming and compact binary payloads from HTTP/2 + Protobuf — but browsers need gRPC-Web + a proxy.</li>
+        <li><b>GraphQL</b> trades easy HTTP caching (one POST endpoint) and risks the N+1 resolver problem (fixed with batching/DataLoader).</li>
+      </ul>
+      <p class="tactic"><b>1-2-3:</b> (1) Public/browser + simple CRUD → REST. (2) Internal, high-volume, typed → gRPC. (3) Live push → WebSockets/SSE; strict XML partner contract → SOAP.</p>
+    </section>
+
+    <!-- OSI -->
+    <section id="osi" class="panel guide-sec">
+      <h2>3 · Networking &amp; the OSI model</h2>
+      <p>Seven layers, top to bottom — mnemonic <em>“All People Seem To Need Data Processing”</em>:</p>
+      <ol class="tight">
+        <li><b>7 Application</b> — HTTP, DNS, SMTP, FTP (what apps speak)</li>
+        <li><b>6 Presentation</b> — data format, translation, <b>encryption/compression</b></li>
+        <li><b>5 Session</b> — set up / maintain / tear down conversations</li>
+        <li><b>4 Transport</b> — <b>TCP/UDP</b>, ports, segments (host-to-host delivery)</li>
+        <li><b>3 Network</b> — <b>IP</b>, routers, packets (routing between networks)</li>
+        <li><b>2 Data Link</b> — MAC, switches, frames (the local link)</li>
+        <li><b>1 Physical</b> — bits on wire/radio</li>
+      </ol>
+      <ul class="tight">
+        <li><b>Router</b> = L3 (routes by IP). <b>Switch</b> = L2 (forwards by MAC). <b>L4 vs L7 load balancer</b> = routes by IP/port vs by URL/headers.</li>
+        <li><b>TCP</b>: reliable, ordered, connection (SYN → SYN-ACK → ACK), retransmits. <b>UDP</b>: connectionless, best-effort — good for live media. <b>QUIC/HTTP-3</b>: reliable multiplexed streams over UDP.</li>
+        <li><b>DNS</b> maps names → IPs (A = IPv4, AAAA = IPv6, CNAME = alias, MX = mail); changes are gated by <b>TTL caching</b>. <b>HTTPS</b> = HTTP over <b>TLS</b> (encryption in transit + certificate auth; mTLS authenticates both sides).</li>
+      </ul>
+      <p class="tactic"><b>1-2-3:</b> (1) What does the device/protocol <em>do</em>? (2) Map that job to its layer. (3) If it's addressing → IP is L3, ports are L4; if it's the data's <em>format/encryption</em> → L6.</p>
+    </section>
+
+    <!-- MESSAGING -->
+    <section id="messaging" class="panel guide-sec">
+      <h2>4 · Messaging &amp; Queues (RabbitMQ)</h2>
+      <p>In RabbitMQ a producer publishes to an <b>exchange</b>; <b>bindings</b> route to <b>queues</b>; a consumer reads and <b>acks</b>. Pick the exchange by how it chooses recipients:</p>
+      <ul class="tight">
+        <li><b>Fanout</b> → every bound queue (broadcast / pub-sub). <b>Direct</b> → exact routing-key match. <b>Topic</b> → pattern match (<span class="mono">*</span> = one word, <span class="mono">#</span> = zero-or-more). <b>Headers</b> → by header attributes.</li>
+        <li><b>Ack</b> confirms processing so the broker drops the message; no ack (on crash) → <b>redelivery</b>. <b>Prefetch (QoS)</b> caps unacked messages per consumer for fair dispatch.</li>
+        <li><b>TTL + dead-letter exchange</b> → expired/rejected messages go to a <b>DLQ</b>; cap retries so a <em>poison message</em> doesn't loop forever. <b>Durable</b> queue + <b>persistent</b> message survive a restart.</li>
+      </ul>
+      <h3>Delivery guarantees</h3>
+      <ul class="tight">
+        <li><b>At-most-once</b> — may lose, never duplicates. <b>At-least-once</b> — may duplicate → consumers must be <b>idempotent</b>. <b>Exactly-once</b> — hardest; usually faked with at-least-once + dedup/idempotency.</li>
+        <li><b>RabbitMQ</b> = route-and-remove broker. <b>Kafka</b> = retained, replayable, <b>partitioned log</b> (order within a partition; consumer groups share partitions).</li>
+      </ul>
+      <p class="tactic"><b>1-2-3:</b> (1) Who should receive it? → exchange type. (2) Can it be delivered twice? → make the consumer idempotent. (3) What happens on failure? → retries + DLQ.</p>
+    </section>
+
+    <!-- DATA -->
+    <section id="data" class="panel guide-sec">
+      <h2>5 · Databases &amp; Data</h2>
+      <ul class="tight">
+        <li><b>SQL</b> for structured, related data with transactions/joins. <b>NoSQL</b> by pattern: key-value (cache/session), document (flexible shape), wide-column (huge write scale), search (full-text).</li>
+        <li><b>Normalization</b> stores each fact once (1NF atomic cells · 2NF no partial-key deps · 3NF no transitive deps) to avoid update anomalies. <b>Denormalize</b> deliberately (materialized views / read models) when reads dominate.</li>
+        <li><b>Indexes</b> (default <b>B-tree</b>: equality + ranges) speed reads but cost writes; a <b>composite</b> index helps a leftmost prefix; a <b>covering</b> index answers a query without touching the table.</li>
+      </ul>
+      <h3>Transactions &amp; scale</h3>
+      <ul class="tight">
+        <li><b>ACID</b>: Atomicity · Consistency · Isolation · Durability. Isolation levels block anomalies: Read Uncommitted (dirty reads) → Read Committed (stops dirty) → Repeatable Read (stops non-repeatable) → <b>Serializable</b> (stops phantoms too). Stricter = safer but less concurrency.</li>
+        <li><b>Deadlock</b> = a cycle of waits (DB aborts a victim). <b>Optimistic</b> concurrency checks a version at commit and retries.</li>
+        <li><b>CAP</b>: under a partition, choose Consistency or Availability. Scale <b>reads</b> with replicas (watch lag → eventual consistency); scale <b>writes/storage</b> with sharding.</li>
+      </ul>
+      <p class="tactic"><b>1-2-3:</b> (1) What's the access pattern? → picks SQL vs which NoSQL. (2) Which anomaly must I prevent? → picks the isolation level. (3) Am I scaling reads or writes? → replicas vs sharding.</p>
+    </section>
+
+    <div class="cta-row" style="margin:26px 0">
+      <a class="btn btn-primary btn-lg" href="./index.html">▶ Take the free test</a>
+    </div>
+    <p class="muted">Original, vendor-neutral study material, part of the Digital Aristotle project. Technology names are referenced for description only.</p>
+  </main>
+</body>
+</html>
