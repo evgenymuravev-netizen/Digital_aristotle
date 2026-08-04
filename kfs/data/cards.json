@@ -1,0 +1,398 @@
+{
+  "$comment": "Seed dataset of UAE cashback/rewards cards, captured 2026-06 from bank pages + KFS + aggregator cross-checks via research. This is the OUTPUT SHAPE the pipeline produces — hand-curated here so the engine has real data to run on. Each record carries source.confidence and provenance_notes. Reward rates/caps/min-income are card-specific where confidence is high/medium. Fee fields (FX markup, cash-advance, late/over-limit, min-payment, APR) are UAE-typical / CBUAE-capped where not separately sourced — flagged in provenance. ALWAYS re-verify against the live KFS before any customer-facing use.",
+  "schema": "./schema.json",
+  "as_of": "2026-06",
+  "cards": [
+    {
+      "card_id": "fab-cashback",
+      "bank": { "id": "fab", "name": "First Abu Dhabi Bank", "type": "national" },
+      "card_name": "FAB Cashback Card",
+      "network": "Visa",
+      "card_type": "cashback",
+      "islamic": false,
+      "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000, "min_age": 21 },
+      "fees": {
+        "annual_fee_aed": 300,
+        "annual_fee_waiver": { "type": "none", "notes": "No standard waiver advertised." },
+        "interest": { "monthly_rate_pct": 3.25, "apr_pct": 39.5, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 3000, "monthly_cashback_cap_aed": 1000, "base_rate_pct": 0.15,
+        "tiers": [
+          { "category": "groceries",     "rate_pct": 5.0, "monthly_cap_aed": 200, "notes": "incl. online supermarket" },
+          { "category": "education",     "rate_pct": 3.0, "monthly_cap_aed": 200, "notes": "school fees" },
+          { "category": "dining",        "rate_pct": 3.0, "monthly_cap_aed": 200 },
+          { "category": "international",  "rate_pct": 1.0, "monthly_cap_aed": null, "notes": "non-AED spend" }
+        ]
+      },
+      "benefits": { "installment_0pct": true, "lounge": { "access": "none" } },
+      "source": { "kfs_url": "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf", "source_type": "research", "as_of": "2026-06", "confidence": "high", "provenance_notes": "Cashback rates/caps, min-spend AED 3,000, overall AED 1,000/mo cap, annual fee AED 300, min income AED 5,000 — all card-specific. Interest/FX/cash-advance/late fees are UAE-typical + CBUAE caps (late AED 230, over-limit AED 273.50)." }
+    },
+    {
+      "card_id": "fab-islamic-cashback",
+      "bank": { "id": "fab", "name": "First Abu Dhabi Bank", "type": "national" },
+      "card_name": "FAB Islamic Cashback Card",
+      "network": "Visa", "card_type": "islamic", "islamic": true, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000, "min_age": 21 },
+      "fees": {
+        "annual_fee_aed": 300, "annual_fee_waiver": { "type": "none" },
+        "interest": { "monthly_rate_pct": 3.25, "apr_pct": 39.5, "basis": "profit" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 3000, "monthly_cashback_cap_aed": 1000, "base_rate_pct": 0.15,
+        "tiers": [
+          { "category": "groceries",    "rate_pct": 5.0, "monthly_cap_aed": 200 },
+          { "category": "education",    "rate_pct": 3.0, "monthly_cap_aed": 200 },
+          { "category": "dining",       "rate_pct": 3.0, "monthly_cap_aed": 200 },
+          { "category": "international", "rate_pct": 1.0 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "Sharia (Ujrah/profit) twin of FAB Cashback; structure mirrors conventional card. Confirm profit-rate disclosure on the Islamic KFS." }
+    },
+    {
+      "card_id": "enbd-cashback",
+      "bank": { "id": "enbd", "name": "Emirates NBD", "type": "national" },
+      "card_name": "Emirates NBD Cashback Card",
+      "network": "Visa", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000, "min_age": 21 },
+      "fees": {
+        "annual_fee_aed": 210, "annual_fee_waiver": { "type": "first_year", "notes": "AED 200 + VAT effective May 2025." },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 48.07, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 5000, "monthly_cashback_cap_aed": 500, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "dining",        "rate_pct": 5.0, "monthly_cap_aed": 200 },
+          { "category": "international",  "rate_pct": 1.0 }
+        ]
+      },
+      "benefits": { "lounge": { "access": "none" }, "installment_0pct": true },
+      "source": { "kfs_url": "https://www.emiratesnbd.com/en/kfs/credit-card", "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "Dining 5% / non-AED 1% / base 1% and AED 200+VAT fee (effective May 2025) from bank/research; APR 48.07% is ENBD's published upper figure. Caps and min-spend approximate — verify on KFS." }
+    },
+    {
+      "card_id": "enbd-duo",
+      "bank": { "id": "enbd", "name": "Emirates NBD", "type": "national" },
+      "card_name": "Emirates NBD Duo Card",
+      "network": "Mastercard", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 48.07, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 400, "base_rate_pct": 0.5,
+        "tiers": [
+          { "category": "utilities", "rate_pct": 2.0, "monthly_cap_aed": 100 },
+          { "category": "education", "rate_pct": 2.0, "monthly_cap_aed": 100 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "Positioned for families/bill-payers: 2% utilities & school fees. Caps illustrative; verify on KFS." }
+    },
+    {
+      "card_id": "adcb-365-cashback",
+      "bank": { "id": "adcb", "name": "Abu Dhabi Commercial Bank", "type": "national" },
+      "card_name": "ADCB 365 Cashback Card",
+      "network": "Visa", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life", "notes": "Free for life variant." },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 44.9, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 500, "base_rate_pct": 0.5,
+        "tiers": [
+          { "category": "groceries", "rate_pct": 5.0, "monthly_cap_aed": 150 },
+          { "category": "fuel",      "rate_pct": 4.0, "monthly_cap_aed": 100 },
+          { "category": "dining",    "rate_pct": 2.0, "monthly_cap_aed": 100 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "ADCB 365 family advertises up to 5% groceries and free-for-life. Exact caps/tier mix vary by 365 variant (incl. Islamic 365 with up to 10% on selected categories) — verify on KFS." }
+    },
+    {
+      "card_id": "mashreq-cashback",
+      "bank": { "id": "mashreq", "name": "Mashreq", "type": "national" },
+      "card_name": "Mashreq Cashback Card",
+      "network": "Mastercard", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 7000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 45.0, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 1500, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "groceries", "rate_pct": 5.0, "monthly_cap_aed": 250 },
+          { "category": "dining",    "rate_pct": 5.0, "monthly_cap_aed": 250 }
+        ]
+      },
+      "benefits": { "installment_0pct": true, "buy_one_get_one": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "Mashreq markets 'free for life' and up to 5% across spends (incl. via Mashreq Neo). Caps/min-income approximate — verify on KFS." }
+    },
+    {
+      "card_id": "adib-cashback-visa",
+      "bank": { "id": "adib", "name": "Abu Dhabi Islamic Bank", "type": "national" },
+      "card_name": "ADIB Cashback Visa Card",
+      "network": "Visa", "card_type": "islamic", "islamic": true, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 8000 },
+      "fees": {
+        "annual_fee_aed": 99, "annual_fee_waiver": { "type": "conditional", "notes": "Primary + up to 5th supplementary at AED 99." },
+        "interest": { "monthly_rate_pct": 3.25, "apr_pct": 39.0, "basis": "profit" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 1000, "base_rate_pct": 0.0,
+        "tiers": [
+          { "category": "groceries",  "rate_pct": 4.0 },
+          { "category": "fuel",       "rate_pct": 4.0 },
+          { "category": "education",  "rate_pct": 4.0 },
+          { "category": "dining",     "rate_pct": 4.0 },
+          { "category": "utilities",  "rate_pct": 4.0 },
+          { "category": "transport",  "rate_pct": 4.0, "notes": "automobile" }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "high", "provenance_notes": "4% on grocery/fuel/auto/school/education/dining/utilities, AED 1,000/mo total cap, AED 99 annual fee — all card-specific. Sharia (Ujrah) profit basis." }
+    },
+    {
+      "card_id": "rakbank-world-cashback",
+      "bank": { "id": "rakbank", "name": "RAKBANK", "type": "national" },
+      "card_name": "RAKBANK World Mastercard (Cashback)",
+      "network": "Mastercard", "card_type": "cashback", "islamic": false, "segment": "premium",
+      "eligibility": { "min_monthly_income_aed": 15000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 45.0, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 600, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "groceries",    "rate_pct": 10.0, "monthly_cap_aed": 150, "notes": "supermarket" },
+          { "category": "travel",       "rate_pct": 10.0, "monthly_cap_aed": 150 },
+          { "category": "international", "rate_pct": 5.0,  "monthly_cap_aed": 150 }
+        ]
+      },
+      "benefits": { "lounge": { "access": "limited", "visits_per_year": 6, "program": "LoungeKey" }, "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "Advertised 'up to 10%' supermarket & travel, up to 5% international, up to 3% domestic. Note RAKBANK excludes IVR/online-banking/ATM channels from cashback. Caps applied to make 'up to' realistic — verify on KFS." }
+    },
+    {
+      "card_id": "hsbc-live-plus",
+      "bank": { "id": "hsbc", "name": "HSBC UAE", "type": "foreign" },
+      "card_name": "HSBC Live+ Credit Card",
+      "network": "Visa", "card_type": "cashback", "islamic": false, "segment": "premium",
+      "eligibility": { "min_monthly_income_aed": 10000 },
+      "fees": {
+        "annual_fee_aed": 300, "annual_fee_waiver": { "type": "spend", "min_annual_spend_aed": 12000, "notes": "Free year 1; waived year 2+ on AED 12,000 annual spend." },
+        "interest": { "monthly_rate_pct": 3.69, "apr_pct": 44.28, "basis": "conventional" },
+        "fx_markup_pct": 2.0, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 3000, "monthly_cashback_cap_aed": 400, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "dining",        "rate_pct": 3.0, "monthly_cap_aed": 100 },
+          { "category": "entertainment", "rate_pct": 3.0, "monthly_cap_aed": 100 },
+          { "category": "groceries",     "rate_pct": 2.0, "monthly_cap_aed": 100 }
+        ]
+      },
+      "benefits": { "lounge": { "access": "limited", "visits_per_year": 4, "program": "LoungeKey" }, "buy_one_get_one": true, "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "high", "provenance_notes": "Live+ 'up to 6%': 3% dining, 3% entertainment, 2% groceries, 1% other; min monthly spend AED 3,000; ~AED 400/mo total cap; free year 1 then waived on AED 12,000 annual spend; APR 44.28%. Card-specific." }
+    },
+    {
+      "card_id": "citi-cashback",
+      "bank": { "id": "citi", "name": "Citibank UAE", "type": "foreign" },
+      "card_name": "Citi Cashback Card",
+      "network": "Visa", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 8000 },
+      "fees": {
+        "annual_fee_aed": 300, "annual_fee_waiver": { "type": "spend", "min_annual_spend_aed": 9000, "notes": "Waived on AED 9,000 annual spend." },
+        "interest": { "monthly_rate_pct": 3.25, "apr_pct": 39.0, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 600, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "international", "rate_pct": 3.0 },
+          { "category": "groceries",    "rate_pct": 2.0 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "high", "provenance_notes": "3% international / 2% groceries / 1% other; fee waived on AED 9,000 annual spend. Card-specific." }
+    },
+    {
+      "card_id": "sc-smart",
+      "bank": { "id": "sc", "name": "Standard Chartered UAE", "type": "foreign" },
+      "card_name": "Standard Chartered Smart Credit Card",
+      "network": "Mastercard", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.49, "apr_pct": 45.0, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 400, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "online",    "rate_pct": 2.0 },
+          { "category": "groceries", "rate_pct": 2.0 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "SC Smart: free for life, ~2% on online & supermarket, 1% other. (SC X variant pushes up to 10% on mobile-wallet spend with a tight cap.) Verify on KFS." }
+    },
+    {
+      "card_id": "sc-x",
+      "bank": { "id": "sc", "name": "Standard Chartered UAE", "type": "foreign" },
+      "card_name": "Standard Chartered X Credit Card",
+      "network": "Mastercard", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.49, "apr_pct": 45.0, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 2500, "monthly_cashback_cap_aed": 300, "base_rate_pct": 0.5,
+        "tiers": [
+          { "category": "mobile_wallet", "rate_pct": 10.0, "monthly_cap_aed": 200, "notes": "Apple/Samsung/Google Pay" }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "SC X: up to 10% on mobile-wallet (tokenised) spend, min monthly spend AED 2,500, tight monthly cap. Verify exact cap on KFS." }
+    },
+    {
+      "card_id": "cbd-super-saver",
+      "bank": { "id": "cbd", "name": "Commercial Bank of Dubai", "type": "national" },
+      "card_name": "CBD Super Saver Credit Card",
+      "network": "Visa", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 7000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 45.0, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 3000, "monthly_cashback_cap_aed": 1000, "base_rate_pct": 0.25,
+        "tiers": [],
+        "spend_tiers": [
+          { "min_total_monthly_spend_aed": 3000,  "max_total_monthly_spend_aed": 9999.99,  "rate_pct": 3.0,  "applies_to": ["utilities", "groceries", "transport"], "monthly_cap_aed": 400 },
+          { "min_total_monthly_spend_aed": 10000, "max_total_monthly_spend_aed": 19999.99, "rate_pct": 5.0,  "applies_to": ["utilities", "groceries", "transport"], "monthly_cap_aed": 600 },
+          { "min_total_monthly_spend_aed": 20000, "max_total_monthly_spend_aed": null,     "rate_pct": 10.0, "applies_to": ["utilities", "groceries", "transport"], "monthly_cap_aed": 1000 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "high", "provenance_notes": "Tiered by TOTAL monthly spend: 3% (3k–10k), 5% (10k–20k), 10% (>20k) on bills/supermarket/transport. Card-specific tiering; per-band caps illustrative." }
+    },
+    {
+      "card_id": "dib-prime-cashback",
+      "bank": { "id": "dib", "name": "Dubai Islamic Bank", "type": "national" },
+      "card_name": "DIB Prime Cashback Card",
+      "network": "Visa", "card_type": "islamic", "islamic": true, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 8000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.25, "apr_pct": 39.0, "basis": "profit" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 2000, "monthly_cashback_cap_aed": 500, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "groceries", "rate_pct": 3.0, "monthly_cap_aed": 150 },
+          { "category": "dining",    "rate_pct": 3.0, "monthly_cap_aed": 150 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "low", "provenance_notes": "DIB Islamic cashback — representative values; DIB Prime/Consumer card terms vary. Verify on the DIB KFS before use." }
+    },
+    {
+      "card_id": "ei-cashback",
+      "bank": { "id": "ei", "name": "Emirates Islamic", "type": "national" },
+      "card_name": "Emirates Islamic Cashback Card",
+      "network": "Mastercard", "card_type": "islamic", "islamic": true, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 45.0, "basis": "profit" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 500, "base_rate_pct": 1.0,
+        "tiers": [
+          { "category": "groceries", "rate_pct": 2.0, "monthly_cap_aed": 100 },
+          { "category": "dining",    "rate_pct": 2.0, "monthly_cap_aed": 100 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "low", "provenance_notes": "Representative Emirates Islamic cashback structure. Verify on KFS." }
+    },
+    {
+      "card_id": "enbd-skywards-signature",
+      "bank": { "id": "enbd", "name": "Emirates NBD", "type": "national" },
+      "card_name": "Emirates NBD Skywards Signature (miles)",
+      "network": "Visa", "card_type": "travel", "islamic": false, "segment": "premium",
+      "eligibility": { "min_monthly_income_aed": 15000 },
+      "fees": {
+        "annual_fee_aed": 700, "annual_fee_waiver": { "type": "none" },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 48.07, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "miles", "value_per_point_aed": 0.02, "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": null, "base_rate_pct": 1.25,
+        "tiers": [
+          { "category": "travel",        "rate_pct": 2.5, "notes": "Skywards miles per AED, converted at value_per_point_aed" },
+          { "category": "international",  "rate_pct": 2.0 }
+        ]
+      },
+      "benefits": { "lounge": { "access": "unlimited", "visits_per_year": null, "guest_allowed": true, "program": "Marhaba/LoungeKey" }, "travel_insurance": true, "valet_or_golf": true, "concierge": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "medium", "provenance_notes": "Miles card included to exercise points->effective-cashback conversion (value_per_point_aed) and premium-benefit valuation. Mile values are indicative (Skywards ~AED 0.03–0.05/mile). Verify earn rates on KFS." }
+    },
+    {
+      "card_id": "liv-credit",
+      "bank": { "id": "enbd", "name": "Emirates NBD (Liv)", "type": "digital" },
+      "card_name": "Liv Credit Card",
+      "network": "Visa", "card_type": "cashback", "islamic": false, "segment": "core",
+      "eligibility": { "min_monthly_income_aed": 5000 },
+      "fees": {
+        "annual_fee_aed": 0, "annual_fee_waiver": { "type": "free_for_life" },
+        "interest": { "monthly_rate_pct": 3.45, "apr_pct": 48.07, "basis": "conventional" },
+        "fx_markup_pct": 2.99, "cash_advance_fee_pct": 3.0, "cash_advance_fee_min_aed": 99,
+        "late_payment_fee_aed": 230, "over_limit_fee_aed": 273.50, "min_payment_pct": 5.0
+      },
+      "rewards": {
+        "kind": "cashback", "min_spend_to_earn_aed": 0, "monthly_cashback_cap_aed": 300, "base_rate_pct": 0.5,
+        "tiers": [
+          { "category": "dining",        "rate_pct": 2.0, "monthly_cap_aed": 100 },
+          { "category": "entertainment", "rate_pct": 2.0, "monthly_cap_aed": 100 },
+          { "category": "online",        "rate_pct": 1.0 }
+        ]
+      },
+      "benefits": { "installment_0pct": true },
+      "source": { "source_type": "research", "as_of": "2026-06", "confidence": "low", "provenance_notes": "Digital-first card aimed at younger users. Representative values — verify on KFS." }
+    }
+  ]
+}

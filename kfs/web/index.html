@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UAE Card Intelligence — Key Facts Engine</title>
+<meta name="description" content="A universal credit-card comparison engine for the UAE: it scores every card against YOUR spending behaviour, because there is no globally best card." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap">
+    <div class="badge">UAE · Key Facts Statement engine</div>
+    <h1>There is no <em>best</em> credit card.<br />There is only the best card <span class="hl">for you</span>.</h1>
+    <p class="lede">
+      This engine reads the Key Facts Statement of every card and scores it against <strong>your</strong> spending —
+      category by category, cap by cap, fee by fee. The same card that's #1 for a grocery-heavy family is mid-table for a
+      traveller and actively <em>harmful</em> if you carry a balance. Pick a profile, then tune it and watch the ranking move.
+    </p>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <!-- ───────────── Profile panel ───────────── -->
+  <section class="panel profile-panel" aria-label="Your profile">
+    <h2 class="panel-title">1 · Who are you?</h2>
+    <div id="archetypes" class="archetypes"></div>
+
+    <div class="profile-editor">
+      <div class="field">
+        <label for="income">Monthly income (AED)</label>
+        <input type="number" id="income" min="0" step="500" />
+      </div>
+
+      <h3 class="sub">Monthly spend by category (AED)</h3>
+      <div id="spendGrid" class="spend-grid"></div>
+      <div class="total-row">Total monthly spend: <strong id="totalSpend">—</strong> · annual <strong id="annualSpend">—</strong></div>
+
+      <h3 class="sub">Behaviour — this is what really moves the answer</h3>
+      <div class="field">
+        <label for="intl">Share of spend abroad / non-AED: <span id="intlVal" class="mono">0%</span></label>
+        <input type="range" id="intl" min="0" max="80" step="1" />
+      </div>
+      <div class="field toggle-row">
+        <label class="switch"><input type="checkbox" id="revolves" /><span>I carry a balance (don't pay in full)</span></label>
+      </div>
+      <div class="field" id="balanceField" hidden>
+        <label for="balance">Balance carried month-to-month (AED)</label>
+        <input type="number" id="balance" min="0" step="500" />
+      </div>
+      <div class="field two">
+        <div>
+          <label for="lounge">Lounge visits / year</label>
+          <input type="number" id="lounge" min="0" step="1" />
+        </div>
+        <label class="switch end"><input type="checkbox" id="insurance" /><span>I'd use travel insurance</span></label>
+      </div>
+      <label class="switch"><input type="checkbox" id="islamic" /><span>Show Sharia-compliant cards only</span></label>
+    </div>
+  </section>
+
+  <!-- ───────────── Results panel ───────────── -->
+  <section class="panel results-panel" aria-label="Recommendations">
+    <h2 class="panel-title">2 · Best cards for this behaviour</h2>
+    <div id="headline" class="headline" hidden></div>
+    <ol id="ranking" class="ranking"></ol>
+
+    <div class="radar-block">
+      <h3 class="sub">Multi-parameter comparison (top 3)</h3>
+      <p class="muted small">Net value isn't everything. This normalises the leaders across five axes so you can see the trade-offs.</p>
+      <canvas id="radar" width="520" height="420"></canvas>
+      <div id="radarLegend" class="radar-legend"></div>
+    </div>
+
+    <details class="ineligible">
+      <summary>Cards you're not eligible for (<span id="inelCount">0</span>)</summary>
+      <ul id="ineligible"></ul>
+    </details>
+  </section>
+</main>
+
+<footer class="site-foot wrap">
+  <p>
+    <strong>Data:</strong> a curated seed of real UAE cards (captured 2026-06) with per-field provenance in
+    <code>data/cards.json</code>. Reward rates/caps are card-specific where confidence is high; some fee fields are UAE-typical
+    or CBUAE-capped. <strong>Always verify against the live KFS before acting.</strong>
+    The full extraction pipeline (<code>pipeline/</code>), the algorithm spec (<code>docs/algorithm.md</code>),
+    the aggregator accuracy assessment, and the Perfios hyper-personalisation design live in this folder.
+  </p>
+  <p class="muted small">Educational tool, not financial advice. Net-value figures are model estimates under documented assumptions.</p>
+  <p id="loadError" class="error" hidden></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
