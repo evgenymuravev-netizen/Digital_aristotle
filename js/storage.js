@@ -8,7 +8,7 @@ const KEY = "digital-aristotle:v1";
 const SETTINGS_KEY = "digital-aristotle:settings:v1";
 
 const DEFAULT_DB = { version: 1, sessions: [] };
-const DEFAULT_SETTINGS = { theme: "dark", difficulty: "standard" };
+const DEFAULT_SETTINGS = { theme: "light", difficulty: "standard" };
 
 function read(key, fallback) {
   try {
