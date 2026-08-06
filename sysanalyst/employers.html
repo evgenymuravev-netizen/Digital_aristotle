@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="For employers — browse candidates who passed the System Analyst Assessment and verify a candidate's certificate." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="noindex" />
+  <title>For employers — System Analyst Assessment</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A2%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="./index.html" aria-label="Back to the assessment">
+      <span class="brand-mark" aria-hidden="true">🏢</span>
+      <span class="brand-text"><strong>For employers</strong><small>System Analyst Assessment</small></span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="./index.html">← Tests</a>
+      <a href="./profile.html">Your profile</a>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <div class="bo-hero">
+      <p class="eyebrow">Employer back office</p>
+      <h1>Hire analysts who’ve proven the fundamentals</h1>
+      <p class="lede">Browse candidates who passed the assessment and opted in to be discoverable, then <strong>verify their certificate</strong> before you reach out.</p>
+    </div>
+
+    <div class="note" style="margin-bottom:18px">
+      <b>Prototype directory.</b> The candidates below are seeded demo data plus your own profile if you made it visible. A real, shared directory across devices — with candidate consent and server-verified certificates — needs the backend described in <span class="mono">BACKOFFICE.md</span>.
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top:0">Verify a certificate</h2>
+      <p class="muted" style="margin-top:-.4em">Paste the code from a candidate’s profile to check it hasn’t been altered and see their summary.</p>
+      <textarea class="cert-code" id="v-code" rows="3" placeholder="Paste a SAA certificate code…"></textarea>
+      <div class="cta-row" style="margin:12px 0 0"><button class="btn btn-primary btn-sm" id="verify">Verify</button></div>
+      <div class="verify-out" id="v-out"></div>
+    </div>
+
+    <h2 class="section-title" style="margin-top:34px">Candidate directory</h2>
+    <div class="filters">
+      <label class="field"><span>Minimum overall score</span>
+        <select id="f-min">
+          <option value="0">Any</option><option value="70">70%+</option><option value="80" selected>80%+</option><option value="90">90%+</option>
+        </select>
+      </label>
+      <label class="field"><span>Strong in domain</span>
+        <select id="f-dom"><option value="">Any domain</option></select>
+      </label>
+      <label class="switch" style="margin-bottom:14px"><input type="checkbox" id="f-proc"> <span>Proctored only</span></label>
+    </div>
+    <div id="dir" class="cand-grid"></div>
+  </main>
+
+  <script src="./store.js"></script>
+  <script>
+  (function () {
+    var S = window.SAA_STORE;
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); };
+
+    // populate domain filter
+    var dom = document.getElementById("f-dom");
+    S.CAT_ORDER.forEach(function (c) { var o = document.createElement("option"); o.value = c; o.textContent = S.CATS[c].label; dom.appendChild(o); });
+
+    function miniBars(cats, only) {
+      return S.CAT_ORDER.map(function (c) {
+        var v = cats[c] == null ? 0 : cats[c];
+        return '<div class="mini-bar"><span>' + esc(S.CATS[c].label.split(" ")[0]) + '</span>' +
+          '<div class="track"><span style="width:' + v + '%;background:' + S.CATS[c].color + '"></span></div>' +
+          '<span class="pc">' + v + '%</span></div>';
+      }).join("");
+    }
+    function tags(cd) {
+      var t = "";
+      var v = cd.ig || "na"; var vlab = v === "clean" ? "clean" : (v === "review" ? "review" : (v === "flagged" ? "flagged" : "no integrity data"));
+      t += '<span class="tag-badge ' + (v === "clean" || v === "review" || v === "flagged" ? v : "na") + '">' + esc(vlab) + '</span>';
+      if (cd.pr) t += '<span class="tag-badge proctored">proctored</span>';
+      if (cd.you) t += '<span class="tag-badge proctored">you</span>';
+      return t;
+    }
+    function card(cd) {
+      return '<div class="cand-card' + (cd.you ? " you" : "") + '">' +
+        '<div class="cand-top"><div><div class="cand-name">' + esc(cd.name) + '</div><div class="cand-sub">@' + esc(cd.handle) + ' · ' + esc(cd.headline || "") + '</div></div>' +
+        '<div class="cand-ov">' + (cd.ov || 0) + '%</div></div>' +
+        '<div class="cand-tags">' + tags(cd) + '</div>' +
+        '<div class="mini-bars">' + miniBars(cd.cats) + '</div>' +
+        '<div class="cand-sub">Best form ' + (cd.best || 0) + '% · ' + (cd.done || 0) + ' tests · ID ' + esc(cd.id || "—") + '</div>' +
+        '</div>';
+    }
+
+    function render() {
+      var min = parseInt(document.getElementById("f-min").value, 10) || 0;
+      var d = document.getElementById("f-dom").value;
+      var proc = document.getElementById("f-proc").checked;
+      var list = S.directory().filter(function (c) {
+        if ((c.ov || 0) < min) return false;
+        if (proc && !c.pr) return false;
+        if (d && (c.cats[d] == null || c.cats[d] < 75)) return false;
+        return true;
+      }).sort(function (a, b) { return (b.ov || 0) - (a.ov || 0); });
+      var host = document.getElementById("dir");
+      host.innerHTML = list.length ? list.map(card).join("") : '<p class="muted">No candidates match these filters.</p>';
+    }
+    ["f-min", "f-dom", "f-proc"].forEach(function (id) { document.getElementById(id).addEventListener("change", render); });
+    render();
+
+    // verify
+    document.getElementById("verify").addEventListener("click", function () {
+      var out = document.getElementById("v-out");
+      var res = S.verifyCert(document.getElementById("v-code").value);
+      if (!res.valid) { out.innerHTML = '<div class="note" style="border-left-color:var(--bad)"><b style="color:var(--bad)">Invalid.</b> ' + esc(res.error) + '</div>'; return; }
+      var p = res.payload, cats = p.cats || {};
+      out.innerHTML = '<div class="panel" style="margin-top:12px"><div class="integ-head"><h2 style="margin:0">' + esc(p.n) + (p.h ? ' <span class="cand-sub">@' + esc(p.h) + '</span>' : '') + '</h2>' +
+        '<span class="integ-verdict ' + (p.ig === "clean" || p.ig === "review" || p.ig === "flagged" ? p.ig : "na") + '">' + esc(p.ig === "n/a" ? "no integrity data" : p.ig) + '</span></div>' +
+        '<p class="muted" style="margin:.2em 0 10px">' + esc(p.hl || "") + ' · issued ' + esc(p.iss) + ' · ID ' + esc(p.id) + (p.pr ? ' · proctored' : '') + '</p>' +
+        '<div class="stat-tiles"><div class="stat-tile"><b>' + (p.ov == null ? "—" : p.ov + "%") + '</b><span>overall</span></div><div class="stat-tile"><b>' + (p.best || 0) + '%</b><span>best form</span></div><div class="stat-tile"><b>' + (p.done || 0) + '</b><span>tests</span></div></div>' +
+        '<div class="mini-bars" style="margin-top:12px">' + miniBars(cats) + '</div>' +
+        '<p class="disclaimer">✓ Checksum matches — the code hasn’t been altered. (Demo integrity check; production certificates are server-signed and the integrity/proctoring status is authoritative.)</p></div>';
+    });
+  })();
+  </script>
+</body>
+</html>

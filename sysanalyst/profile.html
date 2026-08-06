@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Your System Analyst Assessment profile — results by domain, an integrity summary, and a verifiable certificate you can share with employers." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="noindex" />
+  <title>Your profile — System Analyst Assessment</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="./index.html" aria-label="Back to the assessment">
+      <span class="brand-mark" aria-hidden="true">👤</span>
+      <span class="brand-text"><strong>Your profile</strong><small>System Analyst Assessment</small></span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="./index.html">← Tests</a>
+      <a href="./employers.html">For employers</a>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <div class="bo-hero">
+      <p class="eyebrow">Candidate back office</p>
+      <h1>Your profile</h1>
+      <p class="lede">Your results, an integrity summary, and a verifiable certificate — all stored on this device. Turn on “visible to employers” to appear in the directory.</p>
+    </div>
+    <div id="bo"></div>
+  </main>
+
+  <script src="./store.js"></script>
+  <script>
+  (function () {
+    var S = window.SAA_STORE, root = document.getElementById("bo");
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); };
+    var s = S.stats(), p = S.getProfile(), ig = S.integrity();
+
+    function bars(cats) {
+      return S.CAT_ORDER.map(function (c) {
+        var v = cats[c].pct, col = S.CATS[c].color;
+        return '<div class="cat-row"><span class="cat-name">' + esc(S.CATS[c].label) + '</span>' +
+          '<div class="cat-bar"><span style="width:' + (v || 0) + '%;background:' + col + '"></span></div>' +
+          '<span class="cat-val">' + (v == null ? "—" : v + "%") + '</span></div>';
+      }).join("");
+    }
+
+    var vClass = ig.verdict === "clean" ? "clean" : (ig.verdict === "review" ? "review" : (ig.verdict === "flagged" ? "flagged" : "na"));
+    var vLabel = ig.verdict === "n/a" ? "No test yet" : (ig.verdict === "clean" ? "Looks clean" : (ig.verdict === "review" ? "Worth a look" : "Flagged"));
+
+    var html = "";
+
+    // profile editor
+    html +=
+      '<div class="panel"><h2 style="margin-top:0">About you</h2>' +
+      '<div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">' +
+        '<label class="field"><span>Display name</span><input class="code-input" id="f-name" value="' + esc(p.name) + '" placeholder="e.g. Alex Rivera"></label>' +
+        '<label class="field"><span>Handle</span><input class="code-input" id="f-handle" value="' + esc(p.handle) + '" placeholder="e.g. alex-sa"></label>' +
+      '</div>' +
+      '<label class="field"><span>Headline</span><input class="code-input" id="f-headline" value="' + esc(p.headline) + '" placeholder="e.g. Integration analyst, 3y"></label>' +
+      '<label class="switch"><input type="checkbox" id="f-visible"' + (p.visible ? " checked" : "") + '> <span>Visible to employers in the directory</span></label>' +
+      '<div class="cta-row" style="margin:16px 0 0"><button class="btn btn-primary" id="save">Save profile</button><span id="saved" class="muted" style="align-self:center"></span></div>' +
+      '</div>';
+
+    if (!s.done) {
+      html += '<div class="panel"><h2 style="margin-top:0">No results yet</h2><p class="muted">Finish a test and your scores, integrity summary and certificate will appear here.</p><a class="btn btn-primary" href="./index.html">▶ Take the free test</a></div>';
+    } else {
+      // stats
+      html += '<div class="panel"><h2 style="margin-top:0">Your results</h2><div class="stat-tiles">' +
+        '<div class="stat-tile"><b>' + s.done + '</b><span>tests completed</span></div>' +
+        '<div class="stat-tile"><b>' + (s.overall == null ? "—" : s.overall + "%") + '</b><span>overall accuracy</span></div>' +
+        '<div class="stat-tile"><b>' + (s.bestForm || 0) + '%</b><span>best form score</span></div>' +
+        '<div class="stat-tile"><b>' + s.answered + '</b><span>questions answered</span></div>' +
+        '</div><h3 style="margin:18px 0 8px">By domain</h3><div class="cat-rows">' + bars(s.cats) + '</div>';
+      if (s.weakest.length) html += '<p class="muted" style="margin-top:14px">Focus next on: <b style="color:var(--text)">' + s.weakest.map(function (w) { return esc(w.topic) + " (" + w.pct + "%)"; }).join(", ") + '</b></p>';
+      html += '</div>';
+
+      // integrity
+      html += '<div class="panel integ"><div class="integ-head"><h2>Integrity summary</h2><span class="integ-verdict ' + vClass + '">' + vLabel + (ig.score != null ? " · " + ig.score + "/100" : "") + '</span></div>';
+      if (ig.flags && ig.flags.length) html += '<ul class="integ-flags">' + ig.flags.map(function (f) { return '<li><span class="sev-dot ' + f.sev + '"></span><span>' + esc(f.t) + '</span></li>'; }).join("") + '</ul>';
+      else html += '<p class="muted">No behavioural red flags on your most recent test (on this device).</p>';
+      html += '<p class="disclaimer">On-device signals are a deterrent, not proof — an employer-grade “verified” badge should come from a proctored re-test. See the integrity notes.</p></div>';
+
+      // certificate
+      var cert = S.makeCert();
+      html += '<div class="panel"><h2 style="margin-top:0">Your certificate</h2>' +
+        '<p class="muted" style="margin-top:-.4em">A shareable, checksum-stamped summary. An employer can paste the code on the <a href="./employers.html">employers page</a> to verify it.</p>' +
+        '<div class="cert-box"><div>Certificate ID: <span class="cert-id">' + esc(cert.id) + '</span></div>' +
+        '<textarea class="cert-code" id="cert" rows="3" readonly>' + esc(cert.code) + '</textarea>' +
+        '<div class="cta-row" style="margin:12px 0 0"><button class="btn btn-sm" id="copy">Copy code</button><button class="btn btn-sm" id="dl">Download .txt</button></div></div>' +
+        '<p class="disclaimer">Demo verification only: the code is stamped with a public checksum so tampering is visible, but it is not a cryptographic signature. Production issues server-signed certificates (see BACKOFFICE.md).</p></div>';
+    }
+
+    root.innerHTML = html;
+
+    // wire up
+    document.getElementById("save").addEventListener("click", function () {
+      p.name = document.getElementById("f-name").value.trim();
+      p.handle = document.getElementById("f-handle").value.trim().replace(/\s+/g, "-").toLowerCase();
+      p.headline = document.getElementById("f-headline").value.trim();
+      p.visible = document.getElementById("f-visible").checked;
+      S.saveProfile(p);
+      var el = document.getElementById("saved"); el.textContent = "✓ Saved"; setTimeout(function () { el.textContent = ""; }, 1800);
+    });
+    var copy = document.getElementById("copy");
+    if (copy) copy.addEventListener("click", function () {
+      var t = document.getElementById("cert"); t.select();
+      try { navigator.clipboard ? navigator.clipboard.writeText(t.value) : document.execCommand("copy"); } catch (e) {}
+      copy.textContent = "✓ Copied"; setTimeout(function () { copy.textContent = "Copy code"; }, 1500);
+    });
+    var dl = document.getElementById("dl");
+    if (dl) dl.addEventListener("click", function () {
+      var blob = new Blob([document.getElementById("cert").value], { type: "text/plain" });
+      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "saa-certificate.txt"; a.click();
+    });
+  })();
+  </script>
+</body>
+</html>

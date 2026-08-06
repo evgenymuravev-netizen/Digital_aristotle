@@ -18,6 +18,7 @@ const css = read("styles.css");
 const config = read("config.js");
 const questions = read("questions.js");
 const deep = read("deep.js");
+const integrity = read("integrity.js");
 const app = read("app.js");
 let html = read("index.html");
 
@@ -26,6 +27,7 @@ html = html.replace('<link rel="stylesheet" href="./styles.css" />', "<style>\n"
 html = html.replace('<script src="./config.js"></script>', "<script>\n" + config + "\n</script>");
 html = html.replace('<script src="./questions.js"></script>', "<script>\n" + questions + "\n</script>");
 html = html.replace('<script src="./deep.js"></script>', "<script>\n" + deep + "\n</script>");
+html = html.replace('<script src="./integrity.js"></script>', "<script>\n" + integrity + "\n</script>");
 html = html.replace('<script src="./app.js"></script>', "<script>\n" + app + "\n</script>");
 
 writeFileSync(join(here, "standalone.html"), html);
