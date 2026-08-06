@@ -60,6 +60,7 @@
   </header>
 
   <main id="main" class="container guide">
+    <p class="eyebrow">Study guide</p>
     <h1>The systems-analyst fundamentals — a study guide</h1>
     <p class="lede">Five domains, each with the core ideas and a quick <b>1-2-3</b> way to reason your way to the right answer under time pressure. Read it before a test, or after, to turn the "why" of each miss into something that sticks.</p>
 
@@ -179,5 +180,31 @@
     </div>
     <p class="muted">Original, vendor-neutral study material, part of the Digital Aristotle project. Technology names are referenced for description only.</p>
   </main>
+  <script>
+  /* Alethia-style scroll reveal + nav condense (progressive enhancement) */
+  (function () {
+    try {
+      var bar = document.getElementById('topbar');
+      var onScroll = function () { if (bar) bar.classList.toggle('scrolled', (window.scrollY || window.pageYOffset) > 12); };
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      var SEL = '.guide .eyebrow, .guide h1, .guide .lede, .guide .toc, .guide-sec';
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+      var nodes = document.querySelectorAll(SEL), i, n;
+      for (i = 0; i < nodes.length; i++) {
+        n = nodes[i]; n.classList.add('reveal');
+        n.style.transitionDelay = ((i % 6) * 0.05).toFixed(2) + 's';
+        io.observe(n);
+      }
+    } catch (e) {}
+  })();
+  </script>
 </body>
 </html>

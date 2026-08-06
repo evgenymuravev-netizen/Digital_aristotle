@@ -58,6 +58,7 @@
 
     <!-- ===================== HOME ===================== -->
     <section id="screen-home" class="screen container" aria-labelledby="home-h">
+      <p class="eyebrow">Systems analyst · knowledge check</p>
       <h1 id="home-h">System Analyst Assessment — practice online</h1>
       <p class="lede">
         A knowledge check for <strong>systems, integration and technical analysts</strong>. It measures how
@@ -207,5 +208,41 @@
   <script src="./questions.js"></script>
   <script src="./deep.js"></script>
   <script src="./app.js"></script>
+  <script>
+  /* Alethia-style scroll reveal + nav condense (progressive enhancement) */
+  (function () {
+    try {
+      var bar = document.getElementById('topbar');
+      var onScroll = function () { if (bar) bar.classList.toggle('scrolled', (window.scrollY || window.pageYOffset) > 12); };
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      var SEL = '#screen-home .eyebrow, #screen-home #home-h, #screen-home .lede, #screen-home .cta-row,' +
+                '#screen-home .section-title, #screen-home .section-sub, #screen-home .panel,' +
+                '#screen-home .why-card, #screen-home .compare-wrap, #screen-home .test-card,' +
+                '.guide .eyebrow, .guide h1, .guide .toc, .guide-sec';
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+      var tag = function () {
+        var nodes = document.querySelectorAll(SEL), i, n;
+        for (i = 0; i < nodes.length; i++) {
+          n = nodes[i];
+          if (n.__rev) continue; n.__rev = 1;
+          n.classList.add('reveal');
+          n.style.transitionDelay = ((i % 6) * 0.05).toFixed(2) + 's';
+          io.observe(n);
+        }
+      };
+      tag();
+      var home = document.getElementById('screen-home');
+      if (home && 'MutationObserver' in window) new MutationObserver(function () { tag(); }).observe(home, { childList: true, subtree: true });
+    } catch (e) {}
+  })();
+  </script>
 </body>
 </html>

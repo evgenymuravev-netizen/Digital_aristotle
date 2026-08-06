@@ -29,20 +29,21 @@
   --shadow: 0 10px 30px -12px rgba(0,0,0,.45);
   --transition: 160ms ease;
 
-  --bg: #0d1117;
-  --bg-2: #131a24;
-  --panel: #161d28;
-  --panel-2: #1c2533;
-  --border: #273140;
-  --text: #e7edf5;
-  --text-dim: #9fb0c3;
-  --muted: #6b7c91;
-  --accent: #d9b25a;        /* warm gold */
-  --accent-ink: #0d1117;
-  --good: #46c98b;
-  --warn: #e2b04a;
-  --bad: #ef6f6f;
-  --info: #5aa9e6;
+  /* Alethia two-tone: deep forest green + soft lime (awwwards.com/sites/alethia) */
+  --bg: #0f1f10;            /* deep forest green */
+  --bg-2: #12271a;
+  --panel: #15291b;
+  --panel-2: #1b3524;
+  --border: #2d4d37;        /* green-tinted hairline */
+  --text: #eaf4e6;          /* pale green-white */
+  --text-dim: #a9c6ad;
+  --muted: #7ea083;
+  --accent: #c6f19d;        /* Alethia lime */
+  --accent-ink: #0f1f10;    /* dark ink on lime */
+  --good: #7fe6a6;
+  --warn: #e7cf86;
+  --bad: #f2a184;
+  --info: #8fc9f5;
 }
 
 * { box-sizing: border-box; }
@@ -60,12 +61,12 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3 { font-family: var(--font-serif); line-height: 1.15; font-weight: 600; }
-h1 { font-size: clamp(1.7rem, 4vw, 2.5rem); margin: 0 0 .4em; letter-spacing: -.01em; }
-h2 { font-size: clamp(1.2rem, 2.4vw, 1.55rem); }
+h1, h2, h3 { font-family: var(--font-serif); line-height: 1.08; font-weight: 600; text-wrap: balance; }
+h1 { font-size: clamp(2.1rem, 5.5vw, 3.6rem); margin: 0 0 .3em; letter-spacing: -.022em; }
+h2 { font-size: clamp(1.35rem, 3vw, 2rem); letter-spacing: -.012em; }
 p  { margin: 0 0 1em; }
-em { color: var(--text); font-style: italic; }
-a  { color: var(--accent); }
+em { color: var(--accent); font-style: italic; }
+a  { color: var(--accent); text-underline-offset: 3px; }
 
 .muted { color: var(--muted); font-weight: 400; }
 .dim   { color: var(--text-dim); }
@@ -491,6 +492,89 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 .close-chip.far { color: var(--muted); background: color-mix(in oklab, var(--muted) 16%, transparent); }
 .rv-close { margin-top: 8px; font-size: .88rem; color: var(--text-dim); }
 
+/* ============================================================
+   ALETHIA REDESIGN LAYER
+   Editorial two-tone (deep forest green + lime) treatment inspired by
+   awwwards.com/sites/alethia: oversized type, eyebrow kickers, animated
+   pill CTAs, card hovers, scroll-reveal, and domain-coloured chips.
+   ============================================================ */
+
+::selection { background: color-mix(in oklab, var(--accent) 38%, transparent); color: var(--text); }
+
+/* forest backdrop with two soft lime glows */
+body {
+  background:
+    radial-gradient(900px 520px at 82% -8%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 60%),
+    radial-gradient(760px 520px at -5% 105%, color-mix(in oklab, var(--accent) 7%, transparent), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+/* eyebrow — the storytelling kicker above headings */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: .74rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 16px;
+}
+.eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--accent); display: inline-block; }
+
+/* oversized editorial hero */
+#home-h { max-width: 18ch; }
+.lede { font-size: clamp(1.05rem, 1.6vw, 1.22rem); max-width: 60ch; }
+.lede strong { color: var(--text); }
+
+/* section titles get a lime rule above them */
+.section-title { position: relative; }
+.section-title::before {
+  content: ""; display: block; width: 46px; height: 3px; border-radius: 2px;
+  background: var(--accent); margin-bottom: 16px;
+}
+
+/* buttons: pill shape + lively hover */
+.btn, .btn-sm { border-radius: 999px; }
+.btn-primary { box-shadow: 0 8px 22px -12px color-mix(in oklab, var(--accent) 70%, transparent); }
+.btn-primary:hover { filter: none; transform: translateY(-2px); box-shadow: 0 15px 32px -12px color-mix(in oklab, var(--accent) 78%, transparent); }
+.btn:not(.btn-primary):hover { background: color-mix(in oklab, var(--accent) 12%, var(--panel-2)); border-color: color-mix(in oklab, var(--accent) 55%, var(--border)); color: var(--text); }
+.btn:active { transform: translateY(0); }
+
+/* cards: hairline → lime lift on hover */
+.why-card, .test-card, .price-card, .panel { transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition); }
+.why-card:hover, .price-card:hover, .test-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--accent) 46%, var(--border));
+  box-shadow: 0 22px 46px -24px rgba(0,0,0,.65);
+}
+.why-ico { filter: drop-shadow(0 4px 12px color-mix(in oklab, var(--accent) 30%, transparent)); }
+
+/* nav: condense + lime hairline on scroll, sliding underlines */
+.topbar { transition: padding var(--transition), background var(--transition), border-color var(--transition); }
+.topbar.scrolled { padding-top: 8px; padding-bottom: 8px; background: color-mix(in oklab, var(--bg) 92%, transparent); border-bottom-color: color-mix(in oklab, var(--accent) 22%, var(--border)); }
+.topnav a { position: relative; }
+.topnav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -4px; height: 2px; background: var(--accent); transition: right var(--transition); }
+.topnav a:hover::after { right: 0; }
+
+/* domain-coloured topic chips (exam + review) */
+.q-topic { color: var(--accent); background: color-mix(in oklab, var(--accent) 14%, transparent); }
+.q-topic[data-cat="apis"]      { color: #8fc9f5; background: color-mix(in oklab, #8fc9f5 16%, transparent); }
+.q-topic[data-cat="protocols"] { color: #7fe3b0; background: color-mix(in oklab, #7fe3b0 16%, transparent); }
+.q-topic[data-cat="network"]   { color: #e7cf86; background: color-mix(in oklab, #e7cf86 16%, transparent); }
+.q-topic[data-cat="messaging"] { color: #d3a9f2; background: color-mix(in oklab, #d3a9f2 16%, transparent); }
+.q-topic[data-cat="data"]      { color: #f2a184; background: color-mix(in oklab, #f2a184 16%, transparent); }
+
+/* code-style terms sit on a faint lime slab */
+.q-prompt .mono, .eg .mono, .prose .mono, .option .mono {
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  padding: .05em .36em; border-radius: 6px; color: var(--accent);
+  font-family: var(--font-mono); font-weight: 600;
+}
+.option[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in oklab, var(--accent) 16%, var(--panel)); }
+
+/* scroll-reveal — JS-gated: if JS is off OR reduced-motion, nothing is hidden */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); will-change: opacity, transform; }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1 !important; transform: none !important; } }
+
 </style>
   <script type="application/ld+json">
   {
@@ -537,6 +621,7 @@ table.compare thead th:nth-child(2), table.compare tbody td:nth-child(2) { backg
 
     <!-- ===================== HOME ===================== -->
     <section id="screen-home" class="screen container" aria-labelledby="home-h">
+      <p class="eyebrow">Systems analyst · knowledge check</p>
       <h1 id="home-h">System Analyst Assessment — practice online</h1>
       <p class="lede">
         A knowledge check for <strong>systems, integration and technical analysts</strong>. It measures how
@@ -2587,5 +2672,41 @@ window.MMAT_DEEP = {
 })();
 
 </script>
+  <script>
+  /* Alethia-style scroll reveal + nav condense (progressive enhancement) */
+  (function () {
+    try {
+      var bar = document.getElementById('topbar');
+      var onScroll = function () { if (bar) bar.classList.toggle('scrolled', (window.scrollY || window.pageYOffset) > 12); };
+      window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      var SEL = '#screen-home .eyebrow, #screen-home #home-h, #screen-home .lede, #screen-home .cta-row,' +
+                '#screen-home .section-title, #screen-home .section-sub, #screen-home .panel,' +
+                '#screen-home .why-card, #screen-home .compare-wrap, #screen-home .test-card,' +
+                '.guide .eyebrow, .guide h1, .guide .toc, .guide-sec';
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+      var tag = function () {
+        var nodes = document.querySelectorAll(SEL), i, n;
+        for (i = 0; i < nodes.length; i++) {
+          n = nodes[i];
+          if (n.__rev) continue; n.__rev = 1;
+          n.classList.add('reveal');
+          n.style.transitionDelay = ((i % 6) * 0.05).toFixed(2) + 's';
+          io.observe(n);
+        }
+      };
+      tag();
+      var home = document.getElementById('screen-home');
+      if (home && 'MutationObserver' in window) new MutationObserver(function () { tag(); }).observe(home, { childList: true, subtree: true });
+    } catch (e) {}
+  })();
+  </script>
 </body>
 </html>
