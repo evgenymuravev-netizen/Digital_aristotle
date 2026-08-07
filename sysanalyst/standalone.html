@@ -631,6 +631,12 @@ body {
 .tag-badge.proctored { color: var(--accent-ink); background: var(--accent); }
 .verify-out { margin-top: 12px; }
 
+/* language dropdown (main page nav) */
+.lang-select { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 5px 30px 5px 12px; font: inherit; font-size: .82rem; cursor: pointer; appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%), linear-gradient(135deg, var(--text-dim) 50%, transparent 50%); background-position: right 14px center, right 9px center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+.lang-select:hover { border-color: color-mix(in oklab, var(--accent) 45%, var(--border)); }
+.lang-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 </style>
   <script type="application/ld+json">
   {
@@ -665,13 +671,17 @@ body {
       </span>
     </button>
     <nav class="topnav" aria-label="Primary">
-      <a href="./guide.html">Strategy guide</a>
-      <a href="./profile.html">Your profile</a>
-      <a href="./employers.html">For employers</a>
-      <a href="#" id="nav-leaderboard">Leaderboard</a>
-      <a href="#" id="nav-support">Support</a>
+      <a href="./guide.html" data-i18n="nav.guide">Strategy guide</a>
+      <a href="./profile.html" data-i18n="nav.profile">Your profile</a>
+      <a href="./employers.html" data-i18n="nav.employers">For employers</a>
+      <a href="#" id="nav-leaderboard" data-i18n="nav.leaderboard">Leaderboard</a>
+      <a href="#" id="nav-support" data-i18n="nav.support">Support</a>
       <span id="auth-slot" class="auth-slot"></span>
       <a class="home-link" href="../index.html">Digital Aristotle</a>
+      <select id="lang-select" class="lang-select" aria-label="Language / Язык">
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+      </select>
     </nav>
   </header>
 
@@ -679,9 +689,9 @@ body {
 
     <!-- ===================== HOME ===================== -->
     <section id="screen-home" class="screen container" aria-labelledby="home-h">
-      <p class="eyebrow">Systems analyst · knowledge check</p>
-      <h1 id="home-h">System Analyst Assessment — practice online</h1>
-      <p class="lede">
+      <p class="eyebrow" data-i18n="home.eyebrow">Systems analyst · knowledge check</p>
+      <h1 id="home-h" data-i18n="home.h1">System Analyst Assessment — practice online</h1>
+      <p class="lede" data-i18n-html="home.lede">
         A knowledge check for <strong>systems, integration and technical analysts</strong>. It measures how
         well you reason about <strong>APIs &amp; REST</strong>, <strong>protocols</strong> (SOAP, gRPC, GraphQL, WebSockets),
         the <strong>OSI model</strong> and networking, <strong>RabbitMQ &amp; messaging</strong>, and <strong>databases</strong>.
@@ -689,67 +699,67 @@ body {
       </p>
 
       <div class="cta-row">
-        <button class="btn btn-primary btn-lg" id="start-free" type="button">▶ Start the free 15-minute test</button>
-        <a class="btn btn-lg" href="./guide.html">📘 Study guide — the fundamentals</a>
+        <button class="btn btn-primary btn-lg" id="start-free" type="button" data-i18n="home.cta.start">▶ Start the free 15-minute test</button>
+        <a class="btn btn-lg" href="./guide.html" data-i18n="home.cta.guide">📘 Study guide — the fundamentals</a>
       </div>
 
       <div id="dashboard"><!-- skills snapshot, filled by JS --></div>
 
       <div class="panel" style="margin-top:22px">
-        <h2 style="margin-top:0">How it works</h2>
+        <h2 style="margin-top:0" data-i18n="how.title">How it works</h2>
         <ul class="tight dim">
-          <li><b>Free full test:</b> 20 questions across all five domains in a full 15 minutes — no sign-up, not a cut-down sampler.</li>
-          <li><b>Ten more forms:</b> 15 questions in 15 minutes each, graded easy → hard, spanning every domain.</li>
-          <li><b>Interleaved:</b> question types are mixed so no two similar questions run back-to-back.</li>
-          <li><b>Adaptive:</b> your results build a custom round from the topics you miss most.</li>
+          <li data-i18n-html="how.li1"><b>Free full test:</b> 20 questions across all five domains in a full 15 minutes — no sign-up, not a cut-down sampler.</li>
+          <li data-i18n-html="how.li2"><b>Ten more forms:</b> 15 questions in 15 minutes each, graded easy → hard, spanning every domain.</li>
+          <li data-i18n-html="how.li3"><b>Interleaved:</b> question types are mixed so no two similar questions run back-to-back.</li>
+          <li data-i18n-html="how.li4"><b>Adaptive:</b> your results build a custom round from the topics you miss most.</li>
         </ul>
-        <p class="muted" style="margin:8px 0 0">
+        <p class="muted" style="margin:8px 0 0" data-i18n="how.note">
           All questions are original and vendor-neutral, written to reflect the everyday knowledge of a working systems analyst.
           For self-assessment and interview prep — not affiliated with any certification body.
         </p>
       </div>
 
-      <h2 class="section-title">Why practise here?</h2>
+      <h2 class="section-title" data-i18n="why.title">Why practise here?</h2>
       <div class="why-grid">
         <div class="why-card">
           <div class="why-ico" aria-hidden="true">🧭</div>
-          <h3>Built for analysts</h3>
-          <p>Not generic trivia — the exact API-design, protocol, OSI, messaging and database calls a systems analyst makes on the job, with good-vs-bad design worked through.</p>
+          <h3 data-i18n="why.c1.h">Built for analysts</h3>
+          <p data-i18n="why.c1.p">Not generic trivia — the exact API-design, protocol, OSI, messaging and database calls a systems analyst makes on the job, with good-vs-bad design worked through.</p>
         </div>
         <div class="why-card">
           <div class="why-ico" aria-hidden="true">🎯</div>
-          <h3>Actually adaptive</h3>
-          <p>After three tests you unlock a <b>personalized test</b> built only from the topics you're weakest at — not the same generic set everyone gets.</p>
+          <h3 data-i18n="why.c2.h">Actually adaptive</h3>
+          <p data-i18n-html="why.c2.p">After three tests you unlock a <b>personalized test</b> built only from the topics you're weakest at — not the same generic set everyone gets.</p>
         </div>
         <div class="why-card">
           <div class="why-ico" aria-hidden="true">📈</div>
-          <h3>Coaching, not just a score</h3>
-          <p>Every result breaks down your <b>speed vs. accuracy</b> per topic, with a deeper "why" for each wrong answer — so you learn the concept, not just the key.</p>
+          <h3 data-i18n="why.c3.h">Coaching, not just a score</h3>
+          <p data-i18n-html="why.c3.p">Every result breaks down your <b>speed vs. accuracy</b> per topic, with a deeper "why" for each wrong answer — so you learn the concept, not just the key.</p>
         </div>
       </div>
 
       <div class="compare-wrap">
         <table class="compare">
-          <caption class="sr-only">How this assessment compares with generic quiz sites</caption>
+          <caption class="sr-only" data-i18n="cmp.caption">How this assessment compares with generic quiz sites</caption>
           <thead>
-            <tr><th scope="col">Feature</th><th scope="col">This assessment</th><th scope="col">Typical quiz sites</th></tr>
+            <tr><th scope="col" data-i18n="cmp.h.feature">Feature</th><th scope="col" data-i18n="cmp.h.this">This assessment</th><th scope="col" data-i18n="cmp.h.typical">Typical quiz sites</th></tr>
           </thead>
           <tbody>
-            <tr><th scope="row">Focus</th><td class="yes">Systems-analyst fundamentals, end to end</td><td>Scattered, single-topic quizzes</td></tr>
-            <tr><th scope="row">Price</th><td class="yes">$17.99 once</td><td>$30–$60, or recurring subscriptions</td></tr>
-            <tr><th scope="row">Free full-length test</th><td class="yes">Full 15-min test, no sign-up</td><td>A few sample questions</td></tr>
-            <tr><th scope="row">Personalized (weak-area) test</th><td class="yes">Yes — after 3 tests</td><td>Rarely</td></tr>
-            <tr><th scope="row">Deep "why" per question</th><td class="yes">Yes — addresses your specific wrong choice</td><td>One-line answer, if any</td></tr>
-            <tr><th scope="row">Speed &amp; accuracy analysis</th><td class="yes">Per-topic profile</td><td>Score only</td></tr>
-            <tr><th scope="row">Timed 15-minute simulation</th><td class="yes">Yes</td><td>Usually untimed</td></tr>
-            <tr><th scope="row">Strategy guide</th><td class="yes">Free &amp; detailed</td><td>Paid add-on</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r1.k">Focus</th><td class="yes" data-i18n="cmp.r1.a">Systems-analyst fundamentals, end to end</td><td data-i18n="cmp.r1.b">Scattered, single-topic quizzes</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r2.k">Price</th><td class="yes" data-i18n="cmp.r2.a">$17.99 once</td><td data-i18n="cmp.r2.b">$30–$60, or recurring subscriptions</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r3.k">Free full-length test</th><td class="yes" data-i18n="cmp.r3.a">Full 15-min test, no sign-up</td><td data-i18n="cmp.r3.b">A few sample questions</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r4.k">Personalized (weak-area) test</th><td class="yes" data-i18n="cmp.r4.a">Yes — after 3 tests</td><td data-i18n="cmp.r4.b">Rarely</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r5.k">Deep "why" per question</th><td class="yes" data-i18n="cmp.r5.a">Yes — addresses your specific wrong choice</td><td data-i18n="cmp.r5.b">One-line answer, if any</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r6.k">Speed &amp; accuracy analysis</th><td class="yes" data-i18n="cmp.r6.a">Per-topic profile</td><td data-i18n="cmp.r6.b">Score only</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r7.k">Timed 15-minute simulation</th><td class="yes" data-i18n="cmp.r7.a">Yes</td><td data-i18n="cmp.r7.b">Usually untimed</td></tr>
+            <tr><th scope="row" data-i18n="cmp.r8.k">Strategy guide</th><td class="yes" data-i18n="cmp.r8.a">Free &amp; detailed</td><td data-i18n="cmp.r8.b">Paid add-on</td></tr>
           </tbody>
         </table>
-        <p class="muted" style="font-size:.8rem">Comparison reflects typical paid quiz/prep sites; features and prices vary by provider and region.</p>
+        <p class="muted" style="font-size:.8rem" data-i18n="cmp.note">Comparison reflects typical paid quiz/prep sites; features and prices vary by provider and region.</p>
       </div>
 
-      <h2 class="section-title">The ten full assessments</h2>
-      <p class="section-sub">Each is an independent 15-minute form of increasing-difficulty questions across all five domains. Your best score per form is saved on this device.</p>
+      <h2 class="section-title" data-i18n="forms.title">The ten full assessments</h2>
+      <p class="section-sub" data-i18n="forms.sub">Each is an independent 15-minute form of increasing-difficulty questions across all five domains. Your best score per form is saved on this device.</p>
       <div class="test-grid" id="test-grid"><!-- filled by JS --></div>
       <div id="unlock-status"><!-- filled by JS --></div>
     </section>
@@ -819,7 +829,7 @@ body {
   <div id="sign-host" aria-live="polite"></div>
   <div id="modal-root"></div>
 
-  <footer class="footer">
+  <footer class="footer" data-i18n="footer">
     An original, vendor-neutral System Analyst Assessment, part of the Digital Aristotle project.
     All questions are original and all results stay in your browser.
     Product and technology names (RabbitMQ, Kafka, GraphQL, etc.) are referenced for description only.
@@ -2898,6 +2908,117 @@ window.MMAT_DEEP = {
     }
     renderHome();
   })();
+})();
+
+</script>
+  <script>
+/* ============================================================
+   SAA — lightweight i18n for the landing page
+
+   Elements tagged with data-i18n (textContent) or data-i18n-html
+   (innerHTML) are translated on the fly. English is the baseline: it
+   is captured from the DOM at load, so only the Russian strings live
+   here. The choice is persisted in localStorage.
+
+   To add a language: add its code to the <select> in index.html and a
+   dictionary below. To extend into the exam engine later, call
+   window.SAA_I18N.t(key, englishDefault) from app.js.
+   ============================================================ */
+(function () {
+  "use strict";
+  if (typeof document === "undefined") return;
+
+  var LANG_KEY = "saa:v1:lang";
+
+  var DICT = {
+    ru: {
+      "nav.guide": "Руководство",
+      "nav.profile": "Ваш профиль",
+      "nav.employers": "Работодателям",
+      "nav.leaderboard": "Рейтинг",
+      "nav.support": "Поддержка",
+
+      "home.eyebrow": "Системный аналитик · проверка знаний",
+      "home.h1": "Оценка системного аналитика — практика онлайн",
+      "home.lede": "Проверка знаний для <strong>системных, интеграционных и технических аналитиков</strong>. Она оценивает, насколько хорошо вы разбираетесь в <strong>API и REST</strong>, <strong>протоколах</strong> (SOAP, gRPC, GraphQL, WebSockets), <strong>модели OSI</strong> и сетях, <strong>RabbitMQ и обмене сообщениями</strong>, а также <strong>базах данных</strong>. Начните с бесплатного полного теста, узнайте свои сильные и слабые стороны, а затем пройдите десять тестов на время.",
+      "home.cta.start": "▶ Начать бесплатный 15-минутный тест",
+      "home.cta.guide": "📘 Учебное руководство — основы",
+
+      "how.title": "Как это работает",
+      "how.li1": "<b>Бесплатный полный тест:</b> 20 вопросов по всем пяти областям за полные 15 минут — без регистрации, не урезанная версия.",
+      "how.li2": "<b>Ещё десять тестов:</b> по 15 вопросов за 15 минут, от простого к сложному, по всем областям.",
+      "how.li3": "<b>Перемешивание:</b> типы вопросов чередуются, поэтому похожие вопросы не идут подряд.",
+      "how.li4": "<b>Адаптивность:</b> по вашим результатам формируется персональный раунд из тем, где вы чаще ошибаетесь.",
+      "how.note": "Все вопросы оригинальные и независимы от вендоров, отражают повседневные знания практикующего системного аналитика. Для самопроверки и подготовки к собеседованиям — не связано ни с одним сертификационным органом.",
+
+      "why.title": "Почему стоит практиковаться здесь?",
+      "why.c1.h": "Создано для аналитиков",
+      "why.c1.p": "Не общая викторина — именно те задачи по проектированию API, протоколам, OSI, обмену сообщениями и базам данных, которые системный аналитик решает на работе, с разбором удачных и неудачных решений.",
+      "why.c2.h": "По-настоящему адаптивно",
+      "why.c2.p": "После трёх тестов открывается <b>персональный тест</b>, составленный только из тем, где вы слабее всего, — а не тот же типовой набор для всех.",
+      "why.c3.h": "Обучение, а не просто оценка",
+      "why.c3.p": "Каждый результат раскладывает вашу <b>скорость и точность</b> по темам, с углублённым «почему» для каждого неверного ответа — чтобы вы понимали концепцию, а не просто запоминали ответ.",
+
+      "cmp.caption": "Сравнение этой оценки с типичными сайтами-викторинами",
+      "cmp.h.feature": "Возможность",
+      "cmp.h.this": "Эта оценка",
+      "cmp.h.typical": "Типичные викторины",
+      "cmp.r1.k": "Направленность", "cmp.r1.a": "Основы системного анализа, от и до", "cmp.r1.b": "Разрозненные викторины по одной теме",
+      "cmp.r2.k": "Цена", "cmp.r2.a": "$17.99 разово", "cmp.r2.b": "$30–$60 или регулярная подписка",
+      "cmp.r3.k": "Бесплатный полный тест", "cmp.r3.a": "Полный 15-мин тест, без регистрации", "cmp.r3.b": "Несколько примеров вопросов",
+      "cmp.r4.k": "Персональный тест (по слабым темам)", "cmp.r4.a": "Да — после 3 тестов", "cmp.r4.b": "Редко",
+      "cmp.r5.k": "Углублённое «почему» для каждого вопроса", "cmp.r5.a": "Да — разбирает именно ваш неверный выбор", "cmp.r5.b": "Одна строка ответа, если есть",
+      "cmp.r6.k": "Анализ скорости и точности", "cmp.r6.a": "Профиль по темам", "cmp.r6.b": "Только балл",
+      "cmp.r7.k": "Симуляция на 15 минут", "cmp.r7.a": "Да", "cmp.r7.b": "Обычно без таймера",
+      "cmp.r8.k": "Учебное руководство", "cmp.r8.a": "Бесплатное и подробное", "cmp.r8.b": "Платное дополнение",
+      "cmp.note": "Сравнение отражает типичные платные сайты викторин/подготовки; возможности и цены зависят от провайдера и региона.",
+
+      "forms.title": "Десять полных тестов",
+      "forms.sub": "Каждый — независимый тест на 15 минут с вопросами возрастающей сложности по всем пяти областям. Ваш лучший результат по каждому тесту сохраняется на этом устройстве.",
+
+      "footer": "Оригинальная, независимая от вендоров оценка системного аналитика — часть проекта Digital Aristotle. Все вопросы оригинальны, а результаты остаются в вашем браузере. Названия продуктов и технологий (RabbitMQ, Kafka, GraphQL и др.) упоминаются только для описания.",
+    },
+  };
+
+  var base = {};   // captured English baseline, keyed by data-i18n key
+
+  function els() { return document.querySelectorAll("[data-i18n],[data-i18n-html]"); }
+  function keyOf(el) { return el.getAttribute("data-i18n") || el.getAttribute("data-i18n-html"); }
+  function isHtml(el) { return el.hasAttribute("data-i18n-html"); }
+
+  function capture() {
+    var list = els(), i, el, k;
+    for (i = 0; i < list.length; i++) { el = list[i]; k = keyOf(el); if (!(k in base)) base[k] = isHtml(el) ? el.innerHTML : el.textContent; }
+  }
+
+  function apply(lang) {
+    var d = DICT[lang] || null, list = els(), i, el, k, v;
+    for (i = 0; i < list.length; i++) {
+      el = list[i]; k = keyOf(el);
+      v = (d && d[k] != null) ? d[k] : base[k];
+      if (v == null) continue;
+      if (isHtml(el)) el.innerHTML = v; else el.textContent = v;
+    }
+    document.documentElement.setAttribute("lang", lang);
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+    var sel = document.getElementById("lang-select"); if (sel && sel.value !== lang) sel.value = lang;
+  }
+
+  function init() {
+    capture();
+    var saved = null; try { saved = localStorage.getItem(LANG_KEY); } catch (e) {}
+    var lang = (saved && (saved === "en" || DICT[saved])) ? saved : "en";
+    var sel = document.getElementById("lang-select");
+    if (sel) { sel.value = lang; sel.addEventListener("change", function () { apply(sel.value); }); }
+    apply(lang);
+    window.SAA_I18N = {
+      apply: apply,
+      t: function (k, def) { var l = document.documentElement.getAttribute("lang") || "en"; var d = DICT[l]; return (d && d[k] != null) ? d[k] : (base[k] != null ? base[k] : (def != null ? def : k)); },
+    };
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 })();
 
 </script>

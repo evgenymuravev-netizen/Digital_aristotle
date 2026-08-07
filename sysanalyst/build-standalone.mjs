@@ -19,6 +19,7 @@ const config = read("config.js");
 const questions = read("questions.js");
 const deep = read("deep.js");
 const integrity = read("integrity.js");
+const i18n = read("i18n.js");
 const app = read("app.js");
 let html = read("index.html");
 
@@ -29,13 +30,14 @@ html = html.replace('<script src="./questions.js"></script>', "<script>\n" + que
 html = html.replace('<script src="./deep.js"></script>', "<script>\n" + deep + "\n</script>");
 html = html.replace('<script src="./integrity.js"></script>', "<script>\n" + integrity + "\n</script>");
 html = html.replace('<script src="./app.js"></script>', "<script>\n" + app + "\n</script>");
+html = html.replace('<script src="./i18n.js"></script>', "<script>\n" + i18n + "\n</script>");
 
 writeFileSync(join(here, "standalone.html"), html);
 
 // ---- artifact variant: body content only, no cross-page links ----
 let body = html.slice(html.indexOf("<body>") + 6, html.indexOf("</body>"));
 body = body.replace(/<nav class="topnav"[\s\S]*?<\/nav>/, "");                 // drop guide / Digital Aristotle links
-body = body.replace(/<a class="btn btn-lg" href="\.\/guide\.html">[\s\S]*?<\/a>/, ""); // drop guide CTA
+body = body.replace(/<a class="btn btn-lg" href="\.\/guide\.html"[^>]*>[\s\S]*?<\/a>/, ""); // drop guide CTA (tolerate extra attrs)
 const artifact = "<style>\n" + css + "\n</style>\n" + body;
 
 const scratch = "/tmp/claude-0/-home-user-Digital-aristotle/15c086bf-8bd9-5ba9-933e-2a40ce60b935/scratchpad/saa-artifact.html";

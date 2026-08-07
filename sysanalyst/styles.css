@@ -615,3 +615,9 @@ body {
 .tag-badge.flagged, .tag-badge.na { color: var(--muted); background: color-mix(in oklab, var(--muted) 16%, transparent); }
 .tag-badge.proctored { color: var(--accent-ink); background: var(--accent); }
 .verify-out { margin-top: 12px; }
+
+/* language dropdown (main page nav) */
+.lang-select { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 5px 30px 5px 12px; font: inherit; font-size: .82rem; cursor: pointer; appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%), linear-gradient(135deg, var(--text-dim) 50%, transparent 50%); background-position: right 14px center, right 9px center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+.lang-select:hover { border-color: color-mix(in oklab, var(--accent) 45%, var(--border)); }
+.lang-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
