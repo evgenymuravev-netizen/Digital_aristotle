@@ -121,7 +121,7 @@ store.clear(); goHome();
 byId["start-free"].fire("click");                  // free test starts (no lock)
 const free = driveExam("correct");
 expect("all-correct %", free.pct, 100);
-expect("tally", free.sub, "20 / 20 correct");
+expect("tally", free.sub, "25 / 25 correct");
 assert("no two adjacent questions share a topic", noAdjacentDup(free.topics) === -1,
   "duplicate at position " + noAdjacentDup(free.topics) + " in " + JSON.stringify(free.topics));
 assert("results show a speed & accuracy profile", byId["results-body"].textContent.includes("Speed & accuracy profile"), "no profile panel");
@@ -145,8 +145,8 @@ btnByText(byId["paywall-body"], "Unlock").fire("click");   // code unlock → st
 assert("unlocking a form launches its exam", $("screen-exam").classList.contains("active"), "exam not active after unlock");
 const locked = driveExam("correct");
 expect("unlocked form all-correct %", locked.pct, 100);
-expect("unlocked form size", locked.sub, "15 / 15 correct");
-assert("interleaved: no adjacent topic in a 15-Q form", noAdjacentDup(locked.topics) === -1,
+expect("unlocked form size", locked.sub, "20 / 20 correct");
+assert("interleaved: no adjacent topic in a 20-Q form", noAdjacentDup(locked.topics) === -1,
   "duplicate at position " + noAdjacentDup(locked.topics));
 goHome();
 assert("form no longer shows Unlock once purchased", !btnByText(byId["test-grid"], "Unlock"), "still locked");

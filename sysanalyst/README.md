@@ -61,8 +61,8 @@ node sysanalyst/build-standalone.mjs   # optional: produce standalone.html
 ```
 
 ## Current bank
-Free test: **20** questions (4 per domain). Ten forms: **15** each (3 per domain) = **150**.
-**170 original questions** total, plus **20** hand-written deep explanations on the highest-value
+Free test: **25** questions (5 per domain). Ten forms: **20** each (4 per domain) = **200**.
+**225 original questions** total, plus **20** hand-written deep explanations on the highest-value
 items; every other wrong answer still gets a topic-aware "why" from the engine's generator.
 Expand any form to 20–25 questions the same way the MMAT bank did — the engine renders whatever
 is in `questions.js`.
