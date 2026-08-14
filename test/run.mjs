@@ -22,6 +22,10 @@ import { switchingScore } from "../js/tests/switching.js";
 import { spanScore } from "../js/tests/digitspan.js";
 import { weightedScore, TIERS } from "../js/tests/sequences.js";
 import { dPrime } from "../js/tests/nback.js";
+import {
+  personalBest, attemptCount, pastAverage, tierForPercentile,
+  achievementsFor, sessionAchievements, strongestAndWeakest, TIERS as ACH_TIERS,
+} from "../js/achievements.js";
 
 let passed = 0, failed = 0;
 function test(name, fn) {
@@ -241,6 +245,133 @@ test("clear drop → reliable decline", () => {
 });
 test("clear rise → improving", () => {
   assert.equal(verdictFromSeries([50, 52, 51, 53, 70, 72]).status, "improving");
+});
+
+
+/* ---------------------------------------------------------------
+   achievements — celebrating the right things, and only those
+   --------------------------------------------------------------- */
+// mirrors the real storage schema (storage.js saveSession): scores keyed by test id
+const sess = (id, kind, scores, ts = 0) => ({ id, kind, ts, scores, raw: {}, labels: {} });
+const HIST = [
+  sess("s1", "single", { reaction: 50 }),
+  sess("s2", "single", { reaction: 70 }),
+  sess("s3", "full", { reaction: 60, nback: 40 }),
+];
+
+console.log("achievements — history helpers");
+test("personalBest picks the max across all sessions", () => {
+  assert.equal(personalBest(HIST, "reaction"), 70);
+  assert.equal(personalBest(HIST, "nback"), 40);
+});
+test("personalBest returns null when never taken", () => {
+  assert.equal(personalBest(HIST, "corsi"), null);
+});
+test("excludeSessionId keeps the current run out of its own comparison", () => {
+  assert.equal(personalBest(HIST, "reaction", "s2"), 60);
+  assert.equal(attemptCount(HIST, "reaction", "s2"), 2);
+});
+test("pastAverage averages prior attempts", () => {
+  assert.equal(pastAverage(HIST, "reaction"), 60);   // (50+70+60)/3
+  assert.equal(pastAverage(HIST, "corsi"), null);
+});
+
+test("history helpers read the same schema storage.js writes", () => {
+  // saveSession() persists {scores:{id:n}} — not a results array. If that ever
+  // changes, these helpers must change with it or every result reads as "first".
+  const stored = sess("z", "single", { reaction: 42 });
+  assert.equal(personalBest([stored], "reaction"), 42);
+  assert.equal(attemptCount([stored], "reaction"), 1);
+  assert.equal(pastAverage([stored], "reaction"), 42);
+});
+
+console.log("achievements — tiers");
+test("tierForPercentile thresholds", () => {
+  assert.equal(tierForPercentile(97), "legendary");
+  assert.equal(tierForPercentile(88), "great");
+  assert.equal(tierForPercentile(72), "good");
+  assert.equal(tierForPercentile(57), "solid");
+  assert.equal(tierForPercentile(40), "none");
+  assert.equal(tierForPercentile(null), "none");
+});
+test("tiers are ordered loudest-first by rank", () => {
+  assert.ok(ACH_TIERS.legendary.rank > ACH_TIERS.great.rank);
+  assert.ok(ACH_TIERS.great.rank > ACH_TIERS.good.rank);
+  assert.ok(ACH_TIERS.solid.rank > ACH_TIERS.none.rank);
+});
+
+console.log("achievements — what gets celebrated");
+test("a weak result is not celebrated", () => {
+  const a = achievementsFor({ score: 30, pct: 20, sessions: HIST, testId: "reaction" });
+  assert.equal(a.tier, "none");
+  assert.equal(a.headline, null);
+});
+test("a top-1% result is legendary", () => {
+  const a = achievementsFor({ score: 99, pct: 99, sessions: HIST, testId: "reaction" });
+  assert.equal(a.tier, "legendary");
+  assert.ok(a.badges.some((b) => b.key === "top1"));
+});
+test("first-ever attempt is a baseline, never a personal best", () => {
+  const a = achievementsFor({ score: 80, pct: 50, sessions: HIST, testId: "corsi" });
+  assert.equal(a.isFirst, true);
+  assert.equal(a.isPB, false);
+  assert.ok(a.badges.some((b) => b.key === "baseline"));
+});
+test("beating your old best is a PB and gets promoted to a loud tier", () => {
+  const a = achievementsFor({ score: 90, pct: 50, sessions: HIST, testId: "reaction" });
+  assert.equal(a.isPB, true);
+  assert.equal(a.tier, "great");           // promoted despite a mid percentile
+  assert.match(a.headline, /personal best/i);
+});
+test("matching your old best is not a PB", () => {
+  const a = achievementsFor({ score: 70, pct: 50, sessions: HIST, testId: "reaction" });
+  assert.equal(a.isPB, false);
+});
+test("deltaVsAvg is measured against prior attempts only", () => {
+  const a = achievementsFor({ score: 75, pct: 50, sessions: HIST, testId: "reaction" });
+  assert.equal(Math.round(a.deltaVsAvg), 15);   // 75 - 60
+  assert.ok(a.badges.some((b) => b.key === "above-own"));
+});
+test("a missing norm (pct null) still celebrates a personal best", () => {
+  const a = achievementsFor({ score: 95, pct: null, sessions: HIST, testId: "reaction" });
+  assert.equal(a.isPB, true);
+  assert.notEqual(a.tier, "none");
+});
+
+console.log("achievements — session level");
+test("first full assessment reads as a baseline", () => {
+  const a = sessionAchievements({ overallPct: 55, composite: 50, sessions: [], sessionId: null });
+  assert.equal(a.isFirst, true);
+  assert.match(a.headline, /baseline/i);
+});
+test("beating your best composite is called out", () => {
+  const hist = [sess("f1", "full", { reaction: 50, nback: 50 })];
+  const a = sessionAchievements({ overallPct: 60, composite: 70, sessions: hist });
+  assert.equal(a.isPB, true);
+  assert.ok(a.badges.some((b) => b.key === "pb"));
+});
+test("singles do not count toward the composite best", () => {
+  const hist = [sess("x", "single", { reaction: 99 })];
+  const a = sessionAchievements({ overallPct: 50, composite: 40, sessions: hist });
+  assert.equal(a.isFirst, true);   // no prior *full* session
+});
+
+console.log("achievements — strongest / weakest");
+test("picks the highest and lowest percentile tests", () => {
+  const results = [{ id: "a", name: "A" }, { id: "b", name: "B" }, { id: "c", name: "C" }];
+  const { best, worst } = strongestAndWeakest(results, { a: 90, b: 40, c: 65 });
+  assert.equal(best.id, "a");
+  assert.equal(worst.id, "b");
+});
+test("a single test has no contrast to draw", () => {
+  const { best, worst } = strongestAndWeakest([{ id: "a", name: "A" }], { a: 90 });
+  assert.equal(best.id, "a");
+  assert.equal(worst, null);
+});
+test("tests without norms are skipped", () => {
+  const { best, worst } = strongestAndWeakest([{ id: "a" }, { id: "z" }], { a: 80 });
+  assert.equal(best.id, "a");
+  assert.equal(worst, null);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

@@ -138,7 +138,7 @@ export function indexDial(value, size = 150) {
     // value text
     ctx.fillStyle = cssVar("--text", "#e7edf5");
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.font = `600 ${Math.round(size * 0.28)}px "Iowan Old Style", Georgia, serif`;
+    ctx.font = `${Math.round(size * 0.3)}px "Anton", "Arial Narrow", Impact, sans-serif`;
     ctx.fillText(value == null ? "—" : String(Math.round(value)), cx, cy - 4);
     ctx.fillStyle = cssVar("--muted", "#6b7c91");
     ctx.font = "11px system-ui"; ctx.fillText("INDEX / 100", cx, cy + size * 0.16);

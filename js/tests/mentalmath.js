@@ -2,7 +2,7 @@
    This is the skill most directly handed off to machines, so it's a
    canary for AI-driven atrophy. Score scales with how many you get
    right in the time limit. */
-import { el, clear, instructions, countdown, setProgress, clamp, randInt, pick } from "../ui.js";
+import { el, clear, instructions, countdown, setProgress, clamp, randInt, pick, streakMeter } from "../ui.js";
 
 export const meta = {
   id: "mentalmath",
@@ -53,6 +53,7 @@ export async function run(stage, { signal } = {}) {
   const promptEl = el("div", { class: "bigprompt" }, "");
   const input = el("input", { class: "answer-input", type: "text", inputmode: "numeric", autocomplete: "off", "aria-label": "Answer" });
   stage.append(timerEl, counterEl, el("div", {}, [promptEl, el("div", {}, [input])]));
+  const streak = streakMeter(stage);
   input.focus();
 
   let correct = 0, attempted = 0, current = genProblem(0);
@@ -78,7 +79,7 @@ export async function run(stage, { signal } = {}) {
       attempted++;
       const val = parseInt(input.value, 10);
       const good = val === current.answer;
-      if (good) { correct++; counterEl.textContent = `${correct} correct`; }
+      if (good) { correct++; counterEl.textContent = `${correct} correct`; streak.hit(); } else streak.miss();
       flash(good);
       input.value = "";
       current = genProblem(correct);
@@ -98,6 +99,6 @@ export async function run(stage, { signal } = {}) {
   return {
     ...meta, score, raw: correct,
     rawLabel: `${correct} correct in ${SECONDS}s (${acc}% accuracy)`,
-    detail: { Correct: correct, Attempted: attempted, Accuracy: `${acc}%` },
+    detail: { Correct: correct, Attempted: attempted, Accuracy: `${acc}%`, "Best run": streak.best },
   };
 }

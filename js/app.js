@@ -12,14 +12,31 @@ import {
   planFullAssessment, RESUME_WINDOW_MS, compositeForSession,
 } from "./stats.js";
 import { drawLineChart, drawSparkline, indexDial } from "./chart.js";
+import { bellCurveBlock, countUp } from "./bellcurve.js";
+import { achievementsFor, sessionAchievements, strongestAndWeakest } from "./achievements.js";
+import { celebrate, celebrationBanner } from "./celebrate.js";
 import { TESTS, META, byId, NEW_IDS } from "./tests/index.js";
 import { TESTINFO, compareToNorm, normReference, ordinal, overallNorm } from "./norms.js";
 
 const state = { controller: null };
 
 /* ----------------------------- theme ----------------------------- */
+/** Canvases painted under the old palette need repainting after a swap. */
+const themeRedraws = new Set();
+
+function onThemeChange(fn) { themeRedraws.add(fn); return fn; }
+
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
+  // Canvas keeps pixels, not CSS variables — repaint everything on screen.
+  // rAF so the new custom-property values are resolved before we read them.
+  requestAnimationFrame(() => {
+    for (const n of document.querySelectorAll(".index-dial")) n._redraw?.();
+    if (trendsRedraw) trendsRedraw();
+    for (const fn of themeRedraws) {
+      try { fn(); } catch { themeRedraws.delete(fn); }
+    }
+  });
 }
 
 /* ----------------------------- router ----------------------------- */
@@ -103,18 +120,41 @@ function renderHome() {
    RUNNING TESTS
    ============================================================ */
 async function interstitial(stage, doneCount, total, nextMeta, signal, lastResult) {
-  let scoreLine = "";
+  let scoreLine = "", title = "Nice — keep going", ach = null;
+
   if (lastResult) {
     const n = compareToNorm(lastResult.id, lastResult.raw);
-    scoreLine = `<div class="inter-score">✓ <b>${lastResult.name}: ${Math.round(lastResult.score)}/100</b>${n ? ` <span class="muted">· better than ~${n.pct}% of people</span>` : ""}</div>`;
+    ach = achievementsFor({
+      score: lastResult.score, pct: n?.pct ?? null,
+      sessions: getSessions(), testId: lastResult.id,
+    });
+    if (ach.headline && ach.tier !== "none") title = ach.headline;
+
+    const badges = (ach.badges || [])
+      .map((b) => `<span class="ach-badge ach-${b.key}" title="${b.detail || ""}">${b.label}</span>`)
+      .join("");
+    scoreLine =
+      `<div class="inter-score">✓ <b>${lastResult.name}: ${Math.round(lastResult.score)}/100</b>` +
+      `${n ? ` <span class="muted">· better than ~${n.pct}% of people</span>` : ""}</div>` +
+      (badges ? `<div class="ach-badges">${badges}</div>` : "");
   }
-  return instructions(stage, {
+
+  // dots showing how far through the battery you are
+  const dots = Array.from({ length: total }, (_, i) =>
+    `<span class="prog-dot${i < doneCount ? " on" : ""}"></span>`).join("");
+
+  const p = instructions(stage, {
     domain: `${doneCount} of ${total} complete`,
-    title: "Nice — keep going",
-    bodyHTML: `${scoreLine}<p>Next up: <b>${nextMeta.icon} ${nextMeta.name}</b> <span class="muted">(${nextMeta.domain})</span>.</p>
+    title,
+    bodyHTML: `${scoreLine}<div class="prog-dots" aria-hidden="true">${dots}</div>
+               <p>Next up: <b>${nextMeta.icon} ${nextMeta.name}</b> <span class="muted">(${nextMeta.domain})</span>.</p>
                <p class="muted">Take a breath, then continue when you're ready. Your progress is saved after every test.</p>`,
     button: `Continue ▸`, signal,
   });
+
+  // a small burst for a genuinely strong test, mid-run
+  if (ach && (ach.tier === "legendary" || ach.tier === "great")) celebrate(ach.tier);
+  return p;
 }
 
 /** Re-create a result object from a stored recent single, to fold into a full session. */
@@ -314,6 +354,48 @@ function normPanel(id, raw) {
   ]);
 }
 
+/** Honest framing for your lowest-ranked test — which may still be excellent. */
+function weakestLabel(pct) {
+  if (pct < 40) return "Most room to grow";
+  if (pct < 70) return "Your softest area";
+  return "Lowest — but still strong";
+}
+
+/**
+ * The headline "where do I stand" panel: a big animated percentile, a
+ * plain-English sentence, and the population curve with your slice shaded.
+ */
+function standingPanel(pct, { title = "Where you land", lead = "", foot = "" } = {}) {
+  const bigNum = el("span", { class: "stand-num", text: "0" });
+  const bell = bellCurveBlock(pct, { label: "YOU", height: 190 });
+
+  const panel = el("div", { class: "panel standing" }, [
+    el("h2", { text: title }),
+    el("div", { class: "stand-head" }, [
+      el("div", { class: "stand-figure" }, [
+        bigNum,
+        el("span", { class: "stand-suffix", text: ordinal(pct).replace(String(pct), "") }),
+      ]),
+      el("div", { class: "stand-copy" }, [
+        el("p", { class: "stand-claim", html: `You scored higher than about <b>${pct}%</b> of people.` }),
+        lead ? el("p", { class: "muted", text: lead }) : null,
+      ]),
+    ]),
+    bell.node,
+    foot ? el("p", { class: "muted norm-src", html: foot }) : null,
+  ]);
+
+  // repaint the curve when the palette changes; unregister once it's gone
+  const reg = onThemeChange(() => {
+    if (!bell.node.isConnected) { themeRedraws.delete(reg); return; }
+    bell.redraw();
+  });
+
+  // count up once the panel is on screen
+  requestAnimationFrame(() => countUp(bigNum, pct, { dur: 900 }));
+  return panel;
+}
+
 /** "What this measures" explainer for a single test. */
 function measuresPanel(id) {
   const info = TESTINFO[id];
@@ -335,34 +417,91 @@ function renderResults(results, kind, session) {
   if (kind === "full") {
     const sum = summarize(getSessions(), META);
     const ov = overallNorm(results);
+    const ach = sessionAchievements({
+      overallPct: ov?.pct ?? null, composite, sessions: getSessions(), sessionId: session.id,
+    });
+
+    const banner = celebrationBanner(ach, {
+      subtitle: ov ? `Across all ${ov.n} tests you scored higher than about ${ov.pct}% of people.` : "",
+    });
+    if (banner) body.append(banner);
+
     const head = el("div", { class: "panel" }, [
       el("div", { class: "verdict-hero" }, [
         indexDial(composite, 130),
         el("div", {}, [
           el("h2", {}, [`Composite: ${composite}/100 `, verdictPill(sum.verdict)]),
           el("p", { html: sum.verdict.message }),
-          ov ? el("p", { class: "muted", html: `Overall vs population: ≈ <b>${ordinal(ov.pct)} percentile</b> — your per-test standings averaged (rough norms, ${ov.n} tests).` }) : null,
           el("p", { class: "muted", text: `Saved ${fmtDate(session.ts)} · assessment #${sum.fullCount}` }),
         ]),
       ]),
     ]);
     body.append(head);
+
+    if (ov) body.append(standingPanel(ov.pct, {
+      title: "Where you land",
+      lead: "Everyone, ranked. The shaded slice is the share of people you scored above.",
+      foot: `Your standings on all ${ov.n} tests, averaged, then placed on the population curve. Norms are published references — not other users of this app.`,
+    }));
+
+    // what you're best and worst at — only once there's something to contrast
+    const pctById = {};
+    for (const r of results) { const n = compareToNorm(r.id, r.raw); if (n) pctById[r.id] = n.pct; }
+    const { best, worst } = strongestAndWeakest(results, pctById);
+    if (best && worst) {
+      body.append(el("div", { class: "panel spread" }, [
+        el("div", { class: "spread-col" }, [
+          el("div", { class: "tc-domain", text: "Sharpest" }),
+          el("h3", {}, [`${best.icon} ${best.name}`]),
+          el("p", { class: "muted", html: `<b class="up">${ordinal(best.pct)} percentile</b> — ${TESTINFO[best.id]?.measures || ""}` }),
+        ]),
+        el("div", { class: "spread-col" }, [
+          // "weakest" only means "needs work" if it's actually low — when every
+          // score is strong, say so rather than manufacturing a problem.
+          el("div", { class: "tc-domain", text: weakestLabel(worst.pct) }),
+          el("h3", {}, [`${worst.icon} ${worst.name}`]),
+          el("p", { class: "muted", html: `<b class="${worst.pct < 40 ? "down" : worst.pct >= 70 ? "up" : "flat"}">${ordinal(worst.pct)} percentile</b> — ${TESTINFO[worst.id]?.measures || ""}` }),
+        ]),
+      ]));
+    }
+
+    if (ach.tier !== "none") celebrate(ach.tier);
   } else {
     const r0 = results[0];
+    const n0 = compareToNorm(r0.id, r0.raw);
+    const ach = achievementsFor({
+      score: r0.score, pct: n0?.pct ?? null,
+      sessions: getSessions(), testId: r0.id, sessionId: session.id,
+    });
+
+    const banner = celebrationBanner(ach, {
+      subtitle: n0 ? `You beat about ${n0.pct}% of people on this one.` : "",
+    });
+    if (banner) body.append(banner);
+
     body.append(el("div", { class: "panel center" }, [
       el("div", { class: "tc-domain", text: r0.domain }),
       el("h2", { text: r0.name }),
-      el("div", { class: "score-big", style: { fontFamily: "var(--font-serif)", fontSize: "3rem", color: "var(--accent)" }, text: String(Math.round(r0.score)) }),
+      el("div", { class: "score-big", text: String(Math.round(r0.score)) }),
       el("div", { class: "muted", text: r0.rawLabel }),
     ]));
+
+    if (n0) body.append(standingPanel(n0.pct, {
+      title: "Where you land",
+      lead: "Everyone, ranked. The shaded slice is the share of people you scored above.",
+      foot: `Your ${n0.metricLabel.toLowerCase()}: <b>${n0.yourValue}</b> · typical ≈ ${n0.typical}. ${n0.established ? "Source" : "Rough reference"}: ${n0.source}`,
+    }));
+
     const np = normPanel(r0.id, r0.raw);
     if (np) {
       body.append(el("div", { class: "panel" }, [
-        el("h2", { text: "How you compare" }),
+        el("h2", { text: "The detail" }),
         np,
         el("p", { class: "muted", style: { marginTop: "10px" }, text: "Compared against published population norms — not other users. Your data never leaves this device." }),
       ]));
     }
+
+    if (ach.tier !== "none") celebrate(ach.tier);
     const mp = measuresPanel(r0.id);
     if (mp) body.append(el("div", { class: "panel" }, [mp]));
 

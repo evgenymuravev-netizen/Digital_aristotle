@@ -142,6 +142,37 @@ export function showTestResult(stage, result, { button = "Done", signal } = {}) 
   });
 }
 
+/**
+ * A live "N in a row" counter for the stage.
+ *
+ * Only for tests that ALREADY show per-trial correctness (the timed
+ * sprints). Adding correctness feedback to Stroop, Go/No-Go or N-Back
+ * would change the very thing they measure, so they don't get one.
+ *
+ * @returns {{node, hit, miss, best}}
+ */
+export function streakMeter(stage, { hotAt = 3 } = {}) {
+  const node = el("div", { class: "streak", "aria-hidden": "true" });
+  let cur = 0, best = 0;
+
+  const paint = () => {
+    if (cur < 2) { node.textContent = ""; node.classList.remove("hot"); return; }
+    node.textContent = `🔥 ${cur} in a row`;
+    node.classList.toggle("hot", cur >= hotAt);
+    node.classList.add("pop");
+    setTimeout(() => node.classList.remove("pop"), 180);
+  };
+
+  stage.append(node);
+  return {
+    node,
+    hit() { cur++; if (cur > best) best = cur; paint(); },
+    miss() { cur = 0; paint(); },
+    get best() { return best; },
+    get current() { return cur; },
+  };
+}
+
 /** Promise that rejects when an AbortSignal fires — used to race against test loops. */
 export function abortPromise(signal) {
   return new Promise((_, reject) => {

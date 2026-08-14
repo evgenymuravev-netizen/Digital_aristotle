@@ -2,7 +2,7 @@
    A key maps six symbols to the digits 1–6. Translate as many symbols as
    possible in 60 seconds. The key is shuffled every session so you can't
    memorise it across runs. */
-import { el, clear, instructions, countdown, setProgress, clamp, shuffle, pick } from "../ui.js";
+import { el, clear, instructions, countdown, setProgress, clamp, shuffle, pick, streakMeter } from "../ui.js";
 
 export const meta = {
   id: "coding",
@@ -47,6 +47,7 @@ export async function run(stage, { signal } = {}) {
     pad.append(b);
   }
   stage.append(timerEl, counterEl, el("div", {}, [key, stim, pad]));
+  const streak = streakMeter(stage);
 
   let correct = 0, attempted = 0;
   let current = pick(symbols);
@@ -69,7 +70,7 @@ export async function run(stage, { signal } = {}) {
     const answer = (d) => {
       attempted++;
       const good = symbols[d - 1] === current;
-      if (good) { correct++; counterEl.textContent = `${correct} correct`; }
+      if (good) { correct++; counterEl.textContent = `${correct} correct`; streak.hit(); } else streak.miss();
       stim.classList.add(good ? "flash-good" : "flash-bad");
       setTimeout(() => stim.classList.remove("flash-good", "flash-bad"), 160);
       next();
@@ -100,6 +101,6 @@ export async function run(stage, { signal } = {}) {
   return {
     ...meta, score, raw: correct,
     rawLabel: `${correct} correct in ${SECONDS} s (${acc}% accuracy)`,
-    detail: { Correct: correct, Attempted: attempted, Accuracy: `${acc}%` },
+    detail: { Correct: correct, Attempted: attempted, Accuracy: `${acc}%`, "Best run": streak.best },
   };
 }
