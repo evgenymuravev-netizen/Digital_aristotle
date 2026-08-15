@@ -29,6 +29,7 @@
       "nav.employers": "Работодателям",
       "nav.leaderboard": "Рейтинг",
       "nav.support": "Поддержка",
+      "nav.tailor": "Под вакансию",
 
       "home.eyebrow": "Системный аналитик · проверка знаний",
       "home.h1": "Оценка системного аналитика — практика онлайн",
@@ -91,6 +92,7 @@
     "🎯 Start your personalized test": "🎯 Начать персональный тест", "🎯 Personalized test": "🎯 Персональный тест",
     "🎯 Answer a few more so we can map your weak spots": "🎯 Пройдите ещё немного, чтобы мы определили ваши слабые места",
     "Take another test to unlock →": "Пройдите ещё тест, чтобы открыть →", "Best:": "Лучший:",
+    "🎯 Test tailored to the job": "🎯 Тест под вакансию", "🎯 Start the tailored test": "🎯 Начать тест под вакансию", "Edit": "Изменить",
     "Unanswered questions count as wrong, so always make your best guess.": "Пропущенные вопросы считаются неверными — всегда давайте наиболее вероятный ответ.",
     "Free full test": "Бесплатный полный тест",
     // exam

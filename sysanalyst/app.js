@@ -206,6 +206,7 @@
   function renderDashboard(host) {
     if (!host) return;
     host.innerHTML = "";
+    var _tc = tailoredCard(); if (_tc) host.appendChild(_tc);
     var p = getPerf();
     var cats = Object.keys(p.cats);
     if (!cats.length) {
@@ -292,6 +293,53 @@
     var items = weakRoundItems();
     if (!items) return renderHome();
     beginSession({ kind: "custom", testId: null, title: "Your personalized test — weakest topics", items: interleave(items), durationSec: Math.max(300, items.length * 40) });
+  }
+
+  /* ---- "tailored to a job" round ----
+     A spec is written by tailor.html into localStorage (which domains the job
+     needs). We draw a proportional, interleaved round from just those domains,
+     using whatever content is accessible (free taster, or everything once
+     unlocked). Safe no-op when no spec exists. */
+  function getTailor() { return getJSON("saa:v1:tailor", null); }
+  function tailoredItems(spec) {
+    var all = Object.keys(DATA.categories);
+    var cats = (spec && spec.cats && spec.cats.length) ? spec.cats.filter(function (c) { return all.indexOf(c) >= 0; }) : all;
+    if (!cats.length) cats = all;
+    var wts = (spec && spec.weights) || {};
+    var byCat = {};
+    allForms().filter(function (f) { return f && (f.free || isUnlocked()); })
+      .forEach(function (f) { f.questions.forEach(function (q, i) { if (cats.indexOf(q.cat) < 0) return; (byCat[q.cat] = byCat[q.cat] || []).push({ fid: f.id, qi: i, topic: q.topic, diff: q.diff }); }); });
+    var avail = cats.filter(function (c) { return (byCat[c] || []).length; });
+    if (!avail.length) return null;
+    var shuffle = function (a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), tmp = a[i]; a[i] = a[j]; a[j] = tmp; } return a; };
+    var TARGET = 20, totalW = 0;
+    avail.forEach(function (c) { totalW += Math.max(1, wts[c] || 1); });
+    var picked = [];
+    avail.forEach(function (c) {
+      var share = Math.max(1, Math.round(TARGET * (Math.max(1, wts[c] || 1) / totalW)));
+      var pool = shuffle((byCat[c] || []).slice());
+      for (var j = 0; j < share && j < pool.length; j++) picked.push(pool[j]);
+    });
+    return picked.length >= 6 ? shuffle(picked).slice(0, 25) : null;
+  }
+  function startTailored() {
+    var spec = getTailor(), items = tailoredItems(spec || {});
+    if (!items) return renderHome();
+    beginSession({ kind: "custom", testId: null, title: (spec && spec.title) || "Tailored test — matched to the job", items: interleave(items), durationSec: Math.max(300, items.length * 45) });
+  }
+  function tailoredCard() {
+    var spec = getTailor(); if (!spec) return null;
+    var names = (spec.cats || []).map(function (c) { return catInfo(c).label; }).join(" · ");
+    return el("div", { class: "pt-card tailor-card" }, [
+      el("div", { class: "pt-top" }, [
+        el("b", { text: "🎯 Test tailored to the job" }),
+        el("span", { class: "muted", text: names }),
+      ]),
+      el("div", { class: "cta-row", style: "margin:8px 0 0" }, [
+        el("button", { class: "btn btn-primary btn-sm", type: "button", text: "🎯 Start the tailored test", onclick: startTailored }),
+        el("a", { class: "btn btn-ghost btn-sm", href: "./tailor.html", text: "Edit" }),
+      ]),
+    ]);
   }
 
   /* Build the adaptive round: a spread of questions from your weakest topics.
