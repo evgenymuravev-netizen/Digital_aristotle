@@ -5,7 +5,7 @@ A deep, clickable HTML prototype of the **Noor** app from the May 2026 investor 
 
 **Live demo (GitHub Pages):** https://evgenymuravev-netizen.github.io/Digital_aristotle/mal/ — the
 **Mal** prototype is the live build. The original Noor-branded build is retired from the site
-(source kept in `noor-prototype/`; the root URL redirects to `/mal/`).
+(source kept in `noor-prototype/`, unpublished). The site root serves `main`'s own landing page.
 
 ## What’s inside
 
@@ -67,14 +67,19 @@ Canonical source lives on branch `claude/mal-ai-prototype` (`mal-prototype/`, PR
 `noor-prototype/mal/` is a vendored publish copy — re-vendor it when that branch changes.
 Unofficial concept, not affiliated with or endorsed by mal.ai.
 
-## Also on this Pages site
+## How this Pages site is assembled
 
-- **/tradepay/** — Tradepay site, deployed live from `main:tradepay` (canonical; the
-  `noor-prototype/tradepay/` copy is only a stale local-preview snapshot).
-- **/aristotle/** — the Digital Aristotle site (this repo's original project), deployed
-  live from `main`'s root.
+Pages runs in **GitHub Actions** mode. `.github/workflows/deploy-pages.yml` on this branch builds
+the composite site, force-pushes it to `gh-pages`, then dispatches `deploy-pages.yml` on `main`
+(the only ref the `github-pages` environment accepts) to deploy it:
 
-Deploys go through `.github/workflows/deploy-pages.yml` (Actions-mode Pages): it assembles
-the composite site, deploys it, and mirrors the artifact to `gh-pages`. Note: `deploy.yml`
-on `main` still deploys main's root over the whole site on every push to `main` — remove or
-adjust it on `main` to keep the composite layout.
+| Path | Content |
+| --- | --- |
+| `/` | `main`'s root, verbatim — the Digital Aristotle / MMAT landing page, `tradepay/`, `test/` |
+| `/mal/` | the Mal clickable prototype (from `noor-prototype/mal/`) |
+| `/aristotle/` | redirect to `/` (kept for older links) |
+
+⚠️ **`deploy.yml` on `main` publishes main's root alone on every push to `main`, which removes
+`/mal/` from the live site.** That is what happened on 14 Aug 2026. To restore it, re-run
+*Actions → Publish Mal prototype to GitHub Pages → Run workflow*. To make it permanent, copy
+`mal/` into `main` (then main's own deploy serves it) or adjust `deploy.yml` there.
