@@ -1,20 +1,17 @@
-name: Publish Noor prototype to GitHub Pages
+name: Publish Mal prototype to GitHub Pages
 
-# Pages runs in "GitHub Actions" source mode (switched 14 Jun 2026 by deploy.yml
-# on main), and the github-pages environment only allows deploys from main —
-# so this workflow (on a claude/* branch) cannot run deploy-pages itself
-# (rejected by environment protection). Instead it:
-#   1. assembles the composite site:
-#        /            noor prototype (this branch, noor-prototype/)
-#        /mal/        mal.ai-branded twin (vendored in noor-prototype/mal/)
-#        /tradepay/   Tradepay — live from main:tradepay (canonical)
-#        /aristotle/  Digital Aristotle — live from main root
-#   2. force-pushes it to the gh-pages branch (mirror + deploy source)
-#   3. dispatches "Deploy to GitHub Pages" (deploy-pages.yml on main), which
-#      runs on ref main (environment-allowed), checks out gh-pages, deploys.
-#      workflow_dispatch is exempt from GITHUB_TOKEN recursion prevention.
-# NOTE: deploy.yml on main still deploys main's root over the whole site on
-# every push to main — remove/adjust it on main to keep the composite layout.
+# The Pages site deploys in "GitHub Actions" mode. main/deploy.yml publishes
+# main's root on every push to main — which silently drops /mal/ (that is what
+# happened on 14 Aug 2026). This workflow publishes the *composite* site:
+#   /            main's root, verbatim (Digital Aristotle / MMAT — untouched)
+#   /mal/        the Mal clickable prototype (vendored in noor-prototype/mal/)
+#   /aristotle/  redirect to / (kept alive for older links)
+# It force-pushes the assembly to gh-pages, then dispatches deploy-pages.yml on
+# main, which deploys gh-pages from an environment-allowed ref.
+#
+# NOTE: a later push to main re-runs main/deploy.yml and republishes main's root
+# alone, removing /mal/ again. Re-run this workflow (Actions → Run workflow) or
+# move mal/ into main to make it permanent.
 
 on:
   push:
@@ -40,29 +37,31 @@ jobs:
       - name: Checkout prototype branch
         uses: actions/checkout@v4
 
-      - name: Checkout main (aristotle + tradepay)
+      - name: Checkout main (the live site)
         uses: actions/checkout@v4
         with:
           ref: main
           path: _main
 
-      - name: Assemble composite site (noor retired — Mal only)
+      - name: Assemble composite site
         run: |
           mkdir -p _site
+          # 1. main's root exactly as it is today — the live landing page stays put
+          cp -r _main/. _site/
+          rm -rf _site/.git _site/.github
+          # 2. the Mal prototype alongside it
           cp -r noor-prototype/mal _site/mal
-          cp -r _main/tradepay _site/tradepay
+          # 3. keep the older /aristotle/ link working
           mkdir -p _site/aristotle
-          cp -r _main/. _site/aristotle/
-          rm -rf _site/aristotle/.git _site/aristotle/.github
-          touch _site/.nojekyll
-          cat > _site/index.html <<'HTML'
-          <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Mal — clickable prototype</title>
-          <script>location.replace('./mal/' + location.hash);</script>
-          <meta http-equiv="refresh" content="0; url=./mal/">
-          <style>body{font-family:system-ui;background:#f7f7f9;color:#0e0e10;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style>
-          </head><body><p>Redirecting to the <a href="./mal/">Mal prototype</a>…</p></body></html>
+          cat > _site/aristotle/index.html <<'HTML'
+          <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+          <title>Digital Aristotle</title>
+          <script>location.replace('../');</script>
+          <meta http-equiv="refresh" content="0; url=../">
+          </head><body><p>Moved to <a href="../">the main site</a>.</p></body></html>
           HTML
-          cp _site/index.html _site/404.html
+          touch _site/.nojekyll
+          echo "--- assembled:"; ls _site
 
       - name: Push composite to gh-pages branch
         run: |
