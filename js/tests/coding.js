@@ -8,7 +8,6 @@ export const meta = {
   id: "coding",
   name: "Symbol Coding",
   domain: "Coding Speed",
-  icon: "🔣",
   blurb: "Translate symbols to digits from a key — fast, accurate, relentless.",
   duration: "60 sec",
   seconds: 80,

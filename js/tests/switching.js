@@ -8,7 +8,6 @@ export const meta = {
   id: "switching",
   name: "Task Switching",
   domain: "Mental Flexibility",
-  icon: "🔀",
   blurb: "Shift between two rules without one contaminating the other.",
   duration: "~90 sec",
   seconds: 95,

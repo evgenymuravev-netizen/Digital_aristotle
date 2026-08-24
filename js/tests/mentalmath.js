@@ -8,7 +8,6 @@ export const meta = {
   id: "mentalmath",
   name: "Mental Math",
   domain: "Numeracy",
-  icon: "➗",
   blurb: "Calculate in your head — the first thing we outsource to devices.",
   duration: "60 sec",
   seconds: 70,

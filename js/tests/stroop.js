@@ -8,7 +8,6 @@ export const meta = {
   id: "stroop",
   name: "Stroop",
   domain: "Attention",
-  icon: "🎯",
   blurb: "Focus on the right cue and suppress the automatic, wrong one.",
   duration: "~70 sec",
   seconds: 70,

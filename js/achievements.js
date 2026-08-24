@@ -12,10 +12,10 @@
 
 /** Celebration tiers, loudest first. `rank` drives confetti intensity. */
 export const TIERS = {
-  legendary: { rank: 4, cls: "t-legendary", icon: "🏆" },
-  great:     { rank: 3, cls: "t-great",     icon: "🎉" },
-  good:      { rank: 2, cls: "t-good",      icon: "✨" },
-  solid:     { rank: 1, cls: "t-solid",     icon: "👏" },
+  legendary: { rank: 4, cls: "t-legendary", icon: "legendary" },
+  great:     { rank: 3, cls: "t-great",     icon: "great" },
+  good:      { rank: 2, cls: "t-good",      icon: "good" },
+  solid:     { rank: 1, cls: "t-solid",     icon: "solid" },
   none:      { rank: 0, cls: "t-none",      icon: "" },
 };
 

@@ -10,6 +10,7 @@
    ============================================================ */
 
 import { TIERS } from "./achievements.js";
+import { iconHTML } from "./icons.js";
 
 function cssVar(name, fallback) {
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -148,7 +149,7 @@ export function celebrationBanner(ach, { subtitle = "" } = {}) {
   wrap.className = `celebrate ${t.cls}`;
   wrap.setAttribute("role", "status");
   wrap.innerHTML = `
-    <div class="celebrate-icon" aria-hidden="true">${t.icon}</div>
+    <div class="celebrate-icon" aria-hidden="true">${iconHTML(t.icon, { size: 30 })}</div>
     <div class="celebrate-body">
       <div class="celebrate-head">${ach.headline || ""}</div>
       ${subtitle ? `<div class="celebrate-sub">${subtitle}</div>` : ""}

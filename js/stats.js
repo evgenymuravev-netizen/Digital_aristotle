@@ -70,11 +70,11 @@ export function testSeries(sessions, testId) {
 /* ---------------------------- the verdict ---------------------------- */
 
 const VERDICTS = {
-  insufficient: { cls: "v-info", label: "Calibrating", icon: "📊" },
-  improving:    { cls: "v-good", label: "Improving",   icon: "📈" },
-  stable:       { cls: "v-good", label: "Holding steady", icon: "🛡️" },
-  watch:        { cls: "v-warn", label: "Slight dip",  icon: "👀" },
-  decline:      { cls: "v-bad",  label: "Reliable decline", icon: "⚠️" },
+  insufficient: { cls: "v-info", label: "Calibrating", icon: "calibrating" },
+  improving:    { cls: "v-good", label: "Improving",   icon: "improving" },
+  stable:       { cls: "v-good", label: "Holding steady", icon: "steady" },
+  watch:        { cls: "v-warn", label: "Slight dip",  icon: "watch" },
+  decline:      { cls: "v-bad",  label: "Reliable decline", icon: "decline" },
 };
 
 /**

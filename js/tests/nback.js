@@ -10,7 +10,6 @@ export const meta = {
   id: "nback",
   name: "N-Back (2-back)",
   domain: "Working Memory",
-  icon: "🧠",
   blurb: "Hold a moving window of information in mind and update it.",
   duration: "~75 sec",
   seconds: 75,

@@ -15,6 +15,7 @@ import { drawLineChart, drawSparkline, indexDial } from "./chart.js";
 import { bellCurveBlock, countUp } from "./bellcurve.js";
 import { achievementsFor, sessionAchievements, strongestAndWeakest } from "./achievements.js";
 import { celebrate, celebrationBanner } from "./celebrate.js";
+import { iconEl, iconHTML } from "./icons.js";
 import { TESTS, META, byId, NEW_IDS } from "./tests/index.js";
 import { TESTINFO, compareToNorm, normReference, ordinal, overallNorm } from "./norms.js";
 
@@ -51,7 +52,11 @@ function go(screen) {
 
 /* ----------------------------- verdict pill ----------------------------- */
 function verdictPill(v) {
-  return el("span", { class: `verdict-pill ${v.cls}` }, [el("span", { class: "dot", "aria-hidden": "true" }), ` ${v.icon} ${v.label}`]);
+  return el("span", { class: `verdict-pill ${v.cls}` }, [
+    el("span", { class: "dot", "aria-hidden": "true" }),
+    el("span", { class: "vp-ic", html: iconHTML(v.icon, { size: 14 }) }),
+    ` ${v.label}`,
+  ]);
 }
 
 /* ============================================================
@@ -100,7 +105,7 @@ function renderHome() {
     const last = latest[m.meta.id];
     const card = el("button", { class: "test-card", type: "button" }, [
       el("div", { class: "tc-top" }, [
-        el("span", { class: "tc-icon", text: m.meta.icon }),
+        iconEl(m.meta.id, { size: 22 }),
         el("span", { class: "tc-domain", text: m.meta.domain }),
         NEW_IDS.includes(m.meta.id) ? el("span", { class: "new-badge", text: "NEW" }) : null,
       ]),
@@ -147,7 +152,7 @@ async function interstitial(stage, doneCount, total, nextMeta, signal, lastResul
     domain: `${doneCount} of ${total} complete`,
     title,
     bodyHTML: `${scoreLine}<div class="prog-dots" aria-hidden="true">${dots}</div>
-               <p>Next up: <b>${nextMeta.icon} ${nextMeta.name}</b> <span class="muted">(${nextMeta.domain})</span>.</p>
+               <p>Next up: <b>${iconHTML(nextMeta.id, { size: 16 })} ${nextMeta.name}</b> <span class="muted">(${nextMeta.domain})</span>.</p>
                <p class="muted">Take a breath, then continue when you're ready. Your progress is saved after every test.</p>`,
     button: `Continue ▸`, signal,
   });
@@ -190,7 +195,7 @@ async function runSequence(modules, kind, opts = {}) {
   try {
     for (let i = 0; i < modules.length; i++) {
       const m = modules[i];
-      titleEl.textContent = `${m.meta.icon} ${m.meta.name}`;
+      titleEl.innerHTML = `${iconHTML(m.meta.id, { size: 20 })} ${m.meta.name}`;
       setProgress(0, m.meta.name);
       const res = await m.run(stage, { signal: controller.signal });
       fresh.push(res);
@@ -264,7 +269,7 @@ function renderPreflight(stage, plan) {
     const r = plan.recent[meta.id];
     list.append(el("div", { class: `preflight-item ${r ? "done" : "todo"}` }, [
       el("span", { class: "pf-mark", text: r ? "✓" : "○" }),
-      el("span", { class: "tc-icon", text: meta.icon }),
+      iconEl(meta.id, { size: 20 }),
       el("div", { class: "pf-body" }, [
         el("b", { text: meta.name }),
         el("div", { class: "muted pf-sub" }, [
@@ -452,14 +457,14 @@ function renderResults(results, kind, session) {
       body.append(el("div", { class: "panel spread" }, [
         el("div", { class: "spread-col" }, [
           el("div", { class: "tc-domain", text: "Sharpest" }),
-          el("h3", {}, [`${best.icon} ${best.name}`]),
+          el("h3", { html: `${iconHTML(best.id, { size: 18 })} ${best.name}` }),
           el("p", { class: "muted", html: `<b class="up">${ordinal(best.pct)} percentile</b> — ${TESTINFO[best.id]?.measures || ""}` }),
         ]),
         el("div", { class: "spread-col" }, [
           // "weakest" only means "needs work" if it's actually low — when every
           // score is strong, say so rather than manufacturing a problem.
           el("div", { class: "tc-domain", text: weakestLabel(worst.pct) }),
-          el("h3", {}, [`${worst.icon} ${worst.name}`]),
+          el("h3", { html: `${iconHTML(worst.id, { size: 18 })} ${worst.name}` }),
           el("p", { class: "muted", html: `<b class="${worst.pct < 40 ? "down" : worst.pct >= 70 ? "up" : "flat"}">${ordinal(worst.pct)} percentile</b> — ${TESTINFO[worst.id]?.measures || ""}` }),
         ]),
       ]));
@@ -521,7 +526,7 @@ function renderResults(results, kind, session) {
   const rows = results.map((r) => {
     const cmp = compareToBaseline(r.id);
     return el("tr", {}, [
-      el("td", {}, [el("span", { class: "tc-icon", text: r.icon }), " ", r.domain]),
+      el("td", {}, [iconEl(r.id, { size: 18 }), " ", r.domain]),
       el("td", {}, el("b", { text: r.name })),
       el("td", { class: "muted" }, [r.rawLabel, r.reused ? el("span", { class: "reused-tag", text: " ↺ reused" }) : null]),
       el("td", { class: "num" }, [normCell(r)]),
@@ -576,7 +581,7 @@ function renderTrends() {
   // verdict hero
   body.append(el("div", { class: "panel" }, [
     el("div", { class: "verdict-hero" }, [
-      el("div", { class: "vh-icon", text: sum.verdict.icon }),
+      el("div", { class: "vh-icon", html: iconHTML(sum.verdict.icon, { size: 30 }) }),
       el("div", {}, [
         el("h2", {}, [`${sum.verdict.label} `, verdictPill(sum.verdict)]),
         el("p", { html: sum.verdict.message }),
@@ -613,7 +618,12 @@ function renderTrends() {
     const sparkCanvas = el("canvas", { class: "spark" });
     sparks.push(() => drawSparkline(sparkCanvas, d.values));
     return el("tr", {}, [
-      el("td", {}, [el("span", { class: "tc-icon", text: d.icon }), " ", el("b", { text: d.name }), el("div", { class: "muted", style: { fontSize: ".8rem" }, text: d.domain })]),
+      el("td", {}, [
+        el("div", { class: "dom-cell" }, [
+          iconEl(d.id, { size: 18 }),
+          el("div", {}, [el("b", { text: d.name }), el("div", { class: "muted", style: { fontSize: ".8rem" }, text: d.domain })]),
+        ]),
+      ]),
       el("td", { class: "num" }, el("b", { text: d.latest != null ? String(d.latest) : "—" })),
       el("td", {}, sparkCanvas),
       el("td", {}, [el("span", { class: `trend-arrow ${d.arrow === "up" ? "up" : d.arrow === "down" ? "down" : "flat"}` }, d.arrow === "up" ? "▲ improving" : d.arrow === "down" ? "▼ watch" : "▬ steady")]),
@@ -631,7 +641,10 @@ function renderTrends() {
     el("p", { class: "muted", style: { marginTop: "10px" }, text: "Per-domain reads use the same baseline-vs-recent logic as the overall verdict. See the Method tab for how that works." }),
   ]));
 
-  const drawAll = () => { trendsRedraw && trendsRedraw(); sparks.forEach((fn) => fn()); };
+  // Capture the composite-chart closure *before* trendsRedraw is reassigned —
+  // otherwise drawAll ends up calling itself and blows the stack.
+  const drawChart = trendsRedraw;
+  const drawAll = () => { drawChart && drawChart(); sparks.forEach((fn) => fn()); };
   requestAnimationFrame(drawAll);
   trendsRedraw = drawAll;
 }
@@ -660,7 +673,7 @@ function renderAbout() {
   const testCards = TESTS.map((t) => {
     const m = t.meta, info = TESTINFO[m.id], ref = normReference(m.id);
     return `<div class="method-test">
-      <h3>${m.icon} ${m.name} <span class="chip">${m.domain}</span></h3>
+      <h3>${iconHTML(m.id, { size: 19 })} ${m.name} <span class="chip">${m.domain}</span></h3>
       <p><b>${info.measures}</b></p>
       <p class="muted">${info.why}</p>
       <p class="muted"><b>Everyday:</b> ${info.realWorld}</p>
@@ -691,10 +704,10 @@ function renderAbout() {
     <p>The difference between recent and baseline is divided by the baseline's own standard deviation, giving a z-score (σ). This is a simplified <b>Reliable Change Index</b>: a 5-point drop means little if you normally swing 8 points, but a lot if you're usually steady within 2.</p>
     <table>
       <tr><th>Recent vs baseline</th><th>Verdict</th></tr>
-      <tr><td>≥ +0.8σ</td><td>📈 Improving</td></tr>
-      <tr><td>between −0.8σ and +0.8σ</td><td>🛡️ Holding steady — no reliable decline</td></tr>
-      <tr><td>−0.8σ to −1.5σ</td><td>👀 Slight dip — likely noise, retest</td></tr>
-      <tr><td>below −1.5σ</td><td>⚠️ Reliable decline</td></tr>
+      <tr><td>≥ +0.8σ</td><td>${iconHTML("improving", { size: 15 })} Improving</td></tr>
+      <tr><td>between −0.8σ and +0.8σ</td><td>${iconHTML("steady", { size: 15 })} Holding steady — no reliable decline</td></tr>
+      <tr><td>−0.8σ to −1.5σ</td><td>${iconHTML("watch", { size: 15 })} Slight dip — likely noise, retest</td></tr>
+      <tr><td>below −1.5σ</td><td>${iconHTML("decline", { size: 15 })} Reliable decline</td></tr>
     </table>
     <h3>3. A measurement-noise floor</h3>
     <p>If your baseline is unusually tight, we floor its standard deviation at <code>4 points</code> so ordinary day-to-day variation can't masquerade as a real change.</p>
@@ -788,7 +801,7 @@ function renderSettings() {
     const ids = Object.keys(s.scores || {});
     const label = isFull
       ? `Aristotle Index ${Math.round(compositeForSession(s, ids) ?? 0)} · ${ids.length} tests`
-      : ids.map((id) => `${byId[id]?.meta.icon || ""} ${byId[id]?.meta.name || id} — ${s.scores[id]}`).join(" · ");
+      : ids.map((id) => `${byId[id]?.meta.name || id} — ${s.scores[id]}`).join(" · ");
     const del = el("button", { class: "btn btn-ghost btn-sm", type: "button", "aria-label": "Delete this session", text: "🗑" });
     del.addEventListener("click", () => {
       if (confirm("Delete this session? This cannot be undone.")) {

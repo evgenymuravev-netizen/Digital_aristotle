@@ -15,6 +15,7 @@ import {
   fullCompositeSeries, CORE_V1_IDS, RESUME_WINDOW_MS,
 } from "../js/stats.js";
 import { TESTS, META, byId, NEW_IDS } from "../js/tests/index.js";
+import { hasIcon } from "../js/icons.js";
 import { corsiScore } from "../js/tests/corsi.js";
 import { codingScore } from "../js/tests/coding.js";
 import { gonogoScore } from "../js/tests/gonogo.js";
@@ -40,9 +41,11 @@ console.log("registry");
 test("battery has the 10 tests in canonical order", () => {
   assert.deepEqual(META.map((m) => m.id), ALL_IDS);
 });
-test("every test has icon, domain, duration and seconds", () => {
+test("every test has a line icon, domain, duration and seconds", () => {
   for (const m of META) {
-    assert.ok(m.icon && m.domain && m.duration, `${m.id} missing display meta`);
+    // icons live in icons.js keyed by test id — no emoji in the metadata
+    assert.ok(hasIcon(m.id), `${m.id} has no icon in icons.js`);
+    assert.ok(m.domain && m.duration, `${m.id} missing display meta`);
     assert.ok(typeof m.seconds === "number" && m.seconds > 0, `${m.id} missing seconds`);
   }
 });

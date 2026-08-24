@@ -6,7 +6,6 @@ export const meta = {
   id: "reaction",
   name: "Reaction Time",
   domain: "Processing Speed",
-  icon: "⚡",
   blurb: "How fast your brain registers and responds to a signal.",
   duration: "~60 sec",
   seconds: 60,

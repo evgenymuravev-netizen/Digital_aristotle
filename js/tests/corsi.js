@@ -7,7 +7,6 @@ export const meta = {
   id: "corsi",
   name: "Corsi Blocks",
   domain: "Spatial Memory",
-  icon: "🧊",
   blurb: "Hold positions and their order in mind — digit span's visual twin.",
   duration: "~90 sec",
   seconds: 90,

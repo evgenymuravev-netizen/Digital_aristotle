@@ -8,7 +8,6 @@ export const meta = {
   id: "sequences",
   name: "Number Series",
   domain: "Reasoning",
-  icon: "🧩",
   blurb: "Spot the hidden rule and extend the pattern.",
   duration: "~90 sec",
   seconds: 90,

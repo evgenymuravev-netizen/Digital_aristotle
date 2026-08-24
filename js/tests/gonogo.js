@@ -7,7 +7,6 @@ export const meta = {
   id: "gonogo",
   name: "Go / No-Go",
   domain: "Impulse Control",
-  icon: "🚦",
   blurb: "React fast — except when the rule says don't.",
   duration: "~75 sec",
   seconds: 75,

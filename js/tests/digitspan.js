@@ -8,7 +8,6 @@ export const meta = {
   id: "digitspan",
   name: "Digit Span",
   domain: "Memory",
-  icon: "🔢",
   blurb: "How much you can hold — and mentally manipulate — for a few seconds.",
   duration: "~2.5 min",
   seconds: 150,

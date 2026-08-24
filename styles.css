@@ -416,7 +416,7 @@ body:has(#screen-stage.active) .dock {
 }
 .test-card:hover { transform: translateY(-3px); border-color: var(--text); box-shadow: var(--shadow); }
 .test-card .tc-top { display: flex; align-items: center; gap: 10px; }
-.test-card .tc-icon { font-size: 1.5rem; }
+.test-card .tc-icon { color: var(--text); }
 .test-card .tc-domain { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
 .test-card h3 { margin: 0; font-size: 1.12rem; }
 .test-card p { margin: 0; color: var(--text-dim); font-size: 0.92rem; }
@@ -528,7 +528,7 @@ canvas.chart { width: 100%; height: auto; display: block; }
 .spark { width: 90px; height: 30px; vertical-align: middle; }
 
 .verdict-hero { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
-.verdict-hero .vh-icon { font-size: 2.4rem; }
+.verdict-hero .vh-icon { color: var(--text); display: flex; }
 .verdict-hero h2 { margin: 0; }
 .verdict-hero p { color: var(--text-dim); margin: 0.3em 0 0; max-width: 60ch; }
 
@@ -617,7 +617,7 @@ canvas.chart { width: 100%; height: auto; display: block; }
 .preflight-item .pf-mark { font-weight: 800; width: 1.2em; text-align: center; }
 .preflight-item.done .pf-mark { color: var(--good); }
 .preflight-item.todo .pf-mark { color: var(--muted); }
-.preflight-item .tc-icon { font-size: 1.3rem; }
+.preflight-item .tc-icon { color: var(--text); }
 .preflight-item .pf-body { display: flex; flex-direction: column; min-width: 0; }
 .preflight-item .pf-sub { font-size: 0.82rem; }
 .preflight-cta { justify-content: center; margin: 4px 0 0; }
@@ -715,6 +715,18 @@ canvas.chart { width: 100%; height: auto; display: block; }
 .sw-pair { font-family: var(--font-display); font-size: clamp(3rem, 14vw, 5.2rem); letter-spacing: 0.06em; user-select: none; }
 .sw-feedback { min-height: 1.5em; font-weight: 700; margin-top: 10px; }
 
+/* ---------------- line icons ---------------- */
+/* One drawing style for the whole app: currentColor, no fill of their own. */
+.tc-icon { display: inline-flex; align-items: center; color: var(--text); flex: none; }
+.ic { display: block; }
+h3 .ic, b .ic, .stage-title .ic { display: inline-block; vertical-align: -0.18em; margin-right: 0.3em; }
+.method-test h3 .ic { color: var(--accent); }
+.stage-title .ic { color: var(--accent); }
+.vp-ic { display: inline-flex; align-items: center; }
+.vp-ic .ic { display: block; }
+/* domain cell in the trends table: icon beside the name, not above it */
+.dom-cell { display: flex; align-items: center; gap: 10px; }
+
 /* ---------------- celebration & standing ---------------- */
 .confetti-canvas {
   position: fixed; inset: 0;
@@ -736,7 +748,8 @@ canvas.chart { width: 100%; height: auto; display: block; }
   from { opacity: 0; transform: translateY(10px) scale(0.98); }
   to { opacity: 1; transform: none; }
 }
-.celebrate-icon { font-size: 2.1rem; line-height: 1; }
+.celebrate-icon { display: flex; color: var(--accent); }
+.celebrate.t-legendary .celebrate-icon { color: var(--accent-ink); }
 .celebrate-body { flex: 1; min-width: 200px; }
 .celebrate-head {
   font-family: var(--font-display); text-transform: uppercase;
