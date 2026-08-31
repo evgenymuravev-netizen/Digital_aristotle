@@ -56,7 +56,7 @@
       } else {
         res.distribution = null;
         res.open = it.type === "open" || it.type === "name" || it.type === "assoc";
-        if (!it.sensitive || N >= minN) res.answers = members.map(function (r) { var a = r.answers && r.answers[id]; return a ? { value: a.value, skipped: a.skipped, latencyMs: a.latencyMs } : null; });
+        if (!it.sensitive || N >= minN) res.answers = members.map(function (r) { var a = r.answers && r.answers[id]; return a ? { value: a.value, skipped: a.skipped } : null; });
       }
       perItem[id] = res;
     });
@@ -110,7 +110,9 @@
       var groups = {};
       members.forEach(function (r) { var g = (r.segment && r.segment[dim]) || ""; if (!g) return; (groups[g] = groups[g] || []).push(r); });
       var out = {};
-      Object.keys(groups).forEach(function (g) { var grp = groups[g]; if (grp.length < 3) { out[g] = { n: grp.length, ioaA2: null, small: true }; return; }
+      // Анонимность: ячейку среза меньше minN не показываем и не считаем
+      // (единый порог с агрегатом — иначе срез деанонимизирует человека).
+      Object.keys(groups).forEach(function (g) { var grp = groups[g]; if (grp.length < minN) { out[g] = { n: grp.length, ioaA2: null, small: true }; return; }
         out[g] = { n: grp.length, ioaA2: jaccardMean(grp.map(function (r) { return val(r, "A2"); }).filter(Boolean)) }; });
       if (Object.keys(out).length) segments[dim] = out;
     });

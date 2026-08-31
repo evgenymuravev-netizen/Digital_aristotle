@@ -24,6 +24,7 @@ window.SURVEY = {
     start_h:    { ru: "Прежде чем начать", en: "Before you begin" },
     intro:      { ru: "Здесь нет правильных ответов. Мы меряем не знание, а <b>сходимость</b>: полезен не ваш ответ сам по себе, а то, насколько ответы команды совпадают. Отвечайте первым, что приходит — на каждый вопрос своё короткое время, вернуться назад нельзя, пропуск — это тоже ответ.", en: "There are no right answers. We measure convergence, not knowledge: your single answer isn't the point — how the team's answers line up is. Answer with your first instinct — each question is time-boxed, you can't go back, and skipping is itself data." },
     anon:       { ru: "Ответы анонимны. Агрегат показывается только при 5+ ответах в срезе.", en: "Answers are anonymous. Aggregate is shown only at 5+ responses per segment." },
+    consent:    { ru: "Честно: открытые ответы фасилитатор читает дословно. Не пишите того, что не сказали бы вслух. Имени, почты и точного времени мы не собираем; срез — только крупными корзинами.", en: "To be honest: the facilitator reads open answers verbatim. Don't write anything you wouldn't say out loud. We don't collect your name, email or exact time; segments are coarse buckets only." },
     groupKey:   { ru: "Ключ группы (одинаковый у всей команды)", en: "Group key (same for the whole team)" },
     groupKeyPh: { ru: "напр. team-strategy-2026q1", en: "e.g. team-strategy-2026q1" },
     seg_stage:  { ru: "Стаж в компании", en: "Tenure" },

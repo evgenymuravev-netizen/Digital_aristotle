@@ -21,7 +21,7 @@
       <h1 id="h-h1">Командный отчёт</h1>
       <p class="lede" id="h-lede">Соберите файлы ответов команды (включая ответ лида) и постройте диагностику. Меряется дисперсия, а не уровень; единого индекса нет.</p>
     </div>
-    <div class="panel">
+    <div class="panel" id="ingest">
       <label class="field"><span id="h-paste">Вставьте файлы ответов — JSON-массив или по одному в строке</span>
         <textarea class="cert-code" id="in" rows="6" placeholder='[{...}, {...}]  или  {...}\n{...}'></textarea></label>
       <div class="cta-row" style="margin:10px 0 0">
@@ -82,10 +82,36 @@
     }
     function fmtVal(v){ if(v==null) return ""; if(typeof v==="object"){ return Object.keys(v).map(function(k){ return k+": "+(Array.isArray(v[k])?v[k].filter(Boolean).join(", "):v[k]); }).join(" · "); } return String(v); }
 
+    var lastRes=null;
+    function govPanel(){
+      return '<div class="panel"><h3 style="margin-top:0">'+T("Who runs this — and anonymity","Кто это запускает — и анонимность")+'</h3>'+
+        '<div class="note">'+T(
+          "The holder of the raw files should be someone OUTSIDE the team's reporting line (an external consultant / HR partner): they collect responses and hand the team only the aggregate below. Agree up front on a retention period and deletion of the raw files; the team's manager does not get the raw answers. The file/intake carries no name, email or exact time — only coarse segment buckets. This is data minimisation + trusted aggregation, not a mathematical guarantee.",
+          "Держателем сырых файлов должен быть человек ВНЕ линии подчинения команды (внешний консультант / HR-партнёр): он собирает ответы и отдаёт команде только агрегат ниже. Заранее договоритесь о сроке хранения и удалении сырых файлов; руководителю команды сырые ответы не передаются. В файле/приёме нет имени, почты и точного времени — только крупные корзины среза. Это минимизация данных + доверенная агрегация, а не математическая гарантия.")+'</div>'+
+        '<div class="cta-row no-print" style="margin:12px 0 0">'+
+          '<button class="btn btn-ghost btn-sm" id="btn-print" type="button">'+T("Print / PDF (aggregate only)","Печать / PDF (только агрегат)")+'</button>'+
+          '<button class="btn btn-ghost btn-sm" id="btn-agg" type="button">'+T("Download aggregate (no raw answers)","Скачать агрегат (без сырых ответов)")+'</button>'+
+        '</div></div>';
+    }
+    function wireExports(){
+      var p=document.getElementById("btn-print"); if(p) p.onclick=function(){ window.print(); };
+      var a=document.getElementById("btn-agg"); if(a) a.onclick=exportAggregate;
+    }
+    function exportAggregate(){
+      if(!lastRes) return;
+      var clean=JSON.parse(JSON.stringify(lastRes));
+      if(clean.perItem) Object.keys(clean.perItem).forEach(function(k){ delete clean.perItem[k].answers; }); // strip verbatim open text
+      var payload={ note:T("Aggregate only — no raw individual answers. Raw files stay with the external facilitator.","Только агрегат — без сырых индивидуальных ответов. Сырые файлы остаются у внешнего фасилитатора."), builtAt:new Date().toISOString().slice(0,10), aggregate:clean };
+      var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+      var u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download="contours-aggregate-"+(lastRes.N||0)+".json"; document.body.appendChild(a); a.click(); a.remove();
+    }
+    function segLabel(dim,id){ if(dim==="stage"){ return ({lt6:T("<6mo","до 6 мес"),"6-24":"6–24","24+":"24+"})[id]||id; } var list=(CFG.segments&&CFG.segments[dim])||[]; var f=list.filter(function(o){return o.id===id;})[0]; return f?L(f):id; }
+
     function render(res){
+      lastRes=res;
       var out=document.getElementById("out");
-      if(res.gated){ out.innerHTML='<div class="panel"><h2 style="margin-top:0">N = '+res.N+'</h2><div class="note" style="border-left-color:var(--warn)">'+T("Aggregate hidden below N="+res.minN+" — anonymity would break. Collect more responses.","Агрегат скрыт при N < "+res.minN+" — иначе ломается анонимность. Соберите больше ответов.")+'</div></div>'; return; }
-      var h="";
+      if(res.gated){ out.innerHTML=govPanel()+'<div class="panel"><h2 style="margin-top:0">N = '+res.N+'</h2><div class="note" style="border-left-color:var(--warn)">'+T("Aggregate hidden below N="+res.minN+" — anonymity would break. Collect more responses.","Агрегат скрыт при N < "+res.minN+" — иначе ломается анонимность. Соберите больше ответов.")+'</div></div>'; wireExports(); return; }
+      var h=govPanel();
       h+='<div class="panel"><div class="integ-head"><h2 style="margin:0">'+T("Team report","Командный отчёт")+' · N='+res.N+'</h2><span class="muted">'+T("leaders: ","лидов: ")+res.leaders+'</span></div>';
       if(res.leaderDisagree) h+='<div class="note" style="border-left-color:var(--bad)">'+T("The leads disagree with each other on A2 — by the framework, contour 1 is broken at the input; canonicity is not meaningful yet.","Лиды разошлись между собой на A2 — по фреймворку контур 1 сломан на входе; каноничность считать рано.")+'</div>';
       if(!res.leaders) h+='<div class="note" style="border-left-color:var(--warn)">'+T("No lead response — canonicity (distance to the lead) is unavailable.","Нет ответа лида — каноничность (расстояние до лида) недоступна.")+'</div>';
@@ -97,7 +123,7 @@
         h+='</div>';
         // open answers
         var opens=bl.items.filter(function(it){return !it.closed;});
-        if(opens.length){ h+='<div class="panel"><h3 style="margin-top:0">'+T("Open answers (code by hand)","Открытые ответы (кодировать вручную)")+'</h3>'+opens.map(function(it){ return openBlock(res.perItem[it.id]); }).join("")+'</div>'; }
+        if(opens.length){ h+='<div class="panel raw-open no-print"><h3 style="margin-top:0">'+T("Open answers (code by hand)","Открытые ответы (кодировать вручную)")+'</h3><p class="muted" style="margin-top:0;font-size:.82rem">'+T("Verbatim — excluded from Print/PDF and from the aggregate export.","Дословно — не попадает в Печать/PDF и в экспорт агрегата.")+'</p>'+opens.map(function(it){ return openBlock(res.perItem[it.id]); }).join("")+'</div>'; }
       });
 
       // Δ, meta, silence
@@ -115,11 +141,14 @@
 
       // segmentation
       h+='<div class="panel"><h3 style="margin-top:0">'+T("Segmentation (structural fragmentation)","Сегментация (структурная фрагментация)")+'</h3>';
-      var any=false; ["stage","func","loc"].forEach(function(dim){ var g=res.segments[dim]; if(!g) return; any=true; h+='<div class="muted" style="margin:6px 0"><b>'+dim+'</b>: '+Object.keys(g).map(function(k){ return esc(k)+" (n="+g[k].n+(g[k].ioaA2!=null?", IoA·A2 "+pct(g[k].ioaA2):"")+")"; }).join(" · ")+'</div>'; });
+      var any=false; ["stage","func","loc"].forEach(function(dim){ var g=res.segments[dim]; if(!g) return; any=true;
+        var shown=Object.keys(g).filter(function(k){return !g[k].small;}), hidden=Object.keys(g).length-shown.length;
+        h+='<div class="muted" style="margin:6px 0"><b>'+esc(dim)+'</b>: '+(shown.length?shown.map(function(k){ return esc(segLabel(dim,k))+" (n="+g[k].n+(g[k].ioaA2!=null?", IoA·A2 "+pct(g[k].ioaA2):"")+")"; }).join(" · "):T("no cell ≥ minN","нет ячейки ≥ minN"))+(hidden?' · '+T(hidden+" cell(s) hidden (n<minN)",hidden+" срез(ов) скрыто (n<minN)"):"")+'</div>'; });
       if(!any) h+='<p class="muted">'+T("No segment data provided.","Срезы не заполнены.")+'</p>';
       h+='<p class="disclaimer">'+T("If variance splits along one line (function/tenure/location), it's structural fragmentation — two subsystems, fixed differently than general blur.","Если дисперсия раскладывается по одной линии (функция/стаж/локация) — это структурная фрагментация: две подсистемы, лечится иначе, чем общая размытость.")+'</p></div>';
 
       out.innerHTML=h;
+      wireExports();
     }
     function metaRead(g){ if(g>0.15) return T("pluralistic ignorance — cheapest fix: show the team the aggregate","плюралистическое неведение — самый дешёвый ремонт: показать команде агрегат"); if(g<-0.15) return T("illusion of agreement — most dangerous: they don't re-check","иллюзия согласия — опаснее всего: не перепроверяют"); return T("aligned","совпадает"); }
 
@@ -157,7 +186,7 @@
       function mk(over){ var a={}; S.blocks.forEach(function(b){ b.items.forEach(function(it){ a[it.id]=ansFor(it,over); }); }); return { v:1, survey:"contours-0.1", groupKey:"demo", isLeader:over.lead, segment:over.seg||{stage:"",func:"",loc:""}, lang:"ru", startedAt:0, finishedAt:1, answers:a }; }
       function ansFor(it,o){ var v=null; if(it.type==="multi"){ var pool=(CFG[it.opt]||[]).map(function(x){return x.id;}); v=shuffle(pool.slice()).slice(0,it.choose); } else if(it.type==="single"){ var p=(CFG[it.opt]||[]); v=p.length?p[Math.floor(Math.random()*Math.min(3,p.length))].id:null; } else if(it.type==="scale"){ v=2+Math.floor(Math.random()*3); } else if(it.type==="forced"){ v=Math.random()<0.6?"a":"b"; } else if(it.type==="name"){ v=["Аня","Борис","Вика","Борис","Аня"][Math.floor(Math.random()*5)]; } else if(it.type==="assoc"){ v={}; vals.slice(0,3).forEach(function(nm,i){ v[nm]=[["дедлайн","цикл","релиз"][i%3],["давление","обратная связь","качество"][i%3]]; }); } else if(it.type==="open"){ v=Math.random()<0.7?"пример ответа":null; } return { value:v, skipped:v==null, latencyMs:800+Math.floor(Math.random()*3000), spentMs:3000 }; }
       function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
-      var arr=[mk({lead:true,seg:{stage:"24+",func:"eng",loc:"Dubai"}})]; for(var i=0;i<6;i++) arr.push(mk({lead:false,seg:{stage:i<3?"6-24":"24+",func:i%2?"eng":"sales",loc:"Dubai"}})); return arr;
+      var arr=[mk({lead:true,seg:{stage:"24+",func:"prod",loc:"hq"}})]; for(var i=0;i<6;i++) arr.push(mk({lead:false,seg:{stage:i<3?"6-24":"24+",func:i%2?"prod":"gtm",loc:"hq"}})); return arr;
     }
   })();
   </script>
