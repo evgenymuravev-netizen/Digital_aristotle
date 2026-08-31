@@ -82,7 +82,11 @@
 
     function openBlock(r){
       var it=items[r.id]; var ans=(r.answers||[]).filter(function(a){return a&&!a.skipped&&a.value;});
-      var body = ans.length? ans.map(function(a){ return '<div class="q-ans">'+esc(fmtVal(a.value))+'</div>'; }).join("") : '<p class="muted">'+T("no answers / hidden (small N)","нет ответов / скрыто при малом N")+'</p>';
+      var body = ans.length? ans.map(function(a){ var v=a.value;
+        if(v&&v.ai){ return '<div class="q-ans"><span class="tag-badge clean" style="margin-right:6px">'+T("AI summary","ИИ-саммари")+'</span>'+esc(v.summary||"")+
+          ' <span class="muted" style="font-size:.78rem">'+esc([].concat(v.contours||[],v.components||[],v.values||[]).join(" · "))+(v.valence?" · "+(v.valence>0?"+":"−"):"")+'</span></div>'; }
+        if(v&&v.error) return '<div class="q-ans"><span class="muted">'+T("AI coding failed — text discarded for privacy","сбой ИИ-кодировки — текст выброшен ради приватности")+'</span></div>';
+        return '<div class="q-ans">'+esc(fmtVal(v))+'</div>'; }).join("") : '<p class="muted">'+T("no answers / hidden (small N)","нет ответов / скрыто при малом N")+'</p>';
       return '<details class="deep"><summary>'+esc(r.id)+' · '+esc(strip(L(it.prompt)))+' — '+T("empty ","пустых ")+pct(r.skipRate)+'</summary><div class="deep-body">'+body+'</div></details>';
     }
     function fmtVal(v){ if(v==null) return ""; if(typeof v==="object"){ return Object.keys(v).map(function(k){ return k+": "+(Array.isArray(v[k])?v[k].filter(Boolean).join(", "):v[k]); }).join(" · "); } return String(v); }
@@ -183,6 +187,16 @@
       h+='<p class="disclaimer">'+T("Share of episode answers carrying each conflict label, of "+(cf.answered||0)+" coded answers. Provisional thresholds: <10% background · 10–25% attention · >25% the conflict has a name.","Доля эпизодных ответов с меткой конфликта из "+(cf.answered||0)+" кодированных ответов. Стартовые пороги: <10% фон · 10–25% внимание · >25% конфликт назван.")+'</p></div>';
       return h;
     }
+    function livedPanel(res){
+      var lv=res.lived; if(!lv||!lv.n) return "";
+      var h='<div class="panel"><h3 style="margin-top:0">'+T("Lived values — from AI-coded open answers","Прожитые ценности — из ИИ-кодировки открытых ответов")+'</h3>';
+      Object.keys(lv.values).forEach(function(v){ var x=lv.values[v];
+        h+='<div class="mrow-m" style="margin:6px 0">'+chip(esc(v)+"  +"+x.plus+" / −"+x.minus, x.minus>x.plus?"bad":(x.plus>x.minus?"good":"warn"))+'</div>'; });
+      var ck=Object.keys(lv.contours);
+      if(ck.length) h+='<div class="muted" style="font-size:.82rem;margin-top:8px">'+T("contours touched: ","затронутые контуры: ")+ck.map(function(k){return esc(k)+"×"+lv.contours[k];}).join(" · ")+'</div>';
+      h+='<p class="disclaimer">'+T("Only summaries + labels are stored — the raw text is never persisted (backend AI coding).","Хранятся только саммари и разметка — сырой текст не сохраняется (ИИ-кодировка на бэкенде).")+'</p></div>';
+      return h;
+    }
 
     function render(res){
       lastRes=res;
@@ -198,6 +212,7 @@
       h+=fearPanel(res);
       h+=componentsPanel(res);
       h+=conflictsPanel(res);
+      h+=livedPanel(res);
 
       S.blocks.forEach(function(bl){
         h+='<h2 class="section-title">'+esc(L(bl.title))+'</h2><div class="panel">';
@@ -273,7 +288,10 @@
       function mk(over){ var a={}; S.blocks.forEach(function(b){ b.items.forEach(function(it){ a[it.id]=ansFor(it,over); }); }); return { v:2, survey:"contours-"+S.meta.version, groupKey:"demo", isLeader:over.lead, segment:over.seg||{stage:"",func:"",loc:""}, life:"long", lang:"ru", startedAt:0, finishedAt:1, answers:a }; }
       function ansFor(it,o){ var v=null; if(it.type==="multi"){ var pool=(CFG[it.opt]||[]).map(function(x){return x.id;}); v=shuffle(pool.slice()).slice(0,it.choose); } else if(it.type==="single"){ var p=(it.options||CFG[it.opt]||[]); v=p.length?p[Math.floor(Math.random()*Math.min(3,p.length))].id:null; } else if(it.type==="scale"){ v=2+Math.floor(Math.random()*3); } else if(it.type==="forced"){ v=Math.random()<0.6?"a":"b"; } else if(it.type==="name"){ v=["Аня","Борис","Вика","Борис","Аня"][Math.floor(Math.random()*5)]; } else if(it.type==="assoc"){ v={}; vals.slice(0,3).forEach(function(nm,i){ v[nm]=[["дедлайн","цикл","релиз"][i%3],["давление","обратная связь","качество"][i%3]]; }); } else if(it.type==="open"){ v=Math.random()<0.7?"пример ответа":null; } return { value:v, skipped:v==null }; }
       function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
-      var arr=[mk({lead:true,seg:{stage:"24+",func:"prod",loc:"hq"}})]; for(var i=0;i<6;i++) arr.push(mk({lead:false,seg:{stage:i<3?"6-24":"24+",func:i%2?"prod":"gtm",loc:"hq"}})); return arr;
+      var arr=[mk({lead:true,seg:{stage:"24+",func:"prod",loc:"hq"}})]; for(var i=0;i<6;i++) arr.push(mk({lead:false,seg:{stage:i<3?"6-24":"24+",func:i%2?"prod":"gtm",loc:"hq"}}));
+      // демо ИИ-кодировки: у двух участников открытый B4 хранится как саммари+разметка, не текст
+      [1,2].forEach(function(ix){ arr[ix].answers.B4={ open:1, skipped:false, value:{ ai:1, summary:"обход процесса под давлением дедлайна остался без последствий", contours:["K2","K3"], components:["St","P"], values:[vals[1]||"Прозрачность"], valence:-1 } }; });
+      return arr;
     }
   })();
   </script>

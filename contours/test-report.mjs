@@ -43,6 +43,8 @@ ok("diagnosis present", out.indexOf("Диагноз") >= 0 || out.indexOf("сч�
 ok("no 'undefined' leaked into HTML", out.indexOf("undefined") < 0);
 ok("no 'NaN' leaked into HTML", out.indexOf("NaN") < 0);
 ok("episode rows render without IoA chip", out.indexOf("эпизод") >= 0);
+ok("AI-coded open answer rendered", out.indexOf("ИИ-саммари") >= 0);
+ok("lived-values panel rendered", out.indexOf("Прожитые ценности") >= 0 && out.indexOf("затронутые контуры") >= 0);
 
 console.log(`\ncontours report: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

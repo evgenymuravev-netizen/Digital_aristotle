@@ -131,6 +131,16 @@ ok("silence B > 0 (B4/B10 skipped)", g.silence.B > 0);
 ok("semantic is 3 values", Array.isArray(g.semantic) && g.semantic.length === 3);
 ok("sensitive B4 answers exposed only via values field", Array.isArray(g.perItem.B4.answers) && g.perItem.B4.answers.every((a) => a == null || a.latencyMs === undefined));
 
+/* --- «прожитая» разметка из ИИ-кодировки --- */
+ok("lived empty without coded answers", g.lived.n === 0);
+const livedTeam = [mk(SYN, 0, true)]; for (let i = 1; i <= 6; i++) livedTeam.push(mk(SYN, i, false));
+livedTeam[1].answers.B4 = { open: 1, skipped: false, value: { ai: 1, summary: "x", contours: ["K2", "K3"], components: ["St"], values: ["Прозрачность"], valence: -1 } };
+livedTeam[2].answers.B7 = { open: 1, skipped: false, value: { ai: 1, summary: "y", contours: ["K2"], components: ["St"], values: ["Прозрачность"], valence: 1 } };
+const lvr = MX.compute(livedTeam, S, CFG);
+ok("lived counts coded answers", lvr.lived.n === 2);
+ok("lived value ±", lvr.lived.values["Прозрачность"].minus === 1 && lvr.lived.values["Прозрачность"].plus === 1);
+ok("lived contours touched", lvr.lived.contours.K2 === 2 && lvr.lived.contours.K3 === 1);
+
 /* --- два лида расходятся на A2 --- */
 const l2 = mk(SYN, 9, true); l2.answers.A2 = ans(["d4", "d5", "d6"]);
 const dis = MX.compute([mk(SYN, 0, true), l2, mk(SYN, 1, false), mk(SYN, 2, false), mk(SYN, 3, false), mk(SYN, 4, false), mk(SYN, 5, false)], S, CFG);

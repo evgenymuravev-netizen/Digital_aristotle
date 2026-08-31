@@ -148,6 +148,18 @@
     });
     Object.keys(sensors).forEach(function (k) { var s = sensors[k]; sensors[k] = { valence: s.den ? s.num / s.den : null, n: s.den }; });
 
+    /* ---- v0.2: «прожитая» разметка — из ИИ-кодировки открытых ответов
+       (бэкенд заменяет текст на {ai:1, summary, contours, components, values, valence}) ---- */
+    var lived = { n: 0, values: {}, contours: {} };
+    members.forEach(function (r) {
+      Object.keys(r.answers || {}).forEach(function (id) {
+        var a = r.answers[id]; if (!a || a.skipped || !a.value || !a.value.ai) return;
+        lived.n++;
+        (a.value.values || []).forEach(function (v) { var b = lived.values[v] = lived.values[v] || { plus: 0, minus: 0 }; if (a.value.valence > 0) b.plus++; else if (a.value.valence < 0) b.minus++; });
+        (a.value.contours || []).forEach(function (k) { lived.contours[k] = (lived.contours[k] || 0) + 1; });
+      });
+    });
+
     /* ---- Δ-разрыв (A11, B11) ---- */
     var deltas = {};
     ["A11", "B11"].forEach(function (pk) {
@@ -228,7 +240,7 @@
     });
 
     return { N: N, minN: minN, gated: N < minN, leaders: leaders.length, leaderDisagree: leaderDisagree,
-      perItem: perItem, components: components, conflicts: conflicts, sensors: sensors, fear: fear, life: life,
+      perItem: perItem, components: components, conflicts: conflicts, sensors: sensors, fear: fear, life: life, lived: lived,
       deltas: deltas, meta: meta, silence: silence, semantic: semantic, segments: segments };
   }
 
