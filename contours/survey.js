@@ -90,7 +90,7 @@ window.SURVEY = {
         { id: "A11b", cap: 15, type: "single", opt: "a11_behaviors", closed: true, metric: "declared-should", pairKey: "A11",
           prompt: { ru: "За что <b>должны</b> повышать, если верить стратегии?", en: "What <b>should</b> they be promoted for, per the strategy?" } },
         { id: "A12", cap: 5, type: "scale", closed: false, metric: "meta", metaFor: "A",
-          prompt: { ru: "Насколько ты уверен, что коллега из команды ответил так же, как ты?", en: "How sure are you a teammate answered these the same way you did?" },
+          prompt: { ru: "Про этот блок — <b>про стратегию</b>: насколько ты уверен, что коллега ответил на его вопросы так же, как ты?", en: "About this block — <b>the strategy one</b>: how sure are you a teammate answered its questions the same way you did?" },
           low: { ru: "совсем нет", en: "not at all" }, high: { ru: "полностью", en: "completely" } },
       ] },
 
@@ -129,7 +129,7 @@ window.SURVEY = {
         { id: "B11b", cap: 15, type: "single", opt: "b11_behaviors", closed: true, metric: "declared-should", pairKey: "B11",
           prompt: { ru: "Какое поведение <b>должно</b> одобряться, если верить ценностям?", en: "What behaviour <b>should</b> be approved, per the values?" } },
         { id: "B12", cap: 5, type: "scale", closed: false, metric: "meta", metaFor: "B",
-          prompt: { ru: "Насколько ты уверен, что коллега ответил так же, как ты?", en: "How sure are you a teammate answered the same way?" },
+          prompt: { ru: "Теперь про этот блок — <b>про культуру</b>: насколько ты уверен, что коллега ответил на его вопросы так же, как ты?", en: "Now about this block — <b>the culture one</b>: how sure are you a teammate answered its questions the same way you did?" },
           low: { ru: "совсем нет", en: "not at all" }, high: { ru: "полностью", en: "completely" } },
       ] },
   ],

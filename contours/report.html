@@ -106,6 +106,7 @@
       var u=URL.createObjectURL(blob), a=document.createElement("a"); a.href=u; a.download="contours-aggregate-"+(lastRes.N||0)+".json"; document.body.appendChild(a); a.click(); a.remove();
     }
     function segLabel(dim,id){ if(dim==="stage"){ return ({lt6:T("<6mo","до 6 мес"),"6-24":"6–24","24+":"24+"})[id]||id; } var list=(CFG.segments&&CFG.segments[dim])||[]; var f=list.filter(function(o){return o.id===id;})[0]; return f?L(f):id; }
+    function blockName(bid){ return bid==="A"?T("strategy","стратегия"):T("culture","культура"); }
 
     function render(res){
       lastRes=res;
@@ -129,8 +130,8 @@
       // Δ, meta, silence
       h+='<h2 class="section-title">'+T("Cross-cutting","Сквозные метрики")+'</h2><div class="panel"><div class="mini-bars">';
       ["A11","B11"].forEach(function(pk){ var d=res.deltas[pk]; if(d) h+='<div class="mrow-m" style="margin:6px 0">'+chip("Δ "+pk+" "+pct(d.delta), band(d.delta,"lo25"))+' <span class="muted">'+T("declared ≠ rewarded","декларируется ≠ поощряется")+' (n='+d.valid+')</span></div>'; });
-      ["A","B"].forEach(function(bid){ var m=res.meta[bid]; if(m&&m.gap!=null) h+='<div class="mrow-m" style="margin:6px 0">'+chip(T("meta ","мета ")+bid+" "+(m.gap>0?"+":"")+Math.round(m.gap*100)+"pp", band(m.gap,"meta"))+' <span class="muted">'+metaRead(m.gap)+' ('+T("actual ","факт ")+pct(m.actual)+' · '+T("expected ","ожид ")+pct(m.expected)+')</span></div>'; });
-      ["A","B"].forEach(function(bid){ h+='<div class="mrow-m" style="margin:6px 0">'+chip(T("silence ","молчание ")+bid+" "+pct(res.silence[bid]), band(res.silence[bid],"sil"))+'</div>'; });
+      ["A","B"].forEach(function(bid){ var m=res.meta[bid]; if(m&&m.gap!=null) h+='<div class="mrow-m" style="margin:6px 0">'+chip(T("meta ","мета ")+bid+" "+(m.gap>0?"+":"")+Math.round(m.gap*100)+"pp", band(m.gap,"meta"))+' <span class="muted">'+blockName(bid)+' · '+metaRead(m.gap)+' ('+T("actual ","факт ")+pct(m.actual)+' · '+T("expected ","ожид ")+pct(m.expected)+')</span></div>'; });
+      ["A","B"].forEach(function(bid){ h+='<div class="mrow-m" style="margin:6px 0">'+chip(T("silence ","молчание ")+bid+" "+pct(res.silence[bid]), band(res.silence[bid],"sil"))+' <span class="muted">'+blockName(bid)+'</span></div>'; });
       h+='</div></div>';
 
       // semantic B2
