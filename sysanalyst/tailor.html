@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tailor the System Analyst Assessment to a specific job: paste the job description and get a test focused on the domains that role actually needs." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="noindex" />
+  <title>Tailor to a job — System Analyst Assessment</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AF%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="./index.html" aria-label="Back to the assessment">
+      <span class="brand-mark" aria-hidden="true">🎯</span>
+      <span class="brand-text"><strong id="t-brand">Tailor to a job</strong><small>System Analyst Assessment</small></span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="./index.html" id="t-nav-tests">← Tests</a>
+      <a href="./employers.html" id="t-nav-emp">For employers</a>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <div class="bo-hero">
+      <p class="eyebrow" id="t-eyebrow">For candidates</p>
+      <h1 id="t-h1">Practise for the job you're applying to</h1>
+      <p class="lede" id="t-lede">Paste the job description below. We'll work out which domains the role needs and build a test focused on them — so you don't grind topics the job never mentions.</p>
+    </div>
+
+    <div class="panel">
+      <label class="field"><span id="t-jd-label">Job description (paste the text)</span>
+        <textarea class="code-input" id="jd" rows="7" placeholder="e.g. We're hiring a systems analyst to design REST APIs, integrate via RabbitMQ, and model data in PostgreSQL…"></textarea>
+      </label>
+      <label class="field"><span id="t-cv-label">Your résumé (optional — helps us see what you already cover)</span>
+        <textarea class="code-input" id="cv" rows="4" placeholder="Paste your résumé text (optional)"></textarea>
+      </label>
+      <label class="field"><span id="t-url-label">Job posting link (optional)</span>
+        <input class="code-input" id="url" type="url" placeholder="https://…  — paste the TEXT above; links can't be fetched from a static page" />
+      </label>
+      <p class="muted" id="t-url-note" style="font-size:.82rem;margin:-6px 0 8px">A link can't be read directly from the browser (CORS) — paste the description text above. The link is stored for reference only.</p>
+      <div class="cta-row" style="margin:6px 0 0">
+        <button class="btn btn-primary" id="analyze" type="button">Analyse the job</button>
+      </div>
+    </div>
+
+    <div id="out"></div>
+  </main>
+
+  <script src="./match.js"></script>
+  <script>
+  (function () {
+    var M = window.SAA_MATCH;
+    var lang = "en"; try { lang = localStorage.getItem("saa:v1:lang") || "en"; } catch (e) {}
+    var ru = lang === "ru";
+    function L(en, rustr) { return ru ? rustr : en; }
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); };
+    if (ru) document.documentElement.setAttribute("lang", "ru");
+
+    // localize static bits
+    var setT = function (id, en, rustr) { var e = document.getElementById(id); if (e) e.textContent = L(en, rustr); };
+    setT("t-brand", "Tailor to a job", "Под вакансию");
+    setT("t-nav-tests", "← Tests", "← Тесты");
+    setT("t-nav-emp", "For employers", "Работодателям");
+    setT("t-eyebrow", "For candidates", "Для кандидатов");
+    setT("t-h1", "Practise for the job you're applying to", "Готовьтесь к конкретной вакансии");
+    setT("t-lede", "Paste the job description below. We'll work out which domains the role needs and build a test focused on them — so you don't grind topics the job never mentions.", "Вставьте описание вакансии ниже. Мы определим, какие домены нужны для позиции, и соберём тест именно по ним — чтобы не тратить время на темы, которых в вакансии нет.");
+    setT("t-jd-label", "Job description (paste the text)", "Описание вакансии (вставьте текст)");
+    setT("t-cv-label", "Your résumé (optional — helps us see what you already cover)", "Ваше резюме (необязательно — поможет увидеть, что вы уже покрываете)");
+    setT("t-url-label", "Job posting link (optional)", "Ссылка на вакансию (необязательно)");
+    setT("t-url-note", "A link can't be read directly from the browser (CORS) — paste the description text above. The link is stored for reference only.", "Ссылку нельзя загрузить прямо из браузера (CORS) — вставьте текст описания выше. Ссылка сохраняется только для справки.");
+    document.getElementById("analyze").textContent = L("Analyse the job", "Разобрать вакансию");
+    document.getElementById("jd").placeholder = L("e.g. We're hiring a systems analyst to design REST APIs, integrate via RabbitMQ, and model data in PostgreSQL…", "напр. Ищем системного аналитика: проектирование REST API, интеграции через RabbitMQ, моделирование данных в PostgreSQL…");
+    document.getElementById("cv").placeholder = L("Paste your résumé text (optional)", "Вставьте текст резюме (необязательно)");
+
+    function render(jd, cvA) {
+      var out = document.getElementById("out");
+      var rows = M.ORDER.map(function (c) {
+        var d = jd.detail[c], inCV = cvA && cvA.detail[c].hits.length > 0;
+        var col = ({ apis: "#8fc9f5", protocols: "#7fe3b0", network: "#e7cf86", messaging: "#d3a9f2", data: "#f2a184" })[c];
+        var w = Math.min(100, d.score * 22);
+        var chip = d.included
+          ? '<span class="tag-badge clean">' + L("included", "включено") + '</span>'
+          : '<span class="tag-badge na">' + L("excluded", "исключено") + '</span>';
+        var kw = d.hits.length ? '<div class="muted" style="font-size:.78rem;margin-top:3px">' + L("matched", "совпадения") + ': ' + esc(d.hits.slice(0, 8).join(", ")) + (d.baseline ? ' · ' + L("kept as a baseline", "оставлено по умолчанию") : '') + '</div>' : (d.included ? '' : '<div class="muted" style="font-size:.78rem;margin-top:3px">' + L("no mention in the job", "не упоминается в вакансии") + '</div>');
+        var cvTag = inCV ? ' <span class="tag-badge proctored">' + L("in your résumé", "есть в резюме") + '</span>' : '';
+        return '<div style="padding:10px 0;border-top:1px solid var(--border)">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+          '<b>' + esc(d.label) + '</b><span>' + chip + cvTag + '</span></div>' +
+          '<div class="cat-bar" style="margin-top:8px"><span style="width:' + w + '%;background:' + col + '"></span></div>' + kw + '</div>';
+      }).join("");
+
+      var included = jd.cats.map(function (c) { return jd.labels[c]; });
+      var excluded = M.ORDER.filter(function (c) { return jd.cats.indexOf(c) < 0; }).map(function (c) { return jd.labels[c]; });
+      var summary = jd.anyReal
+        ? L("Your test will cover: ", "Ваш тест охватит: ") + "<b>" + esc(included.join(", ")) + "</b>" + (excluded.length ? ". " + L("Excluded: ", "Исключены: ") + esc(excluded.join(", ")) : "")
+        : L("The description didn't clearly mention any domain, so the test keeps all five. Add more detail for a sharper focus.", "В описании не удалось однозначно определить домены, поэтому тест охватит все пять. Добавьте деталей для более точной настройки.");
+
+      out.innerHTML =
+        '<div class="panel"><h2 style="margin-top:0">' + L("What this job needs", "Что нужно для вакансии") + '</h2>' +
+        '<p class="muted" style="margin-top:-.4em">' + summary + '</p>' + rows +
+        '<div class="cta-row" style="margin-top:16px"><button class="btn btn-primary btn-lg" id="go">🎯 ' + L("Start the tailored test", "Начать тест под вакансию") + '</button>' +
+        '<span class="muted" id="saved" style="align-self:center"></span></div>' +
+        '<p class="disclaimer">' + L("Keyword-based and transparent — it shows exactly what it matched. Refine the text if a domain is mis-judged.", "Работает по ключевым словам и показывает, что именно совпало. Поправьте текст, если домен определён неверно.") + '</p></div>';
+
+      document.getElementById("go").addEventListener("click", function () {
+        var spec = { cats: jd.cats, weights: jd.weights, title: L("Tailored test — matched to the job", "Тест под вакансию"), at: Date.now() };
+        try {
+          localStorage.setItem("saa:v1:tailor", JSON.stringify(spec));
+          localStorage.setItem("saa:v1:tailor-src", JSON.stringify({ url: (document.getElementById("url").value || "").slice(0, 500), hasCV: !!(document.getElementById("cv").value || "").trim(), at: Date.now() }));
+        } catch (e) {}
+        document.getElementById("saved").textContent = L("Saved — opening the test…", "Сохранено — открываем тест…");
+        setTimeout(function () { location.href = "./index.html"; }, 500);
+      });
+    }
+
+    document.getElementById("analyze").addEventListener("click", function () {
+      var jdText = document.getElementById("jd").value || "";
+      var cvText = document.getElementById("cv").value || "";
+      if (!jdText.trim()) { document.getElementById("out").innerHTML = '<div class="note" style="border-left-color:var(--warn)">' + L("Paste a job description first.", "Сначала вставьте описание вакансии.") + '</div>'; return; }
+      render(M.analyze(jdText), cvText.trim() ? M.analyze(cvText) : null);
+    });
+  })();
+  </script>
+</body>
+</html>

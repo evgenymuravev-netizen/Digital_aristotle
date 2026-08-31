@@ -1,0 +1,136 @@
+/* ============================================================
+   Опрос по контурам: Стратегия (К1) и Культура (К2) — определение
+   инструмента (window.SURVEY). Порядок ФИКСИРОВАН (A → B), назад
+   нельзя, у каждого вопроса свой жёсткий кап с автопереходом.
+
+   Тип ответа:
+     open   — открытый текст  (one: одна строка, multi: абзац)
+     multi  — выбрать ровно `choose` из списка (opt → CONTOURS_CONFIG)
+     single — выбрать один (opt → config), own: разрешить свой вариант
+     forced — вынужденный выбор из пары (a/b)
+     name   — имя человека (одна строка)
+     scale  — шкала 1..5
+     assoc  — B2: к каждой из 3 ценностей по 3 слова
+
+   closed:true → по вопросу считается IoA/каноничность.
+   pairKey     → связывает «реально/должно» (Δ-разрыв) и мета-вопросы блока.
+   ============================================================ */
+window.SURVEY = {
+  meta: { id: "contours", version: "0.1", framework: "Фреймворк устойчивого окружения (Л. Гончаров)" },
+
+  ui: {
+    brand:      { ru: "Опрос по контурам", en: "Contours survey" },
+    tagline:    { ru: "Стратегия и культура · диагностика общего контекста", en: "Strategy & culture · shared-context diagnostic" },
+    start_h:    { ru: "Прежде чем начать", en: "Before you begin" },
+    intro:      { ru: "Здесь нет правильных ответов. Мы меряем не знание, а <b>сходимость</b>: полезен не ваш ответ сам по себе, а то, насколько ответы команды совпадают. Отвечайте первым, что приходит — на каждый вопрос своё короткое время, вернуться назад нельзя, пропуск — это тоже ответ.", en: "There are no right answers. We measure convergence, not knowledge: your single answer isn't the point — how the team's answers line up is. Answer with your first instinct — each question is time-boxed, you can't go back, and skipping is itself data." },
+    anon:       { ru: "Ответы анонимны. Агрегат показывается только при 5+ ответах в срезе.", en: "Answers are anonymous. Aggregate is shown only at 5+ responses per segment." },
+    consent:    { ru: "Честно: открытые ответы фасилитатор читает дословно. Не пишите того, что не сказали бы вслух. Имени, почты и точного времени мы не собираем; срез — только крупными корзинами.", en: "To be honest: the facilitator reads open answers verbatim. Don't write anything you wouldn't say out loud. We don't collect your name, email or exact time; segments are coarse buckets only." },
+    groupKey:   { ru: "Ключ группы (одинаковый у всей команды)", en: "Group key (same for the whole team)" },
+    groupKeyPh: { ru: "напр. team-strategy-2026q1", en: "e.g. team-strategy-2026q1" },
+    seg_stage:  { ru: "Стаж в компании", en: "Tenure" },
+    seg_func:   { ru: "Функция", en: "Function" },
+    seg_loc:    { ru: "Локация", en: "Location" },
+    seg_optional:{ ru: "необязательно · нужно для разбора дисперсии по срезам", en: "optional · used to break variance down by segment" },
+    leader:     { ru: "Я — лид этой команды (мой ответ — точка отсчёта каноничности)", en: "I'm this team's lead (my answers anchor canonicity)" },
+    begin:      { ru: "Начать", en: "Begin" },
+    needKey:    { ru: "Введите ключ группы — он склеивает ответы команды.", en: "Enter the group key — it stitches the team's answers together." },
+    noBack:     { ru: "Назад нельзя", en: "No going back" },
+    skip:       { ru: "Пропустить", en: "Skip" },
+    next:       { ru: "Дальше", en: "Next" },
+    ownPh:      { ru: "свой вариант…", en: "your own…" },
+    chooseN:    { ru: "Выберите {n}", en: "Choose {n}" },
+    chosen:     { ru: "выбрано {k}/{n}", en: "{k}/{n} chosen" },
+    scaleLow:   { ru: "1", en: "1" }, scaleHigh: { ru: "5", en: "5" },
+    done_h:     { ru: "Спасибо", en: "Thank you" },
+    done_note:  { ru: "Ваш ответ по отдельности не оценивается и не показывается. Он складывается в <b>командный отчёт</b>, когда наберётся 5+ ответов. Передайте файл ниже фасилитатору (или он отправится автоматически, если настроен приём).", en: "Your individual answer isn't scored or shown. It rolls up into a team report once 5+ responses arrive. Hand the file below to the facilitator (or it's sent automatically if intake is configured)." },
+    download:   { ru: "Скачать мой ответ (файл)", en: "Download my response (file)" },
+    submitted:  { ru: "Отправлено фасилитатору ✓", en: "Sent to the facilitator ✓" },
+    submitFail: { ru: "Не удалось отправить — скачайте файл и передайте вручную.", en: "Couldn't send — download the file and hand it over." },
+    facil_link: { ru: "Открыть отчёт фасилитатора →", en: "Open the facilitator report →" },
+    langName:   { ru: "Русский", en: "English" },
+  },
+
+  blocks: [
+    { id: "A", title: { ru: "Блок A — Стратегия (контур 1)", en: "Block A — Strategy (contour 1)" },
+      note: { ru: "12 вопросов, ~5 минут", en: "12 questions, ~5 min" },
+      items: [
+        { id: "A1", cap: 15, type: "open", one: true, closed: false, metric: "entities",
+          prompt: { ru: "Наша стратегия на ближайший год — одним предложением.", en: "Our strategy for the coming year — in one sentence." },
+          ph: { ru: "одно предложение…", en: "one sentence…" } },
+        { id: "A2", cap: 10, type: "multi", choose: 3, opt: "a2_directions", closed: true, metric: "boundaries",
+          prompt: { ru: "Отметь три вещи, которые мы <b>не</b> делаем — сознательно.", en: "Pick three things we deliberately do <b>not</b> do." } },
+        { id: "A3", cap: 10, type: "single", opt: "a3_metrics", own: true, closed: true, metric: "single-metric",
+          prompt: { ru: "Если весь квартал можно смотреть только на одну цифру — какую?", en: "If you could watch only one number all quarter — which?" } },
+        { id: "A4", cap: 90, type: "open", closed: false, metric: "cascade",
+          prompt: { ru: "Твоя главная задача сейчас. Зачем она — в два шага до стратегии.", en: "Your main task right now. Why it matters — trace it to the strategy in two steps." },
+          ph: { ru: "задача → зачем → зачем (до стратегии)…", en: "task → why → why (up to the strategy)…" } },
+        { id: "A5", cap: 10, type: "name", closed: true, metric: "owner",
+          prompt: { ru: "Кто владелец {goal}?", en: "Who owns {goal}?" },
+          ph: { ru: "имя…", en: "name…" } },
+        { id: "A6", cap: 10, type: "single", opt: "a6_scale", closed: true, metric: "magnitude",
+          prompt: { ru: "Во сколько раз мы должны изменить {metric} за 12 месяцев?", en: "By what factor must we change {metric} in 12 months?" } },
+        { id: "A7", cap: 20, type: "multi", choose: 2, opt: "a7_threats", own: true, closed: true, metric: "threat",
+          prompt: { ru: "Что вероятнее всего убьёт нас в ближайший год? (выбери 2)", en: "What's most likely to kill us in the next year? (pick 2)" } },
+        { id: "A8", cap: 45, type: "open", closed: false, metric: "personal-benefit",
+          prompt: { ru: "Стратегия сработала. Что лично ты с этого получишь?", en: "The strategy worked. What do you personally get out of it?" },
+          ph: { ru: "…", en: "…" } },
+        { id: "A9a", cap: 10, type: "forced", closed: true, metric: "tradeoff", group: "A9",
+          prompt: { ru: "Что сейчас важнее?", en: "What matters more right now?" },
+          a: { ru: "Скорость запуска", en: "Launch speed" }, b: { ru: "Качество данных", en: "Data quality" } },
+        { id: "A9b", cap: 10, type: "forced", closed: true, metric: "tradeoff", group: "A9",
+          prompt: { ru: "Что сейчас важнее?", en: "What matters more right now?" },
+          a: { ru: "Новый сегмент", en: "A new segment" }, b: { ru: "Удержание текущих", en: "Retaining current" } },
+        { id: "A9c", cap: 10, type: "forced", closed: true, metric: "tradeoff", group: "A9",
+          prompt: { ru: "Что сейчас важнее?", en: "What matters more right now?" },
+          a: { ru: "Маржинальность", en: "Margin" }, b: { ru: "Объём", en: "Volume" } },
+        { id: "A10", cap: 10, type: "single", opt: "a10_resource", closed: true, metric: "resource",
+          prompt: { ru: "Тебе дают +1 человека в команду завтра. Куда?", en: "You get +1 person tomorrow. Where do they go?" } },
+        { id: "A11a", cap: 15, type: "single", opt: "a11_behaviors", closed: true, metric: "declared-real", pairKey: "A11",
+          prompt: { ru: "За что у нас <b>реально</b> повышают и продвигают?", en: "What do people <b>actually</b> get promoted for here?" } },
+        { id: "A11b", cap: 15, type: "single", opt: "a11_behaviors", closed: true, metric: "declared-should", pairKey: "A11",
+          prompt: { ru: "За что <b>должны</b> повышать, если верить стратегии?", en: "What <b>should</b> they be promoted for, per the strategy?" } },
+        { id: "A12", cap: 5, type: "scale", closed: false, metric: "meta", metaFor: "A",
+          prompt: { ru: "Насколько ты уверен, что коллега из команды ответил так же, как ты?", en: "How sure are you a teammate answered these the same way you did?" },
+          low: { ru: "совсем нет", en: "not at all" }, high: { ru: "полностью", en: "completely" } },
+      ] },
+
+    { id: "B", title: { ru: "Блок B — Культура (контур 2)", en: "Block B — Culture (contour 2)" },
+      note: { ru: "12 вопросов, ~7 минут", en: "12 questions, ~7 min" },
+      items: [
+        { id: "B1", cap: 10, type: "multi", choose: 3, opt: "b1_values", closed: true, metric: "recognition",
+          prompt: { ru: "Выбери три наши ценности.", en: "Pick our three values." } },
+        { id: "B2", cap: 45, type: "assoc", closed: false, metric: "semantic",
+          prompt: { ru: "К каждой ценности — по три слова, первое, что приходит.", en: "For each value, three words — whatever comes first." } },
+        { id: "B3", cap: 90, type: "open", closed: false, metric: "live-example",
+          prompt: { ru: "Случай за последние 30 дней, когда кто-то поступил по ценности «{value1}». Что конкретно произошло.", en: "A case in the last 30 days when someone acted on the value “{value1}”. What exactly happened." },
+          ph: { ru: "конкретный случай…", en: "a concrete case…" } },
+        { id: "B4", cap: 90, type: "open", closed: false, metric: "antiexample", sensitive: true,
+          prompt: { ru: "Случай, когда поступок против ценностей остался без последствий.", en: "A case when acting against the values went unpunished." },
+          ph: { ru: "…", en: "…" } },
+        { id: "B5", cap: 10, type: "name", closed: true, metric: "exemplar",
+          prompt: { ru: "Кто у нас лучше всех воплощает наши ценности?", en: "Who best embodies our values?" },
+          ph: { ru: "имя…", en: "name…" } },
+        { id: "B6", cap: 10, type: "scale", closed: true, metric: "cost",
+          prompt: { ru: "Поступить по ценностям — это дороже или дешевле, чем в обход?", en: "Acting on the values — is it costlier or cheaper than the workaround?" },
+          low: { ru: "дешевле", en: "cheaper" }, high: { ru: "дороже", en: "costlier" } },
+        { id: "B7", cap: 30, type: "open", one: true, closed: false, metric: "bypass",
+          prompt: { ru: "Назови правило или процесс, который у нас регулярно обходят.", en: "Name a rule or process that's regularly bypassed here." },
+          ph: { ru: "…", en: "…" } },
+        { id: "B8", cap: 15, type: "single", opt: "b8_reaction", closed: true, metric: "reaction",
+          prompt: { ru: "Ты видишь, что коллега нарушил договорённость. Что произойдёт дальше?", en: "You see a colleague break an agreement. What happens next?" } },
+        { id: "B9", cap: 45, type: "open", closed: false, metric: "praise",
+          prompt: { ru: "Последний раз, когда у нас публично хвалили — за что?", en: "The last time someone was praised publicly here — for what?" },
+          ph: { ru: "…", en: "…" } },
+        { id: "B10", cap: 45, type: "open", closed: false, metric: "silence", sensitive: true,
+          prompt: { ru: "За последние 30 дней ты промолчал о проблеме, которую видел? Почему.", en: "In the last 30 days, did you stay quiet about a problem you saw? Why." },
+          ph: { ru: "…", en: "…" } },
+        { id: "B11a", cap: 15, type: "single", opt: "b11_behaviors", closed: true, metric: "declared-real", pairKey: "B11",
+          prompt: { ru: "Какое поведение у нас <b>реально</b> одобряют?", en: "What behaviour is <b>actually</b> approved of here?" } },
+        { id: "B11b", cap: 15, type: "single", opt: "b11_behaviors", closed: true, metric: "declared-should", pairKey: "B11",
+          prompt: { ru: "Какое поведение <b>должно</b> одобряться, если верить ценностям?", en: "What behaviour <b>should</b> be approved, per the values?" } },
+        { id: "B12", cap: 5, type: "scale", closed: false, metric: "meta", metaFor: "B",
+          prompt: { ru: "Насколько ты уверен, что коллега ответил так же, как ты?", en: "How sure are you a teammate answered the same way?" },
+          low: { ru: "совсем нет", en: "not at all" }, high: { ru: "полностью", en: "completely" } },
+      ] },
+  ],
+};

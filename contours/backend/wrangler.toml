@@ -1,0 +1,17 @@
+name = "contours-intake"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# 1) Создайте KV-неймспейс и вставьте его id ниже:
+#      npx wrangler kv namespace create RESPONSES
+[[kv_namespaces]]
+binding = "RESPONSES"
+id = "PASTE_KV_NAMESPACE_ID"
+
+[vars]
+# origin вашего GitHub Pages (для CORS). Замените, если домен другой.
+ALLOWED_ORIGIN = "https://evgenymuravev-netizen.github.io"
+MIN_N = "5"
+
+# 2) Токен фасилитатора — СЕКРЕТ, не храните его в этом файле:
+#      npx wrangler secret put FAC_TOKEN

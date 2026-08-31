@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mal — AI-native Islamic Digital Bank · Clickable Prototype</title>
+<meta name="description" content="Mal investor prototype: agentic Islamic finance super-app. 100+ key scenarios, Lean-style open-finance onboarding, multi-bank balances, AI banking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="mal">
+<meta name="theme-color" content="#0a0e28">
+<script>if(/[?&]app=1/.test(location.search)||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches))document.documentElement.classList.add('kioskroot');</script>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="stylesheet" href="css/shell.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<aside id="side">
+  <div class="side-head">
+    <div class="side-logo"><img src="assets/mal-mark.png" style="width:30px;height:30px" alt=""><span class="logo-brand">Mal</span><span class="proto-tag">prototype</span></div>
+    <div class="side-sub">AI Powered banking · unofficial concept demo · <span id="scnCount"></span> key scenarios</div>
+    <div class="side-controls">
+      <button onclick="A.demoReset()" title="Wipe demo state and restart">↺ Reset</button>
+      <button onclick="A.demoOnboard()" title="Play onboarding from splash">▶ Onboarding</button>
+      <button onclick="A.demoSkip()" title="Jump straight to the app">⤓ Skip to app</button>
+    </div>
+    <input id="scnSearch" type="search" placeholder="Search scenarios…" oninput="A.filterScenarios(this.value)">
+  </div>
+  <nav id="scnList"></nav>
+  <div class="side-foot">
+    <b>Unofficial concept demo</b> — an independent product exploration re-branded for mal.ai;
+    not affiliated with or endorsed by mal.ai. Visual tokens are placeholders (swap in css
+    <code>:root</code>; the accent token is historically named <code>--lime</code>). All data is fictional;
+    bank marks are illustrative monograms. Onboarding flow modelled on a Lean Link recording
+    (Apr 2026), rebuilt as <b>Mal Connect</b> — not affiliated with Lean Technologies either.
+  </div>
+</aside>
+
+<main id="stage">
+  <div id="phoneWrap">
+    <div id="phone">
+      <div id="screen" class="screen"></div>
+      <div id="navHost"></div>
+      <div id="aiFab" onclick="A.askAI()" title="Mal AI">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 2.6c.5 3.9 2.7 6.6 7 7.4-4.3.8-6.5 3.5-7 7.4-.5-3.9-2.7-6.6-7-7.4 4.3-.8 6.5-3.5 7-7.4Z" fill="#1c1403"/><circle cx="19.2" cy="17.8" r="2.1" fill="#1c1403"/></svg>
+      </div>
+      <div id="sheetHost"></div>
+      <div id="storyHost"></div>
+      <div id="island"></div>
+      <div id="statusbar">
+        <span class="sb-time">9:41</span>
+        <span class="sb-icons">
+          <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="currentColor"/><rect x="4.5" y="5" width="3" height="6" rx="1" fill="currentColor"/><rect x="9" y="2.5" width="3" height="8.5" rx="1" fill="currentColor"/><rect x="13.5" y="0" width="3" height="11" rx="1" fill="currentColor"/></svg>
+          <svg width="16" height="11" viewBox="0 0 16 12"><path d="M8 9.6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm-3.1-2.5a4.6 4.6 0 0 1 6.2 0l-1.2 1.3a2.9 2.9 0 0 0-3.8 0L4.9 7.1ZM2 4.4a8.6 8.6 0 0 1 12 0l-1.2 1.3a6.9 6.9 0 0 0-9.6 0L2 4.4Z" fill="currentColor"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".5" fill="none"/><rect x="2" y="2" width="18" height="8" rx="2" fill="currentColor"/><path d="M23.5 4v4c1-.3 1.5-1 1.5-2s-.5-1.7-1.5-2Z" fill="currentColor" opacity=".5"/></svg>
+        </span>
+      </div>
+      <div id="homeIndicator"></div>
+    </div>
+  </div>
+  <div id="caption"></div>
+</main>
+
+<button id="sideToggle" onclick="document.body.classList.toggle('side-open')">☰ <span>Scenarios</span></button>
+
+<script src="js/icons.js"></script>
+<script src="js/logos.js"></script>
+<script src="js/logos.js"></script>
+<script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/screens-onboarding.js"></script>
+<script src="js/screens-connect.js"></script>
+<script src="js/screens-core.js"></script>
+<script src="js/screens-money2.js"></script>
+<script src="js/screens-more.js"></script>
+<script src="js/scenarios.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

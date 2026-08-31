@@ -1,0 +1,331 @@
+/* ============ onboarding screens ============ */
+window.SCREENS = window.SCREENS || {};
+window.AFTER   = window.AFTER   || {};
+(function(){
+const S = () => A.S;
+
+/* ---------- splash ---------- */
+SCREENS.splash = () => `
+  <div class="scr center nopad" style="padding:40px;background:linear-gradient(160deg,#081938 0%,#0d1f42 45%,#3a1d2c 100%)">
+    <div class="noor-eclipse"><span class="ec-glow"></span><img src="assets/noor-mark.png" alt="" class="ec-mark"></div>
+    <div class="logo-pop" style="font:600 54px/1 Outfit,Inter,sans-serif;letter-spacing:-.04em;color:#FF6757;margin-top:26px">noor</div>
+    <div class="micro" style="color:rgba(255,255,255,.5);letter-spacing:.24em;text-transform:uppercase;margin-top:6px">finance</div>
+    <div class="sub mt16" style="color:rgba(255,255,255,.66)">Know. Think. Act.</div>
+    <div class="micro" style="position:absolute;bottom:56px;left:0;right:0;text-align:center;color:rgba(255,255,255,.38)">Noor is a technology company and not a bank.</div>
+  </div>`;
+AFTER.splash = () => setTimeout(()=>A.go('welcome', true), 2600);
+
+/* ---------- welcome carousel ---------- */
+const W_SLIDES = [
+  {h:'Control your wealth<br><span class="lime-t">across banks & fintechs</span>', d:'Every bank, wallet, BNPL plan, debt and dirham — one live picture, one number you can trust.',
+   art:`<div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+        <div class="app-cloud">
+          ${['fab','wio','nomo','io'].map(a=>`<img class="appic" src="${assetSrc('apps/'+a+'.png')}" alt="">`).join('')}
+        </div>
+        <div class="app-cloud" style="margin-top:-4px;transform:translateX(20px)">
+          ${['yap','telda','hexknot','panel'].map(a=>`<img class="appic" src="${assetSrc('apps/'+a+'.png')}" alt="">`).join('')}
+        </div>
+        <div style="margin-top:18px;font:600 44px Outfit,Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">.76</span></div>
+        <span class="tag lime">Live · banks, fintechs, wallets, BNPL & crypto</span></div>`},
+  {h:'100% compliant.<br><span class="lime-t">Always.</span>', d:'Every product is tracked by AI and confirmed by leading scholars — you will never violate Shariah without knowing. No interest, anywhere, ever.',
+   art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(127,176,255,.4)">${ic('shieldCheck',92,'',1.6)}</div>`},
+  {h:'The most accurate<br><span class="lime-t">Zakat, ever.</span>', d:'Every asset and every debt — even trade stock and payroll — calculated to the dirham, by your scholar’s method. This is our craft.',
+   art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-warm-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(127,176,255,.4)">${ic('moon',92,'',1.6)}</div>`},
+  {h:'Control your wealth<br><span class="lime-t">without borders</span>', d:'Open banking in the UAE, KSA and the UK — and where it doesn’t exist yet, Noor reads the statement PDFs from your inbox. Big families live across borders; your money picture shouldn’t stop at one.',
+   art:`<div style="display:flex;flex-direction:column;gap:16px;align-items:center">
+        <div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-cool);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(127,176,255,.4)">${ic('globe',92,'',1.6)}</div>
+        <div class="flex" style="gap:8px;font-size:22px">🇦🇪 🇸🇦 🇪🇬 🇬🇧</div></div>`},
+  {h:'Support your<br><span class="lime-t">local community</span>', d:'Your savings back the best Shariah-compliant local businesses — and the strictness dial is yours: stay 100% strict, or add local UAE & Saudi champions with purification handled.',
+   art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(127,176,255,.4)">${ic('heart',92,'',1.6)}</div>`},
+];
+SCREENS.welcome = () => {
+  const i = A.tmp.slide||0;
+  const s = (A.S.lang==='ar' && window.AR_WELCOME) ? {...W_SLIDES[i], ...AR_WELCOME[i]} : W_SLIDES[i];
+  return `
+  <div class="scr nopad" style="display:flex;flex-direction:column;padding:70px 26px 46px">
+    <div class="flex between"><span class="flex" style="gap:8px"><img src="assets/noor-mark.png" style="width:26px;height:26px" alt=""><b style="font:600 24px Outfit,Inter,sans-serif;letter-spacing:-.03em;color:#0e0e10">noor</b></span>
+      <button class="chip" onclick="A.demoSkip()">Skip demo →</button></div>
+    <div class="f1" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:30px">
+      ${s.art}
+      <div><div class="h0">${s.h}</div><div class="sub mt12" style="max-width:300px">${s.d}</div></div>
+    </div>
+    <div class="dots mb12">${W_SLIDES.map((_,k)=>`<i class="${k===i?'on':''}"></i>`).join('')}</div>
+    ${i < W_SLIDES.length-1
+      ? `<button class="btn lime mt12" onclick="A.tmp.slide=${i+1};A.refresh()">Continue</button>
+    <button class="btn ghost mt8" onclick="A.demoSkip()">I already have an account</button>`
+      : `<button class="btn lime mt12" onclick="A.tmp.slide=0;A.go('ob-uaepass')">${ic('fingerprint',18)} Continue with UAE PASS</button>
+    <div class="btnrow mt8">
+      <button class="btn ghost" onclick="A.tmp.slide=0;A.tmp.kycLater=true;A.toast('Signed in with Apple — verify identity later, when it matters','check');setTimeout(()=>A.go('ob-pin'),600)"><svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="${BRAND_SVG.apple.p}"/></svg> Apple</button>
+      <button class="btn ghost" onclick="A.tmp.slide=0;A.tmp.kycLater=true;A.toast('Signed in with Google — verify identity later, when it matters','check');setTimeout(()=>A.go('ob-pin'),600)"><svg viewBox="0 0 24 24" width="17" height="17"><path fill="${BRAND_SVG.google.h}" d="${BRAND_SVG.google.p}"/></svg> Google</button>
+    </div>
+    <button class="btn ghost mt8" onclick="A.tmp.slide=0;A.go('ob-phone')">Use a phone number instead</button>`}
+  </div>`;
+};
+
+/* ---------- UAE PASS sign-in: identity arrives with the login ---------- */
+SCREENS['ob-uaepass'] = () => `
+  <div class="scr light center">
+    <div style="width:120px;height:120px;border-radius:34px;background:#0e0e10;display:flex;align-items:center;justify-content:center;color:#2EDB8A">${ic('fingerprint',60,'',1.4)}</div>
+    <div class="h1 mt20" style="max-width:280px">UAE PASS</div>
+    <div class="sub mt8" style="max-width:300px">The national digital identity signs you in <b>and</b> verifies you in one step.</div>
+    <div class="card mt20" style="width:100%;text-align:left">
+      <div class="kv"><span class="k">Identity</span><span class="v">Khadeeja AlMansoori ✓</span></div>
+      <div class="kv"><span class="k">Emirates ID</span><span class="v tnum">784-••••-•••21-4 ✓</span></div>
+      <div class="kv"><span class="k">KYC & sanctions</span><span class="v" style="color:var(--grn)">cleared via ICP ✓</span></div>
+      <div class="kv"><span class="k">Documents needed</span><span class="v">none</span></div>
+    </div>
+    <button class="btn dark mt16" style="width:100%" onclick="A.go('ob-pin')">Continue — create passcode</button>
+    <div class="micro mt12">No ID scan, no selfie — UAE PASS already did both. Signing in with Apple or Google instead? We only ask for documents when you make your first transfer.</div>
+  </div>`;
+
+/* ---------- UAE PASS sign-in: identity arrives with the login ---------- */
+SCREENS['ob-uaepass'] = () => `
+  <div class="scr light center">
+    <div style="width:120px;height:120px;border-radius:34px;background:#0e0e10;display:flex;align-items:center;justify-content:center;color:#2EDB8A">${ic('fingerprint',60,'',1.4)}</div>
+    <div class="h1 mt20" style="max-width:280px">UAE PASS</div>
+    <div class="sub mt8" style="max-width:300px">The national digital identity signs you in <b>and</b> verifies you in one step.</div>
+    <div class="card mt20" style="width:100%;text-align:left">
+      <div class="kv"><span class="k">Identity</span><span class="v">Khadeeja AlMansoori ✓</span></div>
+      <div class="kv"><span class="k">Emirates ID</span><span class="v tnum">784-••••-•••21-4 ✓</span></div>
+      <div class="kv"><span class="k">KYC & sanctions</span><span class="v" style="color:var(--grn)">cleared via ICP ✓</span></div>
+      <div class="kv"><span class="k">Documents needed</span><span class="v">none</span></div>
+    </div>
+    <button class="btn dark mt16" style="width:100%" onclick="A.go('ob-pin')">Continue — create passcode</button>
+    <div class="micro mt12">No ID scan, no selfie — UAE PASS already did both. Signing in with Apple or Google instead? We only ask for documents when you make your first transfer.</div>
+  </div>`;
+
+/* ---------- UAE PASS sign-in: identity arrives with the login ---------- */
+SCREENS['ob-uaepass'] = () => `
+  <div class="scr light center">
+    <div style="width:120px;height:120px;border-radius:34px;background:#0e0e10;display:flex;align-items:center;justify-content:center;color:#2EDB8A">${ic('fingerprint',60,'',1.4)}</div>
+    <div class="h1 mt20" style="max-width:280px">UAE PASS</div>
+    <div class="sub mt8" style="max-width:300px">The national digital identity signs you in <b>and</b> verifies you in one step.</div>
+    <div class="card mt20" style="width:100%;text-align:left">
+      <div class="kv"><span class="k">Identity</span><span class="v">Khadeeja AlMansoori ✓</span></div>
+      <div class="kv"><span class="k">Emirates ID</span><span class="v tnum">784-••••-•••21-4 ✓</span></div>
+      <div class="kv"><span class="k">KYC & sanctions</span><span class="v" style="color:var(--grn)">cleared via ICP ✓</span></div>
+      <div class="kv"><span class="k">Documents needed</span><span class="v">none</span></div>
+    </div>
+    <button class="btn dark mt16" style="width:100%" onclick="A.go('ob-pin')">Continue — create passcode</button>
+    <div class="micro mt12">No ID scan, no selfie — UAE PASS already did both. Signing in with Apple or Google instead? We only ask for documents when you make your first transfer.</div>
+  </div>`;
+
+/* ---------- phone ---------- */
+SCREENS['ob-phone'] = () => `
+  <div class="scr">
+    ${hdr('Step 1 of 6')}
+    <div class="h1">What’s your<br>mobile number?</div>
+    <div class="sub mt8">UAE Pass and Emirates ID verification follow — full onboarding takes about 3 minutes.</div>
+    <div class="flex mt20" style="gap:9px">
+      <div class="input" style="width:96px;display:flex;align-items:center;justify-content:center;gap:6px">🇦🇪 +971</div>
+      <input id="obPhone" class="input tnum f1" placeholder="50 000 0000" readonly onclick="OB.fillPhone()" value="${A.tmp.phone||''}">
+    </div>
+    <div class="micro mt8">${ic('lock',12)} Your number is verified against telecom records (mock).</div>
+    <button class="btn lime mt20" id="obPhoneBtn" ${A.tmp.phone?'':'disabled'} onclick="A.go('ob-otp')">Send code</button>
+    <div class="card soft mt20 flex" style="gap:12px">${ic('info',20,'lime-t')}<div class="micro">Prototype tip: tap the field — it types for you. Every input in this demo self-fills.</div></div>
+  </div>`;
+window.KYC = {
+  gate(){
+    A.sheet(`<div class="h2">One step before your first transfer</div>
+      <div class="sub mt8">You signed in with Apple — money can move only after a one-time identity check. Two minutes, once, required by CBUAE rules.</div>
+      <div class="listcard mt12">
+        <div class="row static"><span class="bigico">${ic('card',20)}</span><div class="row-main"><div class="row-t">Scan your Emirates ID</div><div class="row-d">Chip read + ICP match</div></div></div>
+        <div class="row static"><span class="bigico">${ic('faceid',20)}</span><div class="row-main"><div class="row-t">Selfie liveness</div><div class="row-d">Face match against the ID</div></div></div>
+      </div>
+      <button class="btn lime mt16" onclick="A.closeSheet();A.ensureFresh();A.go('ob-eid')">Verify now — 2 minutes</button>
+      <button class="btn ghost mt8" onclick="A.closeSheet();A.toast('No rush — everything except transfers works meanwhile','check')">Later</button>
+      <div class="micro mt8" style="text-align:center">Browsing, budgeting and linking banks work without it — verification unlocks payments.</div>`);
+  }
+};
+window.KYC = {
+  gate(){
+    A.sheet(`<div class="h2">One step before your first transfer</div>
+      <div class="sub mt8">You signed in with Apple — money can move only after a one-time identity check. Two minutes, once, required by CBUAE rules.</div>
+      <div class="listcard mt12">
+        <div class="row static"><span class="bigico">${ic('card',20)}</span><div class="row-main"><div class="row-t">Scan your Emirates ID</div><div class="row-d">Chip read + ICP match</div></div></div>
+        <div class="row static"><span class="bigico">${ic('faceid',20)}</span><div class="row-main"><div class="row-t">Selfie liveness</div><div class="row-d">Face match against the ID</div></div></div>
+      </div>
+      <button class="btn lime mt16" onclick="A.closeSheet();A.ensureFresh();A.go('ob-eid')">Verify now — 2 minutes</button>
+      <button class="btn ghost mt8" onclick="A.closeSheet();A.toast('No rush — everything except transfers works meanwhile','check')">Later</button>
+      <div class="micro mt8" style="text-align:center">Browsing, budgeting and linking banks work without it — verification unlocks payments.</div>`);
+  }
+};
+window.KYC = {
+  gate(){
+    A.sheet(`<div class="h2">One step before your first transfer</div>
+      <div class="sub mt8">You signed in with Apple — money can move only after a one-time identity check. Two minutes, once, required by CBUAE rules.</div>
+      <div class="listcard mt12">
+        <div class="row static"><span class="bigico">${ic('card',20)}</span><div class="row-main"><div class="row-t">Scan your Emirates ID</div><div class="row-d">Chip read + ICP match</div></div></div>
+        <div class="row static"><span class="bigico">${ic('faceid',20)}</span><div class="row-main"><div class="row-t">Selfie liveness</div><div class="row-d">Face match against the ID</div></div></div>
+      </div>
+      <button class="btn lime mt16" onclick="A.closeSheet();A.ensureFresh();A.go('ob-eid')">Verify now — 2 minutes</button>
+      <button class="btn ghost mt8" onclick="A.closeSheet();A.toast('No rush — everything except transfers works meanwhile','check')">Later</button>
+      <div class="micro mt8" style="text-align:center">Browsing, budgeting and linking banks work without it — verification unlocks payments.</div>`);
+  }
+};
+window.OB = {
+  fillPhone(){
+    const el = document.getElementById('obPhone'); if(!el || A.tmp.phoneTyping) return;
+    A.tmp.phoneTyping = true;
+    const num = '50 482 7791'; let k = 0;
+    const t = setInterval(()=>{ el.value = num.slice(0,++k);
+      if(k>=num.length){ clearInterval(t); A.tmp.phone=num; A.tmp.phoneTyping=false; document.getElementById('obPhoneBtn').disabled=false; }
+    }, 55);
+  },
+  otpFill(targetRoute){
+    if (A.tmp.otpBusy) return; A.tmp.otpBusy = true;
+    const code='482917'; let k=0;
+    const t=setInterval(()=>{
+      const box=document.getElementById('ob'+k); if(box){box.textContent=code[k]; box.classList.add('focus');}
+      if(++k>=6){ clearInterval(t); A.tmp.otpBusy=false;
+        setTimeout(()=>A.go(targetRoute), 450); }
+    },120);
+    const af=document.getElementById('otpAuto'); if(af) af.style.display='none';
+  },
+};
+SCREENS['ob-otp'] = () => `
+  <div class="scr">
+    ${hdr('Step 1 of 6')}
+    <div class="h1">Enter the code</div>
+    <div class="sub mt8">Sent by SMS to <b style="color:var(--tx)">+971 ${A.tmp.phone||'50 482 7791'}</b></div>
+    <div class="otp-wrap mt28">${[0,1,2,3].map(i=>`<div class="otp-box" id="ob${i}"></div>`).join('')}<span class="otp-dash">–</span>${[4,5].map(i=>`<div class="otp-box" id="ob${i}"></div>`).join('')}</div>
+    <div class="micro mt12" style="text-align:center">Didn’t receive it? Resend in 24 s</div>
+    <div style="position:absolute;bottom:120px;left:0;right:0;display:flex;justify-content:center">
+      <div class="autofill" id="otpAuto" onclick="OB.otpFill('ob-eid')">${ic('lock',15)} From Messages: <span class="k">482,917</span> — tap to fill</div>
+    </div>
+  </div>`;
+AFTER['ob-otp'] = () => setTimeout(()=>{ const a=document.getElementById('otpAuto'); if(a) a.classList.add('pop'); }, 600);
+
+/* ---------- Emirates ID ---------- */
+SCREENS['ob-eid'] = () => `
+  <div class="scr">
+    ${hdr('Step 2 of 6')}
+    <div class="h1">Verify your identity</div>
+    <div class="sub mt8">Scan your Emirates ID — KYC runs against UAE Pass & ICP (mock).</div>
+    <div class="card mt20" style="padding:0;overflow:hidden">
+      <div id="eidCard" style="height:212px;position:relative;background:linear-gradient(120deg,#2b3468,#161c42);display:flex;flex-direction:column;justify-content:space-between;padding:18px">
+        <div class="flex between"><span class="lbl" style="color:rgba(255,255,255,.7)">UNITED ARAB EMIRATES</span><span style="font-size:22px">🇦🇪</span></div>
+        <div class="flex" style="gap:14px">
+          <div style="width:64px;height:78px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center">${ic('user',34)}</div>
+          <div><div class="h3">${USER.first} ${USER.last}</div><div class="micro tnum" style="margin-top:5px">${USER.eid}</div><div class="micro">Resident · ${USER.emirate}</div></div>
+        </div>
+        <div id="eidScan" style="position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--lime),transparent);top:10%;display:none"></div>
+      </div>
+    </div>
+    <div id="eidStatus" class="mt16"></div>
+    <button class="btn lime mt16" id="eidBtn" onclick="OB.eidScan()">${ic('cam',18)} Scan Emirates ID</button>
+  </div>`;
+OB.eidScan = () => {
+  const scan=document.getElementById('eidScan'), st=document.getElementById('eidStatus'), btn=document.getElementById('eidBtn');
+  if(!scan||A.tmp.eidBusy) return; A.tmp.eidBusy=true;
+  btn.disabled=true; scan.style.display='block';
+  scan.animate([{top:'6%'},{top:'92%'},{top:'6%'}],{duration:1600,iterations:1});
+  const steps=['Reading chip…','Matching ICP records…','Sanctions & PEP screening…','✓ Identity verified'];
+  let i=0;
+  const t=setInterval(()=>{
+    st.innerHTML=`<div class="flex" style="gap:10px">${i<3?'<div class="spinner lm" style="width:16px;height:16px;border-width:2px"></div>':ic('check',18,'lime-t')}<span class="sub" style="color:${i<3?'var(--tx2)':'var(--lime)'}">${steps[i]}</span></div>`;
+    if(++i>=steps.length){ clearInterval(t); A.tmp.eidBusy=false; setTimeout(()=>A.go('ob-face'),650); }
+  },620);
+};
+
+/* ---------- selfie ---------- */
+SCREENS['ob-face'] = () => `
+  <div class="scr center">
+    ${hdr('Step 3 of 6')}
+    <div class="h1">Quick selfie check</div>
+    <div class="sub mt8" style="max-width:280px">Liveness + face match against your Emirates ID. One look — no documents.</div>
+    <div class="mt28" style="position:relative;width:210px;height:210px">
+      <svg width="210" height="210" style="position:absolute;inset:0;transform:rotate(-90deg)">
+        <circle cx="105" cy="105" r="98" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="5"/>
+        <circle id="faceRing" cx="105" cy="105" r="98" fill="none" stroke="var(--lime)" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.616"/>
+      </svg>
+      <div style="position:absolute;inset:14px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:74px" id="faceEmoji">🙂</div>
+    </div>
+    <div class="sub mt16" id="faceMsg">Tap to start</div>
+    <button class="btn lime mt16" style="max-width:280px" id="faceBtn" onclick="OB.face()">Start scan</button>
+  </div>`;
+OB.face = () => {
+  if(A.tmp.faceBusy) return; A.tmp.faceBusy=true;
+  const ring=document.getElementById('faceRing'), msg=document.getElementById('faceMsg'), em=document.getElementById('faceEmoji');
+  document.getElementById('faceBtn').disabled=true;
+  const msgs=['Hold still…','Turn slightly left…','Blink…','✓ Matched to Emirates ID'];
+  let p=0,i=0;
+  const t=setInterval(()=>{
+    p+=25; ring.setAttribute('stroke-dasharray', `${616*p/100} 616`);
+    msg.textContent=msgs[i]; if(i===3){em.textContent='😄';}
+    if(++i>=4){clearInterval(t); A.tmp.faceBusy=false; setTimeout(()=>A.go('ob-pin'),700);}
+  },800);
+};
+
+/* ---------- passcode ---------- */
+SCREENS['ob-pin'] = () => `
+  <div class="scr">
+    ${hdr('Step 4 of 6')}
+    <div class="h1">${A.tmp.pin1?'Confirm your passcode':'Create a passcode'}</div>
+    <div class="sub mt8">6 digits — your key to Noor on this device.</div>
+    <div class="pin-dots" id="pinDots">${'<i></i>'.repeat(6)}</div>
+    <div class="keypad">
+      ${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="OB.pin(${n})">${n}</button>`).join('')}
+      <button class="ghosted"></button><button onclick="OB.pin(0)">0</button><button class="ghosted" onclick="OB.pinDel()">⌫</button>
+    </div>`;
+OB.pinBuf='';
+OB.pin = n => {
+  if(OB.pinBuf.length>=6) return;
+  OB.pinBuf+=n;
+  [...document.getElementById('pinDots').children].forEach((d,i)=>d.classList.toggle('on', i<OB.pinBuf.length));
+  if(OB.pinBuf.length===6){
+    setTimeout(()=>{
+      if(!A.tmp.pin1){ A.tmp.pin1=OB.pinBuf; OB.pinBuf=''; A.refresh(); }
+      else { OB.pinBuf=''; A.go('ob-bio'); }
+    },250);
+  }
+};
+OB.pinDel = () => { OB.pinBuf=OB.pinBuf.slice(0,-1);
+  [...document.getElementById('pinDots').children].forEach((d,i)=>d.classList.toggle('on', i<OB.pinBuf.length)); };
+
+/* ---------- Face ID ---------- */
+SCREENS['ob-bio'] = () => `
+  <div class="scr center">
+    ${hdr('Step 5 of 6')}
+    <div style="color:var(--lime)">${ic('faceid',96,'',1.2)}</div>
+    <div class="h1 mt20">Sign in with Face ID</div>
+    <div class="sub mt8" style="max-width:280px">Skip the passcode — approve payments and log in with a glance.</div>
+    <div style="position:absolute;bottom:60px;left:26px;right:26px">
+      <button class="btn lime" onclick="A.toast('Face ID enabled','check');A.go('ob-notif')">Enable Face ID</button>
+      <button class="btn ghost mt8" onclick="A.go('ob-notif')">Maybe later</button>
+    </div>
+  </div>`;
+
+/* ---------- notifications ---------- */
+SCREENS['ob-notif'] = () => `
+  <div class="scr center">
+    ${hdr('Step 6 of 6')}
+    <div style="color:var(--lime)">${ic('bell',86,'',1.2)}</div>
+    <div class="h1 mt20">Stay one step ahead</div>
+    <div class="sub mt8" style="max-width:300px">Debits before they happen, salary the second it lands, score changes, smart nudges. No spam — promise.</div>
+    <div class="card mt20" style="width:100%;max-width:320px;text-align:left">
+      <div class="h3" style="text-align:center">“noor” would like to send you notifications</div>
+      <div class="micro mt8" style="text-align:center">Alerts may include balances, payments and reminders.</div>
+      <div class="hr"></div>
+      <div class="btnrow">
+        <button class="btn ghost sm" style="flex:1" onclick="A.go('ob-quiz')">Don’t allow</button>
+        <button class="btn lime sm" style="flex:1" onclick="A.toast('Notifications on','bell');A.go('ob-quiz')">Allow</button>
+      </div>
+    </div>
+  </div>`;
+
+/* ---------- personalisation quiz ---------- */
+SCREENS['ob-quiz'] = () => {
+  const picked = A.tmp.quiz || (A.tmp.quiz = new Set(['Track all my banks']));
+  const opts = ['Track all my banks','Grow savings','Pay zakat properly','Get a credit card','Buy a home','Invest halal','Cut my spending','Send money home'];
+  return `
+  <div class="scr">
+    ${hdr('Almost there')}
+    <div class="h1">What brings you<br>to Noor?</div>
+    <div class="sub mt8">Pick any — your agent personalises around this.</div>
+    <div class="chips mt20">${opts.map(o=>`<button class="chip ${picked.has(o)?'on':''}" onclick="OB.quiz('${esc(o)}')">${o}</button>`).join('')}</div>
+    <button class="btn lime mt28" onclick="A.go('connect-intro')">Continue</button>
+  </div>`;
+};
+OB.quiz = o => { const q=A.tmp.quiz; q.has(o)?q.delete(o):q.add(o); A.refresh(); };
+})();
