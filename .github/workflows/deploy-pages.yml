@@ -1,10 +1,11 @@
-name: Publish Mal prototype to GitHub Pages
+name: Publish prototypes to GitHub Pages
 
 # The Pages site deploys in "GitHub Actions" mode. main/deploy.yml publishes
 # main's root on every push to main — which silently drops /mal/ (that is what
 # happened on 14 Aug 2026). This workflow publishes the *composite* site:
 #   /            main's root, verbatim (Digital Aristotle / MMAT — untouched)
 #   /mal/        the Mal clickable prototype (vendored in noor-prototype/mal/)
+#   /noor/       the Noor Finance prototype (vendored in noor-prototype/noorfinance/)
 #   /aristotle/  redirect to / (kept alive for older links)
 # It force-pushes the assembly to gh-pages, then dispatches deploy-pages.yml on
 # main, which deploys gh-pages from an environment-allowed ref.
@@ -49,8 +50,9 @@ jobs:
           # 1. main's root exactly as it is today — the live landing page stays put
           cp -r _main/. _site/
           rm -rf _site/.git _site/.github
-          # 2. the Mal prototype alongside it
+          # 2. the prototypes alongside it
           cp -r noor-prototype/mal _site/mal
+          cp -r noor-prototype/noorfinance _site/noor
           # 3. keep the older /aristotle/ link working
           mkdir -p _site/aristotle
           cat > _site/aristotle/index.html <<'HTML'
