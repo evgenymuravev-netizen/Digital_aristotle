@@ -29,7 +29,7 @@
   var ITEMS = [];
   S.blocks.forEach(function (b) { b.items.forEach(function (it) { ITEMS.push(Object.assign({ block: b.id }, it)); }); });
 
-  var st = { groupKey: "", isLeader: false, segment: { stage: "", func: "", loc: "" }, idx: 0, answers: {}, startedAt: null };
+  var st = { groupKey: "", isLeader: false, segment: { stage: "", func: "", loc: "" }, life: "", idx: 0, answers: {}, startedAt: null };
   var timer = null, itemStart = 0, latency = null, itemBlock = null;
 
   /* ---- header ---- */
@@ -65,6 +65,9 @@
     }
     var fn = segSelect("func", "seg-func", st.segment.func);
     var loc = segSelect("loc", "seg-loc", st.segment.loc);
+    // тип группы: временная → ведущий показатель канон, долгоживущая → IoA
+    var life = el("select", { class: "code-input", id: "life" }, [
+      optPlain("", "—"), optPlain("temp", U("life_temp")), optPlain("mid", U("life_mid")), optPlain("long", U("life_long"))]);
     var msg = el("p", { class: "unlock-msg bad", id: "start-msg" });
 
     screen([
@@ -83,11 +86,12 @@
           loc ? el("label", { class: "field" }, [el("span", { text: U("seg_loc") }), loc]) : null,
         ]),
         el("p", { class: "muted", style: "margin:-6px 0 10px;font-size:.82rem", text: U("seg_optional") }),
+        el("label", { class: "field" }, [el("span", { text: U("life") }), life]),
         el("label", { class: "switch" }, [lead, el("span", { text: U("leader") })]),
         el("div", { class: "cta-row", style: "margin-top:16px" }, [
           el("button", { class: "btn btn-primary btn-lg", type: "button", onclick: function () {
             var k = key.value.trim(); if (!k) { msg.textContent = U("needKey"); return; }
-            st.groupKey = k; st.isLeader = lead.checked;
+            st.groupKey = k; st.isLeader = lead.checked; st.life = life.value;
             st.segment = { stage: stage.value, func: fn ? fn.value : "", loc: loc ? loc.value : "" };
             st.startedAt = Date.now(); st.idx = 0; st.answers = {};
             renderItem(0);
@@ -152,7 +156,8 @@
         onclick: function () { Array.prototype.forEach.call(fr.children, function (c) { c.classList.remove("on"); }); this.classList.add("on"); } })); });
       host.appendChild(fr);
     } else if (it.type === "multi" || it.type === "single") {
-      var opts = optList(it.opt), grid = el("div", { class: "card-grid", id: "in" }), self = it;
+      var opts = it.options ? it.options.map(function (o) { return { id: o.id, label: L(o) }; }) : optList(it.opt);
+      var grid = el("div", { class: "card-grid", id: "in" }), self = it;
       opts.forEach(function (o) { grid.appendChild(el("button", { type: "button", class: "opt-card", "data-id": o.id, text: o.label,
         onclick: function () { toggleCard(self, grid, this); } })); });
       host.appendChild(grid);
@@ -217,8 +222,8 @@
     var cleanAnswers = {};
     Object.keys(st.answers).forEach(function (k) { var a = st.answers[k]; cleanAnswers[k] = { value: a.value, skipped: a.skipped }; });
     var payload = {
-      v: 1, survey: S.meta.id + "-" + S.meta.version, groupKey: st.groupKey, isLeader: st.isLeader,
-      segment: st.segment, lang: LANG, startedAt: dayFloor(st.startedAt), finishedAt: dayFloor(Date.now()), answers: cleanAnswers,
+      v: 2, survey: S.meta.id + "-" + S.meta.version, groupKey: st.groupKey, isLeader: st.isLeader,
+      segment: st.segment, life: st.life, lang: LANG, startedAt: dayFloor(st.startedAt), finishedAt: dayFloor(Date.now()), answers: cleanAnswers,
     };
     var json = JSON.stringify(payload, null, 0);
     var submitMsg = el("p", { class: "muted", id: "submit-msg" });

@@ -83,7 +83,7 @@ ok("first item rendered (#answer present)", !!byId["answer"]);
 
 /* walk all 24 items via Skip */
 const N = window.SURVEY.blocks.reduce((a, b) => a + b.items.length, 0);
-ok("survey flattens to 28 screens (24 questions; A9 a/b/c, A11/B11 a/b)", N === 28);
+ok("survey v0.2 flattens to 35 screens", N === 35);
 let steps = 0, threw = null;
 try {
   for (let i = 0; i < N + 2; i++) {
@@ -96,7 +96,7 @@ try {
 } catch (e) { threw = e; }
 ok("walked without throwing", threw === null);
 if (threw) console.log("    threw: " + threw.message + "\n" + (threw.stack || "").split("\n").slice(0, 4).join("\n"));
-ok("advanced through all 28 items", steps >= 28);
+ok("advanced through all 35 items", steps >= 35);
 const dl = allButtons().find((b) => b.textContent === window.SURVEY.ui.download.ru);
 ok("reached done screen (download button present)", !!dl);
 const facil = rootApp._walk([]).find((n) => n.tagName === "A" && n.textContent === window.SURVEY.ui.facil_link.ru);

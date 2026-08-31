@@ -127,13 +127,15 @@ window.CONTOURS_CONFIG = {
     { id: "v15", ru: "Совершенство", en: "Excellence", kind: "universal" },
   ],
 
-  /* B8 · реакция системы на нарушение (1 из 5) — формулировки общие. */
+  /* B8 · реакция системы на нарушение (1 из 5) — формулировки общие.
+     code — разметка v0.2: валентность культуры C, датчик поведения P,
+     метка конфликта К2↔К3, вклад в индекс страха. */
   b8_reaction: [
-    { id: "x1", ru: "Ничего не произойдёт", en: "Nothing happens" },
-    { id: "x2", ru: "Скажу ему лично", en: "I'll tell them privately" },
-    { id: "x3", ru: "Вынесем на команду", en: "We'll raise it with the team" },
-    { id: "x4", ru: "Скажу руководителю", en: "I'll tell the manager" },
-    { id: "x5", ru: "Его за это скорее похвалят", en: "They'll likely be praised for it" },
+    { id: "x1", ru: "Ничего не произойдёт", en: "Nothing happens", code: { w: { C: -1 }, sens: "P-", conf: "K2K3", fear: 1 } },
+    { id: "x2", ru: "Скажу ему лично", en: "I'll tell them privately", code: { w: { C: 1 }, sens: "P+" } },
+    { id: "x3", ru: "Вынесем на команду", en: "We'll raise it with the team", code: { w: { C: 1 }, sens: "P+" } },
+    { id: "x4", ru: "Скажу руководителю", en: "I'll tell the manager", code: {} },
+    { id: "x5", ru: "Его за это скорее похвалят", en: "They'll likely be praised for it", code: { w: { C: -2 }, sens: "P-", conf: "K2K3" } },
   ],
 
   /* B11 · какое поведение одобряют (реально vs должно). Общий список. DEMO. */

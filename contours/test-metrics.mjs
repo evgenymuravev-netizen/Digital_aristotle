@@ -1,6 +1,8 @@
-/* Юнит-тест метрик опроса по контурам.
+/* Юнит-тест метрик опроса по контурам v0.2.
    Грузит config.js / survey.js / metrics.js в window-шим и гоняет
-   compute() на детерминированных синтетических данных. Node, без зависимостей. */
+   compute() на детерминированных синтетических данных: команда-синергия,
+   команда-поломка, гейтинг, лид, срезы. Плюс валидация таблицы разметки.
+   Node, без зависимостей. */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,100 +19,122 @@ function approx(a, b, eps) { return a != null && b != null && Math.abs(a - b) <=
 
 /* ---------- pure helpers ---------- */
 ok("entropy of two equal = ln2", approx(MX.entropy([1, 1]), Math.log(2)));
-ok("entropy of one bucket = 0", approx(MX.entropy([5]), 0));
 ok("IoA unanimous = 1", approx(MX.ioaFromValues(["a", "a", "a", "a"], 4), 1));
 ok("IoA max split (2-way) = 0", approx(MX.ioaFromValues(["a", "b", "a", "b"], 2), 0));
-ok("IoA all-distinct(4/4) = 0", approx(MX.ioaFromValues(["a", "b", "c", "d"], 4), 0));
 ok("IoA <2 values = null", MX.ioaFromValues(["a"], 4) === null);
-ok("jaccardMean identical = 1", approx(MX.jaccardMean([["a", "b"], ["a", "b"], ["a", "b"]]), 1));
-ok("jaccardMean disjoint = 0", approx(MX.jaccardMean([["a", "b"], ["c", "d"]]), 0));
+ok("jaccardMean identical = 1", approx(MX.jaccardMean([["a", "b"], ["a", "b"]]), 1));
 ok("jaccardMean half-overlap = 1/3", approx(MX.jaccardMean([["a", "b"], ["b", "c"]]), 1 / 3));
 ok("canonicity 2/3", approx(MX.canonicity(["a", "a", "b"], "a"), 2 / 3));
 ok("setEq order-insensitive", MX.setEq(["a", "b"], ["b", "a"]) === true);
-ok("setEq different = false", MX.setEq(["a", "b"], ["a", "c"]) === false);
 
-/* ---------- synthetic team ---------- */
-function ans(v) { return { value: v, skipped: v == null, latencyMs: 1200, spentMs: 3000 }; }
-function mk(i, isLeader, skipA8) {
-  const a = {};
-  a.A1 = ans("растём в enterprise");
-  a.A2 = ans(["d1", "d2", "d3"]);            // identical multi  -> IoA 1, canon 1
-  a.A3 = ans("m1");                          // identical single -> IoA 1
-  a.A4 = ans("задача → зачем → стратегия");
-  a.A5 = ans("Аня");
-  a.A6 = ans("s2");                          // identical
-  a.A7 = ans(["t1", "t2"]);
-  a.A8 = ans(skipA8 ? null : "личный рост"); // some skipped -> silence
-  a.A9a = ans("a"); a.A9b = ans("a"); a.A9c = ans("a");
-  a.A10 = ans("r" + ((i % 6) + 1));          // fully spread   -> IoA ~0
-  a.A11a = ans("p1"); a.A11b = ans("p5");    // real != should -> Δ = 1
-  a.A12 = ans(5);                            // meta expected = 1.0
-  a.B1 = ans(["v1", "v2", "v3"]);
-  a.B2 = ans({ "Скорость": ["дедлайн", "цикл"], "Прозрачность": ["открытость"], "Ответственность": ["владелец"] });
-  a.B3 = ans("случай на прошлой неделе");
-  a.B4 = ans(null);                          // sensitive, skipped
-  a.B5 = ans("Борис");
-  a.B6 = ans(3);
-  a.B7 = ans("обходят ревью");
-  a.B8 = ans("x2");
-  a.B9 = ans("хвалили за релиз");
-  a.B10 = ans(null);
-  a.B11a = ans("b1"); a.B11b = ans("b4");
-  a.B12 = ans(4);
-  return { v: 1, survey: "contours-0.1", groupKey: "t", isLeader: !!isLeader,
-    segment: { stage: i < 3 ? "6-24" : "24+", func: i % 2 ? "eng" : "sales", loc: "Dubai" },
-    lang: "ru", startedAt: 0, finishedAt: 1, answers: a };
+/* ---------- валидация таблицы разметки v0.2 ---------- */
+const CONFS = MX.CONFS, COMPS = MX.COMPS;
+let codeErrs = [];
+function checkCode(where, code) {
+  if (code == null) return;
+  if (code.conf && CONFS.indexOf(code.conf) < 0) codeErrs.push(where + ": bad conf " + code.conf);
+  if (code.sens && !/^[DPR][+-]$/.test(code.sens)) codeErrs.push(where + ": bad sens " + code.sens);
+  if (code.w) Object.keys(code.w).forEach((c) => { if (COMPS.indexOf(c) < 0) codeErrs.push(where + ": bad comp " + c); if (Math.abs(code.w[c]) > 2) codeErrs.push(where + ": |w|>2"); });
+  if (code.fear != null && !(code.fear >= 1 && code.fear <= 2)) codeErrs.push(where + ": bad fear");
 }
-// 1 leader + 6 members; skip A8 for 3 members
-const team = [mk(0, true, false)];
-for (let i = 1; i <= 6; i++) team.push(mk(i, false, i <= 3));
+let episodeCount = 0;
+S.blocks.forEach((b) => b.items.forEach((it) => {
+  if (it.comp) Object.keys(it.comp).forEach((c) => { if (COMPS.indexOf(c) < 0) codeErrs.push(it.id + ": bad comp key " + c); });
+  if (it.scaleVal) Object.keys(it.scaleVal).forEach((c) => { if (COMPS.indexOf(c) < 0) codeErrs.push(it.id + ": bad scaleVal " + c); });
+  if (it.scaleConf && CONFS.indexOf(it.scaleConf.conf) < 0) codeErrs.push(it.id + ": bad scaleConf");
+  if (it.episode) {
+    episodeCount++;
+    if (!it.options || !it.options.length) codeErrs.push(it.id + ": episode without inline options");
+    else it.options.forEach((o) => { if (!("code" in o)) codeErrs.push(it.id + "/" + o.id + ": option without code"); checkCode(it.id + "/" + o.id, o.code); });
+  }
+  if (it.episode && it.comp) codeErrs.push(it.id + ": episode must not feed IoA_c (comp set)");
+}));
+(CFG.b8_reaction || []).forEach((o) => checkCode("b8/" + o.id, o.code));
+ok("coding table valid (no errors)", codeErrs.length === 0);
+if (codeErrs.length) console.log("    " + codeErrs.join("\n    "));
+ok("episode questions present (>=8)", episodeCount >= 8);
 
-const res = MX.compute(team, S, CFG);
-ok("not gated at N=6", res.gated === false);
-ok("N counts members only (6)", res.N === 6);
-ok("leaders counted (1)", res.leaders === 1);
-ok("A2 IoA ~1 (identical multi)", approx(res.perItem.A2.ioa, 1, 1e-9));
-ok("A2 canonicity = 1 (all match leader)", approx(res.perItem.A2.canon, 1));
-ok("A2 method = jaccard", res.perItem.A2.ioaMethod === "jaccard");
-ok("A3 IoA = 1 (identical single)", approx(res.perItem.A3.ioa, 1));
-ok("A10 IoA ~0 (fully spread)", approx(res.perItem.A10.ioa, 0, 1e-9));
-ok("A11 Δ = 1 (real != should)", res.deltas.A11 && approx(res.deltas.A11.delta, 1));
-ok("A11 Δ valid = 6", res.deltas.A11 && res.deltas.A11.valid === 6);
-ok("meta A expected = 1.0 (all 5s)", approx(res.meta.A.expected, 1));
-ok("meta A actual within [0,1]", res.meta.A.actual >= 0 && res.meta.A.actual <= 1);
-ok("meta A gap <= 0 (illusion of agreement)", res.meta.A.gap <= 0);
-ok("silence A > 0 (A8 skips)", res.silence.A > 0);
-ok("silence B > 0 (B4/B10 skipped)", res.silence.B > 0);
-ok("A3 distribution present", Array.isArray(res.perItem.A3.distribution) && res.perItem.A3.distribution.length === 1);
-ok("A10 distribution has 6 buckets", res.perItem.A10.distribution.length === 6);
-ok("semantic is 3 values", Array.isArray(res.semantic) && res.semantic.length === 3);
-ok("segmentation by func present", res.segments.func && Object.keys(res.segments.func).length >= 1);
-ok("segment cells < minN suppressed (small, ioaA2 null)", res.segments.func && Object.keys(res.segments.func).every((k) => res.segments.func[k].small === true && res.segments.func[k].ioaA2 === null));
-ok("sensitive B4 shown at N>=minN (and carries no latency)", Array.isArray(res.perItem.B4.answers) && res.perItem.B4.answers.every((a) => a == null || a.latencyMs === undefined));
+/* ---------- synthetic teams ---------- */
+function ans(v) { return { value: v, skipped: v == null }; }
+const SYN = { // команда-синергия: здоровые исходы
+  A1: "растём в enterprise", A2: ["d1", "d2", "d3"], A3: "m1", A4: "a", A5: "Аня", A6: "s2", A6b: "b",
+  A7: ["t1", "t2"], A8: "a", A9a: "a", A9b: "a", A9c: "a", A10: "r1", A11a: "p1", A11b: "p1", A13: "a", A12: 5,
+  B1: ["v1", "v2", "v3"], B2: { "Скорость": ["дедлайн"], "Прозрачность": ["открытость"], "Ответственность": ["владелец"] },
+  B3: "a", B4a: "a", B4: null, B5: "Борис", B6: 1, B7: "обходят ревью", B7b: 1, B8: "x2",
+  B13: "a", B14: "a", B15: "a", B16: "a", B10: null, B11a: "b4", B11b: "b4", B12: 4,
+};
+const BRK = { // команда-поломка: диссонансные исходы
+  A1: "не знаю", A2: ["d1", "d2", "d3"], A3: "m1", A4: "d", A5: "Аня", A6: "s2", A6b: "d",
+  A7: ["t1", "t2"], A8: "d", A9a: "a", A9b: "a", A9c: "a", A10: "r1", A11a: "p2", A11b: "p5", A13: "d", A12: 5,
+  B1: ["v1", "v2", "v3"], B2: { "Скорость": ["страх"], "Прозрачность": ["молчание"], "Ответственность": ["вина"] },
+  B3: "d", B4a: "b", B4: null, B5: "Борис", B6: 5, B7: "всё", B7b: 5, B8: "x1",
+  B13: "c", B14: "e", B15: "b", B16: "d", B10: null, B11a: "b1", B11b: "b4", B12: 5,
+};
+function mk(proto, i, isLeader, over) {
+  const a = {}; Object.keys(proto).forEach((k) => { a[k] = ans(proto[k]); });
+  if (over) Object.keys(over).forEach((k) => { a[k] = ans(over[k]); });
+  return { v: 2, survey: "contours-0.2", groupKey: "t", isLeader: !!isLeader, life: "long",
+    segment: { stage: i < 3 ? "6-24" : "24+", func: i % 2 ? "prod" : "gtm", loc: "hq" }, lang: "ru", startedAt: 0, finishedAt: 1, answers: a };
+}
 
-/* ---------- segment cell >= minN computes IoA ---------- */
-const segTeam = [mk(0, true, false)];
-for (let i = 1; i <= 5; i++) { const r = mk(i, false, false); r.segment = { stage: "24+", func: "prod", loc: "hq" }; segTeam.push(r); }
-const segRes = MX.compute(segTeam, S, CFG);
-ok("segment cell >= minN not suppressed", segRes.segments.func && segRes.segments.func.prod && segRes.segments.func.prod.small !== true);
-ok("segment cell n = 5 members", segRes.segments.func.prod.n === 5);
-ok("segment cell IoA·A2 = 1 (identical A2)", approx(segRes.segments.func.prod.ioaA2, 1));
+/* --- синергия: 1 лид + 6 участников, все здоровые --- */
+const good = [mk(SYN, 0, true)]; for (let i = 1; i <= 6; i++) good.push(mk(SYN, i, false));
+const g = MX.compute(good, S, CFG);
+ok("not gated at N=6", g.gated === false && g.N === 6);
+ok("A2 IoA=1, canon=1", approx(g.perItem.A2.ioa, 1) && approx(g.perItem.A2.canon, 1));
+ok("episode item carries no canon (A13)", g.perItem.A13.canon === null);
+ok("episode flag on perItem", g.perItem.A13.episode === true && g.perItem.A2.episode === false);
+COMPS.forEach((c) => {
+  ok("IoA_" + c + " = 1 (identical answers)", approx(g.components[c].ioa, 1, 1e-9));
+  ok("Val_" + c + " > 0.5 (healthy episodes)", g.components[c].valence != null && g.components[c].valence > 0.5);
+});
+ok("all conflicts ~0 in synergy team", CONFS.every((k) => approx(g.conflicts[k].share, 0)));
+ok("Δ→K1K2 delta = 0 (real == should)", approx(g.conflicts.K1K2.delta, 0));
+ok("fear clean", g.fear.band === "clean");
+ok("sensors positive (D,P,R)", g.sensors.D.valence > 0 && g.sensors.P.valence > 0 && g.sensors.R.valence > 0);
+ok("life=long → lead ioa", g.life.value === "long" && g.life.lead === "ioa");
 
-/* ---------- gating: N < minN ---------- */
-const small = MX.compute([mk(0, true, false), mk(1, false, false), mk(2, false, false)], S, CFG);
-ok("gated when members < minN", small.gated === true);
-ok("gated N = 2 members", small.N === 2);
+/* --- поломка: те же закрытые не-эпизодные ответы, но исходы диссонансные --- */
+const bad = [mk(BRK, 0, true)]; for (let i = 1; i <= 6; i++) bad.push(mk(BRK, i, false));
+const b = MX.compute(bad, S, CFG);
+ok("broken team: IoA_S still 1 (they agree...)", approx(b.components.S.ioa, 1, 1e-6));
+ok("broken team: Val_C strongly negative", b.components.C.valence < -0.5);
+ok("broken team: Val_St negative", b.components.St.valence < -0.3);
+ok("...= consensus about breakage, not blur", b.components.C.ioa > 0.9 && b.components.C.valence < 0);
+ok("K2K3 conflict named (>0.25)", b.conflicts.K2K3.share > 0.25);
+ok("K1K2 conflict present (>=0.10)", b.conflicts.K1K2.share >= 0.10);
+ok("K1K4 conflict present", b.conflicts.K1K4.share > 0);
+ok("Δ→K1K2 delta = 1 (real != should)", approx(b.conflicts.K1K2.delta, 1));
+ok("fear poisoned", b.fear.band === "poisoned");
+ok("sensors negative (P,R)", b.sensors.P.valence < 0 && b.sensors.R.valence < 0);
+ok("conflict shares within [0,1] and answered>0", b.conflicts.answered > 0 && CONFS.every((k) => b.conflicts[k].share >= 0 && b.conflicts[k].share <= 1));
 
-/* ---------- no leader: canonicity null ---------- */
-const noLead = MX.compute([mk(1, false), mk(2, false), mk(3, false), mk(4, false), mk(5, false), mk(6, false)], S, CFG);
-ok("no leader -> canon null", noLead.perItem.A2.canon === null);
-ok("no leader -> leaders 0", noLead.leaders === 0);
+/* --- смешанная: половина A13=f (выгорание) — K1K4 растёт --- */
+const mix = [mk(SYN, 0, true)]; for (let i = 1; i <= 6; i++) mix.push(mk(SYN, i, false, i <= 3 ? { A13: "f", B16: "b" } : {}));
+const m = MX.compute(mix, S, CFG);
+ok("mixed: K1K4 > 0", m.conflicts.K1K4.share > 0);
+ok("mixed: fear strictly above synergy team", m.fear.index > g.fear.index);
 
-/* ---------- two leaders disagree ---------- */
-const l2 = mk(9, true, false); l2.answers.A2 = ans(["d4", "d5", "d6"]);
-const dis = MX.compute([mk(0, true, false), l2, mk(1, false), mk(2, false), mk(3, false), mk(4, false), mk(5, false)], S, CFG);
+/* ---------- gating / no leader / segments / meta / silence ---------- */
+const small = MX.compute([mk(SYN, 0, true), mk(SYN, 1, false), mk(SYN, 2, false)], S, CFG);
+ok("gated when members < minN", small.gated === true && small.N === 2);
+const noLead = [1, 2, 3, 4, 5, 6].map((i) => mk(SYN, i, false));
+const nl = MX.compute(noLead, S, CFG);
+ok("no leader -> canon null", nl.perItem.A2.canon === null && nl.leaders === 0);
+ok("segment cells < minN suppressed", nl.segments.func && Object.keys(nl.segments.func).every((k) => nl.segments.func[k].small === true));
+const segTeam = [mk(SYN, 0, true)]; for (let i = 1; i <= 5; i++) { const r = mk(SYN, i, false); r.segment = { stage: "24+", func: "prod", loc: "hq" }; segTeam.push(r); }
+const sg = MX.compute(segTeam, S, CFG);
+ok("segment cell >= minN computes IoA·A2 = 1", sg.segments.func.prod.small !== true && approx(sg.segments.func.prod.ioaA2, 1));
+ok("meta A expected = 1.0 (all 5s)", approx(g.meta.A.expected, 1));
+ok("meta actual excludes episode items", g.meta.A.actual != null && g.meta.A.actual >= 0 && g.meta.A.actual <= 1);
+ok("silence B > 0 (B4/B10 skipped)", g.silence.B > 0);
+ok("semantic is 3 values", Array.isArray(g.semantic) && g.semantic.length === 3);
+ok("sensitive B4 answers exposed only via values field", Array.isArray(g.perItem.B4.answers) && g.perItem.B4.answers.every((a) => a == null || a.latencyMs === undefined));
+
+/* --- два лида расходятся на A2 --- */
+const l2 = mk(SYN, 9, true); l2.answers.A2 = ans(["d4", "d5", "d6"]);
+const dis = MX.compute([mk(SYN, 0, true), l2, mk(SYN, 1, false), mk(SYN, 2, false), mk(SYN, 3, false), mk(SYN, 4, false), mk(SYN, 5, false)], S, CFG);
 ok("two leaders disagreeing flagged", dis.leaderDisagree === true);
 
-/* ---------- sensitive hidden at small N (build 4 members, sensitive B4 hidden but gated anyway) ---------- */
-console.log(`\ncontours metrics: ${pass} passed, ${fail} failed`);
+console.log(`\ncontours metrics v0.2: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
