@@ -67,10 +67,15 @@
     function bars(dist, total){ if(!dist||!dist.length) return ""; return '<div class="mini-bars">'+dist.slice(0,6).map(function(d){ var w=total?Math.round(d.n/total*100):0; return '<div class="mini-bar"><span title="'+esc(d.label)+'">'+esc(String(d.label).slice(0,22))+'</span><div class="track"><span style="width:'+w+'%"></span></div><span class="pc">'+d.n+'</span></div>'; }).join("")+'</div>'; }
 
     function closedRow(r){
-      var it=items[r.id]; var b=r.type==="multi"||r.type==="single"||r.type==="scale"||r.type==="forced"||r.type==="name";
-      var ioaB=band(r.ioa,"hi"), canB=band(r.canon,"canon");
+      var it=items[r.id];
+      var chips;
+      if(r.episode){ // эпизодный вопрос: исходы, а не сходимость — IoA/канон не показываем
+        chips = chip(T("episode","эпизод"),"na") + chip(T("skip ","пропуск ")+pct(r.skipRate), band(r.skipRate,"sil"));
+      } else {
+        chips = chip("IoA "+pct(r.ioa), band(r.ioa,"hi")) + (r.canon!=null?chip(T("canon ","канон ")+pct(r.canon), band(r.canon,"canon")):"") + chip(T("skip ","пропуск ")+pct(r.skipRate), band(r.skipRate,"sil")) + (r.ioaMethod==="jaccard"?'<span class="muted" style="font-size:.72rem">· Jaccard</span>':'');
+      }
       return '<div class="mrow"><div class="mrow-h"><b>'+esc(r.id)+'</b> <span class="muted">'+esc(strip(L(it.prompt)))+'</span></div>'+
-        '<div class="mrow-m">'+chip("IoA "+pct(r.ioa), ioaB)+ (r.canon!=null?chip(T("canon ","канон ")+pct(r.canon), canB):"") + chip(T("skip ","пропуск ")+pct(r.skipRate), band(r.skipRate,"sil"))+ (r.ioaMethod==="jaccard"?'<span class="muted" style="font-size:.72rem">· Jaccard</span>':'')+'</div>'+
+        '<div class="mrow-m">'+chips+'</div>'+
         bars(r.distribution, r.answered)+'</div>';
     }
     function strip(s){ return String(s).replace(/<[^>]+>/g,""); }
@@ -108,6 +113,77 @@
     function segLabel(dim,id){ if(dim==="stage"){ return ({lt6:T("<6mo","до 6 мес"),"6-24":"6–24","24+":"24+"})[id]||id; } var list=(CFG.segments&&CFG.segments[dim])||[]; var f=list.filter(function(o){return o.id===id;})[0]; return f?L(f):id; }
     function blockName(bid){ return bid==="A"?T("strategy","стратегия"):T("culture","культура"); }
 
+    /* ---- v0.2: составляющие, конфликты, датчик ---- */
+    function compName(c){ return ({S:T("Strategy","Стратегия"),V:T("Values","Ценности"),St:T("Structures","Структуры"),C:T("Culture","Культура")})[c]||c; }
+    function compContour(c){ return (c==="S"||c==="V")?"К1":"К2"; }
+    function confMeta(k){ return ({
+      K1K2:{pair:"К1↔К2", name:T("Values vs rules","Ценности против правил")},
+      K1K3:{pair:"К1↔К3", name:T("Goal through conflict","Цель через конфликт")},
+      K1K4:{pair:"К1↔К4", name:T("Goal vs person","Цель против человека")},
+      K2K3:{pair:"К2↔К3", name:T("Rules vs life","Правила против жизни")},
+      K2K4:{pair:"К2↔К4", name:T("Order running on heroism","Уклад на героизме")},
+      K3K4:{pair:"К3↔К4", name:T("Silence","Молчание")},
+    })[k]; }
+    function pctS(x){ if(x==null) return "—"; var v=Math.round(x*100); return (v>0?"+":"")+v+"%"; }
+    function valBand(v){ if(v==null) return "na"; return v>0.15?"good":(v<-0.15?"bad":"warn"); }
+    function confBand(s){ if(s==null) return "na"; return s<0.10?"good":(s<=0.25?"warn":"bad"); }
+    function quadrant(ioa,v){
+      if(ioa==null||v==null) return {label:"—",b:"na"};
+      var hi=ioa>=0.55, pos=v>0.15, neg=v<-0.15;
+      if(hi&&pos)  return {label:T("synergy — working","синергия — работает"),b:"good"};
+      if(hi&&neg)  return {label:T("consensus about breakage","консенсус о поломке"),b:"warn"};
+      if(!hi&&neg) return {label:T("fragmentation + pain","фрагментация + боль"),b:"bad"};
+      if(!hi&&!pos)return {label:T("blur — no shared picture","размытость — общей картины нет"),b:"warn"};
+      return {label:T("converging, healthy events","сходится, события здоровые"),b:"good"};
+    }
+
+    function fearPanel(res){
+      var f=res.fear||{}; var b=f.band==="clean"?"good":(f.band==="muted"?"warn":(f.band==="poisoned"?"bad":"na"));
+      var label=f.band==="clean"?T("sensor clean","датчик чистый"):(f.band==="muted"?T("readings muted","показания занижены"):(f.band==="poisoned"?T("poisoned sensor","отравленный датчик"):"—"));
+      var read=f.band==="clean"?T("People report problems — the rest of the report can be read at face value.","О проблемах здесь говорят — остальному отчёту можно верить как есть.")
+        :(f.band==="muted"?T("Speaking up is somewhat unsafe here — reality is somewhat worse than measured.","Говорить о проблемах здесь не вполне безопасно — реальность несколько хуже измеренной.")
+        :(f.band==="poisoned"?T("Speaking up backfires here. Green values below must NOT be read as green — people answer what is safe, not what is true.","Здесь за поднятую проблему прилетает. Зелёные значения ниже НЕЛЬЗЯ читать как зелёные — люди отвечают безопасное, а не настоящее.")
+        :T("Not enough data.","Недостаточно данных.")));
+      return '<h2 class="section-title">'+T("1 · Sensor trust (fear index)","1 · Достоверность датчика (индекс страха)")+'</h2>'+
+        '<div class="panel"><div class="mrow-m">'+chip("F "+pct(f.index), b)+chip(label,b)+'</div>'+
+        '<p class="muted" style="margin:8px 0 0">'+read+'</p>'+
+        '<p class="disclaimer">'+T("F blends: “speaking up backfired” (×2), “told to bear with it”, “I don't ask for help”, “nothing happens”, and block-B silence.","F склеен из: «мне же стало хуже» (×2), «посоветовали потерпеть», «не прошу помощи», «ничего не произойдёт» и молчания блока B.")+'</p></div>';
+    }
+    function componentsPanel(res){
+      var lead=res.life&&res.life.lead; var leadNote=lead==="canon"?T("Temporary group — the leading indicator is canonicity (tie to the lead).","Группа временная — ведущий показатель: каноничность (связь с лидом).")
+        :(lead==="ioa"?T("Long-lived team — the leading indicator is IoA (internal agreement).","Команда долгоживущая — ведущий показатель: IoA (внутреннее согласие).")
+        :T("Team lifetime not stated — read IoA and canonicity together.","Возраст команды не указан — читать IoA и каноничность вместе."));
+      var h='<h2 class="section-title">'+T("2–3 · Contour 1 → Contour 2: components","2–3 · Контур 1 → Контур 2: составляющие")+'</h2><div class="panel">';
+      ["S","V","St","C"].forEach(function(c,i){
+        var x=(res.components||{})[c]||{}; var q=quadrant(x.ioa,x.valence);
+        if(i===0) h+='<p class="muted" style="margin:0 0 4px;font-size:.8rem">'+T("Contour 1 — foundations & direction","Контур 1 — основы и направления")+'</p>';
+        if(i===2) h+='<p class="muted" style="margin:14px 0 4px;font-size:.8rem">'+T("Contour 2 — practices & norms","Контур 2 — закрепление практик и норм")+'</p>';
+        h+='<div class="mrow"><div class="mrow-h"><b>'+compName(c)+'</b> <span class="muted">'+compContour(c)+'</span></div>'+
+          '<div class="mrow-m">'+chip(T("agreement ","сходимость ")+pct(x.ioa), band(x.ioa,"hi"))+chip(T("valence ","валентность ")+pctS(x.valence), valBand(x.valence))+chip(q.label,q.b)+
+          (x.nVal?'<span class="muted" style="font-size:.72rem">· '+T("episodes wt ","вес эпизодов ")+Math.round(x.nVal)+'</span>':'')+'</div></div>';
+      });
+      h+='<p class="disclaimer">'+T("Read as a PAIR: agreement (do we see it the same way) × valence (is it healthy in real episodes). High agreement + negative valence = consensus about breakage — the best case for repair, not blur. Never collapse into one number.","Читать ПАРОЙ: сходимость (одинаково ли видим) × валентность (здорово ли в реальных эпизодах). Высокая сходимость + отрицательная валентность = консенсус о поломке — лучший случай для ремонта, а не размытость. В одно число не сворачивать.")+'</p>'+
+        '<p class="muted" style="font-size:.82rem">'+leadNote+'</p></div>';
+      return h;
+    }
+    function conflictsPanel(res){
+      var cf=res.conflicts||{}; var h='<h2 class="section-title">'+T("4 · Contour conflicts","4 · Конфликты контуров")+'</h2><div class="panel">';
+      ["K1K2","K1K3","K1K4","K2K3","K2K4","K3K4"].forEach(function(k){
+        var m=confMeta(k), x=cf[k]||{};
+        h+='<div class="mrow-m" style="margin:7px 0">'+chip(m.pair+" "+pct(x.share), confBand(x.share))+' <span><b>'+m.name+'</b>'+
+          (k==="K1K2"&&cf.K1K2&&cf.K1K2.delta!=null?' <span class="muted">· Δ '+T("declared ≠ rewarded ","декларируется ≠ поощряется ")+pct(cf.K1K2.delta)+'</span>':'')+
+          (k==="K1K4"&&x.share!=null&&x.share>0.25?' <span class="muted">· '+T("per the framework — the worst kind: we make people go against themselves","по фреймворку — худшее: заставляем людей идти против себя")+'</span>':'')+'</span></div>';
+      });
+      var sn=res.sensors||{};
+      h+='<div class="mrow-m" style="margin-top:12px">'+
+        chip(T("agreements ","договорённости ")+pctS((sn.D||{}).valence), valBand((sn.D||{}).valence))+
+        chip(T("system reaction ","реакция системы ")+pctS((sn.P||{}).valence), valBand((sn.P||{}).valence))+
+        chip(T("personal resource ","личный ресурс ")+pctS((sn.R||{}).valence), valBand((sn.R||{}).valence))+
+        '<span class="muted" style="font-size:.72rem">· '+T("K3/K4 sensors","датчики К3/К4")+'</span></div>';
+      h+='<p class="disclaimer">'+T("Share of episode answers carrying each conflict label, of "+(cf.answered||0)+" coded answers. Provisional thresholds: <10% background · 10–25% attention · >25% the conflict has a name.","Доля эпизодных ответов с меткой конфликта из "+(cf.answered||0)+" кодированных ответов. Стартовые пороги: <10% фон · 10–25% внимание · >25% конфликт назван.")+'</p></div>';
+      return h;
+    }
+
     function render(res){
       lastRes=res;
       var out=document.getElementById("out");
@@ -117,6 +193,11 @@
       if(res.leaderDisagree) h+='<div class="note" style="border-left-color:var(--bad)">'+T("The leads disagree with each other on A2 — by the framework, contour 1 is broken at the input; canonicity is not meaningful yet.","Лиды разошлись между собой на A2 — по фреймворку контур 1 сломан на входе; каноничность считать рано.")+'</div>';
       if(!res.leaders) h+='<div class="note" style="border-left-color:var(--warn)">'+T("No lead response — canonicity (distance to the lead) is unavailable.","Нет ответа лида — каноничность (расстояние до лида) недоступна.")+'</div>';
       h+='<p class="disclaimer">'+T("Thresholds are provisional (uncalibrated). Read comparisons between blocks and change over time, not absolute values. Never collapse into one index.","Пороги стартовые (не откалиброваны). Читайте сравнение блоков и динамику, а не абсолютные значения. Не сворачивайте в один индекс.")+'</p></div>';
+
+      /* v0.2 — строгий порядок чтения: 1 датчик · 2 К1 · 3 К2 · 4 конфликты */
+      h+=fearPanel(res);
+      h+=componentsPanel(res);
+      h+=conflictsPanel(res);
 
       S.blocks.forEach(function(bl){
         h+='<h2 class="section-title">'+esc(L(bl.title))+'</h2><div class="panel">';
@@ -157,6 +238,11 @@
       var P=res.perItem, rows=[];
       function row(cond, txt, fix){ rows.push('<div class="mrow-m" style="margin:7px 0">'+chip(cond?T("flag","сигнал"):T("ok","ок"), cond?"bad":"good")+' <span>'+txt+' <span class="muted">→ '+fix+'</span></span></div>'); }
       var a2=P.A2.ioa, a3=P.A3.ioa, a5=P.A5.ioa, a6=P.A6.ioa, b1=P.B1.ioa;
+      var F=res.fear||{};
+      row(F.band==="poisoned", T("Fear index high — answers show what's safe, not what's true; repair safety before reading anything else","Индекс страха высокий — ответы про безопасное, а не про настоящее; сначала чинить безопасность, потом читать остальное"), T("methodology","методология"));
+      var CF=res.conflicts||{};
+      ["K1K2","K1K3","K1K4","K2K3","K2K4","K3K4"].forEach(function(k){ var x=CF[k]||{}, m=confMeta(k);
+        row(x.share!=null&&x.share>0.25, m.name+" ("+m.pair+") — "+pct(x.share), k==="K1K4"?T("the worst — fix first","худшее — чинить первым"):m.pair); });
       row(a2!=null&&a2<0.40, T("Low IoA on A2/A3 — no strategy as a frame","Низкий IoA в A2/A3 — стратегии как рамки нет"), "К1");
       row(a5!=null&&a5<0.40, T("High dispersion on A5 — the goal has no owner","Высокая дисперсия A5 — у цели нет владельца"), "К2");
       row(a6!=null&&a6<0.40, T("A6 spread across orders of magnitude — scale unspoken","A6 разброс по порядку величины — масштаб не проговорён"), "К1");
@@ -184,8 +270,8 @@
     document.getElementById("demo").addEventListener("click",function(){ buffer=synth(); document.getElementById("in").value=T("(demo data loaded — click Build report)","(демо-данные загружены — нажмите «Построить отчёт»)"); refreshCount(); render(MX.compute(buffer, S, CFG)); });
     function synth(){
       var vals=(CFG.org.values||["Скорость","Прозрачность","Ответственность"]);
-      function mk(over){ var a={}; S.blocks.forEach(function(b){ b.items.forEach(function(it){ a[it.id]=ansFor(it,over); }); }); return { v:1, survey:"contours-0.1", groupKey:"demo", isLeader:over.lead, segment:over.seg||{stage:"",func:"",loc:""}, lang:"ru", startedAt:0, finishedAt:1, answers:a }; }
-      function ansFor(it,o){ var v=null; if(it.type==="multi"){ var pool=(CFG[it.opt]||[]).map(function(x){return x.id;}); v=shuffle(pool.slice()).slice(0,it.choose); } else if(it.type==="single"){ var p=(CFG[it.opt]||[]); v=p.length?p[Math.floor(Math.random()*Math.min(3,p.length))].id:null; } else if(it.type==="scale"){ v=2+Math.floor(Math.random()*3); } else if(it.type==="forced"){ v=Math.random()<0.6?"a":"b"; } else if(it.type==="name"){ v=["Аня","Борис","Вика","Борис","Аня"][Math.floor(Math.random()*5)]; } else if(it.type==="assoc"){ v={}; vals.slice(0,3).forEach(function(nm,i){ v[nm]=[["дедлайн","цикл","релиз"][i%3],["давление","обратная связь","качество"][i%3]]; }); } else if(it.type==="open"){ v=Math.random()<0.7?"пример ответа":null; } return { value:v, skipped:v==null, latencyMs:800+Math.floor(Math.random()*3000), spentMs:3000 }; }
+      function mk(over){ var a={}; S.blocks.forEach(function(b){ b.items.forEach(function(it){ a[it.id]=ansFor(it,over); }); }); return { v:2, survey:"contours-"+S.meta.version, groupKey:"demo", isLeader:over.lead, segment:over.seg||{stage:"",func:"",loc:""}, life:"long", lang:"ru", startedAt:0, finishedAt:1, answers:a }; }
+      function ansFor(it,o){ var v=null; if(it.type==="multi"){ var pool=(CFG[it.opt]||[]).map(function(x){return x.id;}); v=shuffle(pool.slice()).slice(0,it.choose); } else if(it.type==="single"){ var p=(it.options||CFG[it.opt]||[]); v=p.length?p[Math.floor(Math.random()*Math.min(3,p.length))].id:null; } else if(it.type==="scale"){ v=2+Math.floor(Math.random()*3); } else if(it.type==="forced"){ v=Math.random()<0.6?"a":"b"; } else if(it.type==="name"){ v=["Аня","Борис","Вика","Борис","Аня"][Math.floor(Math.random()*5)]; } else if(it.type==="assoc"){ v={}; vals.slice(0,3).forEach(function(nm,i){ v[nm]=[["дедлайн","цикл","релиз"][i%3],["давление","обратная связь","качество"][i%3]]; }); } else if(it.type==="open"){ v=Math.random()<0.7?"пример ответа":null; } return { value:v, skipped:v==null }; }
       function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
       var arr=[mk({lead:true,seg:{stage:"24+",func:"prod",loc:"hq"}})]; for(var i=0;i<6;i++) arr.push(mk({lead:false,seg:{stage:i<3?"6-24":"24+",func:i%2?"prod":"gtm",loc:"hq"}})); return arr;
     }
