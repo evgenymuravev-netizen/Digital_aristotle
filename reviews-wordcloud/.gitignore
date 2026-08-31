@@ -1,0 +1,8 @@
+# Real collected data is generated locally; don't commit it (size + PII).
+data/google_reviews.jsonl
+data/reddit_reviews.jsonl
+config/places.discovered.json
+# Python
+__pycache__/
+*.pyc
+# Keep: data/reviews.sample.jsonl and output/ demo artifacts ARE tracked.
