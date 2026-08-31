@@ -12,6 +12,11 @@ id = "PASTE_KV_NAMESPACE_ID"
 # origin вашего GitHub Pages (для CORS). Замените, если домен другой.
 ALLOWED_ORIGIN = "https://evgenymuravev-netizen.github.io"
 MIN_N = "5"
+# ИИ-кодировка открытых ответов (работает при заданном ANTHROPIC_API_KEY):
+MODEL = "claude-opus-5"
+ORG_VALUES = "Скорость,Прозрачность,Ответственность"   # те же, что config.org.values
+AI_FALLBACK = "drop"   # drop = при сбое ИИ текст выбрасывается · raw = хранить текст
 
-# 2) Токен фасилитатора — СЕКРЕТ, не храните его в этом файле:
+# 2) Секреты — НЕ храните их в этом файле:
 #      npx wrangler secret put FAC_TOKEN
+#      npx wrangler secret put ANTHROPIC_API_KEY   # опционально, включает ИИ-кодировку

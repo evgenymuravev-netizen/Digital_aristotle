@@ -28,6 +28,7 @@
   /* ---- flatten items in fixed order ---- */
   var ITEMS = [];
   S.blocks.forEach(function (b) { b.items.forEach(function (it) { ITEMS.push(Object.assign({ block: b.id }, it)); }); });
+  var TYPE = {}; ITEMS.forEach(function (it) { TYPE[it.id] = it.type; });
 
   var st = { groupKey: "", isLeader: false, segment: { stage: "", func: "", loc: "" }, life: "", idx: 0, answers: {}, startedAt: null };
   var timer = null, itemStart = 0, latency = null, itemBlock = null;
@@ -104,15 +105,19 @@
   function optPlain(v, t) { return el("option", { value: v, text: t }); }
 
   /* ---- ITEM ---- */
+  // эффективный кап: базовое время вопроса × config.capFactor (настройка темпа волны)
+  function effCap(it) { var f = CFG.capFactor > 0 ? CFG.capFactor : 1; return Math.round(it.cap * f); }
+
   function renderItem(i) {
     stopTimer();
     if (i >= ITEMS.length) return finish();
     st.idx = i; var it = ITEMS[i]; itemBlock = it.block; latency = null; itemStart = Date.now();
+    var cap = effCap(it);
     var body = el("div", { id: "answer" });
     buildInput(it, body);
 
     var capWrap = el("div", { class: "cap" }, [
-      el("div", { class: "cap-num", id: "cap-num", text: it.cap + "s" }),
+      el("div", { class: "cap-num", id: "cap-num", text: cap + "s" }),
       el("div", { class: "cap-bar" }, el("span", { id: "cap-fill", style: "width:100%" })),
     ]);
 
@@ -137,14 +142,14 @@
     var onFirst = function () { if (latency == null) latency = Date.now() - itemStart; };
     document.getElementById("answer").addEventListener("input", onFirst, true);
     document.getElementById("answer").addEventListener("click", onFirst, true);
-    startTimer(it.cap);
+    startTimer(cap);
   }
 
   function buildInput(it, host) {
     if (it.type === "open" || it.type === "name") {
       host.appendChild(it.one || it.type === "name"
         ? el("input", { class: "code-input", id: "in", placeholder: L(it.ph) || "" })
-        : el("textarea", { class: "code-input", id: "in", rows: it.cap > 60 ? "4" : "3", placeholder: L(it.ph) || "" }));
+        : el("textarea", { class: "code-input", id: "in", rows: effCap(it) > 60 ? "4" : "3", placeholder: L(it.ph) || "" }));
     } else if (it.type === "scale") {
       var row = el("div", { class: "scale-row", id: "in" });
       for (var v = 1; v <= 5; v++) (function (val) { row.appendChild(el("button", { type: "button", class: "scale-btn", "data-v": val, text: String(val),
@@ -220,7 +225,8 @@
     // суток. Для метрик дисперсии поминутные тайминги не нужны.
     function dayFloor(ts) { var d = new Date(ts || Date.now()); d.setHours(0, 0, 0, 0); return d.getTime(); }
     var cleanAnswers = {};
-    Object.keys(st.answers).forEach(function (k) { var a = st.answers[k]; cleanAnswers[k] = { value: a.value, skipped: a.skipped }; });
+    Object.keys(st.answers).forEach(function (k) { var a = st.answers[k]; cleanAnswers[k] = { value: a.value, skipped: a.skipped };
+      if (TYPE[k] === "open") cleanAnswers[k].open = 1; }); // метка для бэкенда: этот текст кодируется ИИ и не хранится
     var payload = {
       v: 2, survey: S.meta.id + "-" + S.meta.version, groupKey: st.groupKey, isLeader: st.isLeader,
       segment: st.segment, life: st.life, lang: LANG, startedAt: dayFloor(st.startedAt), finishedAt: dayFloor(Date.now()), answers: cleanAnswers,
