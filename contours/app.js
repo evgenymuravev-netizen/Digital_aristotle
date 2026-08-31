@@ -55,8 +55,16 @@
     var lead = el("input", { type: "checkbox", id: "lead" }); if (st.isLeader) lead.checked = true;
     var stage = el("select", { class: "code-input", id: "seg-stage" }, [
       optPlain("", "—"), optPlain("lt6", LANG === "ru" ? "до 6 мес" : "< 6 mo"), optPlain("6-24", "6–24"), optPlain("24+", "24+")]);
-    var fn = el("input", { class: "code-input", id: "seg-func", value: st.segment.func, placeholder: LANG === "ru" ? "напр. разработка" : "e.g. engineering" });
-    var loc = el("input", { class: "code-input", id: "seg-loc", value: st.segment.loc, placeholder: LANG === "ru" ? "напр. Дубай" : "e.g. Dubai" });
+    // Срезы — только крупные фиксированные корзины (анонимность). Свободный текст убран.
+    function segSelect(dim, id, cur) {
+      var list = (CFG.segments && CFG.segments[dim]) || null; if (!list || !list.length) return null;
+      var sel = el("select", { class: "code-input", id: id }, [optPlain("", "—")].concat(list.map(function (o) {
+        var op = el("option", { value: o.id, text: L(o) }); if (o.id === cur) op.selected = true; return op;
+      })));
+      return sel;
+    }
+    var fn = segSelect("func", "seg-func", st.segment.func);
+    var loc = segSelect("loc", "seg-loc", st.segment.loc);
     var msg = el("p", { class: "unlock-msg bad", id: "start-msg" });
 
     screen([
@@ -65,13 +73,14 @@
         el("h1", { text: U("start_h") }),
         el("p", { class: "lede", html: U("intro") }),
         el("p", { class: "muted", text: U("anon") }),
+        el("p", { class: "muted", style: "font-size:.82rem", text: U("consent") }),
       ]),
       el("div", { class: "panel" }, [
         el("label", { class: "field" }, [el("span", { text: U("groupKey") }), key]),
         el("div", { class: "seg-grid" }, [
           el("label", { class: "field" }, [el("span", { text: U("seg_stage") }), stage]),
-          el("label", { class: "field" }, [el("span", { text: U("seg_func") }), fn]),
-          el("label", { class: "field" }, [el("span", { text: U("seg_loc") }), loc]),
+          fn ? el("label", { class: "field" }, [el("span", { text: U("seg_func") }), fn]) : null,
+          loc ? el("label", { class: "field" }, [el("span", { text: U("seg_loc") }), loc]) : null,
         ]),
         el("p", { class: "muted", style: "margin:-6px 0 10px;font-size:.82rem", text: U("seg_optional") }),
         el("label", { class: "switch" }, [lead, el("span", { text: U("leader") })]),
@@ -79,7 +88,7 @@
           el("button", { class: "btn btn-primary btn-lg", type: "button", onclick: function () {
             var k = key.value.trim(); if (!k) { msg.textContent = U("needKey"); return; }
             st.groupKey = k; st.isLeader = lead.checked;
-            st.segment = { stage: stage.value, func: fn.value.trim(), loc: loc.value.trim() };
+            st.segment = { stage: stage.value, func: fn ? fn.value : "", loc: loc ? loc.value : "" };
             st.startedAt = Date.now(); st.idx = 0; st.answers = {};
             renderItem(0);
           }, text: U("begin") }),
@@ -201,9 +210,15 @@
   /* ---- DONE ---- */
   function finish() {
     stopTimer();
+    // Анонимность: из выгружаемой записи убираем поминутную латентность/время на
+    // вопрос (это отпечаток «кто заполнял в 14:32») и огрубляем метки времени до
+    // суток. Для метрик дисперсии поминутные тайминги не нужны.
+    function dayFloor(ts) { var d = new Date(ts || Date.now()); d.setHours(0, 0, 0, 0); return d.getTime(); }
+    var cleanAnswers = {};
+    Object.keys(st.answers).forEach(function (k) { var a = st.answers[k]; cleanAnswers[k] = { value: a.value, skipped: a.skipped }; });
     var payload = {
       v: 1, survey: S.meta.id + "-" + S.meta.version, groupKey: st.groupKey, isLeader: st.isLeader,
-      segment: st.segment, lang: LANG, startedAt: st.startedAt, finishedAt: Date.now(), answers: st.answers,
+      segment: st.segment, lang: LANG, startedAt: dayFloor(st.startedAt), finishedAt: dayFloor(Date.now()), answers: cleanAnswers,
     };
     var json = JSON.stringify(payload, null, 0);
     var submitMsg = el("p", { class: "muted", id: "submit-msg" });
@@ -223,7 +238,8 @@
         el("div", { class: "cta-row" }, [
           el("button", { class: "btn btn-primary", type: "button", onclick: function () {
             var blob = new Blob([json], { type: "application/json" });
-            var a = el("a", { href: URL.createObjectURL(blob), download: "contours-" + st.groupKey + "-" + (st.isLeader ? "lead-" : "") + Date.now() + ".json" });
+            var rand = Math.random().toString(36).slice(2, 8);
+            var a = el("a", { href: URL.createObjectURL(blob), download: "contours-" + st.groupKey + "-" + rand + ".json" });
             document.body.appendChild(a); a.click(); a.remove();
           }, text: U("download") }),
           el("a", { class: "btn btn-ghost", href: "./report.html", text: U("facil_link") }),

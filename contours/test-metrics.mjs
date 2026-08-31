@@ -85,7 +85,16 @@ ok("A3 distribution present", Array.isArray(res.perItem.A3.distribution) && res.
 ok("A10 distribution has 6 buckets", res.perItem.A10.distribution.length === 6);
 ok("semantic is 3 values", Array.isArray(res.semantic) && res.semantic.length === 3);
 ok("segmentation by func present", res.segments.func && Object.keys(res.segments.func).length >= 1);
-ok("sensitive B4 hidden at N<minN respected (N>=minN so shown)", Array.isArray(res.perItem.B4.answers));
+ok("segment cells < minN suppressed (small, ioaA2 null)", res.segments.func && Object.keys(res.segments.func).every((k) => res.segments.func[k].small === true && res.segments.func[k].ioaA2 === null));
+ok("sensitive B4 shown at N>=minN (and carries no latency)", Array.isArray(res.perItem.B4.answers) && res.perItem.B4.answers.every((a) => a == null || a.latencyMs === undefined));
+
+/* ---------- segment cell >= minN computes IoA ---------- */
+const segTeam = [mk(0, true, false)];
+for (let i = 1; i <= 5; i++) { const r = mk(i, false, false); r.segment = { stage: "24+", func: "prod", loc: "hq" }; segTeam.push(r); }
+const segRes = MX.compute(segTeam, S, CFG);
+ok("segment cell >= minN not suppressed", segRes.segments.func && segRes.segments.func.prod && segRes.segments.func.prod.small !== true);
+ok("segment cell n = 5 members", segRes.segments.func.prod.n === 5);
+ok("segment cell IoA·A2 = 1 (identical A2)", approx(segRes.segments.func.prod.ioaA2, 1));
 
 /* ---------- gating: N < minN ---------- */
 const small = MX.compute([mk(0, true, false), mk(1, false, false), mk(2, false, false)], S, CFG);
