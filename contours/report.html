@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="noindex" />
+  <title>Отчёт фасилитатора — опрос по контурам</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%97%89%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="./index.html"><span class="brand-mark" aria-hidden="true">◉</span>
+      <span class="brand-text"><strong id="h-brand">Отчёт фасилитатора</strong><small>Опрос по контурам</small></span></a>
+    <nav class="topnav"><a href="./index.html" id="h-back">← Опрос</a></nav>
+  </header>
+  <main class="container" id="main">
+    <div class="bo-hero">
+      <p class="eyebrow" id="h-eyebrow">Фасилитатор</p>
+      <h1 id="h-h1">Командный отчёт</h1>
+      <p class="lede" id="h-lede">Соберите файлы ответов команды (включая ответ лида) и постройте диагностику. Меряется дисперсия, а не уровень; единого индекса нет.</p>
+    </div>
+    <div class="panel">
+      <label class="field"><span id="h-paste">Вставьте файлы ответов — JSON-массив или по одному в строке</span>
+        <textarea class="cert-code" id="in" rows="6" placeholder='[{...}, {...}]  или  {...}\n{...}'></textarea></label>
+      <div class="cta-row" style="margin:10px 0 0">
+        <input type="file" id="files" accept="application/json,.json" multiple style="display:none" />
+        <button class="btn btn-ghost btn-sm" id="pick" type="button">Загрузить файлы…</button>
+        <button class="btn btn-primary" id="go" type="button">Построить отчёт</button>
+        <button class="btn btn-ghost btn-sm" id="demo" type="button">Демо-данные</button>
+        <span class="muted" id="count" style="align-self:center"></span>
+      </div>
+      <div id="err"></div>
+    </div>
+    <div id="out"></div>
+  </main>
+
+  <script src="./config.js"></script>
+  <script src="./survey.js"></script>
+  <script src="./metrics.js"></script>
+  <script>
+  (function () {
+    var S = window.SURVEY, CFG = window.CONTOURS_CONFIG, MX = window.CONTOURS_METRICS;
+    var lang = "ru"; try { lang = localStorage.getItem("contours:lang") || "ru"; } catch (e) {}
+    var ru = lang === "ru";
+    function T(en, r) { return ru ? r : en; }
+    function L(o) { return o ? (o[lang] != null ? o[lang] : o.ru) : ""; }
+    function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];}); }
+    function pct(x){ return x==null?"—":Math.round(x*100)+"%"; }
+    var items = {}; S.blocks.forEach(function(b){ b.items.forEach(function(it){ items[it.id]=it; }); });
+
+    // localize static
+    var set=function(id,en,r){var e=document.getElementById(id);if(e)e.textContent=T(en,r);};
+    if (ru) document.documentElement.setAttribute("lang","ru");
+    set("h-brand","Facilitator report","Отчёт фасилитатора"); set("h-back","← Survey","← Опрос");
+    set("h-eyebrow","Facilitator","Фасилитатор"); set("h-h1","Team report","Командный отчёт");
+    set("h-lede","Collect the team's response files (incl. the lead's) and build the diagnostic. It measures variance, not level; there is no single index.","Соберите файлы ответов команды (включая ответ лида) и постройте диагностику. Меряется дисперсия, а не уровень; единого индекса нет.");
+    set("h-paste","Paste the response files — a JSON array or one per line","Вставьте файлы ответов — JSON-массив или по одному в строке");
+    document.getElementById("pick").textContent=T("Load files…","Загрузить файлы…");
+    document.getElementById("go").textContent=T("Build report","Построить отчёт");
+    document.getElementById("demo").textContent=T("Demo data","Демо-данные");
+
+    // bands
+    function band(x, dir){ if(x==null) return "na"; if(dir==="hi"){ return x>=0.70?"good":x>=0.40?"warn":"bad"; } if(dir==="canon"){ return x>=0.60?"good":x>=0.30?"warn":"bad"; } if(dir==="lo25"){ return x<=0.25?"good":x<=0.50?"warn":"bad"; } if(dir==="sil"){ return x<=0.10?"good":x<=0.25?"warn":"bad"; } if(dir==="disp"){ return x<=0.35?"good":x<=0.60?"warn":"bad"; } if(dir==="meta"){ var a=Math.abs(x); return a<=0.15?"good":a<=0.30?"warn":"bad"; } return "na"; }
+    function chip(txt, b){ return '<span class="tag-badge '+({good:"clean",warn:"review",bad:"flagged",na:"na"}[b]||"na")+'">'+esc(txt)+'</span>'; }
+    function bars(dist, total){ if(!dist||!dist.length) return ""; return '<div class="mini-bars">'+dist.slice(0,6).map(function(d){ var w=total?Math.round(d.n/total*100):0; return '<div class="mini-bar"><span title="'+esc(d.label)+'">'+esc(String(d.label).slice(0,22))+'</span><div class="track"><span style="width:'+w+'%"></span></div><span class="pc">'+d.n+'</span></div>'; }).join("")+'</div>'; }
+
+    function closedRow(r){
+      var it=items[r.id]; var b=r.type==="multi"||r.type==="single"||r.type==="scale"||r.type==="forced"||r.type==="name";
+      var ioaB=band(r.ioa,"hi"), canB=band(r.canon,"canon");
+      return '<div class="mrow"><div class="mrow-h"><b>'+esc(r.id)+'</b> <span class="muted">'+esc(strip(L(it.prompt)))+'</span></div>'+
+        '<div class="mrow-m">'+chip("IoA "+pct(r.ioa), ioaB)+ (r.canon!=null?chip(T("canon ","канон ")+pct(r.canon), canB):"") + chip(T("skip ","пропуск ")+pct(r.skipRate), band(r.skipRate,"sil"))+ (r.ioaMethod==="jaccard"?'<span class="muted" style="font-size:.72rem">· Jaccard</span>':'')+'</div>'+
+        bars(r.distribution, r.answered)+'</div>';
+    }
+    function strip(s){ return String(s).replace(/<[^>]+>/g,""); }
+
+    function openBlock(r){
+      var it=items[r.id]; var ans=(r.answers||[]).filter(function(a){return a&&!a.skipped&&a.value;});
+      var body = ans.length? ans.map(function(a){ return '<div class="q-ans">'+esc(fmtVal(a.value))+'</div>'; }).join("") : '<p class="muted">'+T("no answers / hidden (small N)","нет ответов / скрыто при малом N")+'</p>';
+      return '<details class="deep"><summary>'+esc(r.id)+' · '+esc(strip(L(it.prompt)))+' — '+T("empty ","пустых ")+pct(r.skipRate)+'</summary><div class="deep-body">'+body+'</div></details>';
+    }
+    function fmtVal(v){ if(v==null) return ""; if(typeof v==="object"){ return Object.keys(v).map(function(k){ return k+": "+(Array.isArray(v[k])?v[k].filter(Boolean).join(", "):v[k]); }).join(" · "); } return String(v); }
+
+    function render(res){
+      var out=document.getElementById("out");
+      if(res.gated){ out.innerHTML='<div class="panel"><h2 style="margin-top:0">N = '+res.N+'</h2><div class="note" style="border-left-color:var(--warn)">'+T("Aggregate hidden below N="+res.minN+" — anonymity would break. Collect more responses.","Агрегат скрыт при N < "+res.minN+" — иначе ломается анонимность. Соберите больше ответов.")+'</div></div>'; return; }
+      var h="";
+      h+='<div class="panel"><div class="integ-head"><h2 style="margin:0">'+T("Team report","Командный отчёт")+' · N='+res.N+'</h2><span class="muted">'+T("leaders: ","лидов: ")+res.leaders+'</span></div>';
+      if(res.leaderDisagree) h+='<div class="note" style="border-left-color:var(--bad)">'+T("The leads disagree with each other on A2 — by the framework, contour 1 is broken at the input; canonicity is not meaningful yet.","Лиды разошлись между собой на A2 — по фреймворку контур 1 сломан на входе; каноничность считать рано.")+'</div>';
+      if(!res.leaders) h+='<div class="note" style="border-left-color:var(--warn)">'+T("No lead response — canonicity (distance to the lead) is unavailable.","Нет ответа лида — каноничность (расстояние до лида) недоступна.")+'</div>';
+      h+='<p class="disclaimer">'+T("Thresholds are provisional (uncalibrated). Read comparisons between blocks and change over time, not absolute values. Never collapse into one index.","Пороги стартовые (не откалиброваны). Читайте сравнение блоков и динамику, а не абсолютные значения. Не сворачивайте в один индекс.")+'</p></div>';
+
+      S.blocks.forEach(function(bl){
+        h+='<h2 class="section-title">'+esc(L(bl.title))+'</h2><div class="panel">';
+        bl.items.filter(function(it){return it.closed;}).forEach(function(it){ h+=closedRow(res.perItem[it.id]); });
+        h+='</div>';
+        // open answers
+        var opens=bl.items.filter(function(it){return !it.closed;});
+        if(opens.length){ h+='<div class="panel"><h3 style="margin-top:0">'+T("Open answers (code by hand)","Открытые ответы (кодировать вручную)")+'</h3>'+opens.map(function(it){ return openBlock(res.perItem[it.id]); }).join("")+'</div>'; }
+      });
+
+      // Δ, meta, silence
+      h+='<h2 class="section-title">'+T("Cross-cutting","Сквозные метрики")+'</h2><div class="panel"><div class="mini-bars">';
+      ["A11","B11"].forEach(function(pk){ var d=res.deltas[pk]; if(d) h+='<div class="mrow-m" style="margin:6px 0">'+chip("Δ "+pk+" "+pct(d.delta), band(d.delta,"lo25"))+' <span class="muted">'+T("declared ≠ rewarded","декларируется ≠ поощряется")+' (n='+d.valid+')</span></div>'; });
+      ["A","B"].forEach(function(bid){ var m=res.meta[bid]; if(m&&m.gap!=null) h+='<div class="mrow-m" style="margin:6px 0">'+chip(T("meta ","мета ")+bid+" "+(m.gap>0?"+":"")+Math.round(m.gap*100)+"pp", band(m.gap,"meta"))+' <span class="muted">'+metaRead(m.gap)+' ('+T("actual ","факт ")+pct(m.actual)+' · '+T("expected ","ожид ")+pct(m.expected)+')</span></div>'; });
+      ["A","B"].forEach(function(bid){ h+='<div class="mrow-m" style="margin:6px 0">'+chip(T("silence ","молчание ")+bid+" "+pct(res.silence[bid]), band(res.silence[bid],"sil"))+'</div>'; });
+      h+='</div></div>';
+
+      // semantic B2
+      if(res.semantic){ h+='<div class="panel"><h3 style="margin-top:0">B2 · '+T("semantic dispersion (token approx.)","семантическая дисперсия (приближение по токенам)")+'</h3>'+res.semantic.map(function(s){ return '<div class="mrow"><div class="mrow-h"><b>'+esc(s.value)+'</b> '+chip("disp "+pct(s.dispersion), band(s.dispersion,"disp"))+'</div><div class="muted" style="font-size:.82rem">'+(s.top||[]).map(function(t){return esc(t.w)+"·"+t.n;}).join("  ")+'</div></div>'; }).join("")+'<p class="disclaimer">'+T("Token-level only — true semantic clustering needs manual/model coding with a fixed dictionary.","Только по токенам — настоящая семантическая кластеризация требует ручного/модельного кодирования с зафиксированным словарём.")+'</p></div>'; }
+
+      // auto-diagnosis
+      h+='<h2 class="section-title">'+T("Auto-diagnosis (computable subset)","Диагноз (что считается автоматически)")+'</h2><div class="panel">'+diagnose(res)+'<p class="disclaimer">'+T("Order of reading is strict: contour 1 first, then 2. A defect in K1 explains K2, not vice-versa. Rows needing human coding are marked.","Порядок чтения строгий: сначала К1, потом К2. Дефект К1 объясняет К2, но не наоборот. Строки, требующие ручного кодирования, помечены.")+'</p></div>';
+
+      // segmentation
+      h+='<div class="panel"><h3 style="margin-top:0">'+T("Segmentation (structural fragmentation)","Сегментация (структурная фрагментация)")+'</h3>';
+      var any=false; ["stage","func","loc"].forEach(function(dim){ var g=res.segments[dim]; if(!g) return; any=true; h+='<div class="muted" style="margin:6px 0"><b>'+dim+'</b>: '+Object.keys(g).map(function(k){ return esc(k)+" (n="+g[k].n+(g[k].ioaA2!=null?", IoA·A2 "+pct(g[k].ioaA2):"")+")"; }).join(" · ")+'</div>'; });
+      if(!any) h+='<p class="muted">'+T("No segment data provided.","Срезы не заполнены.")+'</p>';
+      h+='<p class="disclaimer">'+T("If variance splits along one line (function/tenure/location), it's structural fragmentation — two subsystems, fixed differently than general blur.","Если дисперсия раскладывается по одной линии (функция/стаж/локация) — это структурная фрагментация: две подсистемы, лечится иначе, чем общая размытость.")+'</p></div>';
+
+      out.innerHTML=h;
+    }
+    function metaRead(g){ if(g>0.15) return T("pluralistic ignorance — cheapest fix: show the team the aggregate","плюралистическое неведение — самый дешёвый ремонт: показать команде агрегат"); if(g<-0.15) return T("illusion of agreement — most dangerous: they don't re-check","иллюзия согласия — опаснее всего: не перепроверяют"); return T("aligned","совпадает"); }
+
+    function diagnose(res){
+      var P=res.perItem, rows=[];
+      function row(cond, txt, fix){ rows.push('<div class="mrow-m" style="margin:7px 0">'+chip(cond?T("flag","сигнал"):T("ok","ок"), cond?"bad":"good")+' <span>'+txt+' <span class="muted">→ '+fix+'</span></span></div>'); }
+      var a2=P.A2.ioa, a3=P.A3.ioa, a5=P.A5.ioa, a6=P.A6.ioa, b1=P.B1.ioa;
+      row(a2!=null&&a2<0.40, T("Low IoA on A2/A3 — no strategy as a frame","Низкий IoA в A2/A3 — стратегии как рамки нет"), "К1");
+      row(a5!=null&&a5<0.40, T("High dispersion on A5 — the goal has no owner","Высокая дисперсия A5 — у цели нет владельца"), "К2");
+      row(a6!=null&&a6<0.40, T("A6 spread across orders of magnitude — scale unspoken","A6 разброс по порядку величины — масштаб не проговорён"), "К1");
+      var dA=res.deltas.A11; row(dA&&dA.delta>0.25 && a2!=null&&a2>0.60, T("Strategy agreed but big Δ on A11 — structure not built for it","Стратегия согласована, но большой Δ в A11 — структура не под неё"), "К2");
+      var sem=res.semantic&&res.semantic.some(function(s){return s.dispersion!=null&&s.dispersion>0.60;}); row(b1!=null&&b1>0.60&&sem, T("Values recognised (B1) but B2 diverges — same word, different meanings","Ценности узнаются (B1), но B2 расходится — одно слово, разные смыслы"), "К2");
+      row(res.silence.B>0.25, T("High silence in block B (B10) — signals don't get through","Высокое молчание в блоке B — сигналы не доходят"), "К3");
+      var conform = (a2!=null&&a2>0.70) && res.silence.A>0.25; row(conform, T("High IoA with high silence — agreement may be conformity; re-check anonymity","Высокий IoA при высоком молчании — согласие может быть конформным; перепроверить анонимность"), T("methodology","методология"));
+      rows.push('<div class="mrow-m" style="margin:7px 0">'+chip(T("by hand","вручную"),"na")+' <span class="muted">'+T("A1 (direction) vs A2 (boundaries), A4 cascade length, A8/B3/B4/B9/B10 — require reading the open answers above.","A1 (направление) vs A2 (границы), длина каскада A4, A8/B3/B4/B9/B10 — читаются по открытым ответам выше.")+'</span></div>');
+      return rows.join("");
+    }
+
+    // ---- ingest ----
+    var buffer=[];
+    function addRaw(text){ text=text.trim(); if(!text) return; var arr=[]; try{ var p=JSON.parse(text); arr=Array.isArray(p)?p:[p]; }catch(e){ text.split(/\r?\n/).forEach(function(line){ line=line.trim(); if(line){ try{ arr.push(JSON.parse(line)); }catch(_){}} }); } buffer=buffer.concat(arr.filter(function(x){return x&&x.answers;})); }
+    function refreshCount(){ document.getElementById("count").textContent=T(buffer.length+" responses","ответов: "+buffer.length); }
+    document.getElementById("pick").addEventListener("click",function(){ document.getElementById("files").click(); });
+    document.getElementById("files").addEventListener("change",function(e){ var fs=e.target.files, done=0; if(!fs.length) return; Array.prototype.forEach.call(fs,function(f){ var rd=new FileReader(); rd.onload=function(){ addRaw(String(rd.result)); done++; if(done===fs.length){ refreshCount(); } }; rd.readAsText(f); }); });
+    document.getElementById("go").addEventListener("click",function(){ document.getElementById("err").innerHTML=""; buffer=[]; addRaw(document.getElementById("in").value); // files already added
+      // also include files added earlier (buffer may have them)
+      if(!buffer.length){ document.getElementById("err").innerHTML='<div class="note" style="border-left-color:var(--bad);margin-top:10px">'+T("No valid responses found.","Не найдено ни одного корректного ответа.")+'</div>'; return; }
+      var keys={}; buffer.forEach(function(r){ keys[r.groupKey||"?"]=1; }); if(Object.keys(keys).length>1) document.getElementById("err").innerHTML='<div class="note" style="border-left-color:var(--warn);margin-top:10px">'+T("Warning: mixed group keys — mixing teams.","Внимание: разные ключи группы — смешаны команды.")+'</div>';
+      refreshCount(); render(MX.compute(buffer, S, CFG)); });
+
+    // demo: synth ~7 responses
+    document.getElementById("demo").addEventListener("click",function(){ buffer=synth(); document.getElementById("in").value=T("(demo data loaded — click Build report)","(демо-данные загружены — нажмите «Построить отчёт»)"); refreshCount(); render(MX.compute(buffer, S, CFG)); });
+    function synth(){
+      var vals=(CFG.org.values||["Скорость","Прозрачность","Ответственность"]);
+      function mk(over){ var a={}; S.blocks.forEach(function(b){ b.items.forEach(function(it){ a[it.id]=ansFor(it,over); }); }); return { v:1, survey:"contours-0.1", groupKey:"demo", isLeader:over.lead, segment:over.seg||{stage:"",func:"",loc:""}, lang:"ru", startedAt:0, finishedAt:1, answers:a }; }
+      function ansFor(it,o){ var v=null; if(it.type==="multi"){ var pool=(CFG[it.opt]||[]).map(function(x){return x.id;}); v=shuffle(pool.slice()).slice(0,it.choose); } else if(it.type==="single"){ var p=(CFG[it.opt]||[]); v=p.length?p[Math.floor(Math.random()*Math.min(3,p.length))].id:null; } else if(it.type==="scale"){ v=2+Math.floor(Math.random()*3); } else if(it.type==="forced"){ v=Math.random()<0.6?"a":"b"; } else if(it.type==="name"){ v=["Аня","Борис","Вика","Борис","Аня"][Math.floor(Math.random()*5)]; } else if(it.type==="assoc"){ v={}; vals.slice(0,3).forEach(function(nm,i){ v[nm]=[["дедлайн","цикл","релиз"][i%3],["давление","обратная связь","качество"][i%3]]; }); } else if(it.type==="open"){ v=Math.random()<0.7?"пример ответа":null; } return { value:v, skipped:v==null, latencyMs:800+Math.floor(Math.random()*3000), spentMs:3000 }; }
+      function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
+      var arr=[mk({lead:true,seg:{stage:"24+",func:"eng",loc:"Dubai"}})]; for(var i=0;i<6;i++) arr.push(mk({lead:false,seg:{stage:i<3?"6-24":"24+",func:i%2?"eng":"sales",loc:"Dubai"}})); return arr;
+    }
+  })();
+  </script>
+</body>
+</html>
