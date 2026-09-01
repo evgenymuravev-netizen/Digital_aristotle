@@ -21,6 +21,7 @@ const deep = read("deep.js");
 const integrity = read("integrity.js");
 const i18n = read("i18n.js");
 const app = read("app.js");
+const nav = read("nav.js");
 let html = read("index.html");
 
 // inline external assets
@@ -31,6 +32,7 @@ html = html.replace('<script src="./deep.js"></script>', "<script>\n" + deep + "
 html = html.replace('<script src="./integrity.js"></script>', "<script>\n" + integrity + "\n</script>");
 html = html.replace('<script src="./app.js"></script>', "<script>\n" + app + "\n</script>");
 html = html.replace('<script src="./i18n.js"></script>', "<script>\n" + i18n + "\n</script>");
+html = html.replace('<script src="./nav.js"></script>', "<script>\n" + nav + "\n</script>");
 
 writeFileSync(join(here, "standalone.html"), html);
 

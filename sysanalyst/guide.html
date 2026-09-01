@@ -102,7 +102,7 @@
     <!-- PROTOCOLS -->
     <section id="protocols" class="panel guide-sec">
       <h2>2 · Protocols</h2>
-      <table class="compare">
+      <div class="compare-wrap"><table class="compare">
         <thead><tr><th>Protocol/style</th><th>Shape</th><th>Best for</th></tr></thead>
         <tbody>
           <tr><th scope="row">REST/JSON</th><td>Resources over HTTP, stateless</td><td>Public, cache-friendly, browser/mobile CRUD</td></tr>
@@ -111,7 +111,7 @@
           <tr><th scope="row">GraphQL</th><td>Client selects fields; one endpoint</td><td>Avoiding over-/under-fetching across varied clients</td></tr>
           <tr><th scope="row">WebSockets / SSE</th><td>Persistent connection; push</td><td>Live updates — full-duplex (WS) or one-way server push (SSE)</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <ul class="tight">
         <li><b>SOAP</b> = a protocol (always XML, WSDL contract, WS-Security signs/encrypts the message itself). <b>REST</b> = a style (format-agnostic, usually JSON).</li>
         <li><b>gRPC</b> gains bidirectional streaming and compact binary payloads from HTTP/2 + Protobuf — but browsers need gRPC-Web + a proxy.</li>
