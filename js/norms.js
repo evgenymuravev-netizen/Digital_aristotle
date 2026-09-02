@@ -115,6 +115,15 @@ export const TESTINFO = {
       source: "Difficulty is item-dependent, so there's no clean external norm — a rough in-app reference.",
     },
   },
+  critical: {
+    measures: "Critical thinking — overriding the answer that leaps to mind, judging whether a conclusion follows regardless of whether you believe it, and claiming only what the evidence supports.",
+    why: "The ability the research ties most directly to AI use: heavy users offload evaluation to the tool and check less (Gerlich 2025; Lee et al. 2025). It also fails silently — a wrong answer that feels right.",
+    realWorld: "Catching the flaw in a confident summary, not forwarding the too-good statistic, noticing when a correlation is being sold as a cause.",
+    norm: {
+      metricLabel: "Items correct", unit: "%", mean: 62, sd: 14, lowerBetter: false, established: false,
+      source: "Composite of CRT-style reflection items (Frederick 2005: adults average ≈1.2 of 3; Toplak et al. 2014), belief-bias syllogisms (Evans et al. 1983: ≈50–70% correct on belief–logic conflict items) and inference items — no external norm exists for this exact mix.",
+    },
+  },
 };
 
 /* ---------------------------- math ---------------------------- */

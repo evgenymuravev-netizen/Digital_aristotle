@@ -148,3 +148,49 @@ export function indexDial(value, size = 150) {
   wrap._redraw = draw;
   return wrap;
 }
+
+/**
+ * Vertical bars — used for weekly AI hours. `bars` = [{label, value, hint}].
+ * Draws a baseline, a light gridline at the max, and value labels on top.
+ */
+export function drawBars(canvas, bars, opts = {}) {
+  const cssW = canvas.clientWidth || canvas.parentElement?.clientWidth || 600;
+  const cssH = opts.height || 180;
+  const ctx = setup(canvas, cssW, cssH);
+  const padL = 10, padR = 10, padT = 22, padB = 24;
+  const W = cssW - padL - padR, H = cssH - padT - padB;
+  const text = cssVar("--text-dim", "#4d4a40");
+  const muted = cssVar("--muted", "#8b8577");
+  const grid = cssVar("--grid", "#e2dbc8");
+  const accent = cssVar("--accent", "#e0330f");
+  const ink = cssVar("--text", "#16140f");
+
+  ctx.clearRect(0, 0, cssW, cssH);
+  const max = Math.max(1, ...bars.map((b) => b.value));
+  const n = bars.length, gap = Math.max(4, W * 0.02);
+  const bw = (W - gap * (n - 1)) / n;
+  ctx.font = "600 10px 'Inter', -apple-system, system-ui, sans-serif";
+  ctx.textBaseline = "middle";
+
+  // baseline
+  ctx.strokeStyle = grid; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(padL, padT + H + 0.5); ctx.lineTo(padL + W, padT + H + 0.5); ctx.stroke();
+
+  bars.forEach((b, i) => {
+    const x = padL + i * (bw + gap);
+    const h = (b.value / max) * H;
+    const last = i === n - 1;
+    ctx.fillStyle = last ? accent : ink;
+    ctx.globalAlpha = b.value > 0 ? (last ? 1 : 0.82) : 0.12;
+    ctx.fillRect(x, padT + H - h, bw, Math.max(h, b.value > 0 ? 2 : 1));
+    ctx.globalAlpha = 1;
+    if (b.value > 0) {
+      ctx.fillStyle = text; ctx.textAlign = "center";
+      ctx.fillText(opts.format ? opts.format(b.value) : String(Math.round(b.value)), x + bw / 2, padT + H - h - 9);
+    }
+    if (b.label && (n <= 8 || i % 2 === n % 2 || last)) {
+      ctx.fillStyle = muted; ctx.textAlign = "center";
+      ctx.fillText(b.label, x + bw / 2, padT + H + 12);
+    }
+  });
+}

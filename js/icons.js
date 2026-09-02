@@ -62,6 +62,18 @@ const PATHS = {
               <path d="M13 13V7.8h5.2V4" stroke-linejoin="round" stroke-dasharray="2.6 2.3"/>
               <circle cx="18.2" cy="4" r="1.6" fill="currentColor" stroke="none"/>`,
 
+  // critical thinking — weighing a claim
+  critical: `<path d="M12 3.6v16.6M7.2 20.2h9.6"/><path d="M3.4 7.4h17.2"/>
+             <path d="M3.2 13.4a3.4 3.4 0 0 0 6.8 0L6.6 7.4z" stroke-linejoin="round"/>
+             <path d="M14 13.4a3.4 3.4 0 0 0 6.8 0L17.4 7.4z" stroke-linejoin="round"/>`,
+
+  // AI use — a conversation, with the spark that makes it AI
+  ai: `<path d="M4.4 5.4h13.2a2 2 0 0 1 2 2v6.8a2 2 0 0 1-2 2H10l-4.2 3.4v-3.4H4.4a2 2 0 0 1-2-2V7.4a2 2 0 0 1 2-2z" stroke-linejoin="round"/>
+       <path d="m11.6 7.6.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z" fill="currentColor" stroke="none"/>`,
+
+  // hours — a clock
+  hours: `<circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.2 2"/>`,
+
   /* ---------------- verdicts ---------------- */
   calibrating: `<path d="M4 17.4a8 8 0 0 1 16 0"/>
                 <path d="M12 17.4 15.8 11" stroke-width="1.9"/>

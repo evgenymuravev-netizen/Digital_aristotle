@@ -16,6 +16,14 @@ import {
 } from "../js/stats.js";
 import { TESTS, META, byId, NEW_IDS } from "../js/tests/index.js";
 import { hasIcon } from "../js/icons.js";
+import {
+  REFLECT_TEMPLATES, sampleReflect, SYLLOGISM_SETS, buildSyllogism, sampleLogic,
+  EVIDENCE_BANK, sampleEvidence, checkAnswer, criticalScore, biasIndex, overconfidence, COUNTS,
+} from "../js/tests/critical.js";
+import {
+  sessionize, detectFormat, parseChatGPT, parseClaude, parseGemini, parseGenericCSV, parseExport,
+  aggregate, weekly, weekStart, exposureBefore, pearson, exposureVsSessions, normalizeProduct, dayKey,
+} from "../js/aiusage.js";
 import { corsiScore } from "../js/tests/corsi.js";
 import { codingScore } from "../js/tests/coding.js";
 import { gonogoScore } from "../js/tests/gonogo.js";
@@ -35,7 +43,7 @@ function test(name, fn) {
 }
 const near = (a, b, eps = 0.01) => Math.abs(a - b) <= eps;
 
-const ALL_IDS = ["reaction", "coding", "nback", "corsi", "stroop", "gonogo", "digitspan", "switching", "mentalmath", "sequences"];
+const ALL_IDS = ["reaction", "coding", "nback", "corsi", "critical", "stroop", "gonogo", "digitspan", "switching", "mentalmath", "sequences"];
 
 console.log("registry");
 test("battery has the 10 tests in canonical order", () => {
@@ -219,10 +227,10 @@ test("planFullAssessment: reusable + remaining", () => {
   assert.deepEqual(plan.remainingIds, ["digitspan", "stroop", "mentalmath", "sequences"]);
   assert.deepEqual(plan.reusable.map((x) => x.id), ["reaction", "nback"]);
 });
-test("planFullAssessment: nothing recent → run everything (10-test battery)", () => {
+test("planFullAssessment: nothing recent → run everything (11-test battery)", () => {
   const plan = planFullAssessment([], META, now, RESUME_WINDOW_MS);
   assert.equal(plan.reusableCount, 0);
-  assert.equal(plan.remainingIds.length, 10);
+  assert.equal(plan.remainingIds.length, 11);
 });
 
 console.log("stats — composite series & battery versions");
@@ -375,6 +383,233 @@ test("tests without norms are skipped", () => {
   const { best, worst } = strongestAndWeakest([{ id: "a" }, { id: "z" }], { a: 80 });
   assert.equal(best.id, "a");
   assert.equal(worst, null);
+});
+
+
+/* ---------------------------------------------------------------
+   critical thinking — item generation is correct by construction
+   --------------------------------------------------------------- */
+console.log("critical — reflection templates");
+test("every template yields a self-consistent item, over many draws", () => {
+  for (let k = 0; k < 40; k++) {
+    for (const t of REFLECT_TEMPLATES) {
+      const it = t();
+      assert.ok(it.prompt && it.kind === "reflect", "shape");
+      assert.ok(["number", "text", "choice"].includes(it.mode));
+      if (it.mode === "choice") assert.ok(it.answer >= 0 && it.answer < it.options.length);
+      // the intuitive answer must be wrong, or the item measures nothing
+      if (it.intuitive != null) assert.notEqual(it.intuitive, it.answer, `${it.prompt} intuitive==answer`);
+      // the correct answer, given as the user would type it, must check out
+      const given = it.mode === "choice" ? it.answer : it.mode === "text" ? it.answer.toUpperCase() : String(it.answer);
+      assert.ok(checkAnswer(it, given), `own answer rejected: ${it.prompt}`);
+    }
+  }
+});
+test("bat-and-ball algebra holds: cheaper + (cheaper + diff) = total", () => {
+  for (let k = 0; k < 30; k++) {
+    const it = REFLECT_TEMPLATES[0]();
+    const m = it.prompt.match(/cost \$([\d.]+) in total.*costs \$([\d.]+) more/);
+    const total = parseFloat(m[1]), diff = parseFloat(m[2]);
+    assert.ok(Math.abs(it.answer + (it.answer + diff) - total) < 1e-9);
+    assert.ok(checkAnswer(it, `$${it.answer.toFixed(2)}`));
+    assert.ok(!checkAnswer(it, String(total - diff)), "intuitive answer must fail");
+  }
+});
+test("sampleReflect draws distinct templates", () => {
+  const items = sampleReflect();
+  assert.equal(items.length, COUNTS.reflect);
+  assert.equal(new Set(items.map((i) => i.prompt.slice(0, 12))).size, items.length);
+});
+test("number answers tolerate $ and whitespace; text answers ignore case", () => {
+  const it = { mode: "number", answer: 0.05 };
+  assert.ok(checkAnswer(it, " $0.05 ")); assert.ok(checkAnswer(it, ".05")); assert.ok(!checkAnswer(it, "0.1"));
+  assert.ok(checkAnswer({ mode: "text", answer: "emily" }, "  EMILY "));
+  assert.ok(!checkAnswer({ mode: "text", answer: "emily" }, "may"));
+  assert.ok(!checkAnswer(it, null)); assert.ok(!checkAnswer(it, ""));
+});
+
+console.log("critical — belief-bias syllogisms");
+test("2×2 design: validity and believability land in the right cells", () => {
+  const set = SYLLOGISM_SETS[0];
+  const vb = buildSyllogism(set, 1, true), iu = buildSyllogism(set, 1, false);
+  const vu = buildSyllogism(set, 2, true), ib = buildSyllogism(set, 2, false);
+  assert.deepEqual([vb.cell, iu.cell, vu.cell, ib.cell], ["VB", "IU", "VU", "IB"]);
+  assert.equal(vb.conflict, false); assert.equal(iu.conflict, false);
+  assert.equal(vu.conflict, true); assert.equal(ib.conflict, true);
+  // form 1, valid: "No A are C. Some B are C. ∴ some B are not A"
+  assert.match(vb.prompt, /^No cigarettes are inexpensive\. Some addictive things are inexpensive\.$/);
+  assert.equal(vb.conclusion, "Therefore, some addictive things are not cigarettes.");
+  // form 2, valid: "No B are C. Some A are C. ∴ some A are not B"  (true but unbelievable)
+  assert.equal(vu.conclusion, "Therefore, some cigarettes are not addictive things.");
+  assert.equal(vu.answer, 0); assert.equal(ib.answer, 1);
+});
+test("sampleLogic: six items, four in conflict, all different content", () => {
+  for (let k = 0; k < 20; k++) {
+    const items = sampleLogic();
+    assert.equal(items.length, COUNTS.logic);
+    assert.equal(items.filter((i) => i.conflict).length, 4);
+    assert.equal(new Set(items.map((i) => i.prompt.split(" ")[1])).size >= 5, true);
+    assert.ok(items.every((i) => i.explain && i.options.length === 2));
+  }
+});
+test("biasIndex: perfect on no-conflict, chance on conflict → +50", () => {
+  const items = [
+    { conflict: false, correct: true }, { conflict: false, correct: true },
+    { conflict: true, correct: true }, { conflict: true, correct: false },
+    { conflict: true, correct: true }, { conflict: true, correct: false },
+  ];
+  assert.equal(biasIndex(items), 50);
+  assert.equal(biasIndex([{ conflict: true, correct: true }]), null);
+});
+
+console.log("critical — evidence & scoring");
+test("evidence bank labels are valid and every item explains itself", () => {
+  for (const e of EVIDENCE_BANK) {
+    assert.ok([0, 1, 2].includes(e.answer)); assert.ok(e.passage && e.claim && e.explain);
+  }
+  assert.ok(EVIDENCE_BANK.filter((e) => e.answer === 1).length >= 4, "enough 'not enough information' items to rotate");
+});
+test("sampleEvidence: 2 NEI + 1 follows + 1 contradicts, distinct", () => {
+  for (let k = 0; k < 20; k++) {
+    const items = sampleEvidence();
+    const counts = [0, 1, 2].map((a) => items.filter((i) => i.answer === a).length);
+    assert.deepEqual(counts, [1, 2, 1]);
+    assert.equal(new Set(items.map((i) => i.passage)).size, 4);
+  }
+});
+test("criticalScore weights 35/35/30 and clamps", () => {
+  const full = { reflect: { correct: 4, total: 4 }, logic: { correct: 6, total: 6 }, evidence: { correct: 4, total: 4 } };
+  assert.equal(criticalScore(full), 100);
+  const half = { reflect: { correct: 2, total: 4 }, logic: { correct: 3, total: 6 }, evidence: { correct: 2, total: 4 } };
+  assert.ok(near(criticalScore(half), 50));
+  const onlyLogic = { reflect: { correct: 0, total: 4 }, logic: { correct: 6, total: 6 }, evidence: { correct: 0, total: 4 } };
+  assert.ok(near(criticalScore(onlyLogic), 35));
+});
+test("overconfidence: sure-and-wrong is positive, guessing-and-right is negative", () => {
+  assert.ok(near(overconfidence([{ conf: 0.9, correct: false }, { conf: 0.9, correct: false }]), 0.9));
+  assert.ok(overconfidence([{ conf: 0.5, correct: true }]) < 0);
+  assert.equal(overconfidence([{ conf: null, correct: true }]), null);
+});
+
+/* ---------------------------------------------------------------
+   AI usage — parsing, sessionising, aggregating, correlating
+   --------------------------------------------------------------- */
+const T0 = Date.parse("2026-08-10T09:00:00");   // local Monday morning
+const MIN = 60000;
+console.log("aiusage — sessionising");
+test("messages within the idle gap form one sitting; a long gap starts another", () => {
+  const ev = [0, 2, 5, 9].map((m) => ({ t: T0 + m * MIN, user: true }))          // 9 min + tail
+    .concat([40, 42].map((m) => ({ t: T0 + m * MIN, user: m === 40 })));          // 2 min + tail
+  const days = sessionize(ev);
+  assert.equal(days.length, 1);
+  assert.equal(days[0].sessions, 2);
+  assert.equal(days[0].messages, 5);
+  assert.ok(near(days[0].minutes, 9 + 1.5 + 2 + 1.5, 0.11));
+});
+test("a lone message still counts as a short sitting; empty input → nothing", () => {
+  assert.equal(sessionize([{ t: T0, user: true }])[0].minutes, 1.5);
+  assert.deepEqual(sessionize([]), []);
+});
+test("sittings are attributed to the day they start", () => {
+  const ev = [{ t: T0, user: true }, { t: T0 + 3 * MIN, user: false }, { t: T0 + 26 * 60 * MIN, user: true }];
+  const days = sessionize(ev);
+  assert.equal(days.length, 2);
+  assert.equal(days[0].date, dayKey(T0));
+});
+
+console.log("aiusage — export formats");
+const chatgptFixture = [{
+  title: "hello", create_time: T0 / 1000,
+  mapping: {
+    a: { message: { author: { role: "system" }, create_time: T0 / 1000 } },
+    b: { message: { author: { role: "user" }, create_time: T0 / 1000 + 5 } },
+    c: { message: { author: { role: "assistant" }, create_time: T0 / 1000 + 20 } },
+    d: { message: null },
+  },
+}, { title: "empty", mapping: {} }];
+const claudeFixture = [{ uuid: "x", name: "chat", chat_messages: [
+  { sender: "human", created_at: new Date(T0 + 60 * MIN).toISOString() },
+  { sender: "assistant", created_at: new Date(T0 + 61 * MIN).toISOString() },
+] }];
+const geminiFixture = [{ header: "Gemini Apps", title: "Prompted hi", time: new Date(T0).toISOString(), products: ["Gemini Apps"] }];
+test("detectFormat recognises the three exports and rejects junk", () => {
+  assert.equal(detectFormat(chatgptFixture), "chatgpt");
+  assert.equal(detectFormat(claudeFixture), "claude");
+  assert.equal(detectFormat(geminiFixture), "gemini");
+  assert.equal(detectFormat([{ foo: 1 }]), null);
+  assert.equal(detectFormat({}), null);
+});
+test("parseChatGPT counts user turns and conversations, skips system/null nodes", () => {
+  const p = parseChatGPT(chatgptFixture);
+  assert.equal(p.product, "ChatGPT"); assert.equal(p.conversations, 1);
+  assert.equal(p.events.length, 2); assert.equal(p.events.filter((e) => e.user).length, 1);
+});
+test("parseClaude / parseGemini", () => {
+  const c = parseClaude(claudeFixture); assert.equal(c.events.length, 2); assert.equal(c.conversations, 1);
+  const g = parseGemini(geminiFixture); assert.equal(g.events.length, 1); assert.equal(g.product, "Gemini");
+});
+test("parseExport: JSON end-to-end gives per-day records tagged with the product", () => {
+  const out = parseExport(JSON.stringify(claudeFixture));
+  assert.equal(out.format, "claude"); assert.equal(out.product, "Claude");
+  assert.equal(out.records.length, 1); assert.equal(out.records[0].product, "Claude");
+  assert.equal(out.stats.conversations, 1);
+  const hinted = parseExport(JSON.stringify(claudeFixture), "Other");
+  assert.equal(hinted.records[0].product, "Other");
+});
+test("parseExport: CSV with header, product normalisation, bad rows skipped", () => {
+  const csv = "date,product,minutes,sessions\n2026-08-10,chat gpt,30,2\n2026-08-11,cursor,45\nnot-a-date,x,5\n";
+  const out = parseExport(csv);
+  assert.equal(out.format, "csv"); assert.equal(out.records.length, 2);
+  assert.equal(out.records[0].product, "ChatGPT"); assert.equal(out.records[1].product, "Cursor");
+  assert.equal(out.records[1].sessions, 1);
+  assert.throws(() => parseExport("garbage"), /Couldn't read/);
+  assert.throws(() => parseExport("[{\"foo\":1}]"), /Unrecognised/);
+});
+test("normalizeProduct maps aliases", () => {
+  assert.equal(normalizeProduct("OpenAI GPT-5"), "ChatGPT");
+  assert.equal(normalizeProduct("anthropic"), "Claude");
+  assert.equal(normalizeProduct("Bard"), "Gemini");
+  assert.equal(normalizeProduct("whatever"), "Other");
+});
+
+console.log("aiusage — aggregation & correlation");
+const recs = [
+  { date: "2026-08-03", product: "ChatGPT", minutes: 60, sessions: 2, messages: 10 },
+  { date: "2026-08-04", product: "Claude", minutes: 30, sessions: 1, messages: 4 },
+  { date: "2026-08-10", product: "ChatGPT", minutes: 120, sessions: 3, messages: 20 },
+];
+test("aggregate totals and per-product split", () => {
+  const a = aggregate(recs);
+  assert.equal(a.minutes, 210); assert.ok(near(a.hours, 3.5)); assert.equal(a.sessions, 6); assert.equal(a.days, 3);
+  assert.equal(a.byProduct.ChatGPT.minutes, 180); assert.equal(a.byProduct.Claude.sessions, 1);
+});
+test("weekStart is Monday; weekly buckets are oldest→newest and sum correctly", () => {
+  assert.equal(weekStart("2026-08-13"), "2026-08-10");   // Thu → Mon
+  assert.equal(weekStart("2026-08-10"), "2026-08-10");
+  const w = weekly(recs, { weeks: 3, now: Date.parse("2026-08-13T12:00:00") });
+  assert.deepEqual(w.map((b) => b.start), ["2026-07-27", "2026-08-03", "2026-08-10"]);
+  assert.deepEqual(w.map((b) => b.minutes), [0, 90, 120]);
+});
+test("exposureBefore: 7-day window is 4th..10th, so the 3rd is excluded", () => {
+  assert.equal(exposureBefore(recs, Date.parse("2026-08-10T20:00:00"), 7), 150);
+  assert.equal(exposureBefore(recs, Date.parse("2026-08-04T20:00:00"), 7), 90);
+});
+test("pearson: perfect negative, null on tiny or flat samples", () => {
+  assert.ok(near(pearson([1, 2, 3, 4], [8, 6, 4, 2]), -1));
+  assert.equal(pearson([1, 2], [1, 2]), null);
+  assert.equal(pearson([1, 1, 1], [1, 2, 3]), null);
+});
+test("exposureVsSessions lines up full sessions with prior-week hours", () => {
+  const sessions = [
+    { id: "a", kind: "full", ts: Date.parse("2026-08-05T18:00:00"), scores: { reaction: 70, critical: 80 } },
+    { id: "b", kind: "single", ts: Date.parse("2026-08-06T18:00:00"), scores: { reaction: 99 } },
+    { id: "c", kind: "full", ts: Date.parse("2026-08-11T18:00:00"), scores: { reaction: 60, critical: 50 } },
+  ];
+  const x = exposureVsSessions(recs, sessions, "critical");
+  assert.equal(x.n, 2);
+  assert.ok(near(x.rows[0].hours, 1.5)); assert.ok(near(x.rows[1].hours, 2.0));
+  assert.equal(x.rows[1].composite, 55); assert.equal(x.rows[1].testScore, 50);
+  assert.equal(x.rComposite, null);   // n < 3
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

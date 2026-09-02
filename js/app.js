@@ -11,7 +11,11 @@ import {
   summarize, verdictFromSeries, testSeries, fmtDate, fmtRelative, STABLE_MIN,
   planFullAssessment, RESUME_WINDOW_MS, compositeForSession,
 } from "./stats.js";
-import { drawLineChart, drawSparkline, indexDial } from "./chart.js";
+import { drawLineChart, drawSparkline, indexDial, drawBars } from "./chart.js";
+import {
+  PRODUCTS, getUsage, addManual, replaceImport, deleteUsage, clearUsage, parseExport, aggregate, weekly,
+  exposureVsSessions, describeR, exportUsage, importUsageData, dayKey, dayTs,
+} from "./aiusage.js";
 import { bellCurveBlock, countUp } from "./bellcurve.js";
 import { achievementsFor, sessionAchievements, strongestAndWeakest } from "./achievements.js";
 import { celebrate, celebrationBanner } from "./celebrate.js";
@@ -47,6 +51,7 @@ function go(screen) {
   else if (screen === "trends") renderTrends();
   else if (screen === "about") renderAbout();
   else if (screen === "settings") renderSettings();
+  else if (screen === "ai") renderAI();
   showScreen(screen);
 }
 
@@ -100,6 +105,8 @@ function renderHome() {
   // --- test grid ---
   const grid = document.getElementById("test-grid");
   clear(grid);
+  const stIdx = document.querySelector("#screen-home .st-index");
+  if (stIdx) stIdx.textContent = `— ${TESTS.length} tests`;
   const latest = latestScorePerTest(sessions);
   for (const m of TESTS) {
     const last = latest[m.meta.id];
@@ -509,6 +516,7 @@ function renderResults(results, kind, session) {
     if (ach.tier !== "none") celebrate(ach.tier);
     const mp = measuresPanel(r0.id);
     if (mp) body.append(el("div", { class: "panel" }, [mp]));
+    if (Array.isArray(r0.review) && r0.review.length) body.append(reviewPanel(r0.review, r0.name));
 
     // nudge: recent singles roll into a full assessment automatically
     const plan = planFullAssessment(getSessions(), META, Date.now(), RESUME_WINDOW_MS);
@@ -550,6 +558,8 @@ function renderResults(results, kind, session) {
     table,
     el("p", { class: "muted", style: { marginTop: "10px" }, text: "“vs others” is your percentile against published population norms (not other users). See the Method tab for the references behind each one." }),
   ]));
+
+  if (kind === "full") for (const r of results) if (Array.isArray(r.review) && r.review.length) body.append(reviewPanel(r.review, r.name));
 
   if (getSessions().length < STABLE_MIN) {
     body.append(el("div", { class: "callout", html: `<b>Building your baseline.</b> One session can't tell you much — scores bounce around day to day. Do a few full assessments on different days and the <b>Trends</b> tab will start telling you, reliably, whether you're holding steady.` }));
@@ -641,6 +651,9 @@ function renderTrends() {
     el("p", { class: "muted", style: { marginTop: "10px" }, text: "Per-domain reads use the same baseline-vs-recent logic as the overall verdict. See the Method tab for how that works." }),
   ]));
 
+  const usage = getUsage();
+  if (usage.length) body.append(exposurePanel(exposureVsSessions(usage, getSessions(), "critical"), { showLink: true }));
+
   // Capture the composite-chart closure *before* trendsRedraw is reassigned —
   // otherwise drawAll ends up calling itself and blows the stack.
   const drawChart = trendsRedraw;
@@ -663,6 +676,7 @@ const SCORING = {
   switching: "Accuracy above chance (60%) plus the speed cost of switching rules (40%).",
   mentalmath: "Correct answers in the 60-second sprint. 20 → 100.",
   sequences: "Problems run easy → hard and are difficulty-weighted; score = weighted % solved.",
+  critical: "Weighted accuracy over 14 items — reflection 35%, logic 35%, evidence 30%. Also reports belief bias (accuracy on no-conflict minus conflict syllogisms) and overconfidence (stated confidence minus accuracy). Items are generated from templates, so they change every session.",
 };
 
 function renderAbout() {
@@ -687,8 +701,21 @@ function renderAbout() {
 
     <div class="callout"><b>The premise.</b> Cognitive skills follow "use it or lose it." When we offload arithmetic, memory, navigation, and reasoning to machines, the underlying circuits get less practice. This tool stress-tests exactly those skills so a decline would show up here before you'd notice it in daily life.</div>
 
+    <h2>What the research says actually degrades</h2>
+    <p>"Use it or lose it" is the premise; these are the findings the battery is built around. Each row names the test that stands in for it.</p>
+    <table class="research">
+      <tr><th>Finding</th><th>Study</th><th>Tested here by</th></tr>
+      <tr><td>Heavier AI use goes with lower critical-thinking scores, and the link runs through <i>cognitive offloading</i> — letting the tool do the evaluating. Strongest in 17–25-year-olds.</td><td>Gerlich, <i>Societies</i> 2025 (n&nbsp;=&nbsp;666)</td><td><b>Critical Thinking</b></td></tr>
+      <tr><td>Among knowledge workers, the more they trust the AI, the less critical-thinking effort they report; confidence in the tool predicts skipping verification.</td><td>Lee et al., CHI 2025 (Microsoft &amp; CMU, n&nbsp;=&nbsp;319)</td><td><b>Critical Thinking</b> — the confidence rating and the "not enough information" items</td></tr>
+      <tr><td>Writing essays with an LLM: the weakest brain connectivity of three groups, poor recall of one's own text, and a "cognitive debt" that persisted after the tool was taken away.</td><td>Kosmyna et al., MIT Media Lab 2025 (EEG, n&nbsp;=&nbsp;54)</td><td>Digit Span, N-Back, Corsi — the encoding and holding that offloading skips</td></tr>
+      <tr><td>Students using ChatGPT showed "metacognitive laziness" — less self-monitoring and planning — with no lasting knowledge gain.</td><td>Fan et al., <i>Br. J. Educ. Technol.</i> 2025</td><td><b>Critical Thinking</b> (calibration); Task Switching</td></tr>
+      <tr><td>Expecting information to be available externally lowers how well it's remembered — the "Google effect".</td><td>Sparrow, Liu &amp; Wegner, <i>Science</i> 2011</td><td>Digit Span, Corsi, Symbol Coding</td></tr>
+      <tr><td>Skills atrophy after AI assistance: endoscopists' adenoma detection fell from 28% to 22% in AI-free procedures after months of working with AI.</td><td>Budzyń et al., <i>Lancet Gastroenterol. Hepatol.</i> 2025</td><td>The whole battery, over time — the trend is the point</td></tr>
+    </table>
+    <p class="muted">So the weighting is deliberate: critical thinking and memory are where the evidence sits; the speed and inhibition tasks are the early-warning canaries. Every one of these is a correlation or a small study — which is exactly why the app tracks <i>you</i>, against <i>your</i> baseline, alongside how much you actually use these tools.</p>
+
     <h2>The battery — what each test measures</h2>
-    <p>Each is a long-standing paradigm from cognitive psychology, chosen to cover the abilities most exposed to automation. Every test yields a 0–100 sub-score; the <b>Aristotle Index</b> is the average of every test in a sitting (ten in the current battery).</p>
+    <p>Each is a long-standing paradigm from cognitive psychology, chosen to cover the abilities most exposed to automation. Every test yields a 0–100 sub-score; the <b>Aristotle Index</b> is the average of every test in a sitting (${TESTS.length} in the current battery).</p>
     <div class="method-tests">${testCards}</div>
 
     <h2>How you compare to others</h2>
@@ -717,6 +744,9 @@ function renderAbout() {
 
     <div class="callout"><b>For a trustworthy read:</b> do the full battery a handful of times across different days first (to build a baseline past the practice bump), then test regularly under similar conditions — same time of day, not exhausted, no interruptions. ${STABLE_MIN}+ full sessions are required before any verdict is shown.</div>
 
+    <h2>Logging your AI use</h2>
+    <p>The <b>AI use</b> tab keeps a second series next to your scores: hours and sittings with ChatGPT, Claude, Gemini and the rest. Import each product's own data export — it's parsed in your browser, and only per-day totals are kept — or log time by hand for tools without one. Each full assessment is then paired with the AI hours in the week before it. Over months that gives a within-person correlation: the closest a self-experiment can get to the question in this app's name.</p>
+
     <h2>Honest limitations</h2>
     <ul>
       <li>These are screening-style tasks, not a validated clinical battery. Treat the Index as a personal fitness number, like steps — useful as a <i>trend</i>, not a diagnosis.</li>
@@ -728,6 +758,200 @@ function renderAbout() {
     <h2>Privacy</h2>
     <p>Everything runs in your browser. Your results are stored only in this device's <code>localStorage</code> — nothing is uploaded, there's no account, and there are no trackers. Back up or move your data with Export/Import in Settings. Clearing your browser data will erase your history.</p>
   `;
+}
+
+
+/* ============================================================
+   ITEM REVIEW (tests that return a per-item breakdown)
+   ============================================================ */
+const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function reviewPanel(review, name) {
+  const order = { reflect: 0, logic: 1, evidence: 2 };
+  const label = { reflect: "Reflection", logic: "Logic", evidence: "Evidence" };
+  const confWord = (c) => (c == null ? null : c >= 0.9 ? "sure" : c >= 0.7 ? "fairly sure" : "guessing");
+  const items = [...review].sort((a, b) => (order[a.kind] ?? 9) - (order[b.kind] ?? 9));
+  return el("div", { class: "panel" }, [
+    el("h2", { text: `${name} — item by item` }),
+    el("p", { class: "muted", text: "The score is the summary. This is the part worth reading: which answer felt right and wasn't." }),
+    el("div", { class: "review" }, items.map((it) => el("div", { class: "review-item" }, [
+      el("div", { class: `review-mark ${it.right ? "ok" : "no"}`, text: it.right ? "✓" : "✕" }),
+      el("div", {}, [
+        el("div", { class: "review-kind", text: `${label[it.kind] || it.kind}${confWord(it.conf) ? ` · you were ${confWord(it.conf)}` : ""}` }),
+        el("div", { class: "review-q", text: it.prompt }),
+        el("div", { class: "review-a", html: it.right ? `<b>${esc(it.correct)}</b>` : `You: <b>${esc(it.yours)}</b> · Correct: <b>${esc(it.correct)}</b>` }),
+        el("div", { class: "review-why", text: it.explain }),
+      ]),
+    ]))),
+  ]);
+}
+
+/* ============================================================
+   AI USE — the exposure log
+   ============================================================ */
+let aiRedraw = null;
+
+function exportBundle() {
+  const d = JSON.parse(exportJSON());
+  d.usage = exportUsage();
+  return JSON.stringify(d, null, 2);
+}
+
+const fmtH = (min) => {
+  const h = min / 60;
+  return h >= 10 ? `${Math.round(h)} h` : h >= 1 ? `${Math.round(h * 10) / 10} h` : `${Math.round(min)} min`;
+};
+
+/** Full assessments paired with the AI hours of the week before each. */
+function exposurePanel(x, { showLink = false } = {}) {
+  const panel = el("div", { class: "panel" }, [
+    el("h2", { text: "AI exposure vs your scores" }),
+    el("p", { class: "muted", text: describeR(x.rComposite, x.n) }),
+  ]);
+  if (x.rows.length) {
+    panel.append(el("table", { class: "score-table usage-table" }, [
+      el("thead", {}, el("tr", {}, [
+        el("th", { text: "Assessment" }), el("th", { class: "num", text: "AI, prior 7 days" }),
+        el("th", { class: "num", text: "Index" }), el("th", { class: "num", text: "Critical thinking" }),
+      ])),
+      el("tbody", {}, x.rows.map((r) => el("tr", {}, [
+        el("td", { text: fmtDate(r.ts) }),
+        el("td", { class: "num", text: `${r.hours} h` }),
+        el("td", { class: "num" }, el("b", { text: String(r.composite) })),
+        el("td", { class: "num", text: r.testScore == null ? "—" : String(r.testScore) }),
+      ]))),
+    ]));
+    if (x.rTest != null && x.n >= 4) panel.append(el("p", { class: "muted", text: `Critical thinking on its own: r = ${x.rTest.toFixed(2)}.` }));
+  } else {
+    panel.append(el("p", { class: "muted", text: "Complete a full assessment and it will be paired with the AI hours logged in the week before it." }));
+  }
+  if (showLink) panel.append(el("div", { class: "cta-row", style: { margin: "14px 0 0" } }, [el("button", { class: "btn", type: "button", "data-nav": "ai", text: "Log AI use ▸" })]));
+  return panel;
+}
+
+function renderAI() {
+  const body = document.getElementById("ai-body");
+  clear(body);
+  const records = getUsage();
+  const agg = aggregate(records);
+  const now = Date.now();
+  const weeks = weekly(records, { weeks: 12, now });
+  const thisWeek = weeks[weeks.length - 1];
+  const tile = (k, v, s2) => el("div", { class: "stat-tile" }, [el("div", { class: "k", text: k }), el("div", { class: "v", text: v }), el("div", { class: "s", text: s2 })]);
+
+  body.append(el("p", { class: "lede", html: `The battery measures the outcome. This logs the exposure — hours and sittings with AI, across every product you use. Set beside your scores over months, <em>is AI making you dumber?</em> becomes a question about you, not a headline.` }));
+
+  if (!records.length) {
+    body.append(el("div", { class: "callout", html: `<b>Nothing logged yet.</b> Import a product's data export below (parsed here, in your browser) or add today's minutes by hand.` }));
+  }
+
+  body.append(el("div", { class: "stat-row" }, [
+    tile("All time", fmtH(agg.minutes), `${agg.days} day${agg.days === 1 ? "" : "s"} logged`),
+    tile("This week", fmtH(thisWeek.minutes), `${thisWeek.sessions} sitting${thisWeek.sessions === 1 ? "" : "s"}`),
+    tile("Sittings", String(agg.sessions), agg.messages ? `${agg.messages.toLocaleString()} prompts` : "all time"),
+    tile("Products", String(Object.keys(agg.byProduct).length), Object.keys(agg.byProduct).join(", ") || "none yet"),
+  ]));
+
+  // weekly hours
+  const canvas = el("canvas", { class: "chart" });
+  const chartPanel = el("div", { class: "panel" }, [
+    el("h2", { text: "Hours per week" }),
+    el("div", { class: "chart-wrap" }, canvas),
+  ]);
+  const prods = Object.entries(agg.byProduct).sort((a, b) => b[1].minutes - a[1].minutes);
+  if (prods.length) chartPanel.append(el("div", { class: "prod-chips" }, prods.map(([p, v]) => el("span", { class: "prod-chip", html: `${esc(p)} <b>${fmtH(v.minutes)}</b>` }))));
+  chartPanel.append(el("p", { class: "muted", style: { marginTop: "10px" }, text: "Last 12 weeks. Time is estimated from message timestamps — messages under 15 minutes apart count as one sitting, plus a short reading tail." }));
+  body.append(chartPanel);
+  const bars = weeks.map((w) => ({
+    label: new Date(dayTs(w.start)).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+    value: Math.round((w.minutes / 60) * 10) / 10,
+  }));
+  const draw = () => { if (canvas.isConnected) drawBars(canvas, bars, { height: 180, format: (v) => `${v}h` }); };
+  requestAnimationFrame(draw);
+  aiRedraw = draw;
+  const reg = onThemeChange(() => { if (!canvas.isConnected) { themeRedraws.delete(reg); return; } draw(); });
+
+  // log by hand
+  const dateIn = el("input", { type: "date", value: dayKey(now), "aria-label": "Date" });
+  const prodSel = el("select", { "aria-label": "Product" }, PRODUCTS.map((p) => el("option", { value: p, text: p })));
+  const minIn = el("input", { type: "number", min: "1", step: "5", value: "30", "aria-label": "Minutes" });
+  const sesIn = el("input", { type: "number", min: "1", step: "1", value: "1", "aria-label": "Sittings" });
+  const addBtn = el("button", { class: "btn btn-primary", type: "button", text: "Add" });
+  addBtn.addEventListener("click", () => {
+    const minutes = parseFloat(minIn.value);
+    if (!dateIn.value || !Number.isFinite(minutes) || minutes <= 0) { toast("Enter a date and a number of minutes."); return; }
+    addManual({ date: dateIn.value, product: prodSel.value, minutes, sessions: parseInt(sesIn.value, 10) || 1 });
+    toast(`Logged ${Math.round(minutes)} min of ${prodSel.value}.`);
+    renderAI();
+  });
+  body.append(el("div", { class: "panel" }, [
+    el("h2", { text: "Log time by hand" }),
+    el("p", { class: "muted", text: "For tools without an export — Copilot, Cursor, voice assistants — or a quick daily tally." }),
+    el("div", { class: "form-row" }, [
+      el("label", {}, ["Date", dateIn]), el("label", {}, ["Product", prodSel]),
+      el("label", {}, ["Minutes", minIn]), el("label", {}, ["Sittings", sesIn]), addBtn,
+    ]),
+  ]));
+
+  // import an export
+  const fileIn = el("input", { type: "file", accept: ".json,.csv,application/json,text/csv", "aria-label": "Export file" });
+  const hintSel = el("select", { "aria-label": "Treat as" }, [el("option", { value: "", text: "Auto-detect" }), ...PRODUCTS.map((p) => el("option", { value: p, text: p }))]);
+  fileIn.addEventListener("change", async () => {
+    const f = fileIn.files?.[0]; if (!f) return;
+    try {
+      const out = parseExport(await f.text(), hintSel.value || null);
+      if (out.format === "csv" && !hintSel.value) {
+        const byP = {};
+        for (const r of out.records) (byP[r.product] ||= []).push(r);
+        for (const [p, rs] of Object.entries(byP)) replaceImport(p, rs);
+      } else {
+        replaceImport(out.product, out.records);
+      }
+      const st = out.stats;
+      toast(`Imported ${out.product}: ${fmtH(st.minutes)} over ${st.days} day${st.days === 1 ? "" : "s"}${st.conversations ? `, ${st.conversations} conversations` : ""}.`, 4200);
+      renderAI();
+    } catch (e) {
+      toast(e?.message || "Couldn't read that file.", 4200);
+    }
+    fileIn.value = "";
+  });
+  body.append(el("div", { class: "panel" }, [
+    el("h2", { text: "Import a data export" }),
+    el("p", { class: "muted", text: "Parsed here, in your browser. Only per-day totals are kept — the conversations themselves are never stored or sent anywhere. Importing a newer export replaces the earlier figures for that product." }),
+    el("div", { class: "form-row" }, [el("label", {}, ["File", fileIn]), el("label", {}, ["Treat as", hintSel])]),
+    el("ul", { class: "howto" }, [
+      el("li", { html: "<b>ChatGPT</b> — Settings → Data controls → Export data → unzip → <code>conversations.json</code>" }),
+      el("li", { html: "<b>Claude</b> — Settings → Privacy → Export data → unzip → <code>conversations.json</code>" }),
+      el("li", { html: "<b>Gemini</b> — Google Takeout → My Activity → Gemini Apps, format JSON → <code>MyActivity.json</code>" }),
+      el("li", { html: "<b>Anything else</b> — a CSV with columns <code>date,product,minutes,sessions</code>" }),
+    ]),
+  ]));
+
+  // exposure vs scores
+  body.append(exposurePanel(exposureVsSessions(records, getSessions(), "critical")));
+
+  // the log itself
+  const recent = [...records].sort((a, b) => b.date.localeCompare(a.date) || a.product.localeCompare(b.product)).slice(0, 40);
+  if (recent.length) {
+    body.append(el("div", { class: "panel" }, [
+      el("h2", { text: "Log" }),
+      el("table", { class: "score-table usage-table" }, [
+        el("thead", {}, el("tr", {}, [
+          el("th", { text: "Day" }), el("th", { text: "Product" }), el("th", { class: "num", text: "Time" }),
+          el("th", { class: "num", text: "Sittings" }), el("th", { text: "Source" }), el("th", { text: "" }),
+        ])),
+        el("tbody", {}, recent.map((r) => el("tr", {}, [
+          el("td", { text: r.date }), el("td", { text: r.product }),
+          el("td", { class: "num", text: fmtH(r.minutes) }), el("td", { class: "num", text: String(r.sessions) }),
+          el("td", { class: "muted", text: r.source }),
+          el("td", { class: "num" }, el("button", { class: "btn btn-ghost btn-sm", type: "button", text: "✕", "aria-label": `Delete ${r.date} ${r.product}`, onClick: () => { deleteUsage(r.id); renderAI(); } })),
+        ]))),
+      ]),
+      records.length > 40 ? el("p", { class: "muted", text: `Showing the latest 40 of ${records.length} entries.` }) : null,
+    ]));
+  }
+
+  body.append(el("p", { class: "muted", style: { fontSize: ".85rem" }, text: "Everything here stays on this device. Export/Import in Settings includes this log." }));
 }
 
 /* ============================================================
@@ -762,7 +986,8 @@ function renderSettings() {
   const fileInput = el("input", { type: "file", accept: "application/json,.json", style: { display: "none" } });
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0]; if (!file) return;
-    try { const n = importJSON(await file.text()); toast(`Imported — ${n} session${n === 1 ? "" : "s"} total.`); renderSettings(); }
+    try { const text = await file.text(); const n = importJSON(text);
+      try { const u = JSON.parse(text).usage; if (u) importUsageData(u); } catch { /* older export without usage */ } toast(`Imported — ${n} session${n === 1 ? "" : "s"} total.`); renderSettings(); }
     catch (e) { toast(e.message || "Import failed."); }
     fileInput.value = "";
   });
@@ -775,7 +1000,7 @@ function renderSettings() {
     el("div", { class: "setting-row" }, [
       el("div", {}, [el("b", { text: "Your data" }), el("div", { class: "desc", text: `${sessions.length} session(s) stored locally in this browser. Export to back up or move to another device.` })]),
       el("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap" } }, [
-        el("button", { class: "btn", type: "button", text: "⬇ Export", onClick: () => { downloadText(`digital-aristotle-${new Date().toISOString().slice(0, 10)}.json`, exportJSON()); toast("Exported."); } }),
+        el("button", { class: "btn", type: "button", text: "⬇ Export", onClick: () => { downloadText(`digital-aristotle-${new Date().toISOString().slice(0, 10)}.json`, exportBundle()); toast("Exported."); } }),
         el("button", { class: "btn", type: "button", text: "⬆ Import", onClick: () => fileInput.click() }),
       ]),
     ]),
@@ -783,7 +1008,7 @@ function renderSettings() {
       el("div", {}, [el("b", { text: "Reset" }), el("div", { class: "desc", text: "Permanently delete all sessions on this device. This cannot be undone." })]),
       el("button", {
         class: "btn btn-danger", type: "button", text: "Delete all data",
-        onClick: () => { if (confirm("Delete all your Digital Aristotle data on this device? This cannot be undone.")) { clearAll(); toast("All data deleted."); renderSettings(); } },
+        onClick: () => { if (confirm("Delete all your Digital Aristotle data on this device? This cannot be undone.")) { clearAll(); clearUsage(); toast("All data deleted."); renderSettings(); } },
       }),
     ]),
     fileInput,
@@ -851,6 +1076,7 @@ function init() {
     if (!active) return;
     if (active.id === "screen-home") renderHome();
     else if (active.id === "screen-trends" && trendsRedraw) trendsRedraw();
+    else if (active.id === "screen-ai" && aiRedraw) aiRedraw();
   }, 200));
 
   // redraw dial/charts if the tab becomes visible again
