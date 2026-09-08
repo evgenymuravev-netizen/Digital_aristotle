@@ -1243,7 +1243,8 @@ SCREENS['ujrah-card'] = () => {
 };
 
 /* ---------------- SME financing — full video + KYB journey ---------------- */
-const SME_STEPS = ['','Business','Company docs','Signatory','UBOs','Ejari & presence','Tour','Your plan','Offer','Sign','Direct debits'];
+const SME_STEPS = ['','Business','Company docs','Signatory','UBOs','Ejari & presence','Tour','Your plan','Processing','Credit memo','Offer','Sign','Direct debits'];
+const SME_N = 12;
 const smeTick = (id, label, d, opt) => {
   const doc = (A.tmp.smeDocs||{})[id];
   return `<div class="row" onclick="SMEVC.pick('${id}','${label.replace(/'/g,'’')}')">
@@ -1254,15 +1255,20 @@ const smeTick = (id, label, d, opt) => {
   </div>`;
 };
 const smeFileInput = `<input type="file" id="smeFile" accept="application/pdf,image/*" style="display:none" onchange="SMEVC.filePicked(this)">`;
+const smeVidInput  = `<input type="file" id="smeVid" accept="video/*" style="display:none" onchange="SMEVC.vidPicked(this)">`;
+const memoIcon = k => k==='ok'
+  ? `<span class="memo-i ok">${ic('check',13)}</span>`
+  : `<span class="memo-i warn">${ic('alert',13)}</span>`;
+
 SCREENS['sme-video'] = () => {
   const st = A.tmp.smev || 1;
   const sig = A.tmp.smeSig ?? 0;
   const stepper = `
-    <div class="flex between mb8"><span class="lbl">Step ${st} of 10 — ${SME_STEPS[st]}</span>
+    <div class="flex between mb8"><span class="lbl">Step ${st} of ${SME_N} — ${SME_STEPS[st]}</span>
       ${st>1?`<button class="chip" style="padding:4px 10px;font-size:10.5px" onclick="A.tmp.smev=${st-1};A.refresh()">Back</button>`:''}</div>
-    <div class="mb12">${meter(st/10,'#4a63d8')}</div>`;
+    <div class="mb12">${meter(st/SME_N,'#4a63d8')}</div>`;
 
-  /* --- 3: authorized signatory --- */
+  /* ---- 3: authorized signatory ---- */
   if(st===3){
     return `
   <div class="scr">
@@ -1283,7 +1289,7 @@ SCREENS['sme-video'] = () => {
   </div>`;
   }
 
-  /* --- 2: company documents --- */
+  /* ---- 2: company documents ---- */
   if(st===2){
     return `
   <div class="scr">
@@ -1296,12 +1302,12 @@ SCREENS['sme-video'] = () => {
       ${smeTick('moa','Memorandum of Association (MoA)','Ownership shares are read out and matched to the UBO step')}
       ${smeTick('aoa','Articles of Association (AoA)','Signing authority read out — you pick the signatory next, and we check the match')}
     </div>
-    <div class="card soft mt12"><div class="micro">PDF, photo or scan — all fine. The agent flags expired licences and share mismatches on the spot, before underwriting ever sees them. Only the two videos are camera-only; documents are documents.</div></div>
+    <div class="card soft mt12"><div class="micro">PDF, photo or scan — all fine. The agent flags expired licences and share mismatches on the spot, before underwriting ever sees them.</div></div>
     <button class="btn lime mt16" onclick="A.tmp.smev=3;A.refresh()">Continue — who signs?</button>
   </div>`;
   }
 
-  /* --- 4: UBOs — reused KYC + uploads for non-signatories --- */
+  /* ---- 4: UBOs ---- */
   if(st===4){
     return `
   <div class="scr">
@@ -1309,7 +1315,6 @@ SCREENS['sme-video'] = () => {
     ${stepper}
     ${smeFileInput}
     <div class="sub mb8">Every owner from the MoA. The signatory verifies live; everyone else can upload.</div>
-
     <div class="lbl mt12 mb8">${SME2.ubos[0].n} — ${SME2.ubos[0].role}${sig===0?' · signatory':''}</div>
     <div class="card" style="border-color:rgba(31,138,91,.4)">
       <div class="flex" style="gap:12px">
@@ -1319,7 +1324,6 @@ SCREENS['sme-video'] = () => {
         <span class="tag grn">KYC passed</span>
       </div>
     </div>
-
     <div class="lbl mt16 mb8">${SME2.ubos[1].n} — ${SME2.ubos[1].role}${sig===1?' · signatory':''}</div>
     ${sig===1?`
     <div class="listcard">
@@ -1341,7 +1345,7 @@ SCREENS['sme-video'] = () => {
   </div>`;
   }
 
-  /* --- 5: Ejari + web presence + backoffice --- */
+  /* ---- 5: Ejari + presence ---- */
   if(st===5){
     const solo = !!A.tmp.smeSolo;
     return `
@@ -1365,35 +1369,189 @@ SCREENS['sme-video'] = () => {
   </div>`;
   }
 
-  /* --- 6 & 7: the two recordings — the finale of the application --- */
-  if(st===6||st===7){
-    const tour = st===6;
+  /* ---- 6: the live tour (camera only) ---- */
+  if(st===6){
     const rec = A.tmp.smevRec||0;
     return `
   <div class="scr">
-    ${hdr(tour?'Show us the place':'Tell us the plan')}
+    ${hdr('Show us the place')}
     ${stepper}
-    ${tour?'':'<div class="card soft mb12"><div class="micro"><b>The last step of your application.</b> Documents told us the facts — now tell us the story. This recording is what the credit officer watches first.</div></div>'}
-    <div style="border-radius:20px;background:#101014;color:#fff;padding:18px;min-height:250px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.12)">
+    <div class="rec-panel">
       <div class="flex between">
-        <span class="flex" style="gap:7px"><i style="width:10px;height:10px;border-radius:50%;background:${rec?'#ff4d4d':'#666'};display:inline-block"></i><span style="font:600 12px Onest,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
-        <span class="tnum" style="font:600 13px Onest,Inter,sans-serif" id="smevTimer">${tour?'0:00 / ~1:00':'0:00 / 15:00 max'}</span>
+        <span class="flex" style="gap:7px"><i class="rec-dot ${rec?'on':''}"></i><span style="font:600 12px Outfit,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
+        <span class="tnum" style="font:600 13px Outfit,Inter,sans-serif" id="smevTimer">0:00 / ~1:00</span>
       </div>
-      <div style="text-align:center;opacity:.55;font:500 12.5px Onest,Inter,sans-serif">${tour?'Walk the camera through the real place':'Talk to the camera — like to a partner'}</div>
-      <div style="font:400 11.5px/1.6 Onest,Inter,sans-serif;opacity:.8">
-        ${tour
-          ? '· The entrance and signage<br>· Stock room / treatment rooms<br>· The till and the POS terminal<br>· Your team at work'
-          : '· What the business does, since when<br>· What exactly the AED 100,000 buys<br>· How that becomes revenue, month by month<br>· How you repay if the plan slips'}
+      <div style="text-align:center;opacity:.55;font:500 12.5px Outfit,Inter,sans-serif">Walk the camera through the real place</div>
+      <div style="font:400 11.5px/1.6 Outfit,Inter,sans-serif;opacity:.8">
+        · The entrance and signage<br>· Stock room / treatment rooms / the floor<br>· The till, the POS terminal, the work in progress<br>· Your team at work
       </div>
     </div>
-    <div class="card soft mt12"><div class="micro"><b>Camera only — uploads are disabled for the videos.</b> A file could be edited, outsourced or generated. A live recording with liveness, location and our frame-level AI screen cannot.</div></div>
-    <button class="btn lime mt12" id="smevBtn" onclick="SMEVC.rec(${st})">${rec?'Recording…':(tour?'Start the tour':'Start recording — 15:00 max')}</button>
+    <div class="card soft mt12"><div class="micro"><b>This one is camera-only — no uploads.</b> One minute, live, with liveness and GPS. It is the anchor the whole memo is checked against: a file could be edited, borrowed or generated; a live walk cannot.</div></div>
+    <button class="btn lime mt12" onclick="SMEVC.rec(6)">${rec?'Recording…':'Start the tour'}</button>
   </div>`;
   }
 
-  /* --- 8: offer --- */
+  /* ---- 7: the plan — bot interview OR self-recorded / uploaded ---- */
+  if(st===7){
+    const mode = A.tmp.smePlan || 'choose';
+    if(mode==='choose'){
+      return `
+  <div class="scr">
+    ${hdr('Tell us the plan')}
+    ${stepper}
+    <div class="card soft mb12"><div class="micro"><b>The last step of your application.</b> The tour showed us the place; this is where you explain the business. Pick whichever suits you — both answer the same 12 questions.</div></div>
+    <div class="card lime tap" onclick="A.tmp.smePlan='bot';A.tmp.smeBot=0;A.refresh()">
+      <div class="flex between"><span class="tag solid">Recommended · ~10 min</span>${aiIc(14)}</div>
+      <div class="h3 mt8">Talk to the AI underwriter</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">It asks the questionnaire out loud, listens, and <b>digs deeper</b> when an answer is thin — so you are not penalised for forgetting to mention something.</div>
+    </div>
+    <div class="card tap mt12" onclick="A.tmp.smePlan='record';A.refresh()">
+      <div class="flex between"><span class="tag gray">15 min max</span>${ic('cam',18)}</div>
+      <div class="h3 mt8">Record it yourself</div>
+      <div class="micro mt4">We show the question list; you work through it at your own pace. <b>Record in-app or upload a file</b> — for this one an upload is fine.</div>
+    </div>
+    <div class="card soft mt12"><div class="micro">Why the difference: the one-minute tour must be live because it proves the premises exist. The plan is your account of the business — we care about the answers, so record it however you like.</div></div>
+  </div>`;
+    }
+    if(mode==='bot'){
+      const n = A.tmp.smeBot||0;
+      const line = SME_INT.script[Math.min(n, SME_INT.script.length-1)];
+      const done = n >= SME_INT.script.length;
+      return `
+  <div class="scr">
+    ${hdr('AI underwriter',{back:"A.tmp.smePlan='choose';A.refresh()"})}
+    ${stepper}
+    <div class="flex between mb8"><span class="lbl">Question ${done?SME_INT.total:Math.min(line.q,SME_INT.total)} of ${SME_INT.total}</span>
+      <span class="tag ${done?'grn':'blu'}">${done?'interview complete':'live'}</span></div>
+    <div class="listcard" style="padding:12px 14px">
+      ${SME_INT.script.slice(0,Math.min(n+1,SME_INT.script.length)).map((l,i)=>`
+        <div style="padding:8px 0">
+          <div class="flex" style="gap:8px;align-items:flex-start">${aiIc(11)}
+            <div class="f1"><div class="micro" style="color:var(--tx2)">${l.dig?'<b style="color:var(--red)">Digging deeper — </b>':''}${l.dig?l.probe:SME_INT.questions[l.q-1]}</div></div></div>
+          ${i<n||done?`<div class="ch-msg user" style="margin-top:6px;max-width:100%;font-size:13px">${l.a}</div>`:''}
+        </div>`).join('')}
+    </div>
+    ${done
+      ? `<div class="card soft mt12"><div class="micro">Twelve questions, two follow-ups. The transcript, the tour and your bank data now go to the underwriting model together.</div></div>
+         <button class="btn lime mt16" onclick="A.tmp.smev=8;A.tmp.smeProc=0;A.refresh();SMEVC.proc()">Submit the application</button>`
+      : `<button class="btn lime mt16" onclick="A.tmp.smeBot=${n+1};A.refresh()">Answer &amp; continue</button>
+         <div class="micro mt8" style="text-align:center">Speak naturally — it re-asks when something is vague, exactly like a credit officer would.</div>`}
+  </div>`;
+    }
+    const rec = A.tmp.smevRec||0;
+    const up  = A.tmp.smeVid;
+    return `
+  <div class="scr">
+    ${hdr('Record your plan',{back:"A.tmp.smePlan='choose';A.refresh()"})}
+    ${stepper}
+    ${smeVidInput}
+    <div class="lbl mb8">Work through these — 12 questions</div>
+    <div class="listcard" style="padding:6px 14px">
+      ${SME_INT.questions.map((q,i)=>`<div class="row static" style="padding:9px 0">
+        <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:8px;font:600 11px Outfit,Inter,sans-serif">${i+1}</span>
+        <div class="row-main"><div class="row-d" style="white-space:normal;color:var(--tx)">${q}</div></div></div>`).join('')}
+    </div>
+    ${up?`<div class="card mt12" style="border-color:rgba(31,138,91,.45)">
+      <div class="flex" style="gap:12px"><span class="bigico" style="background:#1f8a5b;color:#fff">${ic('check',20)}</span>
+      <div class="f1"><div class="row-t">${up.name}</div><div class="row-d">${up.size} · uploaded · queued for the AI-generation screen</div></div></div>
+    </div>`:`
+    <div class="rec-panel mt12" style="min-height:150px">
+      <div class="flex between">
+        <span class="flex" style="gap:7px"><i class="rec-dot ${rec?'on':''}"></i><span style="font:600 12px Outfit,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
+        <span class="tnum" style="font:600 13px Outfit,Inter,sans-serif" id="smevTimer">0:00 / 15:00 max</span>
+      </div>
+      <div style="text-align:center;opacity:.55;font:500 12.5px Outfit,Inter,sans-serif">Talk to the camera — like to a partner</div>
+    </div>`}
+    <div class="btnrow mt12">
+      <button class="btn ghost" onclick="SMEVC.rec(7)">${rec?'Recording…':'Record in-app'}</button>
+      <button class="btn ghost" onclick="SMEVC.vidPick()">Upload a file</button>
+    </div>
+    <button class="btn lime mt12" onclick="A.tmp.smev=8;A.tmp.smeProc=0;A.refresh();SMEVC.proc()">Submit the application</button>
+  </div>`;
+  }
+
+  /* ---- 8: processing ---- */
   if(st===8){
+    const P=['Transcribing the interview','Reading the tour frame by frame','Reconciling with your bank data','Screening for edits and AI generation','Scoring and writing the credit memo'];
+    const k=A.tmp.smeProc||0;
+    return `
+  <div class="scr">
+    ${hdr('Processing')}
+    ${stepper}
+    <div class="card lime">
+      <span class="tag solid">Under way</span>
+      <div class="h2 mt8">We’re reviewing your application.</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">Everything you gave us — the tour, the interview, the documents and your accounts — is being read together.</div>
+    </div>
+    <div class="listcard mt16">
+      ${P.map((t,i)=>`<div class="row static">
+        <span class="bigico" style="${i<k?'background:#1f8a5b;color:#fff':''}">${i<k?ic('check',18):(i===k?'<span class="spinner" style="width:16px;height:16px"></span>':ic('clock',18))}</span>
+        <div class="row-main"><div class="row-t" style="white-space:normal;${i>k?'opacity:.45':''}">${t}</div></div>
+      </div>`).join('')}
+    </div>
+    <div class="card mt16" style="border-color:rgba(51,125,255,.4)">
+      <div class="flex between"><b style="font-size:13.5px">A decision in under one hour</b><span class="tag blu">always</span></div>
+      <div class="micro mt4">Not “up to 12 hours”, not “a few working days”. Under an hour, every time.</div>
+      <div class="hr" style="margin:10px 0"></div>
+      <div class="micro"><b>The one exception:</b> facilities above AED 500,000, where we add a short live interview with a credit officer. You still hear from us inside the hour — to book the call, not to wait.</div>
+    </div>
+    ${k>=P.length?`<button class="btn lime mt16" onclick="A.tmp.smev=9;A.refresh()">See the credit memo</button>`
+      :`<div class="micro mt16" style="text-align:center">You can close the app — we will notify you.</div>`}
+  </div>`;
+  }
+
+  /* ---- 9: the credit memo ---- */
+  if(st===9){
+    const M=SME_MEMO;
+    const pct=M.score/M.max;
+    const band=pct>=.75?'#1f8a5b':pct>=.6?'#c8841f':'#d1483f';
+    return `
+  <div class="scr">
+    ${hdr('Credit memo')}
+    ${stepper}
+    <div class="card">
+      <div class="flex between"><span class="lbl">Credit memo · ${M.ref}</span><span class="micro">${M.date}</span></div>
+      <div class="h2 mt8">${M.business}</div>
+      <div class="flex mt12" style="gap:14px;align-items:center">
+        ${donut([{v:M.score,c:band},{v:M.max-M.score,c:'rgba(14,14,16,.08)'}],92,11,`<div style="font:600 22px Outfit,Inter,sans-serif" class="tnum">${M.score}</div><div class="micro">of ${M.max}</div>`)}
+        <div class="f1">
+          <span class="tag grn">${M.band}</span>
+          <div class="micro mt8" style="line-height:1.55">${M.decision}</div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="micro"><b>Type detected: ${M.type}.</b> ${M.typeNote}</div>
+      <div class="chips mt8">${Object.keys(M.types).map(t=>`<button class="chip" onclick="A.tip('${t}: the checklist adds — ${M.types[t].replace(/'/g,'’')}')">${t}</button>`).join('')}</div>
+    </div>
+
+    ${M.sections.map(sec=>`
+      <div class="flex between mt16 mb8"><span class="lbl">${sec.t}</span>
+        <span class="tag ${sec.s/sec.m>=.8?'grn':'gold'} tnum">${sec.s} / ${sec.m}</span></div>
+      <div class="listcard">
+        ${sec.rows.map(([k,t,ev])=>`
+          <div class="row static">
+            ${memoIcon(k)}
+            <div class="row-main"><div class="row-t" style="white-space:normal;font-size:13.5px">${t}</div>
+              <div class="row-d">${ev}</div></div>
+          </div>`).join('')}
+      </div>`).join('')}
+
+    <div class="lbl mt16 mb8">Integrity checks</div>
+    <div class="listcard">
+      ${M.integrity.map(([k,t])=>`<div class="row static">${memoIcon(k)}
+        <div class="row-main"><div class="row-t" style="white-space:normal;font-size:13.5px">${t}</div></div></div>`).join('')}
+    </div>
+
+    <div class="card soft mt16"><div class="micro"><b>Why this decision.</b> ${M.rationale}</div></div>
+    <div class="card soft mt8"><div class="micro">Every line is traceable: tap any evidence reference to jump to that second of the recording. A human credit officer signs the memo before funds move.</div></div>
+    <button class="btn lime mt16" onclick="A.tmp.smev=10;A.refresh()">See your offer</button>
+  </div>`;
+  }
+
+  /* ---- 10: the offer + how to raise the limit ---- */
+  if(st===10){
     const o=SME2.offer, m=SME2.merchant;
+    const maxLift=o.limit+SME_UPLIFT.reduce((a,u)=>a+u.plus,0);
     return `
   <div class="scr">
     ${hdr('Contract')}
@@ -1418,6 +1576,23 @@ SCREENS['sme-video'] = () => {
       <div class="kv"><span class="k">Commodity</span><span class="v">${o.commodity}</span></div>
       <div class="kv"><span class="k">How the instalment is paid</span><span class="v">${o.pay}</span></div>
     </div>
+
+    <div class="card lime mt16">
+      <span class="tag solid">Want more than AED ${fm(o.limit,0)}?</span>
+      <div class="h3 mt8">Three things would raise it — up to AED ${fm(maxLift,0)}</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">Nothing here is a new application. Each one gives the model a signal it does not have today, and the limit re-scores automatically.</div>
+    </div>
+    <div class="listcard mt12">
+      ${SME_UPLIFT.map((u,i)=>`
+        <div class="row" onclick="A.toast('${u.t.replace(/'/g,'’')} — we’ll walk you through it after signing','check')">
+          <span class="bigico" style="background:rgba(74,99,216,.14);color:var(--blu);font:600 12px Outfit,Inter,sans-serif">+${Math.round(u.plus/1000)}k</span>
+          <div class="row-main"><div class="row-t" style="white-space:normal">${u.t}</div>
+            <div class="row-d" style="white-space:normal">${u.d}</div></div>
+          <span class="chev">${ic('chevR',16)}</span>
+        </div>`).join('')}
+    </div>
+    <div class="card soft mt12"><div class="micro">And the one that costs nothing: <b>pay on time</b>. After three on-time instalments the limit is reviewed automatically — no forms, no second interview.</div></div>
+
     <div class="lbl mt16 mb8">Merchant details</div>
     <div class="card">
       <div class="kv"><span class="k">Legal company name</span><span class="v">${m.legal}</span></div>
@@ -1427,12 +1602,12 @@ SCREENS['sme-video'] = () => {
       <div class="kv"><span class="k">Email</span><span class="v">${m.email}</span></div>
     </div>
     <div class="micro mt8">Signed by the authorized signatory: <b>${SME2.ubos[sig].n}</b>. Find more information in our <b style="color:var(--blu)">Key Facts Statement</b>.</div>
-    <button class="btn lime mt12" onclick="A.tmp.smev=9;A.tmp.smeSigned=0;A.refresh()">Accept</button>
+    <button class="btn lime mt12" onclick="A.tmp.smev=11;A.tmp.smeSigned=0;A.refresh()">Accept</button>
   </div>`;
   }
 
-  /* --- 9: the Murabaha signing cascade --- */
-  if(st===9){
+  /* ---- 11: signing cascade ---- */
+  if(st===11){
     const signed = A.tmp.smeSigned||0;
     return `
   <div class="scr">
@@ -1443,7 +1618,7 @@ SCREENS['sme-video'] = () => {
       ${SME2.signdocs.map(([t,ts],k)=>{
         const isContract = t==='Murabaha agreement';
         const done = k < signed;
-        return `<div class="row static" style="${isContract?'background:#eeecff;border-radius:12px;margin:2px -8px;padding-left:10px;padding-right:10px':''}">
+        return `<div class="row static" style="${isContract?'background:rgba(74,99,216,.10);border-radius:12px;margin:2px -8px;padding-left:10px;padding-right:10px':''}">
           <span class="bigico" style="${done?'background:#1f8a5b;color:#fff':''}">${ic(done?'check':'doc',20)}</span>
           <div class="row-main"><div class="row-t">${t}${isContract?' <span class="tag solid">your contract</span>':''}</div>
             <div class="row-d">${done?`Signed — 7 Apr 2025 at ${ts}`:'Awaiting signature'}</div></div>
@@ -1451,14 +1626,14 @@ SCREENS['sme-video'] = () => {
     </div>
     ${signed>=SME2.signdocs.length
       ? `<div class="card soft mt12"><div class="micro">All ten documents executed in eleven seconds — the commodity was bought, held, certified and sold on. That is a real Murabaha, not paperwork theatre. The <b>Murabaha agreement</b> is your contract; everything else proves the trade actually happened.</div></div>
-         <button class="btn lime mt16" onclick="A.tmp.smev=10;A.refresh()">Continue — direct debits</button>`
+         <button class="btn lime mt16" onclick="A.tmp.smev=12;A.refresh()">Continue — direct debits</button>`
       : `<button class="btn lime mt16" onclick="SMEVC.sign()">${signed?'Signing…':'Sign everything — with one tap'}</button>
          <div class="micro mt8" style="text-align:center">Each document is hash-stamped the second it is executed — watch the timestamps land.</div>`}
   </div>`;
   }
 
-  /* --- 10: direct debit mandates + release --- */
-  if(st===10){
+  /* ---- 12: direct debits ---- */
+  if(st===12){
     const dd=A.tmp.smeDD||{};
     const both = dd.wio && dd.enbd;
     return `
@@ -1487,7 +1662,7 @@ SCREENS['sme-video'] = () => {
   </div>`;
   }
 
-  /* --- 1: business snapshot --- */
+  /* ---- 1: business snapshot ---- */
   return `
   <div class="scr">
     ${hdr('SME financing')}
@@ -1495,7 +1670,7 @@ SCREENS['sme-video'] = () => {
     <div class="card lime">
       <span class="tag solid">Documents first, story last — all in-app</span>
       <div class="h2 mt8">Your shop and your story decide.</div>
-      <div class="micro mt4" style="color:rgba(14,14,16,.62)">No statements theatre. Photograph or upload the documents, then close with the two recordings — the story is the finale, not the warm-up.</div>
+      <div class="micro mt4" style="color:rgba(14,14,16,.62)">No statements theatre. Photograph or upload the documents, walk us round the place, then tell us the plan — to our AI underwriter or on camera.</div>
     </div>
     <div class="lbl mt16 mb8">What Mal already sees</div>
     <div class="card">
@@ -1505,19 +1680,18 @@ SCREENS['sme-video'] = () => {
       <div class="kv"><span class="k">Requested</span><span class="v tnum">AED ${fm(SMEV.amount,0)}</span></div>
     </div>
     <div class="lbl mt16 mb8">Use of funds</div>
-    <div class="chips">${['Inventory ahead of Q4','New treatment room','Second POS + staff','Marketing push'].map((c,i)=>`<button class="chip ${i===0?'on':''}" onclick="A.toast('Noted — the plan video should walk through exactly this','check')">${c}</button>`).join('')}</div>
-    <div class="lbl mt16 mb8">The journey — 10 steps, ~20 minutes</div>
-    <div class="card soft"><div class="micro">Company docs (licence, MoA, AoA) → who signs → UBO IDs (uploads fine; the signatory verifies live, and KYC-passed customers skip entirely) → Ejari + web presence → premises tour → the 15-minute plan video, last → offer → one-tap Murabaha signing → direct debits → funds released.</div></div>
+    <div class="chips">${['Inventory ahead of Q4','New treatment room','Second POS + staff','Marketing push'].map((c,i)=>`<button class="chip ${i===0?'on':''}" onclick="A.toast('Noted — the plan interview will walk through exactly this','check')">${c}</button>`).join('')}</div>
+    <div class="lbl mt16 mb8">The journey — ${SME_N} steps, ~20 minutes</div>
+    <div class="card soft"><div class="micro">Company docs → who signs → UBO IDs (KYC-passed customers skip) → Ejari + web presence → a one-minute live tour → the plan, with our AI underwriter or on camera → we score it and write a <b>credit memo</b> → your offer, with three ways to raise the limit → one-tap Murabaha signing → direct debits → funds released.</div></div>
     <button class="btn lime mt16" onclick="A.tmp.smev=2;A.refresh()">Continue — company docs</button>
   </div>`;
 };
+
 window.SMEVC = {
   pick(id,label){
     A.tmp.smePick={id,label};
     const inp=document.getElementById('smeFile');
-    if(!inp) return;
-    inp.value='';
-    inp.click();
+    if(!inp) return; inp.value=''; inp.click();
   },
   filePicked(inp){
     const f=inp.files&&inp.files[0]; const p=A.tmp.smePick;
@@ -1528,18 +1702,38 @@ window.SMEVC = {
     A.refresh();
     A.toast(p.label+' uploaded — '+f.name+' parsed','check');
   },
+  vidPick(){ const i=document.getElementById('smeVid'); if(i){ i.value=''; i.click(); } },
+  vidPicked(inp){
+    const f=inp.files&&inp.files[0]; if(!f) return;
+    const size=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(f.size/1024))+' KB';
+    A.tmp.smeVid={name:f.name,size}; A.refresh();
+    A.toast('Plan video uploaded — queued for the AI-generation screen','check');
+  },
   rec(step){
     if(A.tmp.smevRec) return;
     A.tmp.smevRec=1; A.refresh();
-    const total = step===6 ? 47 : 872;
+    const tour = step===6;
+    const total = tour ? 47 : 872;
     let t=0;
     const iv=setInterval(()=>{
-      t+=step===6?6:109;
+      t += tour?6:109;
       const el=document.getElementById('smevTimer');
-      if(el) el.textContent = Math.floor(t/60)+':'+String(t%60).padStart(2,'0') + (step===6?' / ~1:00':' / 15:00 max');
-      if(t>=total){ clearInterval(iv); A.tmp.smevRec=0; A.tmp.smev=step+1; A.refresh();
-        A.toast(step===6?'Tour captured — location matches the trade licence':'Plan recorded — passed the AI-generation screen. Application complete.','check'); }
+      if(el) el.textContent = Math.floor(t/60)+':'+String(t%60).padStart(2,'0') + (tour?' / ~1:00':' / 15:00 max');
+      if(t>=total){
+        clearInterval(iv); A.tmp.smevRec=0;
+        if(tour){ A.tmp.smev=7; A.tmp.smePlan='choose'; A.refresh(); A.toast('Tour captured — location matches the trade licence','check'); }
+        else { A.tmp.smeVid={name:'plan-recording.mp4',size:'past 14:32'}; A.refresh(); A.toast('Plan recorded — passed the AI-generation screen','check'); }
+      }
     }, 350);
+  },
+  proc(){
+    if(A.tmp.smeProcRun) return;
+    A.tmp.smeProcRun=1; A.tmp.smeProc=0;
+    const iv=setInterval(()=>{
+      A.tmp.smeProc=(A.tmp.smeProc||0)+1;
+      if(A.tmp.smeProc>=5){ clearInterval(iv); A.tmp.smeProcRun=0; A.toast('Decision ready — credit memo written in 3 min 20 s','check'); }
+      if(A.route==='sme-video') A.refresh();
+    }, 700);
   },
   sign(){
     if(A.tmp.smeSigning) return;

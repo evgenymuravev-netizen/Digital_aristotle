@@ -627,6 +627,106 @@ window.SME2 = {
     ['Notice of sale','13:30:22'],
   ],
 };
+/* ---------- SME underwriting: interview, credit memo, limit uplift ---------- */
+window.SME_INT = {
+  total: 12,
+  /* the questionnaire the AI underwriter works through (also shown if you self-record) */
+  questions: [
+    'What does the business actually sell, and since when?',
+    'Walk me through a normal week — busiest day, quietest day.',
+    'Who are your three biggest suppliers, and on what terms?',
+    'What exactly will the AED 100,000 buy?',
+    'What does that inventory turn into, month by month?',
+    'What is your margin on those goods, before and after rent?',
+    'How much of your sales are card, cash, and BNPL?',
+    'Who are your repeat customers, and how do they find you?',
+    'What happens to the plan if the season is 20% weaker?',
+    'Do you have supplier credit you could lean on?',
+    'Who else has lent to the business, and what is outstanding?',
+    'If we called your landlord today, what would they say?'
+  ],
+  /* scripted exchange, incl. the moment the agent digs deeper on a thin answer */
+  script: [
+    {q:1,  a:'Abayas and textiles — retail and small wholesale. The shop opened in March 2023.'},
+    {q:4,  a:'Q4 stock. Mostly the winter abaya line and three rolls of imported crepe.'},
+    {q:4,  a:'From Al Ansari Textiles, Sharjah — I usually pay 50% upfront.', dig:true,
+            probe:'You said "mostly". Give me the split — how much of the AED 100,000 is stock, and what is the rest?'},
+    {q:5,  a:'About 82,000 in stock, 12,000 to the tailor I subcontract, 6,000 for the window refit.'},
+    {q:9,  a:'Last year November was up 18%. If it is weaker I hold the wholesale line and sell retail only.'},
+    {q:11, a:'One invoice facility with Mashreq, 22,000 outstanding. Nothing else.'}
+  ]
+};
+
+window.SME_MEMO = {
+  ref:'CM-2025-0417', date:'7 Apr 2025',
+  business:'AlMansoori Trading LLC',
+  type:'Retail — abaya & textile shop',
+  typeNote:'Detected from the tour and the licence activity. The checklist below swaps with the type.',
+  score:78, max:100, band:'Approve', decision:'Approve — AED 100,000 · Murabaha · 18% · 40 weeks',
+  rationale:'Premises, trade and people all verify. Stated revenue reconciles to POS within 3.7%. The plan is specific and funded stock is resaleable. Two soft flags do not change the decision but cap the opening limit.',
+  /* what the checklist becomes for other business types — proves the model generalises */
+  types:{
+    'Retail shop':'shelf depth, till activity, footfall during the tour, stock-room order',
+    'Clinic':'licence per practitioner, appointment book, sterilisation area, patient flow separation',
+    'Production':'machine count and condition, raw-material buffer, WIP vs finished goods, shift board',
+    'Construction':'active site vs idle, plant ownership or lease papers, safety kit in use, progress vs programme',
+    'Warehouse & logistics':'racking utilisation, inbound/outbound logs, fleet on site, dispatch area order'
+  },
+  sections:[
+    {t:'Premises are real', s:21, m:25, rows:[
+      ['ok','Signage matches the licensed trade name','tour 0:04'],
+      ['ok','Tour GPS matches the Ejari address — 12 m apart','tour metadata'],
+      ['ok','Entrance, shop floor and stock room filmed in one continuous take','tour 0:00–0:47'],
+      ['warn','Rear storage shown only partially','tour 0:39']
+    ]},
+    {t:'Order & condition', s:11, m:15, rows:[
+      ['ok','Stock shelved and labelled, aisles clear','tour 0:18'],
+      ['ok','Equipment in working order, no visible disrepair','tour 0:22'],
+      ['ok','Two staff present and working, in uniform','tour 0:26'],
+      ['warn','Fire exit partly blocked by cartons','tour 0:31']
+    ]},
+    {t:'Trade is happening', s:15, m:20, rows:[
+      ['ok','POS terminal live — two customers served during the tour','tour 0:37'],
+      ['ok','Inventory depth consistent with the claimed turnover','tour 0:20'],
+      ['ok','Card settlements: 14 months unbroken','bank data'],
+      ['warn','No queue visible from the second angle','tour 0:44']
+    ]},
+    {t:'The plan holds up', s:10, m:15, rows:[
+      ['ok','Use of funds itemised: 82k stock, 12k tailoring, 6k refit','interview Q4'],
+      ['ok','Suppliers named with terms (50% upfront)','interview Q3'],
+      ['warn','Repayment assumes +30% season; last year was +18%','interview Q9'],
+      ['ok','Contingency named — hold wholesale, sell retail only','interview Q9']
+    ]},
+    {t:'Numbers match the story', s:11, m:15, rows:[
+      ['ok','Stated AED 96,000/mo vs POS AED 92,400/mo — 3.7% apart','reconciled'],
+      ['ok','Wio balance and settlement rhythm consistent with the story','bank data'],
+      ['ok','Disclosed borrowing matches the bureau — invoice line 22,000','AECB + interview Q11'],
+      ['warn','~12% cash sales asserted, not independently verifiable','interview Q7']
+    ]},
+    {t:'People & governance', s:10, m:10, rows:[
+      ['ok','Both UBOs identified; 60/40 shares match the MoA','KYB'],
+      ['ok','Signatory authority matches the AoA','KYB'],
+      ['ok','Sanctions and PEP screening clear','KYB']
+    ]}
+  ],
+  integrity:[
+    ['ok','No AI-generated or edited frames — frame-level screen, 0 hits'],
+    ['ok','Liveness passed on the live tour'],
+    ['ok','No off-camera prompting detected in the interview'],
+    ['warn','One 6-second gap in the tour recording (tour 0:29)']
+  ]
+};
+
+/* three concrete ways to raise the approved limit — shown on every approval */
+window.SME_UPLIFT = [
+  {t:'Route your POS settlements to Noor', plus:40000,
+   d:'Live revenue beats any statement. Settle the card terminal into your Noor business account and the limit re-scores every week.'},
+  {t:'Connect the Mashreq business account', plus:25000,
+   d:'One more open-banking link closes the last gap in the cash picture — today we only see Wio.'},
+  {t:'Share the Tabby / Tamara back-office', plus:20000,
+   d:'Real order volumes are the strongest revenue signal we can read, and they are yours already.'}
+];
+
 window.SMEV = { amount:100000, rate:18,
   checks:[['Recorded in-app only','file uploads are disabled by design — the camera is the only way in'],
           ['AI-generation screen','frame-level deepfake and synthetic-video detection on every second'],

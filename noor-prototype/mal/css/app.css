@@ -492,3 +492,13 @@ button.ai-orb:active{transform:scale(.94)}
 .app-cloud{display:flex}
 .appic{width:46px;height:46px;border-radius:12px;object-fit:cover;box-shadow:0 0 0 3px #ffffff, 0 6px 18px rgba(14,14,16,.14)}
 .app-cloud .appic+.appic{margin-left:-10px}
+
+/* ---- SME underwriting: recorder panel, credit-memo marks ---- */
+.rec-panel{border-radius:20px;background:#101014;color:#fff;padding:18px;min-height:250px;
+  display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.12)}
+.rec-dot{width:10px;height:10px;border-radius:50%;background:#666;display:inline-block}
+.rec-dot.on{background:#ff4d4d;animation:recPulse 1s ease-in-out infinite}
+@keyframes recPulse{0%,100%{opacity:1}50%{opacity:.35}}
+.memo-i{width:26px;height:26px;min-width:26px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.memo-i.ok{background:#e4f4ec;color:#1f8a5b}
+.memo-i.warn{background:#faf0dc;color:#c8841f}
