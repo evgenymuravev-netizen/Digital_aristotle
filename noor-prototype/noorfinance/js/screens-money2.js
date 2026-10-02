@@ -660,16 +660,6 @@ SCREENS.goals = () => `
       <div><div class="row-t">Agent wins auto-invest here</div><div class="row-d" style="white-space:normal">+AED ${fm(GOAL_STATS.agentRouted,0)} this quarter → Hajj first · Mudarabah profit while it waits · best practice, on by default</div></div></div>
       <button class="switch lime on" onclick="event.stopPropagation();this.classList.toggle('on')"></button>
     </div>
-    <div class="card mt12 flex between tap" onclick="A.go('rules')">
-      <div class="flex" style="gap:12px">${aiIc(15)}
-      <div><div class="row-t">Agent wins auto-invest here</div><div class="row-d" style="white-space:normal">+AED ${fm(GOAL_STATS.agentRouted,0)} this quarter → Hajj first · Mudarabah profit while it waits · best practice, on by default</div></div></div>
-      <button class="switch lime on" onclick="event.stopPropagation();this.classList.toggle('on')"></button>
-    </div>
-    <div class="card mt12 flex between tap" onclick="A.go('rules')">
-      <div class="flex" style="gap:12px">${aiIc(15)}
-      <div><div class="row-t">Agent wins auto-invest here</div><div class="row-d" style="white-space:normal">+AED ${fm(GOAL_STATS.agentRouted,0)} this quarter → Hajj first · Mudarabah profit while it waits · best practice, on by default</div></div></div>
-      <button class="switch lime on" onclick="event.stopPropagation();this.classList.toggle('on')"></button>
-    </div>
     <div class="card mt16 flex between tap" onclick="A.go('roundups')">
       <div class="flex" style="gap:12px"><span class="bigico" style="background:rgba(200,132,31,.16);color:var(--gold)">${ic('coins',22)}</span>
       <div><div class="row-t">Round-ups → Gold</div><div class="row-d">Every spend rounds to AED 5 · ×2 boost on</div></div></div>
