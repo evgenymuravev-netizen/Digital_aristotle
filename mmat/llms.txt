@@ -1,0 +1,15 @@
+# Mental Agility Test (MMAT) Practice
+
+> Free and paid practice for the McQuaig-style Mental Agility Test (MMAT): a free
+> 5-minute test plus ten timed 15-minute forms of verbal, numerical and logical
+> reasoning, each with worked answers, an adaptive weak-areas round, and an
+> original strategy guide. Independent and unaffiliated with The McQuaig Institute.
+
+## Key pages
+- [Practice test](./index.html): Free 5-minute test and ten full 15-minute forms; interleaved questions, timed, with instant scoring and worked answers.
+- [Strategy guide](./guide.html): How to pass the MMAT — overall timing strategy plus step-by-step tactics for synonyms, antonyms, analogies, odd-one-out, number series, arithmetic and word problems, letter series, syllogisms, and coding/directions/relations. Includes an FAQ.
+
+## Key facts
+- Format: the MMAT is commonly described as ~50 questions in 15 minutes (~18 seconds each); no calculator; it measures speed and accuracy.
+- Categories: verbal, numerical, and logical reasoning.
+- Free option: a 5-minute, 12-question taster with no sign-up.

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tradepay — The settlement & credit rail for GCC traditional trade</title>
+<meta name="description" content="Tradepay settles the flow between FMCG distributors and the Kingdom's corner-store merchants — and finances every order riding on it. Murabaha-native working capital, repayment captured at the source of cash.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23FFC53D'/%3E%3Crect x='7' y='7' width='10' height='10' fill='%230a0a0c'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="mark"></span><b>TRADEPAY</b><span>— RAIL · ENGINE · ARM</span></a>
+    <nav class="nav" id="nav">
+      <a href="#problem">Problem</a>
+      <a href="#product">Product</a>
+      <a href="#evolution">2026 → 2031</a>
+      <a href="#mobile">Mobile</a>
+      <a href="#integrations">Integrations</a>
+      <a href="strategy/">Strategy brief</a>
+    </nav>
+    <div style="display:flex;gap:10px">
+      <button class="btn menu-btn" id="menuBtn">MENU</button>
+      <a class="btn primary" href="prototype/">Launch prototype ▸</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">B2B Payments + Embedded Credit · KSA Traditional Trade</div>
+      <h1>Credit that rides<br>the <em>rail</em>.</h1>
+      <p class="lead" style="margin-top:26px">Tradepay is the settlement layer between FMCG distributors and the Kingdom's 40,000+ baqala merchants — and the working-capital line financing every order that rides on it. Repayment is captured at the source of cash, not chased after it. Murabaha-native. No late fees. Underwritten on ZATCA, SIMAH and the rail's own flow.</p>
+      <div class="hero-ctas">
+        <a class="btn primary" href="prototype/">Open the clickable prototype ▸</a>
+        <a class="btn" href="#evolution">How it evolves to 2031</a>
+      </div>
+      <div class="hero-meta">
+        <span><b>SAR 50–500K</b>merchant monthly working capital</span>
+        <span><b>&lt;300ms</b>credit decision, inside the order</span>
+        <span><b>One due date</b>netted across all suppliers</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="float-card fc1">REPAYMENT CAPTURED ON-RAIL<div class="big"><em>63%</em> → target ≥60%</div></div>
+      <div class="float-card fc2">DISTRIBUTOR SETTLEMENT<div class="big">T+1 <em>on-rail</em></div><div style="margin-top:4px" class="ok">✓ SAR 312,400 settled today</div></div>
+      <div class="float-card fc3">APPROVAL UPLIFT @ CONSTANT LOSS<div class="big"><em>+15pp</em> audited</div></div>
+      <div class="phone-mock">
+        <div class="scr">
+          <div class="status"><span>9:41</span><span>﷽&nbsp;&nbsp;5G ▮▮▮</span></div>
+          <div class="apphead"><span class="t">Marhaba, Abu Khalid</span><span class="ar">بقالة النور · Al Noor Grocery</span></div>
+          <div class="limit-card">
+            <div class="lbl">حد الشراء · Buying limit</div>
+            <div class="amt">SAR <span>32,000</span></div>
+            <div class="limit-bar"><i></i></div>
+            <div class="limit-foot"><span>USED 14,200</span><span>FREE 17,800</span></div>
+          </div>
+          <div class="due-row"><div><div class="v">SAR 4,950 due Thu</div><div class="d">5 suppliers · one date · no late fees</div></div><div style="font-size:18px">📦</div></div>
+          <div class="due-row"><div><div class="v">+SAR 4,000 limit unlocked</div><div class="d">22 on-time cycles · reported to SIMAH</div></div><div style="font-size:18px">📈</div></div>
+          <div class="paybtn">Repay early → SAR 22 rebate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats-strip rv">
+      <div><div class="num">&lt;<em>3%</em></div><div class="lbl">Square's aggregate loss on $22B+ of flow-repaid lending — the mechanic Tradepay localizes</div></div>
+      <div><div class="num"><em>99%</em></div><div class="lbl">MaxAB-Wasoko repayment on embedded merchant credit, in markets harder than KSA</div></div>
+      <div><div class="num"><em>+15pp</em></div><div class="lbl">Target approval uplift at a partner's own loss rate — measured on their book, or they don't pay</div></div>
+      <div><div class="num"><em>3</em> chapters</div><div class="lbl">Rail → Engine → Arm: one company, sequenced 2026 → 2031</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section id="problem">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">01 / The Problem</div>
+      <h2>In cash-dominant trade, collections is the <em>boss battle</em>.</h2>
+      <p class="sub">Saudi traditional trade runs on cash, trust and the rep's notebook. Merchants are thin-file to banks, distributors carry informal credit they can't price, and every lender who bolted credit onto someone else's transaction has had to chase repayment after the fact — the loss driver that kills books in this segment.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card rv"><div class="card-num">FOR THE MERCHANT</div><h3>Invisible to banks, capped by cash</h3><p>A shop turning SAR 50–500K a month has no formal credit history. Stock-ups for Ramadan are funded from the till or not at all. The cost isn't interest — it's the empty shelf.</p></div>
+      <div class="card rv"><div class="card-num">FOR THE DISTRIBUTOR</div><h3>Credit desk by intuition</h3><p>Distributors already extend informal terms — underwritten by a rep's memory, collected on the route, written off quietly. Building an in-house financing arm takes 18–24 months and still doesn't solve collections.</p></div>
+      <div class="card rv"><div class="card-num">FOR THE LENDER</div><h3>Detached credit dies chasing cash</h3><p>Capiter blitz-scaled to 50,000 merchants and collapsed in 2022. Losses lag originations by 6–12 months; credit that doesn't own the repayment flow learns this the expensive way.</p></div>
+    </div>
+    <div class="note rv"><b>The structural answer:</b> don't chase the cash — own the rail it moves on. When repayment is a ledger event on a settlement rail you operate, collections stops being a department and becomes a property of the system.</div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT / CHAPTERS ============ -->
+<section id="product">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">02 / The Product</div>
+      <h2>One company, three <em>chapters</em>.</h2>
+      <p class="sub">Own the flow. Out-underwrite everyone. Then sell the machine. Each chapter manufactures the asset the next one needs — which is why the order is the strategy.</p>
+    </div>
+    <div class="chapters">
+      <div class="chapter rv">
+        <span class="yrs">CHAPTER 1 · 2026 — Y1</span>
+        <h3>The Rail</h3>
+        <p>A settlement rail between anchor distributors and their merchants. Orders are financed on the rail; repayment is captured at the source via sarie standing transfers, wallet auto-debit or rep cash-in — netted across suppliers into one due date. Murabaha-native, no late fees, rebates for early settlement.</p>
+        <p><b style="color:var(--ink)">Who pays:</b> the distributor is settled T+1 and carries zero credit risk; Tradepay earns the financing margin on flow it can actually collect.</p>
+        <div class="who"><b>SURFACES</b> — rep tablet SDK · distributor console · WhatsApp · assisted onboarding</div>
+        <a class="go" href="prototype/#/rail/merchant/onboard">Try the 2026 product ▸</a>
+      </div>
+      <div class="chapter rv">
+        <span class="yrs">CHAPTER 2 · 2027 — 28</span>
+        <h3>The Engine</h3>
+        <p>The rail's own settlement truth + ZATCA e-invoicing + SIMAH + graph signals feed an underwriting engine run on one frontier: maximum approvals at a constant loss budget. The commercial weapon is provable — “+15pp approvals at your loss rate, measured on your book, or you don't pay.”</p>
+        <p><b style="color:var(--ink)">Who pays:</b> every channel that sells to merchants — distributors, marketplaces, even rival lenders — pays for measurable uplift.</p>
+        <div class="who"><b>SURFACES</b> — merchant app · marketplace checkout widget · engine API · risk cockpit</div>
+        <a class="go" href="prototype/#/engine/merchant/home">Try the 2027–28 product ▸</a>
+      </div>
+      <div class="chapter rv">
+        <span class="yrs">CHAPTER 3 · 2029 — 31</span>
+        <h3>The Arm</h3>
+        <p>The proven stack — rail, engine, Shariah governance, capital access — white-labeled, so distributors and marketplaces launch their own branded financing arms on Tradepay in six weeks. The named competitive threat (in-house distributor arms) becomes the customer base.</p>
+        <p><b style="color:var(--ink)">Who pays:</b> Arm tenants pay platform + per-decision fees; the securitized book recycles capital; data products monetize at density.</p>
+        <div class="who"><b>SURFACES</b> — program launcher · tenant portfolio console · funder portal · FMCG intelligence</div>
+        <a class="go" href="prototype/#/arm/distributor/launcher">Try the 2029–31 product ▸</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">03 / How It Works</div>
+      <h2>Two sides of one <em>flow</em>.</h2>
+    </div>
+    <div class="jtabs rv">
+      <button class="on" data-j="m">For merchants</button>
+      <button data-j="d">For distributors</button>
+    </div>
+    <div class="jpanel on" data-jp="m">
+      <div class="steps">
+        <div class="step rv"><div class="n">1</div><h3>Onboard in one visit</h3><p>The rep opens it on a normal route stop: Nafath identity, CR photo, PDPL consent and one-page Murabaha terms — in Arabic or Urdu. The limit goes live before the rep leaves.</p></div>
+        <div class="step rv"><div class="n">2</div><h3>Approve inside the order</h3><p>Credit decided in &lt;300ms at the rep's tablet or any checkout. Partial approvals rescue the basket: “SAR 9,000 on your line, SAR 3,400 cash.” Cost is a flat fee in riyals.</p></div>
+        <div class="step rv"><div class="n">3</div><h3>One due date, met where cash moves</h3><p>Obligations across all suppliers net into one weekly schedule — collected by sarie, auto-debit or rep cash-in, Ramadan-aware. No late fees; early settlement earns a rebate.</p></div>
+        <div class="step rv"><div class="n">4</div><h3>Repaying builds the asset</h3><p>Every on-time cycle visibly grows the limit and writes to SIMAH — the merchant's first bureau-grade record, portable across every supplier on the rail.</p></div>
+      </div>
+    </div>
+    <div class="jpanel" data-jp="d">
+      <div class="steps">
+        <div class="step rv"><div class="n">1</div><h3>Get settled, not exposed</h3><p>Financed orders settle to the distributor T+1 on-rail. Tradepay carries the credit risk; the distributor's DSO collapses and the route stops being a collections agency.</p></div>
+        <div class="step rv"><div class="n">2</div><h3>Sell more of your base</h3><p>The engine approves measurably more of your merchants than your own desk — tested on your historical book, audited, or you don't pay.</p></div>
+        <div class="step rv"><div class="n">3</div><h3>Run AR on the console</h3><p>Free operational software: collections workflow, ZATCA-ready invoicing, route and SKU uplift analytics — the distributor's daily screen, which happens to deepen the rail.</p></div>
+        <div class="step rv"><div class="n">4</div><h3>Launch your own arm — on us</h3><p>From 2029: your brand, our rail, engine, Shariah governance and funding. Live in six weeks instead of a 24-month build.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EVOLUTION ============ -->
+<section id="evolution">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">04 / 2026 → 2031</div>
+      <h2>The product evolves in the only order that <em>compounds</em>.</h2>
+      <p class="sub">This is not a feature roadmap — it's a dependency chain. Each chapter manufactures the asset the next one needs, and nothing ships ahead of its evidence. Scrub the years:</p>
+    </div>
+
+    <div class="chain rv">
+      <span>OWN THE FLOW</span><b>→</b>
+      <span>COLLECTIONS PROOF</span><b>→</b>
+      <span>PROPRIETARY DATA</span><b>→</b>
+      <span>ENGINE EDGE</span><b>→</b>
+      <span>FUNDED TRACK RECORD</span><b>→</b>
+      <span>RENTABLE MACHINE</span>
+    </div>
+
+    <div class="tl-scrub rv" id="evoTabs">
+      <button class="on" data-evo="e1"><span class="y">2026</span><span class="c">CH.1 — The Rail</span></button>
+      <button data-evo="e2"><span class="y">2027–28</span><span class="c">CH.2 — The Engine</span></button>
+      <button data-evo="e3"><span class="y">2029–31</span><span class="c">CH.3 — The Arm</span></button>
+    </div>
+
+    <div class="evo-panel on" data-evop="e1">
+      <div>
+        <h3>2026 — Prove the rail in one <em>city</em></h3>
+        <div class="why">
+          <p><b style="color:var(--ink)">What ships:</b> settlement rail MVP with two anchor distributors; rep-assisted merchant onboarding (Nafath + PDPL + Murabaha one-pager); financed orders with partial approvals; repayment wallet (sarie / auto-debit / rep cash-in); distributor console with AR &amp; collections workflow; WhatsApp nudges.</p>
+          <p><b style="color:var(--ink)">Why this first:</b> collections is the binding constraint of the whole category — not demand, not data, not capital. Square lent $22B+ at &lt;3% loss only because repayment rides its own rail; Capiter died chasing cash it didn't control. Until repayment capture is proven, every later product is a liability multiplier. The rail also quietly starts three clocks: the data moat, the loan tape, and the distributor relationship the Arm will later monetize.</p>
+          <p><b style="color:var(--ink)">Deliberately NOT built yet:</b> a merchant self-serve app (acquisition stays channel-led until trust exists), a second city (the Capiter rule), and any white-label offer (nobody rents an unproven machine).</p>
+        </div>
+        <a class="btn evo-cta" href="prototype/#/rail/merchant/onboard">Walk the 2026 product ▸</a>
+      </div>
+      <div class="gate">
+        <div class="glbl">EXIT CRITERIA — UNLOCKS CHAPTER 2</div>
+        <ul>
+          <li>≥60% of anchor-merchant repayment volume captured on-rail</li>
+          <li>DPD materially better than the distributors' field baseline</li>
+          <li>Audited approval@loss uplift vs one anchor's historical book</li>
+          <li>Loan tape institutional-grade from first origination</li>
+        </ul>
+        <p style="font-size:11.5px;margin-top:14px" class="mono">// No second city, no app, no engine sales until these hold.</p>
+      </div>
+    </div>
+
+    <div class="evo-panel" data-evop="e2">
+      <div>
+        <h3>2027–28 — Compound the engine, widen the <em>rail</em></h3>
+        <div class="why">
+          <p><b style="color:var(--ink)">What ships:</b> merchant app (limits, one-tap repay, portable record); multi-distributor netting — one limit, five suppliers, one due date; engine analytics for partners with the audited “+15pp at your loss” test; marketplace checkout widget; first bank warehouse facility; engine-as-a-service pilot on an external book.</p>
+          <p><b style="color:var(--ink)">Why now and not before:</b> the rail's Year-1 exhaust — settlement truth, repayment behavior, ZATCA flows — is the feature set no off-rail lender can copy. The cheapest growth is not more cities; it's approving more of the same flow at the same loss. Approval-at-constant-loss becomes a provable commercial weapon that wins every distributor and marketplace conversation, and a clean, seasoned tape makes banks fund the book (the Lendo playbook), so capital stops being the ceiling.</p>
+          <p><b style="color:var(--ink)">Why the app arrives second:</b> trust precedes surface. Merchants meet Tradepay inside a relationship they already trust (the rep); the app is the retention and transparency layer once they're transacting — not an acquisition bet against the channel.</p>
+        </div>
+        <a class="btn evo-cta" href="prototype/#/engine/merchant/home">Walk the 2027–28 product ▸</a>
+      </div>
+      <div class="gate">
+        <div class="glbl">EXIT CRITERIA — UNLOCKS CHAPTER 3</div>
+        <ul>
+          <li>Two years of seasoned vintages inside the loss budget</li>
+          <li>Warehouse facility drawn; covenant reporting green</li>
+          <li>External-book pilot: uplift verified on a book we don't own</li>
+          <li>Multi-distributor netting live (the cross-supplier moat)</li>
+        </ul>
+        <p style="font-size:11.5px;margin-top:14px" class="mono">// The Arm is only sellable once these receipts exist.</p>
+      </div>
+    </div>
+
+    <div class="evo-panel" data-evop="e3">
+      <div>
+        <h3>2029–31 — Open the <em>machine</em></h3>
+        <div class="why">
+          <p><b style="color:var(--ink)">What ships:</b> the Infrastructure Arm — a white-label program console where a distributor launches its branded financing arm on Tradepay's rail, engine, Shariah governance and capital access in six weeks; Murabaha securitization of seasoned receivables; UAE entry partner-led, then Egypt; aggregated, PDPL-clean trade intelligence for FMCG brands.</p>
+          <p><b style="color:var(--ink)">Why last — and why inevitable:</b> distributor in-house arms get built either way; the only question is on whose machine. By 2029 Tradepay has what no in-house build can match: two years of audited collections, a measured approval edge, and funded vintages. Tenants get decisions, rails and governance — never features, weights or pooled cohort data — so every tenant widens the engine's lead instead of arming a rival. Infrastructure revenue is additive: it monetizes flow Tradepay would never originate directly.</p>
+          <p><b style="color:var(--ink)">Expansion discipline:</b> one market's full loop proven before the next opens. The country-launch kit makes UAE a 1–2 quarter deployment; the gates make it safe. Expansion is a consequence of proof, never a substitute for it.</p>
+        </div>
+        <a class="btn evo-cta" href="prototype/#/arm/distributor/launcher">Walk the 2029–31 product ▸</a>
+      </div>
+      <div class="gate">
+        <div class="glbl">ENDGAME METRICS</div>
+        <ul>
+          <li class="done">%GMV of partner flow settled on-rail — the position</li>
+          <li class="done">approval@loss — the economics</li>
+          <li>Arm programs live — threats converted to tenants</li>
+          <li>Blended cost of funds falling as securitization lands</li>
+        </ul>
+        <p style="font-size:11.5px;margin-top:14px" class="mono">// The two north stars contain the whole strategy: own the flow × out-underwrite the field.</p>
+      </div>
+    </div>
+
+    <div class="note rv"><b>The rationale in one line:</b> the Rail is the wedge because collections decides survival; the Engine is the economics because the rail's data makes approval@loss provable; the Arm is the endgame because a machine with receipts is worth renting — and the threats become the TAM. Sequence is the strategy.</div>
+  </div>
+</section>
+
+<!-- ============ EVIDENCE ============ -->
+<section id="evidence">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">05 / Why Believe It</div>
+      <h2>The playbook already won on four <em>continents</em>.</h2>
+    </div>
+    <div class="quotes">
+      <div class="q rv"><div class="big">$<em>22B+</em></div><div class="src">Square Loans — USA</div><p>Flow-repaid merchant lending at &lt;3% aggregate loss. Repayment as a % of daily sales through an owned rail — the mechanic Tradepay localizes to distributor trade.</p></div>
+      <div class="q rv"><div class="big"><em>13yrs</em></div><div class="src">Tienda Pago — LatAm</div><p>The exact FMCG-distributor model: weekly inventory credit through the distribution channel, since 2013. The reference class for rep-led activation.</p></div>
+      <div class="q rv"><div class="big"><em>99%</em></div><div class="src">MaxAB-Wasoko — Africa</div><p>Embedded merchant credit repaying at 99%, financing 9% of platform sales — proof the finance layer is where B2B trade margin lives.</p></div>
+      <div class="q rv"><div class="big">SAR <em>2.4B</em></div><div class="src">Tamara / Lendo — KSA</div><p>Saudi capital markets already fund fintech receivables at scale (Tamara's $2.4B facility; Lendo's $690M warehouse). The funding path for the book exists.</p></div>
+    </div>
+    <div class="note rv"><b>And the anti-case:</b> Capiter (Egypt) blitz-scaled credit it couldn't collect and collapsed in 2022. Tradepay's gates — vintage exposure caps, circuit breakers, no second city before exit criteria — are that lesson, installed in peacetime.</div>
+  </div>
+</section>
+
+<!-- ============ MOBILE ============ -->
+<section id="mobile">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">06 / Mobile</div>
+      <h2>Three phones, one <em>rail</em>.</h2>
+      <p class="sub">Traditional trade is run from the pocket, not the desk. Every surface is Arabic-first with Urdu and English as first-class citizens, WhatsApp-nudged, and tolerant of patchy connectivity.</p>
+    </div>
+    <div class="phones">
+      <div class="phone-col rv">
+        <div class="phone-mock"><div class="scr">
+          <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+          <div class="apphead"><span class="t">Rep · مندوب</span><span class="ar">Route 12 — Al Olaya</span></div>
+          <div class="due-row"><div><div class="v">Al Noor Grocery</div><div class="d">Order SAR 12,400 · limit free 17,800</div></div><div class="ok" style="font-size:11px;font-family:'JetBrains Mono',monospace">✓&nbsp;APPROVED</div></div>
+          <div class="due-row"><div><div class="v">Basmah Mini-market</div><div class="d">Onboard: Nafath ✓ · consent ✓</div></div><div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:#8a6d1f">LIMIT LIVE</div></div>
+          <div class="due-row"><div><div class="v">Cash-in collected</div><div class="d">SAR 3,150 · receipt sent on WhatsApp</div></div><div style="font-size:18px">🧾</div></div>
+          <div class="paybtn">2026 · Rep app — the rail's field surface</div>
+        </div></div>
+        <span class="yrs">2026 · CHAPTER 1</span>
+        <h3>Rep app & tablet SDK</h3>
+        <p>Onboarding, in-order approvals and cash-in receipts on the route. Distribution rides the distributor's existing field force — zero new behavior asked of the merchant.</p>
+      </div>
+      <div class="phone-col rv">
+        <div class="phone-mock"><div class="scr">
+          <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+          <div class="apphead"><span class="t">Tradepay</span><span class="ar">تريدباي</span></div>
+          <div class="limit-card"><div class="lbl">حد الشراء · Buying limit</div><div class="amt">SAR <span>32,000</span></div><div class="limit-bar"><i></i></div><div class="limit-foot"><span>USED 14,200</span><span>FREE 17,800</span></div></div>
+          <div class="due-row"><div><div class="v">SAR 4,950 · Thursday</div><div class="d">5 suppliers, netted to one date</div></div><div style="font-size:18px">🗓️</div></div>
+          <div class="paybtn">One-tap repay · سداد</div>
+        </div></div>
+        <span class="yrs">2027–28 · CHAPTER 2</span>
+        <h3>Merchant app</h3>
+        <p>Arrives after trust: limit, dues, one-tap repayment, restructuring help, and the merchant's growing, SIMAH-reported record — the retention surface, not the acquisition bet.</p>
+      </div>
+      <div class="phone-col rv">
+        <div class="phone-mock"><div class="scr">
+          <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+          <div class="apphead"><span class="t" style="color:#155e46">Watania Capital</span><span class="ar">powered by Tradepay</span></div>
+          <div class="limit-card" style="background:#11352a"><div class="lbl">Buying limit · حد الشراء</div><div class="amt">SAR <span style="color:#7ee787">45,000</span></div><div class="limit-bar"><i style="background:#7ee787;width:30%"></i></div><div class="limit-foot"><span>USED 13,400</span><span>FREE 31,600</span></div></div>
+          <div class="due-row"><div><div class="v">Same record, new brand</div><div class="d">History portable across the rail</div></div><div style="font-size:18px">🔁</div></div>
+          <div class="paybtn" style="background:#155e46;color:#eafff3">2029+ · White-label tenant app</div>
+        </div></div>
+        <span class="yrs">2029–31 · CHAPTER 3</span>
+        <h3>White-label tenant apps</h3>
+        <p>Arm tenants ship their own branded merchant apps on the same stack. The merchant's record stays portable; the engine keeps learning under every brand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTEGRATIONS ============ -->
+<section id="integrations">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">07 / Integrations & Distribution</div>
+      <h2>Every partner surface is a <em>distribution channel</em>.</h2>
+      <p class="sub">Tradepay doesn't fight for its own surface — it lives inside the surfaces that already sell to merchants. Each integration below is simultaneously plumbing and go-to-market.</p>
+    </div>
+
+    <div class="int-group rv">
+      <h3>National infrastructure — the KSA edge stack</h3>
+      <div class="int-grid">
+        <div class="int"><div class="nm"><span class="dot"></span>ZATCA e-invoicing</div><p>Mandated structured sales data as underwriting feedstock — regulation as the engine's richest alt-data feed.</p><span class="pill">DATA IN</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>sarie instant payments</div><p>The settlement spine: T+1 distributor payouts, standing-order repayment capture at the merchant's bank.</p><span class="pill">RAIL</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>Nafath identity</div><p>One-visit onboarding with national digital identity; no branch, no queue, no paperwork theater.</p><span class="pill">ONBOARDING</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>SIMAH bureau</div><p>Read for underwriting, write for the merchant: every on-time cycle builds their first bureau-grade record.</p><span class="pill">DATA IN/OUT</span></div>
+      </div>
+    </div>
+
+    <div class="int-group rv">
+      <h3>Channel partners — where credit is distributed</h3>
+      <div class="int-grid">
+        <div class="int"><div class="nm"><span class="dot"></span>Distributor ERP / DMS</div><p>Connectors for SAP B1, Oracle, Odoo and van-sales systems: financed orders, settlement and AR sync into the tools distributors already run.</p><span class="pill">CH.1 · 2026</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>Rep tablet SDK</div><p>A drop-in decision widget inside the distributor's own order app — approve / partial / decline in &lt;300ms on the route.</p><span class="pill">CH.1 · 2026</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>WhatsApp Business</div><p>Reminders, statements, receipts and restructuring offers in the channel merchants actually read — Arabic/Urdu/English.</p><span class="pill">CH.1 · 2026</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>Marketplace checkout</div><p>“Pay later with Tradepay” inside Sary/Retailo-class B2B checkouts: instant decisions under any surface, without competing for its GMV.</p><span class="pill">CH.2 · 2027</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>Accounting & POS</div><p>Qoyod/Wafeq-class sync so the merchant's books and the rail agree — and POS flows sharpen limits.</p><span class="pill">CH.2 · 2027</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>Engine API</div><p>Decisions-as-a-service for external books: the audited “+15pp at your loss rate” test, productized.</p><span class="pill">CH.2 · 2028</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>White-label Arm</div><p>Program console + APIs for tenants to run branded financing arms: rail, engine, Shariah governance, capital — live in six weeks.</p><span class="pill">CH.3 · 2029</span></div>
+        <div class="int"><div class="nm"><span class="dot"></span>Bank funder portal</div><p>Warehouse lines and Murabaha securitization reporting: covenant dashboards, tape access, vintage analytics for funding partners.</p><span class="pill">CH.2–3</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2 rv">
+      <div>
+        <h3 style="margin-bottom:12px">One API, every surface</h3>
+        <p style="font-size:13.5px;margin-bottom:16px">The same decision endpoint powers the rep tablet, the marketplace widget, the merchant app and every future Arm tenant. Integrate once; the engine compounds underneath.</p>
+        <ul class="clean">
+          <li><b>Idempotent decisions</b> — approve / partial / decline with reason codes and remediation paths in three languages.</li>
+          <li><b>Webhooks</b> — settlement, repayment, limit-change and early-warning events for partner systems.</li>
+          <li><b>Sandbox-first</b> — partners certify against synthetic merchants before touching the rail.</li>
+        </ul>
+      </div>
+      <div class="codebox"><span class="c">// POST /v1/decisions — in-order credit decision</span><br>{<br>&nbsp;&nbsp;<span class="k">"merchant_id"</span>: <span class="s">"mrc_8H2KD"</span>,<br>&nbsp;&nbsp;<span class="k">"channel"</span>: <span class="s">"rep_tablet"</span>,&nbsp;<span class="c">// marketplace | app | arm_tenant</span><br>&nbsp;&nbsp;<span class="k">"basket"</span>: { <span class="k">"total"</span>: 12400, <span class="k">"currency"</span>: <span class="s">"SAR"</span>, <span class="k">"lines"</span>: 17 },<br>&nbsp;&nbsp;<span class="k">"distributor_id"</span>: <span class="s">"dst_ALNR"</span><br>}<br><br><span class="c">// 200 OK — 212ms</span><br>{<br>&nbsp;&nbsp;<span class="k">"decision"</span>: <span class="s">"partial"</span>,<br>&nbsp;&nbsp;<span class="k">"approved_amount"</span>: 9000,<br>&nbsp;&nbsp;<span class="k">"fee"</span>: { <span class="k">"type"</span>: <span class="s">"murabaha_flat"</span>, <span class="k">"amount"</span>: 145 },<br>&nbsp;&nbsp;<span class="k">"due_date"</span>: <span class="s">"2026-03-12"</span>,&nbsp;<span class="c">// netted, Friday-aware</span><br>&nbsp;&nbsp;<span class="k">"headroom_hint"</span>: <span class="s">"SAR 4,200 frees after Thursday"</span><br>}</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST ============ -->
+<section id="trust">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">08 / Trust & Compliance</div>
+      <h2>Genuine structure is easy to be <em>transparent</em> about.</h2>
+    </div>
+    <div class="grid-4">
+      <div class="card rv"><div class="card-num">SHARIAH</div><h3>Murabaha-native</h3><p>Scholar-certified cost-plus structures, summarized on one page. No late fees to hide because there are none — lateness triggers help, early settlement earns rebates.</p></div>
+      <div class="card rv"><div class="card-num">REGULATORY</div><h3>SAMA-perimeter by design</h3><p>Examiner-ready governance from the first loan: model cards per version, full decision lineage, fairness testing, no protected proxies.</p></div>
+      <div class="card rv"><div class="card-num">DATA</div><h3>PDPL consent from day one</h3><p>Consent captured honestly at onboarding; k-threshold anonymization built into the platform. Aggregated insights never identify a shop.</p></div>
+      <div class="card rv"><div class="card-num">RISK</div><h3>Caps that own survival</h3><p>Vintage exposure caps, per-market circuit breakers and a Risk function with brake authority — installed before growth pressure exists.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRATEGY CTA ============ -->
+<section id="strategy">
+  <div class="wrap" style="display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center" id="stratGrid">
+    <div class="rv">
+      <div class="eyebrow">09 / Go Deeper</div>
+      <h2>Read the strategy. Click the <em>future</em>.</h2>
+      <p class="sub">The full 30-slide CPO strategy brief — the bake-off of ten strategies, the named-threat analysis, the metrics architecture and the steel-manned objections — ships with this site. The prototype is that strategy, rendered clickable across five years.</p>
+      <div class="hero-ctas">
+        <a class="btn primary" href="prototype/">Launch the prototype ▸</a>
+        <a class="btn" href="strategy/">Open the strategy brief</a>
+      </div>
+    </div>
+    <div class="card accent rv">
+      <div class="card-num">THE TWO NORTH STARS</div>
+      <div style="font-family:'Instrument Serif',serif;font-size:40px;line-height:1.1">%GMV<span style="color:var(--accent2)"> on-rail</span> × <span style="color:var(--accent2)">approval@loss</span></div>
+      <p style="margin-top:12px">Position × economics. Either alone can be gamed; together they describe a company that owns the flow and out-underwrites the field.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a class="brand" href="#top"><span class="mark"></span><b>TRADEPAY</b></a>
+      <p class="mono" style="margin-top:14px">Concept prototype for the Tradepay CPO case study (2026). Not an operating financial service; all figures are targets, public benchmarks or modeling assumptions from the strategy brief. Square, Shopify, Tienda Pago, MaxAB-Wasoko, Lendo, Tamara, Sary, Retailo and other names are referenced as public-market evidence, not partnerships.</p>
+    </div>
+    <div class="flinks">
+      <a href="prototype/">Prototype</a>
+      <a href="strategy/">Strategy brief</a>
+      <a href="#evolution">Roadmap</a>
+      <a href="#integrations">Integrations</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

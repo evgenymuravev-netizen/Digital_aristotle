@@ -1,0 +1,22 @@
+name = "contours-intake"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# 1) Создайте KV-неймспейс и вставьте его id ниже:
+#      npx wrangler kv namespace create RESPONSES
+[[kv_namespaces]]
+binding = "RESPONSES"
+id = "PASTE_KV_NAMESPACE_ID"
+
+[vars]
+# origin вашего GitHub Pages (для CORS). Замените, если домен другой.
+ALLOWED_ORIGIN = "https://evgenymuravev-netizen.github.io"
+MIN_N = "5"
+# ИИ-кодировка открытых ответов (работает при заданном ANTHROPIC_API_KEY):
+MODEL = "claude-opus-5"
+ORG_VALUES = "Скорость,Прозрачность,Ответственность"   # те же, что config.org.values
+AI_FALLBACK = "drop"   # drop = при сбое ИИ текст выбрасывается · raw = хранить текст
+
+# 2) Секреты — НЕ храните их в этом файле:
+#      npx wrangler secret put FAC_TOKEN
+#      npx wrangler secret put ANTHROPIC_API_KEY   # опционально, включает ИИ-кодировку

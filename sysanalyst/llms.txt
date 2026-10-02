@@ -1,0 +1,29 @@
+# System Analyst Assessment
+
+> A free, original, vendor-neutral practice test for systems / integration / technical
+> business analysts. Covers APIs & REST (including good-vs-bad design), protocols
+> (SOAP vs REST, gRPC, GraphQL, WebSockets), the OSI model & networking, RabbitMQ &
+> messaging, and databases (SQL/NoSQL, normalization, indexing, ACID, isolation, CAP).
+
+## What it is
+- A free full test: 20 questions across all five domains, timed to 15 minutes, no sign-up.
+- Ten more timed forms (15 questions each), graded easy → hard.
+- Worked answers with a deeper "why" that addresses the specific wrong choice.
+- An adaptive "personalized test" built from your weakest topics after three completed tests.
+- Runs entirely in the browser; results stay on the device.
+
+## Key pages
+- /index.html — the assessment (start the free test here)
+- /guide.html — study guide with 1-2-3 tactics per domain
+
+## Topics covered
+REST principles & maturity, HTTP methods/status codes, idempotency, versioning, pagination,
+API auth (OAuth/JWT), caching (ETag); SOAP/WSDL/WS-Security, gRPC/Protocol Buffers, GraphQL,
+WebSockets/SSE; OSI layers, TCP vs UDP, DNS, TLS/HTTPS, encapsulation, L4/L7 load balancing;
+RabbitMQ exchanges/bindings/acks/prefetch, dead-letter queues & TTL, delivery guarantees,
+Kafka vs RabbitMQ, async patterns (pub/sub, outbox, saga, idempotent consumers); SQL vs NoSQL,
+normalization, indexing, ACID, isolation levels, transactions, joins, keys, CAP & scaling.
+
+## Notes
+All questions are original and vendor-neutral. Product/technology names are referenced for
+description only. For self-assessment and interview preparation.

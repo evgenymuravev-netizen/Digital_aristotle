@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="For employers — paste a job description to rank candidates who passed the System Analyst Assessment by fit, and verify a candidate's certificate." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="noindex" />
+  <title>For employers — System Analyst Assessment</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A2%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="./index.html" aria-label="Back to the assessment">
+      <span class="brand-mark" aria-hidden="true">🏢</span>
+      <span class="brand-text"><strong id="e-brand">For employers</strong><small>System Analyst Assessment</small></span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="./index.html" id="e-nav-tests">← Tests</a>
+      <a href="./profile.html" id="e-nav-profile">Your profile</a>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <div class="bo-hero">
+      <p class="eyebrow" id="e-eyebrow">Employer back office</p>
+      <h1 id="e-h1">Find the analysts who fit your role</h1>
+      <p class="lede" id="e-lede">Paste a job description to rank candidates by fit for the domains it needs, then verify a candidate's certificate before you reach out.</p>
+    </div>
+
+    <div class="note" id="e-note" style="margin-bottom:18px"></div>
+
+    <div class="panel">
+      <h2 style="margin-top:0" id="e-jd-h">Match candidates to a job description</h2>
+      <p class="muted" id="e-jd-sub" style="margin-top:-.4em"></p>
+      <textarea class="code-input" id="jd" rows="5"></textarea>
+      <div class="cta-row" style="margin:12px 0 0">
+        <button class="btn btn-primary btn-sm" id="jd-go" type="button"></button>
+        <button class="btn btn-ghost btn-sm" id="jd-clear" type="button"></button>
+      </div>
+      <div id="jd-out"></div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top:0" id="e-v-h">Verify a certificate</h2>
+      <p class="muted" id="e-v-sub" style="margin-top:-.4em"></p>
+      <textarea class="cert-code" id="v-code" rows="3"></textarea>
+      <div class="cta-row" style="margin:12px 0 0"><button class="btn btn-primary btn-sm" id="verify" type="button"></button></div>
+      <div class="verify-out" id="v-out"></div>
+    </div>
+
+    <h2 class="section-title" id="e-dir-h" style="margin-top:34px">Candidate directory</h2>
+    <div class="filters">
+      <label class="field"><span id="e-f-min-l">Minimum overall score</span>
+        <select id="f-min"><option value="0">—</option><option value="70">70%+</option><option value="80" selected>80%+</option><option value="90">90%+</option></select>
+      </label>
+      <label class="field"><span id="e-f-dom-l">Strong in domain</span>
+        <select id="f-dom"><option value=""></option></select>
+      </label>
+      <label class="switch" style="margin-bottom:14px"><input type="checkbox" id="f-proc"> <span id="e-f-proc-l">Proctored only</span></label>
+    </div>
+    <div id="dir" class="cand-grid"></div>
+  </main>
+
+  <script src="./store.js"></script>
+  <script src="./match.js"></script>
+  <script>
+  (function () {
+    var S = window.SAA_STORE, M = window.SAA_MATCH;
+    var lang = "en"; try { lang = localStorage.getItem("saa:v1:lang") || "en"; } catch (e) {}
+    var ru = lang === "ru";
+    function L(en, rustr) { return ru ? rustr : en; }
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); };
+    if (ru) document.documentElement.setAttribute("lang", "ru");
+    var JD = null;   // active job-description analysis
+
+    // localize static text
+    var setT = function (id, en, rustr) { var e = document.getElementById(id); if (e) e.textContent = L(en, rustr); };
+    setT("e-brand", "For employers", "Работодателям");
+    setT("e-nav-tests", "← Tests", "← Тесты");
+    setT("e-nav-profile", "Your profile", "Ваш профиль");
+    setT("e-eyebrow", "Employer back office", "Кабинет работодателя");
+    setT("e-h1", "Find the analysts who fit your role", "Найдите аналитиков под вашу вакансию");
+    setT("e-lede", "Paste a job description to rank candidates by fit for the domains it needs, then verify a candidate's certificate before you reach out.", "Вставьте описание вакансии, чтобы ранжировать кандидатов по соответствию нужным доменам, и проверьте сертификат перед тем, как связаться.");
+    document.getElementById("e-note").innerHTML = "<b>" + L("Prototype directory.", "Прототип каталога.") + "</b> " + L("The candidates below are seeded demo data plus your own profile if you made it visible. A real, shared, consented directory needs the backend in ", "Кандидаты ниже — демо-данные плюс ваш профиль, если вы сделали его видимым. Настоящий общий каталог с согласием кандидатов требует бэкенда из ") + "<span class=\"mono\">BACKOFFICE.md</span>.";
+    setT("e-jd-h", "Match candidates to a job description", "Подбор кандидатов под вакансию");
+    setT("e-jd-sub", "Paste the job description — candidates are re-ranked by fit for the domains it needs.", "Вставьте описание вакансии — кандидаты будут отсортированы по соответствию нужным доменам.");
+    document.getElementById("jd").placeholder = L("Paste the job description text…", "Вставьте текст описания вакансии…");
+    document.getElementById("jd-go").textContent = L("Rank by fit", "Ранжировать по соответствию");
+    document.getElementById("jd-clear").textContent = L("Clear", "Сбросить");
+    setT("e-v-h", "Verify a certificate", "Проверить сертификат");
+    setT("e-v-sub", "Paste the code from a candidate's profile to check it hasn't been altered.", "Вставьте код из профиля кандидата, чтобы проверить, что он не был изменён.");
+    document.getElementById("v-code").placeholder = L("Paste a SAA certificate code…", "Вставьте код сертификата SAA…");
+    document.getElementById("verify").textContent = L("Verify", "Проверить");
+    setT("e-dir-h", "Candidate directory", "Каталог кандидатов");
+    setT("e-f-min-l", "Minimum overall score", "Минимальный общий балл");
+    setT("e-f-dom-l", "Strong in domain", "Силён в домене");
+    setT("e-f-proc-l", "Proctored only", "Только с прокторингом");
+    document.querySelector('#f-min option[value="0"]').textContent = L("Any", "Любой");
+
+    // populate domain filter
+    var dom = document.getElementById("f-dom");
+    dom.querySelector("option").textContent = L("Any domain", "Любой домен");
+    S.CAT_ORDER.forEach(function (c) { var o = document.createElement("option"); o.value = c; o.textContent = S.CATS[c].label; dom.appendChild(o); });
+
+    function miniBars(cats) {
+      return S.CAT_ORDER.map(function (c) {
+        var v = cats[c] == null ? 0 : cats[c];
+        return '<div class="mini-bar"><span>' + esc(S.CATS[c].label.split(" ")[0]) + '</span>' +
+          '<div class="track"><span style="width:' + v + '%;background:' + S.CATS[c].color + '"></span></div><span class="pc">' + v + '%</span></div>';
+      }).join("");
+    }
+    function tags(cd) {
+      var t = "", v = cd.ig || "na";
+      var vlab = v === "clean" ? L("clean", "чисто") : (v === "review" ? L("review", "проверить") : (v === "flagged" ? L("flagged", "отмечен") : L("no integrity data", "нет данных")));
+      t += '<span class="tag-badge ' + (v === "clean" || v === "review" || v === "flagged" ? v : "na") + '">' + vlab + '</span>';
+      if (cd.pr) t += '<span class="tag-badge proctored">' + L("proctored", "прокторинг") + '</span>';
+      if (cd.you) t += '<span class="tag-badge proctored">' + L("you", "вы") + '</span>';
+      return t;
+    }
+    function card(cd) {
+      var head = '<div class="cand-ov">' + (cd.ov || 0) + '%</div>';
+      if (JD && cd._match != null) head = '<div style="text-align:right"><div class="cand-ov" style="color:var(--good)">' + cd._match + '%</div><div class="cand-sub">' + L("fit", "соответствие") + '</div></div>';
+      return '<div class="cand-card' + (cd.you ? " you" : "") + '">' +
+        '<div class="cand-top"><div><div class="cand-name">' + esc(cd.name) + '</div><div class="cand-sub">@' + esc(cd.handle) + ' · ' + esc(cd.headline || "") + '</div></div>' + head + '</div>' +
+        '<div class="cand-tags">' + tags(cd) + '</div>' +
+        '<div class="mini-bars">' + miniBars(cd.cats) + '</div>' +
+        '<div class="cand-sub">' + L("Overall", "Общий") + ' ' + (cd.ov || 0) + '% · ' + L("best form", "лучший тест") + ' ' + (cd.best || 0) + '% · ' + (cd.done || 0) + ' ' + L("tests", "тестов") + ' · ID ' + esc(cd.id || "—") + '</div>' +
+        '</div>';
+    }
+
+    function render() {
+      var min = parseInt(document.getElementById("f-min").value, 10) || 0;
+      var d = document.getElementById("f-dom").value;
+      var proc = document.getElementById("f-proc").checked;
+      var list = S.directory().filter(function (c) {
+        if ((c.ov || 0) < min) return false;
+        if (proc && !c.pr) return false;
+        if (d && (c.cats[d] == null || c.cats[d] < 75)) return false;
+        return true;
+      });
+      if (JD) { list.forEach(function (c) { c._match = M.matchCandidate(c.cats, JD).match; }); list.sort(function (a, b) { return b._match - a._match; }); }
+      else list.sort(function (a, b) { return (b.ov || 0) - (a.ov || 0); });
+      var host = document.getElementById("dir");
+      host.innerHTML = list.length ? list.map(card).join("") : '<p class="muted">' + L("No candidates match these filters.", "Нет кандидатов под эти фильтры.") + '</p>';
+    }
+    ["f-min", "f-dom", "f-proc"].forEach(function (id) { document.getElementById(id).addEventListener("change", render); });
+
+    document.getElementById("jd-go").addEventListener("click", function () {
+      var txt = document.getElementById("jd").value || "";
+      var o = document.getElementById("jd-out");
+      if (!txt.trim()) { o.innerHTML = '<div class="note" style="border-left-color:var(--warn);margin-top:12px">' + L("Paste a job description first.", "Сначала вставьте описание вакансии.") + '</div>'; return; }
+      JD = M.analyze(txt);
+      var inc = JD.cats.map(function (c) { return JD.labels[c]; });
+      var exc = M.ORDER.filter(function (c) { return JD.cats.indexOf(c) < 0; }).map(function (c) { return JD.labels[c]; });
+      o.innerHTML = '<div class="note" style="margin-top:12px">' + L("Ranking by fit for: ", "Ранжируем по соответствию: ") + '<b>' + esc(inc.join(", ")) + '</b>' +
+        (exc.length ? '. ' + L("Not required: ", "Не требуется: ") + esc(exc.join(", ")) : '') + '</div>';
+      render();
+    });
+    document.getElementById("jd-clear").addEventListener("click", function () { JD = null; document.getElementById("jd").value = ""; document.getElementById("jd-out").innerHTML = ""; render(); });
+
+    document.getElementById("verify").addEventListener("click", function () {
+      var out = document.getElementById("v-out");
+      var res = S.verifyCert(document.getElementById("v-code").value);
+      if (!res.valid) { out.innerHTML = '<div class="note" style="border-left-color:var(--bad);margin-top:12px"><b style="color:var(--bad)">' + L("Invalid.", "Недействительно.") + '</b> ' + esc(res.error) + '</div>'; return; }
+      var p = res.payload, cats = p.cats || {};
+      var fit = JD ? (' · ' + L("fit ", "соответствие ") + M.matchCandidate(cats, JD).match + '%') : '';
+      out.innerHTML = '<div class="panel" style="margin-top:12px"><div class="integ-head"><h2 style="margin:0">' + esc(p.n) + (p.h ? ' <span class="cand-sub">@' + esc(p.h) + '</span>' : '') + '</h2>' +
+        '<span class="integ-verdict ' + (p.ig === "clean" || p.ig === "review" || p.ig === "flagged" ? p.ig : "na") + '">' + esc(p.ig === "n/a" ? L("no integrity data", "нет данных") : p.ig) + '</span></div>' +
+        '<p class="muted" style="margin:.2em 0 10px">' + esc(p.hl || "") + ' · ' + L("issued", "выдан") + ' ' + esc(p.iss) + ' · ID ' + esc(p.id) + (p.pr ? ' · ' + L("proctored", "прокторинг") : '') + fit + '</p>' +
+        '<div class="stat-tiles"><div class="stat-tile"><b>' + (p.ov == null ? "—" : p.ov + "%") + '</b><span>' + L("overall", "общий") + '</span></div><div class="stat-tile"><b>' + (p.best || 0) + '%</b><span>' + L("best form", "лучший тест") + '</span></div><div class="stat-tile"><b>' + (p.done || 0) + '</b><span>' + L("tests", "тестов") + '</span></div></div>' +
+        '<div class="mini-bars" style="margin-top:12px">' + miniBars(cats) + '</div>' +
+        '<p class="disclaimer">' + L("✓ Checksum matches — the code hasn't been altered. (Demo check; production certificates are server-signed.)", "✓ Контрольная сумма совпадает — код не изменён. (Демо-проверка; в продакшене сертификаты подписываются на сервере.)") + '</p></div>';
+    });
+
+    render();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+# System Analyst Assessment — crawling policy
+# Everything here is public and safe to index, including by AI answer engines.
+
+User-agent: *
+Allow: /
+
+# Explicitly welcome AI retrieval/answer bots (GEO)
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://evgenymuravev-netizen.github.io/Digital_aristotle/sysanalyst/sitemap.xml
