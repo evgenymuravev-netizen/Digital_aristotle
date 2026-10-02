@@ -33,7 +33,7 @@ window.merchIc = (name, fallbackHtml, s=44) => {
   const r = Math.round(s*0.32);
   if(BRAND_SVG[k]) return `<span class="bigico" style="width:${s}px;height:${s}px;min-width:${s}px;background:#fff;border:1px solid var(--line);border-radius:${r}px"><svg viewBox="0 0 24 24" width="${Math.round(s*0.5)}" height="${Math.round(s*0.5)}"><path fill="${BRAND_SVG[k].h}" d="${BRAND_SVG[k].p}"/></svg></span>`;
   const w = BRAND_WORD[k];
-  return `<span class="bigico" style="width:${s}px;height:${s}px;min-width:${s}px;background:#fff;border:1px solid var(--line);border-radius:${r}px;color:${w.h};font:700 ${Math.round(w.fs*s/44)}px Outfit,Inter,sans-serif;letter-spacing:-.02em">${w.t}</span>`;
+  return `<span class="bigico" style="width:${s}px;height:${s}px;min-width:${s}px;background:#fff;border:1px solid var(--line);border-radius:${r}px;color:${w.h};font:700 ${Math.round(w.fs*s/44)}px Onest,Inter,sans-serif;letter-spacing:-.02em">${w.t}</span>`;
 };
 /* canonical AI orb — same mark as the home-page fab, everywhere */
 window.aiIc = (s=20, extra='') => `<span class="ai-orb" style="width:${s+16}px;height:${s+16}px;min-width:${s+16}px;${extra}">${ic('spark',s)}</span>`;

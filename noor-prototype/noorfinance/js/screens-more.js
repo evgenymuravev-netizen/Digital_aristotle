@@ -63,7 +63,7 @@ SCREENS.vcard = () => `
   <div class="scr">
     ${hdr('Virtual card')}
     <div class="ccvisual" style="background:linear-gradient(130deg,#4a3a10,#1c1504 70%)">
-      <div class="flex between"><span style="font:600 17px Outfit,Inter,sans-serif;letter-spacing:-.02em;color:#fff">Noor</span><span class="cc-small">Virtual · disposable</span></div>
+      <div class="flex between"><span style="font:600 17px Onest,Inter,sans-serif;letter-spacing:-.02em;color:#fff">Noor</span><span class="cc-small">Virtual · disposable</span></div>
       <div class="cc-chip"></div>
       <div><div class="cc-num">5311 88•• •••• 4092</div>
       <div class="flex between mt8"><span class="cc-small">Exp 06/29 · CVV •••</span><span style="font:600 14px Inter,sans-serif">VISA</span></div></div>
@@ -1217,7 +1217,7 @@ SCREENS['ujrah-card'] = () => {
   <div class="scr">
     ${hdr('Noor Ujrah Card')}
     <div class="ccvisual" style="background:linear-gradient(135deg,#16181f,#0e0e10 60%,#23252e)">
-      <div class="flex between"><span style="font:600 17px Outfit,Inter,sans-serif;letter-spacing:-.02em">Noor <span style="opacity:.6">Ujrah</span></span><span class="cc-small">Revolving</span></div>
+      <div class="flex between"><span style="font:600 17px Onest,Inter,sans-serif;letter-spacing:-.02em">Noor <span style="opacity:.6">Ujrah</span></span><span class="cc-small">Revolving</span></div>
       <div>
         <div class="cc-num">•••• •••• •••• 7214</div>
         <div class="flex between mt8"><span class="cc-small">KHADEEJA ALMANSOORI</span><span class="cc-small tnum">Limit AED ${fm(UJRAH.tiers[tier][0],0)}</span></div>
@@ -1378,11 +1378,11 @@ SCREENS['sme-video'] = () => {
     ${stepper}
     <div class="rec-panel">
       <div class="flex between">
-        <span class="flex" style="gap:7px"><i class="rec-dot ${rec?'on':''}"></i><span style="font:600 12px Outfit,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
-        <span class="tnum" style="font:600 13px Outfit,Inter,sans-serif" id="smevTimer">0:00 / ~1:00</span>
+        <span class="flex" style="gap:7px"><i class="rec-dot ${rec?'on':''}"></i><span style="font:600 12px Onest,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
+        <span class="tnum" style="font:600 13px Onest,Inter,sans-serif" id="smevTimer">0:00 / ~1:00</span>
       </div>
-      <div style="text-align:center;opacity:.55;font:500 12.5px Outfit,Inter,sans-serif">Walk the camera through the real place</div>
-      <div style="font:400 11.5px/1.6 Outfit,Inter,sans-serif;opacity:.8">
+      <div style="text-align:center;opacity:.55;font:500 12.5px Onest,Inter,sans-serif">Walk the camera through the real place</div>
+      <div style="font:400 11.5px/1.6 Onest,Inter,sans-serif;opacity:.8">
         · The entrance and signage<br>· Stock room / treatment rooms / the floor<br>· The till, the POS terminal, the work in progress<br>· Your team at work
       </div>
     </div>
@@ -1448,7 +1448,7 @@ SCREENS['sme-video'] = () => {
     <div class="lbl mb8">Work through these — 12 questions</div>
     <div class="listcard" style="padding:6px 14px">
       ${SME_INT.questions.map((q,i)=>`<div class="row static" style="padding:9px 0">
-        <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:8px;font:600 11px Outfit,Inter,sans-serif">${i+1}</span>
+        <span class="bigico" style="width:26px;height:26px;min-width:26px;border-radius:8px;font:600 11px Onest,Inter,sans-serif">${i+1}</span>
         <div class="row-main"><div class="row-d" style="white-space:normal;color:var(--tx)">${q}</div></div></div>`).join('')}
     </div>
     ${up?`<div class="card mt12" style="border-color:rgba(31,138,91,.45)">
@@ -1457,10 +1457,10 @@ SCREENS['sme-video'] = () => {
     </div>`:`
     <div class="rec-panel mt12" style="min-height:150px">
       <div class="flex between">
-        <span class="flex" style="gap:7px"><i class="rec-dot ${rec?'on':''}"></i><span style="font:600 12px Outfit,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
-        <span class="tnum" style="font:600 13px Outfit,Inter,sans-serif" id="smevTimer">0:00 / 15:00 max</span>
+        <span class="flex" style="gap:7px"><i class="rec-dot ${rec?'on':''}"></i><span style="font:600 12px Onest,Inter,sans-serif">${rec?'REC':'ready'}</span></span>
+        <span class="tnum" style="font:600 13px Onest,Inter,sans-serif" id="smevTimer">0:00 / 15:00 max</span>
       </div>
-      <div style="text-align:center;opacity:.55;font:500 12.5px Outfit,Inter,sans-serif">Talk to the camera — like to a partner</div>
+      <div style="text-align:center;opacity:.55;font:500 12.5px Onest,Inter,sans-serif">Talk to the camera — like to a partner</div>
     </div>`}
     <div class="btnrow mt12">
       <button class="btn ghost" onclick="SMEVC.rec(7)">${rec?'Recording…':'Record in-app'}</button>
@@ -1513,7 +1513,7 @@ SCREENS['sme-video'] = () => {
       <div class="flex between"><span class="lbl">Credit memo · ${M.ref}</span><span class="micro">${M.date}</span></div>
       <div class="h2 mt8">${M.business}</div>
       <div class="flex mt12" style="gap:14px;align-items:center">
-        ${donut([{v:M.score,c:band},{v:M.max-M.score,c:'rgba(14,14,16,.08)'}],92,11,`<div style="font:600 22px Outfit,Inter,sans-serif" class="tnum">${M.score}</div><div class="micro">of ${M.max}</div>`)}
+        ${donut([{v:M.score,c:band},{v:M.max-M.score,c:'rgba(14,14,16,.08)'}],92,11,`<div style="font:600 22px Onest,Inter,sans-serif" class="tnum">${M.score}</div><div class="micro">of ${M.max}</div>`)}
         <div class="f1">
           <span class="tag grn">${M.band}</span>
           <div class="micro mt8" style="line-height:1.55">${M.decision}</div>
@@ -1585,7 +1585,7 @@ SCREENS['sme-video'] = () => {
     <div class="listcard mt12">
       ${SME_UPLIFT.map((u,i)=>`
         <div class="row" onclick="A.toast('${u.t.replace(/'/g,'’')} — we’ll walk you through it after signing','check')">
-          <span class="bigico" style="background:rgba(255,103,87,.14);color:var(--blu);font:600 12px Outfit,Inter,sans-serif">+${Math.round(u.plus/1000)}k</span>
+          <span class="bigico" style="background:rgba(255,103,87,.14);color:var(--blu);font:600 12px Onest,Inter,sans-serif">+${Math.round(u.plus/1000)}k</span>
           <div class="row-main"><div class="row-t" style="white-space:normal">${u.t}</div>
             <div class="row-d" style="white-space:normal">${u.d}</div></div>
           <span class="chev">${ic('chevR',16)}</span>

@@ -503,7 +503,7 @@ SCREENS.global = () => `
     ${hdr('Without borders')}
     <div class="card">
       <span class="lbl">Family wealth · 4 countries · outside the UAE</span>
-      <div style="font:600 30px Outfit,Inter,sans-serif;letter-spacing:-.03em" class="tnum mt8">≈ AED ${fm(GLOBAL_WEALTH.totalAed)}</div>
+      <div style="font:600 30px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum mt8">≈ AED ${fm(GLOBAL_WEALTH.totalAed)}</div>
       <div class="micro mt4">3 foreign accounts · FX refreshed hourly · one tap adds them to the Zakat estate</div>
     </div>
     ${GLOBAL_WEALTH.countries.map(c=>`

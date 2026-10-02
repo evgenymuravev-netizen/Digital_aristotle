@@ -8,7 +8,7 @@ const S = () => A.S;
 SCREENS.splash = () => `
   <div class="scr center nopad" style="padding:40px;background:linear-gradient(160deg,#081938 0%,#0d1f42 45%,#3a1d2c 100%)">
     <div class="noor-eclipse"><span class="ec-glow"></span><img src="assets/noor-mark.png" alt="" class="ec-mark"></div>
-    <div class="logo-pop" style="font:600 54px/1 Outfit,Inter,sans-serif;letter-spacing:-.04em;color:#FF6757;margin-top:26px">noor</div>
+    <div class="logo-pop" style="font:600 54px/1 Onest,Inter,sans-serif;letter-spacing:-.04em;color:#FF6757;margin-top:26px">noor</div>
     <div class="micro" style="color:rgba(255,255,255,.5);letter-spacing:.24em;text-transform:uppercase;margin-top:6px">finance</div>
     <div class="sub mt16" style="color:rgba(255,255,255,.66)">Know. Think. Act.</div>
     <div class="micro" style="position:absolute;bottom:56px;left:0;right:0;text-align:center;color:rgba(255,255,255,.38)">Noor is a technology company and not a bank.</div>
@@ -25,7 +25,7 @@ const W_SLIDES = [
         <div class="app-cloud" style="margin-top:-4px;transform:translateX(20px)">
           ${['yap','telda','hexknot','panel'].map(a=>`<img class="appic" src="${assetSrc('apps/'+a+'.png')}" alt="">`).join('')}
         </div>
-        <div style="margin-top:18px;font:600 44px Outfit,Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">.76</span></div>
+        <div style="margin-top:18px;font:600 44px Onest,Inter,sans-serif;letter-spacing:-.03em" class="tnum">AED 275,900<span style="font-size:26px">.76</span></div>
         <span class="tag lime">Live · banks, fintechs, wallets, BNPL & crypto</span></div>`},
   {h:'100% compliant.<br><span class="lime-t">Always.</span>', d:'Every product is tracked by AI and confirmed by leading scholars — you will never violate Shariah without knowing. No interest, anywhere, ever.',
    art:`<div style="width:210px;height:210px;border-radius:56px;background:var(--mesh-soft);border:1px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#0e0e10;box-shadow:0 24px 64px rgba(127,176,255,.4)">${ic('shieldCheck',92,'',1.6)}</div>`},
@@ -43,7 +43,7 @@ SCREENS.welcome = () => {
   const s = (A.S.lang==='ar' && window.AR_WELCOME) ? {...W_SLIDES[i], ...AR_WELCOME[i]} : W_SLIDES[i];
   return `
   <div class="scr nopad" style="display:flex;flex-direction:column;padding:70px 26px 46px">
-    <div class="flex between"><span class="flex" style="gap:8px"><img src="assets/noor-mark.png" style="width:26px;height:26px" alt=""><b style="font:600 24px Outfit,Inter,sans-serif;letter-spacing:-.03em;color:#0e0e10">noor</b></span>
+    <div class="flex between"><span class="flex" style="gap:8px"><img src="assets/noor-mark.png" style="width:26px;height:26px" alt=""><b style="font:600 24px Onest,Inter,sans-serif;letter-spacing:-.03em;color:#0e0e10">noor</b></span>
       <button class="chip" onclick="A.demoSkip()">Skip demo →</button></div>
     <div class="f1" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:30px">
       ${s.art}
